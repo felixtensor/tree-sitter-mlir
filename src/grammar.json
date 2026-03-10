@@ -12489,11 +12489,15 @@
                 "members": [
                   {
                     "type": "STRING",
-                    "value": "linalg.batch_matmul"
+                    "value": "linalg.abs"
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.batch_matmul_transpose_b"
+                    "value": "linalg.add"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.batch_matmul"
                   },
                   {
                     "type": "STRING",
@@ -12501,11 +12505,31 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.batch_mmt4d"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.batch_reduce_matmul"
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.batch_vecmat"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.broadcast"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.ceil"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.contract"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_1d"
                   },
                   {
                     "type": "STRING",
@@ -12517,7 +12541,7 @@
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.conv_1d"
+                    "value": "linalg.conv_2d"
                   },
                   {
                     "type": "STRING",
@@ -12525,11 +12549,27 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.conv_2d_nchw_fchw_q"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.conv_2d_ngchw_fgchw"
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.conv_2d_ngchw_gfchw"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_2d_ngchw_gfchw_q"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.conv_2d_nhwc_fhwc"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_2d_nhwc_fhwc_q"
                   },
                   {
                     "type": "STRING",
@@ -12541,7 +12581,19 @@
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.conv_2d"
+                    "value": "linalg.conv_2d_nhwgc_gfhwc"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_2d_nhwgc_gfhwc_q"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_3d"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.conv_3d_ncdhw_fcdhw"
                   },
                   {
                     "type": "STRING",
@@ -12553,11 +12605,11 @@
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.conv_3d"
+                    "value": "linalg.copy"
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.copy"
+                    "value": "linalg.depthwise_conv_1d_ncw_cw"
                   },
                   {
                     "type": "STRING",
@@ -12589,6 +12641,10 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.depthwise_conv_3d_ncdhw_cdhw"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.depthwise_conv_3d_ndhwc_dhwc"
                   },
                   {
@@ -12597,15 +12653,27 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.div"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.div_unsigned"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.dot"
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.elemwise_binary"
+                    "value": "linalg.elementwise"
                   },
                   {
                     "type": "STRING",
-                    "value": "linalg.elemwise_unary"
+                    "value": "linalg.erf"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.exp"
                   },
                   {
                     "type": "STRING",
@@ -12617,15 +12685,15 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.floor"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.log"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.matmul"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "linalg.matmul_transpose_b"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "linalg.matmul_unsigned"
                   },
                   {
                     "type": "STRING",
@@ -12633,7 +12701,23 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.max"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.min"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.mmt4d"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.mul"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.negf"
                   },
                   {
                     "type": "STRING",
@@ -12705,6 +12789,10 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.powf"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.quantized_batch_matmul"
                   },
                   {
@@ -12713,7 +12801,55 @@
                   },
                   {
                     "type": "STRING",
+                    "value": "linalg.reciprocal"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.round"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.rsqrt"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.select"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.sqrt"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.square"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.sub"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.tanh"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.transpose"
+                  },
+                  {
+                    "type": "STRING",
                     "value": "linalg.vecmat"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.winograd_filter_transform"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.winograd_input_transform"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.winograd_output_transform"
                   }
                 ]
               },
@@ -12722,6 +12858,272 @@
                 "content": {
                   "type": "SYMBOL",
                   "name": "_ins_outs_attributes"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_function_return"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "linalg.pack"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "linalg.unpack"
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "source",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "padding_value",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "TOKEN",
+                          "content": {
+                            "type": "STRING",
+                            "value": "padding_value"
+                          }
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "("
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "_value_use_and_type"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": ")"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "outer_dims_perm",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "TOKEN",
+                          "content": {
+                            "type": "STRING",
+                            "value": "outer_dims_perm"
+                          }
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "="
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "_dense_idx_list"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "inner_dims_pos",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "inner_dims_pos"
+                      }
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "inner_tiles",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "inner_tiles"
+                      }
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "TOKEN",
+                "content": {
+                  "type": "STRING",
+                  "value": "into"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "destination",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_function_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "linalg.softmax"
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "dimension",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "dimension"
+                      }
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "integer_literal"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "ins",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_ins"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "outs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_outs"
                 }
               },
               {

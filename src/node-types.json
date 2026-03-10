@@ -2359,12 +2359,294 @@
           }
         ]
       },
-      "dimension": {
+      "destination": {
         "multiple": false,
         "required": false,
         "types": [
           {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "dimension": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "dimension",
+            "named": false
+          },
+          {
             "type": "integer_literal",
+            "named": true
+          }
+        ]
+      },
+      "inner_dims_pos": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "inner_dims_pos",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "inner_tiles": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "inner_tiles",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "ins": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "ins",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "outer_dims_perm": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "outer_dims_perm",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "outs": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "outs",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "padding_value": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "padding_value",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
             "named": true
           }
         ]
@@ -2420,6 +2702,10 @@
             "named": false
           },
           {
+            "type": "function_type",
+            "named": true
+          },
+          {
             "type": "into",
             "named": false
           },
@@ -2429,6 +2715,16 @@
           },
           {
             "type": "type",
+            "named": true
+          }
+        ]
+      },
+      "source": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
             "named": true
           }
         ]
@@ -6345,6 +6641,10 @@
     "named": false
   },
   {
+    "type": "dimension",
+    "named": false
+  },
+  {
     "type": "do",
     "named": false
   },
@@ -6413,6 +6713,14 @@
     "named": false
   },
   {
+    "type": "inner_dims_pos",
+    "named": false
+  },
+  {
+    "type": "inner_tiles",
+    "named": false
+  },
+  {
     "type": "ins",
     "named": false
   },
@@ -6437,11 +6745,15 @@
     "named": false
   },
   {
-    "type": "linalg.batch_matmul",
+    "type": "linalg.abs",
     "named": false
   },
   {
-    "type": "linalg.batch_matmul_transpose_b",
+    "type": "linalg.add",
+    "named": false
+  },
+  {
+    "type": "linalg.batch_matmul",
     "named": false
   },
   {
@@ -6449,11 +6761,27 @@
     "named": false
   },
   {
+    "type": "linalg.batch_mmt4d",
+    "named": false
+  },
+  {
     "type": "linalg.batch_reduce_matmul",
     "named": false
   },
   {
+    "type": "linalg.batch_vecmat",
+    "named": false
+  },
+  {
     "type": "linalg.broadcast",
+    "named": false
+  },
+  {
+    "type": "linalg.ceil",
+    "named": false
+  },
+  {
+    "type": "linalg.contract",
     "named": false
   },
   {
@@ -6477,11 +6805,27 @@
     "named": false
   },
   {
+    "type": "linalg.conv_2d_nchw_fchw_q",
+    "named": false
+  },
+  {
     "type": "linalg.conv_2d_ngchw_fgchw",
     "named": false
   },
   {
+    "type": "linalg.conv_2d_ngchw_gfchw",
+    "named": false
+  },
+  {
+    "type": "linalg.conv_2d_ngchw_gfchw_q",
+    "named": false
+  },
+  {
     "type": "linalg.conv_2d_nhwc_fhwc",
+    "named": false
+  },
+  {
+    "type": "linalg.conv_2d_nhwc_fhwc_q",
     "named": false
   },
   {
@@ -6493,7 +6837,19 @@
     "named": false
   },
   {
+    "type": "linalg.conv_2d_nhwgc_gfhwc",
+    "named": false
+  },
+  {
+    "type": "linalg.conv_2d_nhwgc_gfhwc_q",
+    "named": false
+  },
+  {
     "type": "linalg.conv_3d",
+    "named": false
+  },
+  {
+    "type": "linalg.conv_3d_ncdhw_fcdhw",
     "named": false
   },
   {
@@ -6506,6 +6862,10 @@
   },
   {
     "type": "linalg.copy",
+    "named": false
+  },
+  {
+    "type": "linalg.depthwise_conv_1d_ncw_cw",
     "named": false
   },
   {
@@ -6537,6 +6897,10 @@
     "named": false
   },
   {
+    "type": "linalg.depthwise_conv_3d_ncdhw_cdhw",
+    "named": false
+  },
+  {
     "type": "linalg.depthwise_conv_3d_ndhwc_dhwc",
     "named": false
   },
@@ -6545,15 +6909,27 @@
     "named": false
   },
   {
+    "type": "linalg.div",
+    "named": false
+  },
+  {
+    "type": "linalg.div_unsigned",
+    "named": false
+  },
+  {
     "type": "linalg.dot",
     "named": false
   },
   {
-    "type": "linalg.elemwise_binary",
+    "type": "linalg.elementwise",
     "named": false
   },
   {
-    "type": "linalg.elemwise_unary",
+    "type": "linalg.erf",
+    "named": false
+  },
+  {
+    "type": "linalg.exp",
     "named": false
   },
   {
@@ -6565,11 +6941,19 @@
     "named": false
   },
   {
+    "type": "linalg.floor",
+    "named": false
+  },
+  {
     "type": "linalg.generic",
     "named": false
   },
   {
     "type": "linalg.index",
+    "named": false
+  },
+  {
+    "type": "linalg.log",
     "named": false
   },
   {
@@ -6581,19 +6965,31 @@
     "named": false
   },
   {
-    "type": "linalg.matmul_transpose_b",
-    "named": false
-  },
-  {
-    "type": "linalg.matmul_unsigned",
-    "named": false
-  },
-  {
     "type": "linalg.matvec",
     "named": false
   },
   {
+    "type": "linalg.max",
+    "named": false
+  },
+  {
+    "type": "linalg.min",
+    "named": false
+  },
+  {
     "type": "linalg.mmt4d",
+    "named": false
+  },
+  {
+    "type": "linalg.mul",
+    "named": false
+  },
+  {
+    "type": "linalg.negf",
+    "named": false
+  },
+  {
+    "type": "linalg.pack",
     "named": false
   },
   {
@@ -6665,6 +7061,10 @@
     "named": false
   },
   {
+    "type": "linalg.powf",
+    "named": false
+  },
+  {
     "type": "linalg.quantized_batch_matmul",
     "named": false
   },
@@ -6673,11 +7073,67 @@
     "named": false
   },
   {
+    "type": "linalg.reciprocal",
+    "named": false
+  },
+  {
     "type": "linalg.reduce",
     "named": false
   },
   {
+    "type": "linalg.round",
+    "named": false
+  },
+  {
+    "type": "linalg.rsqrt",
+    "named": false
+  },
+  {
+    "type": "linalg.select",
+    "named": false
+  },
+  {
+    "type": "linalg.softmax",
+    "named": false
+  },
+  {
+    "type": "linalg.sqrt",
+    "named": false
+  },
+  {
+    "type": "linalg.square",
+    "named": false
+  },
+  {
+    "type": "linalg.sub",
+    "named": false
+  },
+  {
+    "type": "linalg.tanh",
+    "named": false
+  },
+  {
+    "type": "linalg.transpose",
+    "named": false
+  },
+  {
+    "type": "linalg.unpack",
+    "named": false
+  },
+  {
     "type": "linalg.vecmat",
+    "named": false
+  },
+  {
+    "type": "linalg.winograd_filter_transform",
+    "named": false
+  },
+  {
+    "type": "linalg.winograd_input_transform",
+    "named": false
+  },
+  {
+    "type": "linalg.winograd_output_transform",
     "named": false
   },
   {
@@ -7045,7 +7501,15 @@
     "named": false
   },
   {
+    "type": "outer_dims_perm",
+    "named": false
+  },
+  {
     "type": "outs",
+    "named": false
+  },
+  {
+    "type": "padding_value",
     "named": false
   },
   {
