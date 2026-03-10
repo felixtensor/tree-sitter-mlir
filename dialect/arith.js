@@ -79,9 +79,16 @@ module.exports = {
       field('return', $._type_annotation)),
 
     // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
+    seq('arith.cmpi',
+      field('predicate', choice($.arith_cmpi_predicate, $.string_literal)), ',',
+      field('lhs', $.value_use), ',',
+      field('rhs', $.value_use),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
     // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
-    seq(choice('arith.cmpi', 'arith.cmpf'),
-      field('predicate', choice($.arith_cmp_predicate, $.string_literal)), ',',
+    seq('arith.cmpf',
+      field('predicate', choice($.arith_cmpf_predicate, $.string_literal)), ',',
       field('lhs', $.value_use), ',',
       field('rhs', $.value_use),
       field('attributes', optional($.attribute)),
@@ -142,8 +149,13 @@ module.exports = {
       field('return', $._type_annotation))
   ),
 
-  arith_cmp_predicate: $ => token(choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt',
-    'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')),
+  arith_cmpf_predicate: $ => token(choice('false', 'true', 'oeq', 'ogt', 'oge', 'olt', 'ole', 'one',
+    'ord', 'ueq', 'ugt', 'uge', 'ult', 'ule', 'une', 'uno'
+  )),
+
+  arith_cmpi_predicate: $ => token(choice('eq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule',
+    'ugt', 'uge'
+  )),
 
   arith_rounding_mode: $ => token(choice('tonearesteven', 'tonearestaway', 'downward', 'upward',
     'towardzero'))

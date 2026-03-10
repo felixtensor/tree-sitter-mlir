@@ -16,7 +16,8 @@
   "scatter_dims"
   "shared_outs"
   "default"
-  (arith_cmp_predicate)
+  (arith_cmpi_predicate)
+  (arith_cmpf_predicate)
   (arith_rounding_mode)
 ] @keyword
 

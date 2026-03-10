@@ -3545,6 +3545,82 @@ func.func @notCmpEQ(%arg0: i8, %arg1: i8) -> i1 {
                       (integer_type))))))))))))
 
 ================================================================================
+arith.cmpf and arith.cmpi with predicate tokens
+================================================================================
+func.func @arith_cmp_predicate_tokens(%a: f32, %b: f32, %x: i32, %y: i32) -> (i1, i1) {
+  %0 = arith.cmpf olt, %a, %b : f32
+  %1 = arith.cmpi sgt, %x, %y : i32
+  return %0, %1 : i1, i1
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (arith_cmpf_predicate)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (arith_cmpi_predicate)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
+
+================================================================================
 bufferization.alloc_tensor
 ================================================================================
 func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)

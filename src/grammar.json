@@ -4457,17 +4457,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "arith.cmpi"
-                },
-                {
-                  "type": "STRING",
-                  "value": "arith.cmpf"
-                }
-              ]
+              "type": "STRING",
+              "value": "arith.cmpi"
             },
             {
               "type": "FIELD",
@@ -4477,7 +4468,81 @@
                 "members": [
                   {
                     "type": "SYMBOL",
-                    "name": "arith_cmp_predicate"
+                    "name": "arith_cmpi_predicate"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "string_literal"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "lhs",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "rhs",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "arith.cmpf"
+            },
+            {
+              "type": "FIELD",
+              "name": "predicate",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "arith_cmpf_predicate"
                   },
                   {
                     "type": "SYMBOL",
@@ -4916,22 +4981,30 @@
         }
       ]
     },
-    "arith_cmp_predicate": {
+    "arith_cmpf_predicate": {
       "type": "TOKEN",
       "content": {
         "type": "CHOICE",
         "members": [
           {
             "type": "STRING",
-            "value": "eq"
+            "value": "false"
           },
           {
             "type": "STRING",
-            "value": "ne"
+            "value": "true"
           },
           {
             "type": "STRING",
             "value": "oeq"
+          },
+          {
+            "type": "STRING",
+            "value": "ogt"
+          },
+          {
+            "type": "STRING",
+            "value": "oge"
           },
           {
             "type": "STRING",
@@ -4943,11 +5016,55 @@
           },
           {
             "type": "STRING",
-            "value": "ogt"
+            "value": "one"
           },
           {
             "type": "STRING",
-            "value": "oge"
+            "value": "ord"
+          },
+          {
+            "type": "STRING",
+            "value": "ueq"
+          },
+          {
+            "type": "STRING",
+            "value": "ugt"
+          },
+          {
+            "type": "STRING",
+            "value": "uge"
+          },
+          {
+            "type": "STRING",
+            "value": "ult"
+          },
+          {
+            "type": "STRING",
+            "value": "ule"
+          },
+          {
+            "type": "STRING",
+            "value": "une"
+          },
+          {
+            "type": "STRING",
+            "value": "uno"
+          }
+        ]
+      }
+    },
+    "arith_cmpi_predicate": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "eq"
+          },
+          {
+            "type": "STRING",
+            "value": "ne"
           },
           {
             "type": "STRING",
