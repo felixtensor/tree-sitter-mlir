@@ -3324,6 +3324,52 @@
         }
       ]
     },
+    "_dense_idx_list_parens": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_dense_idx_prim"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_dense_idx_prim"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
     "_bound": {
       "type": "CHOICE",
       "members": [
@@ -4388,7 +4434,15 @@
                 },
                 {
                   "type": "STRING",
+                  "value": "arith.maxnumf"
+                },
+                {
+                  "type": "STRING",
                   "value": "arith.minimumf"
+                },
+                {
+                  "type": "STRING",
+                  "value": "arith.minnumf"
                 },
                 {
                   "type": "STRING",
@@ -11841,11 +11895,11 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "affine.delinearlize_index"
+                "value": "affine.delinearize_index"
               },
               {
                 "type": "FIELD",
-                "name": "operand",
+                "name": "linear_index",
                 "content": {
                   "type": "SYMBOL",
                   "name": "value_use"
@@ -11860,7 +11914,82 @@
                 "name": "basis",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "_value_use_list_parens"
+                  "name": "_dense_idx_list_parens"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "affine.linearize_index"
+              },
+              {
+                "type": "FIELD",
+                "name": "disjoint",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "disjoint"
+                      }
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "multi_index",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_dense_idx_list"
+                }
+              },
+              {
+                "type": "TOKEN",
+                "content": {
+                  "type": "STRING",
+                  "value": "by"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "basis",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_dense_idx_list_parens"
                 }
               },
               {

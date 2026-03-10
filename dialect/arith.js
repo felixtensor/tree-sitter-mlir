@@ -63,7 +63,11 @@ module.exports = {
     //                attr-dict `:` type($result)
     // operation ::= `arith.maximumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
+    // operation ::= `arith.maxnumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+    //                attr-dict `:` type($result)
     // operation ::= `arith.minimumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+    //                attr-dict `:` type($result)
+    // operation ::= `arith.minnumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
     // operation ::= `arith.mulf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
@@ -71,8 +75,8 @@ module.exports = {
     //                attr-dict `:` type($result)
     // operation ::= `arith.subf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
-    seq(choice('arith.addf', 'arith.divf', 'arith.maximumf', 'arith.minimumf', 'arith.mulf',
-      'arith.remf', 'arith.subf'),
+    seq(choice('arith.addf', 'arith.divf', 'arith.maximumf', 'arith.maxnumf', 'arith.minimumf',
+      'arith.minnumf', 'arith.mulf', 'arith.remf', 'arith.subf'),
       field('lhs', $.value_use), ',',
       field('rhs', $.value_use),
       field('fastmath', optional($.fastmath_attr)),

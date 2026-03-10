@@ -30,6 +30,30 @@
             "named": false
           },
           {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
             "type": "value_use",
             "named": true
           }
@@ -110,6 +134,16 @@
           {
             "type": "value_use",
             "named": true
+          }
+        ]
+      },
+      "disjoint": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "disjoint",
+            "named": false
           }
         ]
       },
@@ -253,6 +287,16 @@
           }
         ]
       },
+      "linear_index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "localityHint": {
         "multiple": false,
         "required": false,
@@ -388,6 +432,52 @@
           {
             "type": "symbol",
             "named": false
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "multi_index": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
           },
           {
             "type": "value_use",
@@ -6293,7 +6383,7 @@
     "named": false
   },
   {
-    "type": "affine.delinearlize_index",
+    "type": "affine.delinearize_index",
     "named": false
   },
   {
@@ -6310,6 +6400,10 @@
   },
   {
     "type": "affine.if",
+    "named": false
+  },
+  {
+    "type": "affine.linearize_index",
     "named": false
   },
   {
@@ -6445,6 +6539,10 @@
     "named": false
   },
   {
+    "type": "arith.maxnumf",
+    "named": false
+  },
+  {
     "type": "arith.maxsi",
     "named": false
   },
@@ -6454,6 +6552,10 @@
   },
   {
     "type": "arith.minimumf",
+    "named": false
+  },
+  {
+    "type": "arith.minnumf",
     "named": false
   },
   {
@@ -6625,6 +6727,10 @@
     "named": false
   },
   {
+    "type": "by",
+    "named": false
+  },
+  {
     "type": "call",
     "named": false
   },
@@ -6679,6 +6785,10 @@
   },
   {
     "type": "dimension",
+    "named": false
+  },
+  {
+    "type": "disjoint",
     "named": false
   },
   {

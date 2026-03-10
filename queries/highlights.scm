@@ -23,7 +23,9 @@
 
 [
   "module"
+  "builtin.module"
   "unrealized_conversion_cast"
+  "builtin.unrealized_conversion_cast"
 
   "func.call"
   "call"
@@ -56,6 +58,23 @@
   "scf.while"
   "scf.yield"
 
+  "affine.apply"
+  "affine.delinearize_index"
+  "affine.dma_start"
+  "affine.dma_wait"
+  "affine.for"
+  "affine.if"
+  "affine.linearize_index"
+  "affine.load"
+  "affine.max"
+  "affine.min"
+  "affine.parallel"
+  "affine.prefetch"
+  "affine.store"
+  "affine.vector_load"
+  "affine.vector_store"
+  "affine.yield"
+
   "arith.constant"
   "arith.addi"
   "arith.subi"
@@ -83,7 +102,9 @@
   "arith.addf"
   "arith.divf"
   "arith.maximumf"
+  "arith.maxnumf"
   "arith.minimumf"
+  "arith.minnumf"
   "arith.mulf"
   "arith.remf"
   "arith.subf"

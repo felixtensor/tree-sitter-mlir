@@ -245,6 +245,85 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                 (func_dialect)))))))))
 
 ================================================================================
+affine.delinearize_index and affine.linearize_index
+================================================================================
+func.func @affine_linearize_delinearize(%i0: index, %i1: index) -> (index, index, index) {
+  %lin = affine.linearize_index [%i0, %i1] by (3, 5) : index
+  %idx:2 = affine.delinearize_index %lin into (3, 5) : index, index
+  return %lin, %idx#0, %idx#1 : index, index, index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))
+            (type
+              (builtin_type
+                (index_type)))
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (affine_dialect
+                  (value_use)
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (affine_dialect
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type))))))))))))
+
+================================================================================
 affine.dma_start and affine.dma_wait with complicated affine expressions
 ================================================================================
 func.func @test4(%arg0 : index, %arg1 : index) {

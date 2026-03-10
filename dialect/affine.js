@@ -6,11 +6,22 @@ module.exports = {
       field('operand', seq($.attribute, $._dim_and_symbol_use_list)),
       field('attributes', optional($.attribute))),
 
-    // operation ::= `affine.delinearize_index` $linear_index `into` ` `
-    //               `(` $basis `)` attr-dict `:` type($multi_index)
-    seq('affine.delinearlize_index',
-      field('operand', $.value_use), 'into',
-      field('basis', $._value_use_list_parens),
+    // operation ::= `affine.delinearize_index` $linear_index `into` `(`
+    //               $basis `)` attr-dict `:` type($multi_index)
+    seq('affine.delinearize_index',
+      field('linear_index', $.value_use), 'into',
+      field('basis', $._dense_idx_list_parens),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `affine.linearize_index` (`disjoint` $disjoint^)? ` `
+    //               `[` $multi_index `]` `by` `(` $basis `)` attr-dict
+    //               `:` type($linear_index)
+    seq('affine.linearize_index',
+      field('disjoint', optional(token('disjoint'))),
+      field('multi_index', $._dense_idx_list),
+      token('by'),
+      field('basis', $._dense_idx_list_parens),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 

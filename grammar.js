@@ -380,6 +380,8 @@ const common = {
   _dense_idx_list: $ => seq('[', optional(seq($._dense_idx_prim,
     repeat(seq(',', $._dense_idx_prim)))), ']'),
   _dense_idx_prim: $ => choice($.integer_literal, seq($.value_use, optional($._type_annotation))),
+  _dense_idx_list_parens: $ => seq('(', optional(seq($._dense_idx_prim,
+    repeat(seq(',', $._dense_idx_prim)))), ')'),
 
   // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
   // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
