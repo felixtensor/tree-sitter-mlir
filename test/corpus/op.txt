@@ -272,6 +272,183 @@ func.func @arith_casts(%arg0: i32, %arg1: f16, %scale: f32) -> (i8, f32, f16) {
                       (float_type))))))))))))
 
 ================================================================================
+math extra ops (trig / clampf / classify)
+================================================================================
+func.func @math_extra_ops(%x: f32, %lo: f32, %hi: f32) {
+  %a0 = math.acos %x fastmath<fast> : f32
+  %a1 = math.acosh %x : f32
+  %a2 = math.asin %x : f32
+  %a3 = math.asinh %x : f32
+  %a4 = math.atanh %x : f32
+  %a5 = math.sinh %x : f32
+  %a6 = math.cosh %x : f32
+  %s, %c = math.sincos %x : f32
+  %cl = math.clampf %x to [%lo, %hi] : f32
+  %e = math.erfc %x : f32
+  %f0 = math.isfinite %x : f32
+  %f1 = math.isinf %x : f32
+  %f2 = math.isnan %x : f32
+  %f3 = math.isnormal %x : f32
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (fastmath_attr)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (math_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+
+================================================================================
 linalg.generic with attribute dictionary
 ================================================================================
 func.func @gather_like(

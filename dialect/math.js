@@ -46,11 +46,23 @@ module.exports = {
     //               attr-dict `:` type($result)
     // operation ::= `math.trunc` $operand (`fastmath` `` $fastmath^)?
     //               attr-dict `:` type($result)
-    seq(choice('math.absf', 'math.atan', 'math.cbrt', 'math.ceil', 'math.cos', 'math.erf',
-      'math.exp', 'math.exp2', 'math.expm1', 'math.floor', 'math.log', 'math.log10',
-      'math.log1p', 'math.log2', 'math.round', 'math.roundeven', 'math.rsqrt', 'math.sin',
-      'math.sqrt', 'math.tan', 'math.tanh', 'math.trunc'),
+    seq(choice('math.absf', 'math.acos', 'math.acosh', 'math.asin', 'math.asinh',
+      'math.atan', 'math.atanh', 'math.cbrt', 'math.ceil', 'math.cos', 'math.cosh', 'math.erf',
+      'math.erfc', 'math.exp', 'math.exp2', 'math.expm1', 'math.floor', 'math.log',
+      'math.log10', 'math.log1p', 'math.log2', 'math.round', 'math.roundeven', 'math.rsqrt',
+      'math.sin', 'math.sincos', 'math.sinh', 'math.sqrt', 'math.tan', 'math.tanh',
+      'math.trunc'),
       field('operand', $.value_use),
+      field('fastmath', optional($.fastmath_attr)),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `math.clampf` $value `to` `[` $min `,` $max `]` (`fastmath` `` $fastmath^)?
+    //               attr-dict `:` type($result)
+    seq('math.clampf',
+      field('value', $.value_use), token('to'), '[',
+      field('min', $.value_use), ',',
+      field('max', $.value_use), ']',
       field('fastmath', optional($.fastmath_attr)),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
@@ -60,6 +72,15 @@ module.exports = {
     // operation ::= `math.cttz` $operand attr-dict `:` type($result)
     // operation ::= `math.ctpop` $operand attr-dict `:` type($result)
     seq(choice('math.absi', 'math.ctlz', 'math.cttz', 'math.ctpop'),
+      field('operand', $.value_use),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `math.isfinite` $operand attr-dict `:` type($operand)
+    // operation ::= `math.isinf` $operand attr-dict `:` type($operand)
+    // operation ::= `math.isnan` $operand attr-dict `:` type($operand)
+    // operation ::= `math.isnormal` $operand attr-dict `:` type($operand)
+    seq(choice('math.isfinite', 'math.isinf', 'math.isnan', 'math.isnormal'),
       field('operand', $.value_use),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),

@@ -5080,7 +5080,27 @@
                 },
                 {
                   "type": "STRING",
+                  "value": "math.acos"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.acosh"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.asin"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.asinh"
+                },
+                {
+                  "type": "STRING",
                   "value": "math.atan"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.atanh"
                 },
                 {
                   "type": "STRING",
@@ -5096,7 +5116,15 @@
                 },
                 {
                   "type": "STRING",
+                  "value": "math.cosh"
+                },
+                {
+                  "type": "STRING",
                   "value": "math.erf"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.erfc"
                 },
                 {
                   "type": "STRING",
@@ -5145,6 +5173,14 @@
                 {
                   "type": "STRING",
                   "value": "math.sin"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.sincos"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.sinh"
                 },
                 {
                   "type": "STRING",
@@ -5218,6 +5254,98 @@
           "type": "SEQ",
           "members": [
             {
+              "type": "STRING",
+              "value": "math.clampf"
+            },
+            {
+              "type": "FIELD",
+              "name": "value",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "TOKEN",
+              "content": {
+                "type": "STRING",
+                "value": "to"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "FIELD",
+              "name": "min",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "max",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            },
+            {
+              "type": "FIELD",
+              "name": "fastmath",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "fastmath_attr"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
               "type": "CHOICE",
               "members": [
                 {
@@ -5235,6 +5363,64 @@
                 {
                   "type": "STRING",
                   "value": "math.ctpop"
+                }
+              ]
+            },
+            {
+              "type": "FIELD",
+              "name": "operand",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "math.isfinite"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.isinf"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.isnan"
+                },
+                {
+                  "type": "STRING",
+                  "value": "math.isnormal"
                 }
               ]
             },

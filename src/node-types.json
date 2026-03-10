@@ -2577,6 +2577,26 @@
           }
         ]
       },
+      "max": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "min": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "operand": {
         "multiple": false,
         "required": false,
@@ -2618,6 +2638,16 @@
         ]
       },
       "rhs": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "value": {
         "multiple": false,
         "required": false,
         "types": [
@@ -6554,11 +6584,31 @@
     "named": false
   },
   {
+    "type": "math.acos",
+    "named": false
+  },
+  {
+    "type": "math.acosh",
+    "named": false
+  },
+  {
+    "type": "math.asin",
+    "named": false
+  },
+  {
+    "type": "math.asinh",
+    "named": false
+  },
+  {
     "type": "math.atan",
     "named": false
   },
   {
     "type": "math.atan2",
+    "named": false
+  },
+  {
+    "type": "math.atanh",
     "named": false
   },
   {
@@ -6570,11 +6620,19 @@
     "named": false
   },
   {
+    "type": "math.clampf",
+    "named": false
+  },
+  {
     "type": "math.copysign",
     "named": false
   },
   {
     "type": "math.cos",
+    "named": false
+  },
+  {
+    "type": "math.cosh",
     "named": false
   },
   {
@@ -6591,6 +6649,10 @@
   },
   {
     "type": "math.erf",
+    "named": false
+  },
+  {
+    "type": "math.erfc",
     "named": false
   },
   {
@@ -6619,6 +6681,22 @@
   },
   {
     "type": "math.ipowi",
+    "named": false
+  },
+  {
+    "type": "math.isfinite",
+    "named": false
+  },
+  {
+    "type": "math.isinf",
+    "named": false
+  },
+  {
+    "type": "math.isnan",
+    "named": false
+  },
+  {
+    "type": "math.isnormal",
     "named": false
   },
   {
@@ -6655,6 +6733,14 @@
   },
   {
     "type": "math.sin",
+    "named": false
+  },
+  {
+    "type": "math.sincos",
+    "named": false
+  },
+  {
+    "type": "math.sinh",
     "named": false
   },
   {
