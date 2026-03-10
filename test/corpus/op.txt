@@ -3277,6 +3277,173 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                           (float_type))))))))))))))
 
 ================================================================================
+bufferization.ops
+================================================================================
+func.func @test_bufferization_ops(%t: tensor<?x?xf32>, %m: memref<?x?xf32>, %cond: i1)
+  -> tensor<?x?xf32>
+{
+  %0 = bufferization.to_buffer %t read_only : tensor<?x?xf32> to memref<?x?xf32>
+  %1 = bufferization.to_tensor %m restrict writable : memref<?x?xf32> to tensor<?x?xf32>
+  %2 = bufferization.clone %m : memref<?x?xf32> to memref<?x?xf32>
+  %3 = bufferization.materialize_in_destination %t in restrict writable %1
+    : (tensor<?x?xf32>, tensor<?x?xf32>) -> tensor<?x?xf32>
+  bufferization.dealloc (%0, %2 : memref<?x?xf32>, memref<?x?xf32>)
+    if (%cond, %cond) retain (%m : memref<?x?xf32>)
+  bufferization.dealloc_tensor %3 : tensor<?x?xf32>
+  return %3 : tensor<?x?xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (read_only_attr)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (restrict_attr)
+                  (writable_attr)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (restrict_attr)
+                  (writable_attr)
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
+
+================================================================================
 vector.transfer_read and vector.transfer_write
 ================================================================================
 func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,

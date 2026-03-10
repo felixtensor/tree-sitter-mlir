@@ -1313,6 +1313,16 @@
           }
         ]
       },
+      "dest": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "in": {
         "multiple": true,
         "required": false,
@@ -1335,12 +1345,66 @@
           }
         ]
       },
+      "input": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "memref": {
         "multiple": false,
         "required": false,
         "types": [
           {
             "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "memrefs_if": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "if",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "read_only": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "read_only_attr",
             "named": true
           }
         ]
@@ -1355,9 +1419,43 @@
           }
         ]
       },
+      "retain": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "retain",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "return": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": ",",
@@ -1370,6 +1468,10 @@
           {
             "type": "from",
             "named": false
+          },
+          {
+            "type": "function_type",
+            "named": true
           },
           {
             "type": "into",
@@ -1397,6 +1499,16 @@
             "type": "size_hint",
             "named": false
           },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "source": {
+        "multiple": false,
+        "required": false,
+        "types": [
           {
             "type": "value_use",
             "named": true
@@ -3494,16 +3606,6 @@
         ]
       },
       "target": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "value_use",
-            "named": true
-          }
-        ]
-      },
-      "tensor": {
         "multiple": false,
         "required": false,
         "types": [
@@ -6147,6 +6249,26 @@
     "named": false
   },
   {
+    "type": "bufferization.clone",
+    "named": false
+  },
+  {
+    "type": "bufferization.dealloc",
+    "named": false
+  },
+  {
+    "type": "bufferization.dealloc_tensor",
+    "named": false
+  },
+  {
+    "type": "bufferization.materialize_in_destination",
+    "named": false
+  },
+  {
+    "type": "bufferization.to_buffer",
+    "named": false
+  },
+  {
     "type": "bufferization.to_memref",
     "named": false
   },
@@ -6261,6 +6383,10 @@
   },
   {
     "type": "high",
+    "named": false
+  },
+  {
+    "type": "if",
     "named": false
   },
   {
@@ -6888,10 +7014,6 @@
     "named": false
   },
   {
-    "type": "memref.tensor_store",
-    "named": false
-  },
-  {
     "type": "memref.transpose",
     "named": false
   },
@@ -6936,12 +7058,20 @@
     "named": false
   },
   {
+    "type": "read_only_attr",
+    "named": true
+  },
+  {
     "type": "reduce",
     "named": false
   },
   {
     "type": "restrict_attr",
     "named": true
+  },
+  {
+    "type": "retain",
+    "named": false
   },
   {
     "type": "return",

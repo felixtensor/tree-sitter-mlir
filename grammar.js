@@ -390,6 +390,7 @@ const common = {
   // Dialect-specific attributes
   restrict_attr: $ => token('restrict'),
   writable_attr: $ => token('writable'),
+  read_only_attr: $ => token('read_only'),
   constant_attr: $ => token('constant'),
   gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
   scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
