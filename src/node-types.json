@@ -935,6 +935,26 @@
           }
         ]
       },
+      "roundingmode": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "arith_rounding_mode",
+            "named": true
+          }
+        ]
+      },
+      "scale": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
       "trueCond": {
         "multiple": false,
         "required": false,
@@ -6013,6 +6033,14 @@
     "named": false
   },
   {
+    "type": "arith.scaling_extf",
+    "named": false
+  },
+  {
+    "type": "arith.scaling_truncf",
+    "named": false
+  },
+  {
     "type": "arith.select",
     "named": false
   },
@@ -6058,6 +6086,10 @@
   },
   {
     "type": "arith_cmp_predicate",
+    "named": true
+  },
+  {
+    "type": "arith_rounding_mode",
     "named": true
   },
   {

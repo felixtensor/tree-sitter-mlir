@@ -4637,10 +4637,6 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "arith.truncf"
-                },
-                {
-                  "type": "STRING",
                   "value": "arith.trunci"
                 }
               ]
@@ -4651,6 +4647,233 @@
               "content": {
                 "type": "SYMBOL",
                 "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "arith.truncf"
+            },
+            {
+              "type": "FIELD",
+              "name": "in",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "roundingmode",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "arith_rounding_mode"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "fastmath",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "fastmath_attr"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "arith.scaling_extf"
+            },
+            {
+              "type": "FIELD",
+              "name": "in",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "scale",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "fastmath",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "fastmath_attr"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "arith.scaling_truncf"
+            },
+            {
+              "type": "FIELD",
+              "name": "in",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "scale",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "roundingmode",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "arith_rounding_mode"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "fastmath",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "fastmath_attr"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               }
             },
             {
@@ -4810,6 +5033,34 @@
           {
             "type": "STRING",
             "value": "uge"
+          }
+        ]
+      }
+    },
+    "arith_rounding_mode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "tonearesteven"
+          },
+          {
+            "type": "STRING",
+            "value": "tonearestaway"
+          },
+          {
+            "type": "STRING",
+            "value": "downward"
+          },
+          {
+            "type": "STRING",
+            "value": "upward"
+          },
+          {
+            "type": "STRING",
+            "value": "towardzero"
           }
         ]
       }

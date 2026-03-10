@@ -97,12 +97,40 @@ module.exports = {
     // operation ::= `arith.sitofp` $in attr-dict `:` type($in) `to` type($out)
     // operation ::= `arith.uitofp` $in attr-dict `:` type($in) `to` type($out)
     // operation ::= `arith.bitcast` $in attr-dict `:` type($in) `to` type($out)
-    // operation ::= `arith.truncf` $in attr-dict `:` type($in) `to` type($out)
     // operation ::= `arith.trunci` $in attr-dict `:` type($in) `to` type($out)
     seq(choice('arith.extf', 'arith.extsi', 'arith.extui', 'arith.fptosi', 'arith.fptoui',
       'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast',
-      'arith.truncf', 'arith.trunci'),
+      'arith.trunci'),
       field('in', $.value_use),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `arith.truncf` $in ($roundingmode^)? (`fastmath` `` $fastmath^)?
+    //                attr-dict `:` type($in) `to` type($out)
+    seq('arith.truncf',
+      field('in', $.value_use),
+      field('roundingmode', optional($.arith_rounding_mode)),
+      field('fastmath', optional($.fastmath_attr)),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `arith.scaling_extf` $in `,` $scale (`fastmath` `` $fastmath^)?
+    //                attr-dict `:` type($in) `,` type($scale) `to` type($out)
+    seq('arith.scaling_extf',
+      field('in', $.value_use), ',',
+      field('scale', $.value_use),
+      field('fastmath', optional($.fastmath_attr)),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
+    // operation ::= `arith.scaling_truncf` $in `,` $scale ($roundingmode^)?
+    //                (`fastmath` `` $fastmath^)? attr-dict `:` type($in) `,` type($scale) `to`
+    //                type($out)
+    seq('arith.scaling_truncf',
+      field('in', $.value_use), ',',
+      field('scale', $.value_use),
+      field('roundingmode', optional($.arith_rounding_mode)),
+      field('fastmath', optional($.fastmath_attr)),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
@@ -115,5 +143,8 @@ module.exports = {
   ),
 
   arith_cmp_predicate: $ => token(choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt',
-    'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge'))
+    'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')),
+
+  arith_rounding_mode: $ => token(choice('tonearesteven', 'tonearestaway', 'downward', 'upward',
+    'towardzero'))
 }

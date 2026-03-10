@@ -21,6 +21,7 @@
   "shared_outs"
   "default"
   (arith_cmp_predicate)
+  (arith_rounding_mode)
 ] @keyword
 
 [
@@ -103,7 +104,10 @@
   "arith.uitofp"
   "arith.bitcast"
   "arith.truncf"
+  "arith.trunci"
   "arith.select"
+  "arith.scaling_extf"
+  "arith.scaling_truncf"
 
   "math.absf"
   "math.atan"
