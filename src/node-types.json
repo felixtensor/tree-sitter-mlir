@@ -6269,10 +6269,6 @@
     "named": false
   },
   {
-    "type": "bufferization.to_memref",
-    "named": false
-  },
-  {
     "type": "bufferization.to_tensor",
     "named": false
   },

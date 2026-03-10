@@ -11101,47 +11101,6 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "bufferization.to_memref"
-              },
-              {
-                "type": "FIELD",
-                "name": "tensor",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "attributes",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "attribute"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "return",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_type_annotation"
-                }
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
                 "value": "bufferization.to_tensor"
               },
               {

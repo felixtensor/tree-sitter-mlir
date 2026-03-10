@@ -235,7 +235,11 @@
   "tensor.yield"
 
   "bufferization.alloc_tensor"
-  "bufferization.to_memref"
+  "bufferization.clone"
+  "bufferization.dealloc"
+  "bufferization.dealloc_tensor"
+  "bufferization.materialize_in_destination"
+  "bufferization.to_buffer"
   "bufferization.to_tensor"
 
   "linalg.batch_matmul"
