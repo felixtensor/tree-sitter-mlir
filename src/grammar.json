@@ -4092,8 +4092,433 @@
                 }
               }
             ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "llvm.add"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.addrspacecast"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.alloca"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.and"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.ashr"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.atomicrmw"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.bitcast"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.blockaddress"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.blocktag"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.br"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.call"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.call_intrinsic"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.cmpxchg"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.comdat"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.comdat_selector"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.cond_br"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.dso_local_equivalent"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.extractelement"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.extractvalue"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fadd"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fcmp"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fdiv"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fence"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fmul"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fneg"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fpext"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fptosi"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fptoui"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fptrunc"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.freeze"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.frem"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.fsub"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.getelementptr"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.icmp"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.indirectbr"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.inline_asm"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.insertelement"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.insertvalue"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.inttoptr"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.invoke"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.landingpad"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.linker_options"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.load"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.lshr"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.addressof"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.alias"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.constant"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.global"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.global_ctors"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.global_dtors"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.ifunc"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.none"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.poison"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.undef"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mlir.zero"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.module.flags"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.module_flags"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.mul"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.or"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.ptrtoint"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.resume"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.sdiv"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.select"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.sext"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.shl"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.shufflevector"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.sitofp"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.srem"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.store"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.sub"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.switch"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.trunc"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.udiv"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.uitofp"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.unreachable"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.urem"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.va_arg"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.xor"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "llvm.zext"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_llvm_generic_op_format"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
           }
         ]
+      }
+    },
+    "_llvm_generic_op_format": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "value_use"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "symbol_ref_id"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "caret_id"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "integer_literal"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "float_literal"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "string_literal"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "attribute"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "region"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_value_use_list_parens"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_dense_idx_list"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "llvm_keyword"
+          },
+          {
+            "type": "STRING",
+            "value": ","
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "STRING",
+            "value": "="
+          },
+          {
+            "type": "STRING",
+            "value": "->"
+          },
+          {
+            "type": "STRING",
+            "value": "#"
+          }
+        ]
+      }
+    },
+    "llvm_keyword": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -1,
+        "content": {
+          "type": "PATTERN",
+          "value": "[A-Za-z_][A-Za-z0-9_$-]*"
+        }
       }
     },
     "arith_dialect": {

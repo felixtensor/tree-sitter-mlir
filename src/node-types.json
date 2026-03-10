@@ -2962,6 +2962,52 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "caret_id",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "llvm_keyword",
+          "named": true
+        },
+        {
+          "type": "region",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "symbol_ref_id",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "value_use",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -7288,12 +7334,332 @@
     "named": false
   },
   {
+    "type": "llvm.add",
+    "named": false
+  },
+  {
+    "type": "llvm.addrspacecast",
+    "named": false
+  },
+  {
+    "type": "llvm.alloca",
+    "named": false
+  },
+  {
+    "type": "llvm.and",
+    "named": false
+  },
+  {
+    "type": "llvm.ashr",
+    "named": false
+  },
+  {
+    "type": "llvm.atomicrmw",
+    "named": false
+  },
+  {
+    "type": "llvm.bitcast",
+    "named": false
+  },
+  {
+    "type": "llvm.blockaddress",
+    "named": false
+  },
+  {
+    "type": "llvm.blocktag",
+    "named": false
+  },
+  {
+    "type": "llvm.br",
+    "named": false
+  },
+  {
+    "type": "llvm.call",
+    "named": false
+  },
+  {
+    "type": "llvm.call_intrinsic",
+    "named": false
+  },
+  {
+    "type": "llvm.cmpxchg",
+    "named": false
+  },
+  {
+    "type": "llvm.comdat",
+    "named": false
+  },
+  {
+    "type": "llvm.comdat_selector",
+    "named": false
+  },
+  {
+    "type": "llvm.cond_br",
+    "named": false
+  },
+  {
+    "type": "llvm.dso_local_equivalent",
+    "named": false
+  },
+  {
+    "type": "llvm.extractelement",
+    "named": false
+  },
+  {
+    "type": "llvm.extractvalue",
+    "named": false
+  },
+  {
+    "type": "llvm.fadd",
+    "named": false
+  },
+  {
+    "type": "llvm.fcmp",
+    "named": false
+  },
+  {
+    "type": "llvm.fdiv",
+    "named": false
+  },
+  {
+    "type": "llvm.fence",
+    "named": false
+  },
+  {
+    "type": "llvm.fmul",
+    "named": false
+  },
+  {
+    "type": "llvm.fneg",
+    "named": false
+  },
+  {
+    "type": "llvm.fpext",
+    "named": false
+  },
+  {
+    "type": "llvm.fptosi",
+    "named": false
+  },
+  {
+    "type": "llvm.fptoui",
+    "named": false
+  },
+  {
+    "type": "llvm.fptrunc",
+    "named": false
+  },
+  {
+    "type": "llvm.freeze",
+    "named": false
+  },
+  {
+    "type": "llvm.frem",
+    "named": false
+  },
+  {
+    "type": "llvm.fsub",
+    "named": false
+  },
+  {
     "type": "llvm.func",
+    "named": false
+  },
+  {
+    "type": "llvm.getelementptr",
+    "named": false
+  },
+  {
+    "type": "llvm.icmp",
+    "named": false
+  },
+  {
+    "type": "llvm.indirectbr",
+    "named": false
+  },
+  {
+    "type": "llvm.inline_asm",
+    "named": false
+  },
+  {
+    "type": "llvm.insertelement",
+    "named": false
+  },
+  {
+    "type": "llvm.insertvalue",
+    "named": false
+  },
+  {
+    "type": "llvm.inttoptr",
+    "named": false
+  },
+  {
+    "type": "llvm.invoke",
+    "named": false
+  },
+  {
+    "type": "llvm.landingpad",
+    "named": false
+  },
+  {
+    "type": "llvm.linker_options",
+    "named": false
+  },
+  {
+    "type": "llvm.load",
+    "named": false
+  },
+  {
+    "type": "llvm.lshr",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.addressof",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.alias",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.constant",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.global",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.global_ctors",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.global_dtors",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.ifunc",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.none",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.poison",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.undef",
+    "named": false
+  },
+  {
+    "type": "llvm.mlir.zero",
+    "named": false
+  },
+  {
+    "type": "llvm.module.flags",
+    "named": false
+  },
+  {
+    "type": "llvm.module_flags",
+    "named": false
+  },
+  {
+    "type": "llvm.mul",
+    "named": false
+  },
+  {
+    "type": "llvm.or",
+    "named": false
+  },
+  {
+    "type": "llvm.ptrtoint",
+    "named": false
+  },
+  {
+    "type": "llvm.resume",
     "named": false
   },
   {
     "type": "llvm.return",
     "named": false
+  },
+  {
+    "type": "llvm.sdiv",
+    "named": false
+  },
+  {
+    "type": "llvm.select",
+    "named": false
+  },
+  {
+    "type": "llvm.sext",
+    "named": false
+  },
+  {
+    "type": "llvm.shl",
+    "named": false
+  },
+  {
+    "type": "llvm.shufflevector",
+    "named": false
+  },
+  {
+    "type": "llvm.sitofp",
+    "named": false
+  },
+  {
+    "type": "llvm.srem",
+    "named": false
+  },
+  {
+    "type": "llvm.store",
+    "named": false
+  },
+  {
+    "type": "llvm.sub",
+    "named": false
+  },
+  {
+    "type": "llvm.switch",
+    "named": false
+  },
+  {
+    "type": "llvm.trunc",
+    "named": false
+  },
+  {
+    "type": "llvm.udiv",
+    "named": false
+  },
+  {
+    "type": "llvm.uitofp",
+    "named": false
+  },
+  {
+    "type": "llvm.unreachable",
+    "named": false
+  },
+  {
+    "type": "llvm.urem",
+    "named": false
+  },
+  {
+    "type": "llvm.va_arg",
+    "named": false
+  },
+  {
+    "type": "llvm.xor",
+    "named": false
+  },
+  {
+    "type": "llvm.zext",
+    "named": false
+  },
+  {
+    "type": "llvm_keyword",
+    "named": true
   },
   {
     "type": "loc",
