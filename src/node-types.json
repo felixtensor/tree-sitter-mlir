@@ -5262,9 +5262,13 @@
     "named": true,
     "fields": {
       "acc": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": ",",
+            "named": false
+          },
           {
             "type": "value_use",
             "named": true
@@ -5327,20 +5331,116 @@
           }
         ]
       },
-      "destination": {
+      "body": {
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "region",
+            "named": true
+          }
+        ]
+      },
+      "destination": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
           {
             "type": "value_use",
             "named": true
           }
         ]
       },
-      "in": {
-        "multiple": false,
+      "dims": {
+        "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "from",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "into",
+            "named": false
+          },
+          {
+            "type": "to",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "elements": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
           {
             "type": "value_use",
             "named": true
@@ -5389,6 +5489,28 @@
           },
           {
             "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "kind": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "<",
+            "named": false
+          },
+          {
+            "type": ">",
+            "named": false
+          },
+          {
+            "type": "bare_id",
+            "named": true
+          },
+          {
+            "type": "dialect_attribute",
             "named": true
           }
         ]
@@ -5443,30 +5565,6 @@
             "type": "type",
             "named": true
           },
-          {
-            "type": "value_use",
-            "named": true
-          }
-        ]
-      },
-      "masks": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "value_use",
-            "named": true
-          }
-        ]
-      },
-      "matrix": {
-        "multiple": false,
-        "required": false,
-        "types": [
           {
             "type": "value_use",
             "named": true
@@ -5533,14 +5631,10 @@
           }
         ]
       },
-      "paddingMask": {
-        "multiple": true,
+      "padding": {
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": ",",
-            "named": false
-          },
           {
             "type": "value_use",
             "named": true
@@ -5709,6 +5803,16 @@
             "type": "type",
             "named": true
           },
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
           {
             "type": "value_use",
             "named": true
@@ -7181,6 +7285,10 @@
     "named": false
   },
   {
+    "type": "vector.compressstore",
+    "named": false
+  },
+  {
     "type": "vector.constant_mask",
     "named": false
   },
@@ -7190,6 +7298,10 @@
   },
   {
     "type": "vector.create_mask",
+    "named": false
+  },
+  {
+    "type": "vector.deinterleave",
     "named": false
   },
   {
@@ -7205,15 +7317,11 @@
     "named": false
   },
   {
-    "type": "vector.extractelement",
-    "named": false
-  },
-  {
-    "type": "vector.flat_transpose",
-    "named": false
-  },
-  {
     "type": "vector.fma",
+    "named": false
+  },
+  {
+    "type": "vector.from_elements",
     "named": false
   },
   {
@@ -7229,11 +7337,15 @@
     "named": false
   },
   {
-    "type": "vector.insertelement",
+    "type": "vector.interleave",
     "named": false
   },
   {
     "type": "vector.load",
+    "named": false
+  },
+  {
+    "type": "vector.mask",
     "named": false
   },
   {
@@ -7245,7 +7357,7 @@
     "named": false
   },
   {
-    "type": "vector.matrix_multiply",
+    "type": "vector.multi_reduction",
     "named": false
   },
   {
@@ -7257,11 +7369,19 @@
     "named": false
   },
   {
+    "type": "vector.reduction",
+    "named": false
+  },
+  {
     "type": "vector.scalable.extract",
     "named": false
   },
   {
     "type": "vector.scalable.insert",
+    "named": false
+  },
+  {
+    "type": "vector.scan",
     "named": false
   },
   {
@@ -7277,11 +7397,15 @@
     "named": false
   },
   {
-    "type": "vector.splat",
+    "type": "vector.step",
     "named": false
   },
   {
     "type": "vector.store",
+    "named": false
+  },
+  {
+    "type": "vector.to_elements",
     "named": false
   },
   {

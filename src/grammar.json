@@ -8470,11 +8470,11 @@
                   },
                   {
                     "type": "STRING",
-                    "value": "vector.splat"
+                    "value": "vector.shape_cast"
                   },
                   {
                     "type": "STRING",
-                    "value": "vector.shape_cast"
+                    "value": "vector.to_elements"
                   },
                   {
                     "type": "STRING",
@@ -8484,7 +8484,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "in",
+                "name": "operand",
                 "content": {
                   "type": "SYMBOL",
                   "name": "value_use"
@@ -8562,73 +8562,7 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "vector.contract"
-              },
-              {
-                "type": "FIELD",
-                "name": "attributes",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "attribute"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "lhs",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "rhs",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "acc",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "masks",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_value_use_list"
-                }
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "vector.create_mask"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.outerproduct"
-                  }
-                ]
+                "value": "vector.create_mask"
               },
               {
                 "type": "FIELD",
@@ -8668,61 +8602,81 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "vector.expandload"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.maskedload"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.maskedstore"
-                  }
-                ]
+                "type": "STRING",
+                "value": "vector.step"
               },
               {
                 "type": "FIELD",
-                "name": "base",
+                "name": "attributes",
                 "content": {
-                  "type": "SEQ",
+                  "type": "CHOICE",
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "value_use"
+                      "name": "attribute"
                     },
                     {
-                      "type": "SYMBOL",
-                      "name": "_dense_idx_list"
+                      "type": "BLANK"
                     }
                   ]
                 }
               },
               {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
                 "type": "STRING",
-                "value": ","
+                "value": "vector.vscale"
               },
               {
                 "type": "FIELD",
-                "name": "mask",
+                "name": "attributes",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               },
               {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
                 "type": "STRING",
-                "value": ","
+                "value": "vector.from_elements"
               },
               {
                 "type": "FIELD",
-                "name": "pass_thru",
+                "name": "elements",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "value_use"
+                  "name": "_value_use_list"
                 }
               },
               {
@@ -8763,21 +8717,198 @@
                   },
                   {
                     "type": "STRING",
-                    "value": "vector.extractelement"
+                    "value": "vector.scalable.extract"
                   },
                   {
                     "type": "STRING",
                     "value": "vector.load"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.scalable.extract"
                   }
                 ]
               },
               {
                 "type": "FIELD",
                 "name": "operand",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "value_use"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "vector.insert"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "vector.scalable.insert"
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "source",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "destination",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "position",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_dense_idx_list"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "vector.shuffle"
+              },
+              {
+                "type": "FIELD",
+                "name": "operands",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_value_use_list"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "mask",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_dense_idx_list"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "vector.store"
+              },
+              {
+                "type": "FIELD",
+                "name": "value",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "base",
                 "content": {
                   "type": "SEQ",
                   "members": [
@@ -8888,14 +9019,116 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "vector.flat_transpose"
+                "value": "vector.contract"
               },
               {
                 "type": "FIELD",
-                "name": "matrix",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "lhs",
                 "content": {
                   "type": "SYMBOL",
                   "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "acc",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "vector.outerproduct"
+              },
+              {
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "acc",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": ","
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "value_use"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               },
               {
@@ -8919,7 +9152,7 @@
                 "name": "return",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "_function_type_annotation"
+                  "name": "_type_annotation"
                 }
               }
             ]
@@ -8932,11 +9165,11 @@
                 "members": [
                   {
                     "type": "STRING",
-                    "value": "vector.gather"
+                    "value": "vector.expandload"
                   },
                   {
                     "type": "STRING",
-                    "value": "vector.scatter"
+                    "value": "vector.maskedload"
                   }
                 ]
               },
@@ -8949,10 +9182,6 @@
                     {
                       "type": "SYMBOL",
                       "name": "value_use"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "_dense_idx_list"
                     },
                     {
                       "type": "SYMBOL",
@@ -9019,29 +9248,38 @@
                 "members": [
                   {
                     "type": "STRING",
-                    "value": "vector.insert"
+                    "value": "vector.maskedstore"
                   },
                   {
                     "type": "STRING",
-                    "value": "vector.insertelement"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.scalable.insert"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.shuffle"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "vector.store"
+                    "value": "vector.compressstore"
                   }
                 ]
               },
               {
                 "type": "FIELD",
-                "name": "source",
+                "name": "base",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "value_use"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "mask",
                 "content": {
                   "type": "SYMBOL",
                   "name": "value_use"
@@ -9053,18 +9291,10 @@
               },
               {
                 "type": "FIELD",
-                "name": "destination",
+                "name": "value",
                 "content": {
                   "type": "SYMBOL",
                   "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "position",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_dense_idx_list"
                 }
               },
               {
@@ -9089,6 +9319,152 @@
                 "content": {
                   "type": "SYMBOL",
                   "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "vector.gather"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "vector.scatter"
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "base",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "value_use"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "mask",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "value",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "vector.deinterleave"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "vector.interleave"
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "operands",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_value_use_list"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_function_type_annotation"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_type_annotation"
+                    }
+                  ]
                 }
               }
             ]
@@ -9151,59 +9527,6 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "vector.matrix_multiply"
-              },
-              {
-                "type": "FIELD",
-                "name": "lhs",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "FIELD",
-                "name": "rhs",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "value_use"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "attributes",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "attribute"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "return",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_function_type_annotation"
-                }
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
                 "value": "vector.transfer_read"
               },
               {
@@ -9224,8 +9547,20 @@
                 }
               },
               {
+                "type": "STRING",
+                "value": ","
+              },
+              {
                 "type": "FIELD",
-                "name": "paddingMask",
+                "name": "padding",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "mask",
                 "content": {
                   "type": "CHOICE",
                   "members": [
@@ -9238,7 +9573,7 @@
                         },
                         {
                           "type": "SYMBOL",
-                          "name": "_value_use_list"
+                          "name": "value_use"
                         }
                       ]
                     },
@@ -9295,7 +9630,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "source",
+                "name": "destination",
                 "content": {
                   "type": "SEQ",
                   "members": [
@@ -9418,8 +9753,104 @@
             "type": "SEQ",
             "members": [
               {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "vector.reduction"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "vector.multi_reduction"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "vector.scan"
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "kind",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "<"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "bare_id"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": ">"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "dialect_attribute"
+                    }
+                  ]
+                }
+              },
+              {
                 "type": "STRING",
-                "value": "vector.vscale"
+                "value": ","
+              },
+              {
+                "type": "FIELD",
+                "name": "vector",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "acc",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": ","
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "value_use"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "dims",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_dense_idx_list"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
               },
               {
                 "type": "FIELD",
@@ -9435,6 +9866,63 @@
                       "type": "BLANK"
                     }
                   ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "vector.mask"
+              },
+              {
+                "type": "FIELD",
+                "name": "mask",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "value_use"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "region"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_function_type_annotation"
                 }
               }
             ]

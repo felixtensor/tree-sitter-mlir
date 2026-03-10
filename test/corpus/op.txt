@@ -169,6 +169,270 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                 (func_dialect)))))))))
 
 ================================================================================
+vector.additional_ops
+================================================================================
+func.func @vector_additional_ops(%base: memref<?xf32>, %i: index, %mask: vector<8xi1>, %v: vector<8xf32>) -> f32 {
+  vector.compressstore %base[%i], %mask, %v : memref<?xf32>, vector<8xi1>, vector<8xf32>
+  %cst = arith.constant 0.0 : f32
+  %vv = vector.broadcast %cst : f32 to vector<4x8xf32>
+  %cm = vector.constant_mask [3, 2] : vector<4x3xi1>
+  %dm = vector.create_mask %i, %i : vector<4x8xi1>
+  %mr = vector.multi_reduction <add>, %vv [1] : vector<4x8xf32> into vector<4xf32>
+  %tr = vector.transpose %vv, [1, 0] : vector<4x8xf32> to vector<8x4xf32>
+  %r = vector.reduction <add>, %v : vector<8xf32> into f32
+  %0 = vector.contract {indexing_maps = [affine_map<(i) -> (i)>, affine_map<(i) -> (i)>, affine_map<(i) -> ()>], iterator_types = ["reduction"]} %v, %v, %cst : vector<8xf32>, vector<8xf32> into f32
+  %1 = vector.mask %mask {
+    %2 = vector.reduction <add>, %v : vector<8xf32> into f32
+    vector.yield %2 : f32
+  } : vector<8xi1> -> f32
+  return %1 : f32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type))))
+          (value_use)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (float_type)))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (vector_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (float_literal)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (integer_literal)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (bare_id)
+                  (value_use)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (bare_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type))))
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)))))
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (string_literal)))))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type))))
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (vector_dialect
+                  (value_use)
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (vector_dialect
+                            (bare_id)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (vector_type
+                                  (vector_dim_list)
+                                  (float_type))))
+                            (type
+                              (builtin_type
+                                (float_type))))))
+                      (operation
+                        (custom_operation
+                          (vector_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (float_type))))))))
+                  (function_type
+                    (type
+                      (builtin_type
+                        (vector_type
+                          (vector_dim_list)
+                          (integer_type))))
+                    (type
+                      (builtin_type
+                        (float_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))))))))
+
+================================================================================
 arith casts (trunci / scaling_extf / scaling_truncf)
 ================================================================================
 func.func @arith_casts(%arg0: i32, %arg1: f16, %scale: f32) -> (i8, f32, f16) {
@@ -2948,78 +3212,6 @@ func.func @assert(%arg : i1) {
                 (func_dialect)))))))))
 
 ================================================================================
-vector.splat
-================================================================================
-func.func @signExtendConstantSplat() -> vector<4xi16> {
-  %c-2 = arith.constant -2 : i8
-  %splat = vector.splat %c-2 : vector<4xi8>
-  %ext = arith.extsi %splat : vector<4xi8> to vector<4xi16>
-  return %ext : vector<4xi16>
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list)
-        (func_return
-          (type_list_attr_parens
-            (type
-              (builtin_type
-                (vector_type
-                  (vector_dim_list)
-                  (integer_type))))))
-        (region
-          (entry_block
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (vector_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))))))))
-
-================================================================================
 arith.cmpi with string parameter
 ================================================================================
 func.func @notCmpEQ(%arg0: i8, %arg1: i8) -> i1 {
@@ -3440,11 +3632,11 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
   %i0 = arith.constant 0 : index
   %i1 = arith.constant 1 : i1
 
-  %vf0 = vector.splat %f0 : vector<4x3xf32>
-  %v0 = vector.splat %c0 : vector<4x3xi32>
-  %vi0 = vector.splat %i0 : vector<4x3xindex>
+  %vf0 = vector.broadcast %f0 : f32 to vector<4x3xf32>
+  %v0 = vector.broadcast %c0 : i32 to vector<4x3xi32>
+  %vi0 = vector.broadcast %i0 : index to vector<4x3xindex>
   %m = arith.constant dense<[0, 0, 1, 0, 1]> : vector<5xi1>
-  %m2 = vector.splat %i1 : vector<4x5xi1>
+  %m2 = vector.broadcast %i1 : i1 to vector<4x5xi1>
   %0 = vector.transfer_read %arg0[%c3, %c3], %f0 {permutation_map = affine_map<(d0, d1)->(d0)>} : memref<?x?xf32>, vector<128xf32>
   %1 = vector.transfer_read %arg0[%c3, %c3], %f0 {permutation_map = affine_map<(d0, d1)->(d1, d0)>} : memref<?x?xf32>, vector<3x7xf32>
   %2 = vector.transfer_read %arg0[%c3, %c3], %cst {permutation_map = affine_map<(d0, d1)->(d0)>} : memref<?x?xf32>,  vector<128xf32>
@@ -3574,6 +3766,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                   (value_use)
                   (type
                     (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
                       (vector_type
                         (vector_dim_list)
                         (float_type)))))))
@@ -3585,6 +3780,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                   (value_use)
                   (type
                     (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
                       (vector_type
                         (vector_dim_list)
                         (integer_type)))))))
@@ -3594,6 +3792,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
               (custom_operation
                 (vector_dialect
                   (value_use)
+                  (type
+                    (builtin_type
+                      (index_type)))
                   (type
                     (builtin_type
                       (vector_type
@@ -3622,6 +3823,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
               (custom_operation
                 (vector_dialect
                   (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))
                   (type
                     (builtin_type
                       (vector_type
