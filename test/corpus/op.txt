@@ -3621,6 +3621,57 @@ func.func @arith_cmp_predicate_tokens(%a: f32, %b: f32, %x: i32, %y: i32) -> (i1
                       (integer_type))))))))))))
 
 ================================================================================
+arith overflow flags
+================================================================================
+func.func @arith_overflow_flags(%a: i64, %b: i64) -> i64 {
+  %0 = arith.subi %a, %b overflow<nsw, nuw> : i64
+  return %0 : i64
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (arith_overflow_flags
+                    (arith_overflow_flag)
+                    (arith_overflow_flag))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
+
+================================================================================
 bufferization.alloc_tensor
 ================================================================================
 func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)

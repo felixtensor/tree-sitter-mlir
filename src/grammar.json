@@ -4102,6 +4102,84 @@
                 },
                 {
                   "type": "STRING",
+                  "value": "arith.muli"
+                },
+                {
+                  "type": "STRING",
+                  "value": "arith.shli"
+                }
+              ]
+            },
+            {
+              "type": "FIELD",
+              "name": "lhs",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "rhs",
+              "content": {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "overflow",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "arith_overflow_flags"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
                   "value": "arith.divsi"
                 },
                 {
@@ -4127,10 +4205,6 @@
                 {
                   "type": "STRING",
                   "value": "arith.remui"
-                },
-                {
-                  "type": "STRING",
-                  "value": "arith.muli"
                 },
                 {
                   "type": "STRING",
@@ -4167,10 +4241,6 @@
                 {
                   "type": "STRING",
                   "value": "arith.minui"
-                },
-                {
-                  "type": "STRING",
-                  "value": "arith.shli"
                 },
                 {
                   "type": "STRING",
@@ -5049,6 +5119,62 @@
           {
             "type": "STRING",
             "value": "uno"
+          }
+        ]
+      }
+    },
+    "arith_overflow_flags": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "overflow"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "arith_overflow_flag"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "arith_overflow_flag"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
+    "arith_overflow_flag": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "nsw"
+          },
+          {
+            "type": "STRING",
+            "value": "nuw"
           }
         ]
       }

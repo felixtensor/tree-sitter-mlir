@@ -881,6 +881,16 @@
           }
         ]
       },
+      "overflow": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "arith_overflow_flags",
+            "named": true
+          }
+        ]
+      },
       "predicate": {
         "multiple": false,
         "required": false,
@@ -1035,6 +1045,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "arith_overflow_flags",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arith_overflow_flag",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -6536,6 +6561,10 @@
     "named": true
   },
   {
+    "type": "arith_overflow_flag",
+    "named": true
+  },
+  {
     "type": "arith_rounding_mode",
     "named": true
   },
@@ -7514,6 +7543,10 @@
   },
   {
     "type": "outs",
+    "named": false
+  },
+  {
+    "type": "overflow",
     "named": false
   },
   {

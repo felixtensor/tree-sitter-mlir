@@ -7,8 +7,21 @@ module.exports = {
       field('attributes', optional($.attribute)),
       field('value', $._literal_and_type)),
 
-    // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
-    // operation ::= `arith.subi` $lhs `,` $rhs attr-dict `:` type($result)
+    // operation ::= `arith.addi` $lhs `,` $rhs (`overflow` `<` $flags `>`)?
+    //               attr-dict `:` type($result)
+    // operation ::= `arith.subi` $lhs `,` $rhs (`overflow` `<` $flags `>`)?
+    //               attr-dict `:` type($result)
+    // operation ::= `arith.muli` $lhs `,` $rhs (`overflow` `<` $flags `>`)?
+    //               attr-dict `:` type($result)
+    // operation ::= `arith.shli` $lhs `,` $rhs (`overflow` `<` $flags `>`)?
+    //               attr-dict `:` type($result)
+    seq(choice('arith.addi', 'arith.subi', 'arith.muli', 'arith.shli'),
+      field('lhs', $.value_use), ',',
+      field('rhs', $.value_use),
+      field('overflow', optional($.arith_overflow_flags)),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
     // operation ::= `arith.divsi` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.divui` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.ceildivsi` $lhs `,` $rhs attr-dict `:` type($result)
@@ -16,7 +29,6 @@ module.exports = {
     // operation ::= `arith.floordivsi` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.remsi` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.remui` $lhs `,` $rhs attr-dict `:` type($result)
-    // operation ::= `arith.muli` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.mulsi_extended` $lhs `,` $rhs attr-dict `:` type($lhs)
     // operation ::= `arith.mului_extended` $lhs `,` $rhs attr-dict `:` type($lhs)
     // operation ::= `arith.andi` $lhs `,` $rhs attr-dict `:` type($result)
@@ -26,15 +38,12 @@ module.exports = {
     // operation ::= `arith.maxui` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.minsi` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.minui` $lhs `,` $rhs attr-dict `:` type($result)
-    // operation ::= `arith.shli` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.shrsi` $lhs `,` $rhs attr-dict `:` type($result)
     // operation ::= `arith.shrui` $lhs `,` $rhs attr-dict `:` type($result)
-    seq(choice('arith.addi', 'arith.subi', 'arith.divsi', 'arith.divui',
-      'arith.ceildivsi', 'arith.ceildivui', 'arith.floordivsi',
-      'arith.remsi', 'arith.remui', 'arith.muli', 'arith.mulsi_extended',
-      'arith.mului_extended', 'arith.andi', 'arith.ori', 'arith.xori',
-      'arith.maxsi', 'arith.maxui', 'arith.minsi', 'arith.minui',
-      'arith.shli', 'arith.shrsi', 'arith.shrui'),
+    seq(choice('arith.divsi', 'arith.divui', 'arith.ceildivsi', 'arith.ceildivui', 'arith.floordivsi',
+      'arith.remsi', 'arith.remui', 'arith.mulsi_extended', 'arith.mului_extended', 'arith.andi',
+      'arith.ori', 'arith.xori', 'arith.maxsi', 'arith.maxui', 'arith.minsi', 'arith.minui',
+      'arith.shrsi', 'arith.shrui'),
       field('lhs', $.value_use), ',',
       field('rhs', $.value_use),
       field('attributes', optional($.attribute)),
@@ -152,6 +161,10 @@ module.exports = {
   arith_cmpf_predicate: $ => token(choice('false', 'true', 'oeq', 'ogt', 'oge', 'olt', 'ole', 'one',
     'ord', 'ueq', 'ugt', 'uge', 'ult', 'ule', 'une', 'uno'
   )),
+
+  arith_overflow_flags: $ => seq(token('overflow'), '<', $.arith_overflow_flag,
+    repeat(seq(',', $.arith_overflow_flag)), '>'),
+  arith_overflow_flag: $ => token(choice('nsw', 'nuw')),
 
   arith_cmpi_predicate: $ => token(choice('eq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule',
     'ugt', 'uge'

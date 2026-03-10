@@ -10,6 +10,7 @@
     "compile": "tree-sitter generate",
     "update-tests": "tree-sitter test --update",
     "test": "tree-sitter test",
+    "check-upstream-ops": "node scripts/check-mlir-docs-ops.mjs",
     "bench": "node bench.mjs",
     "prebuildify": "prebuildify --napi --strip",
     "install": "node-gyp-build"
