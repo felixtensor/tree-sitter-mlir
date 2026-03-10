@@ -73,6 +73,11 @@ module.exports = {
       field('index', $.value_use),
       field('return', $._type_annotation)),
 
+    seq('memref.distinct_objects',
+      field('operands', $._value_use_list),
+      field('attributes', optional($.attribute)),
+      field('return', $._type_annotation)),
+
     // operation ::= `memref.dma_start` ssa-use`[`ssa-use-list`]` `,`
     //                ssa-use`[`ssa-use-list`]` `,` ssa-use `,`
     //                ssa-use`[`ssa-use-list`]` (`,` ssa-use `,` ssa-use)?
@@ -185,17 +190,11 @@ module.exports = {
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
-    // operation ::= `memref.tensor_store` $tensor `,` $memref attr-dict `:` type($memref)
-    seq('memref.tensor_store',
-      field('tensor', $.value_use), ',',
-      field('memref', $.value_use),
-      field('attributes', optional($.attribute)),
-      field('return', $._type_annotation)),
-
     seq('memref.transpose',
       field('in', $.value_use),
       field('permutation', seq($._multi_dim_affine_expr_parens, token('->'),
         $._multi_dim_affine_expr_parens)),
+      field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
     // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
@@ -208,6 +207,6 @@ module.exports = {
       field('return', $._type_annotation))
   )),
 
-  atomic_rmw_attr: $ => token(choice('addf', 'addi', 'assign', 'maxf', 'maxs', 'maxu', 'minf',
-    'mins', 'minu', 'mulf', 'muli', 'ori', 'andi'))
+  atomic_rmw_attr: $ => token(choice('addf', 'addi', 'andi', 'assign', 'maximumf', 'maxnumf', 'maxs', 'maxu', 'minimumf',
+    'minnumf', 'mins', 'minu', 'mulf', 'muli', 'ori', 'xori'))
 }

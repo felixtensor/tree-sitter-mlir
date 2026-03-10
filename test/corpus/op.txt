@@ -2470,6 +2470,82 @@ func.func @rank(%t : memref<4x4x?xf32>) {
                 (func_dialect)))))))))
 
 ================================================================================
+memref.transpose and memref.distinct_objects
+================================================================================
+func.func @transpose_distinct(%a: memref<?x?xf32>, %b: memref<?x?xf32>) {
+  %t = memref.transpose %a (i, j) -> (j, i) : memref<?x?xf32> to memref<?x?xf32, strided<[?, ?], offset: ?>>
+  %a1, %b1 = memref.distinct_objects %a, %b : memref<?x?xf32>, memref<?x?xf32>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (bare_id)
+                  (bare_id)
+                  (bare_id)
+                  (bare_id)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout)))))))))
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+
+================================================================================
 memref.store
 ================================================================================
 func.func @truncation_spillover(%arg0 : memref<?xi32>) -> index {

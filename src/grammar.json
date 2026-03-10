@@ -7379,6 +7379,47 @@
             "type": "SEQ",
             "members": [
               {
+                "type": "STRING",
+                "value": "memref.distinct_objects"
+              },
+              {
+                "type": "FIELD",
+                "name": "operands",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_value_use_list"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "return",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_type_annotation"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
                 "type": "CHOICE",
                 "members": [
                   {
@@ -8349,6 +8390,22 @@
               },
               {
                 "type": "FIELD",
+                "name": "attributes",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "attribute"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
                 "name": "return",
                 "content": {
                   "type": "SYMBOL",
@@ -8432,11 +8489,19 @@
           },
           {
             "type": "STRING",
+            "value": "andi"
+          },
+          {
+            "type": "STRING",
             "value": "assign"
           },
           {
             "type": "STRING",
-            "value": "maxf"
+            "value": "maximumf"
+          },
+          {
+            "type": "STRING",
+            "value": "maxnumf"
           },
           {
             "type": "STRING",
@@ -8448,7 +8513,11 @@
           },
           {
             "type": "STRING",
-            "value": "minf"
+            "value": "minimumf"
+          },
+          {
+            "type": "STRING",
+            "value": "minnumf"
           },
           {
             "type": "STRING",
@@ -8472,7 +8541,7 @@
           },
           {
             "type": "STRING",
-            "value": "andi"
+            "value": "xori"
           }
         ]
       }
