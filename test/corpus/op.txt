@@ -1540,6 +1540,94 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                           (float_type))))))))))))))
 
 ================================================================================
+tensor.concat and tensor.bitcast
+================================================================================
+func.func @tensor_concat_bitcast(%a: tensor<2x4xi32>, %b: tensor<3x4xi32>)
+  -> tensor<5x4xui32> {
+  %c = tensor.concat dim(0) %a, %b : (tensor<2x4xi32>, tensor<3x4xi32>) -> tensor<5x4xi32>
+  %d = tensor.bitcast %c : tensor<5x4xi32> to tensor<5x4xui32>
+  return %d : tensor<5x4xui32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (integer_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (integer_type))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (integer_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (tensor_dialect
+                  (integer_literal)
+                  (value_use)
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (integer_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (integer_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (integer_type)))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (integer_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (integer_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (integer_type))))))))))))))
+
+================================================================================
 tensor.pad
 ================================================================================
 func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
@@ -1832,112 +1920,6 @@ func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
-
-================================================================================
-tensor.pack and tensor.unpack
-================================================================================
-func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x16xf32>) -> tensor<128x256xf32> {
-  %0 = tensor.pack %source inner_dims_pos = [0, 1] inner_tiles = [32, 16] into %dest : tensor<128x256xf32> -> tensor<4x16x32x16xf32>
-  %1 = tensor.empty() : tensor<128x256xf32>
-  %2 = tensor.unpack %0 inner_dims_pos = [0, 1] inner_tiles = [32, 16] into %1 : tensor<4x16x32x16xf32> -> tensor<128x256xf32>
-  return %2 : tensor<128x256xf32>
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list
-          (value_use)
-          (type
-            (builtin_type
-              (tensor_type
-                (dim_list
-                  (float_type)))))
-          (value_use)
-          (type
-            (builtin_type
-              (tensor_type
-                (dim_list
-                  (float_type))))))
-        (func_return
-          (type_list_attr_parens
-            (type
-              (builtin_type
-                (tensor_type
-                  (dim_list
-                    (float_type)))))))
-        (region
-          (entry_block
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (inner_dims_pos_attr
-                    (integer_literal)
-                    (integer_literal))
-                  (inner_tiles_attr
-                    (integer_literal)
-                    (integer_literal))
-                  (value_use)
-                  (function_type
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (inner_dims_pos_attr
-                    (integer_literal)
-                    (integer_literal))
-                  (inner_tiles_attr
-                    (integer_literal)
-                    (integer_literal))
-                  (value_use)
-                  (function_type
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))
-            (operation
-              (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))))))))
 
 ================================================================================
 memref.alloc, memref.cast, and memref.copy

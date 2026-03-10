@@ -12,12 +12,8 @@
   "low"
   "high"
   "iter_args"
-  "padding_value"
-  "inner_tiles"
   "gather_dims"
   "scatter_dims"
-  "outer_dims_perm"
-  "inner_dims_pos"
   "shared_outs"
   "default"
   (arith_cmp_predicate)
@@ -212,26 +208,26 @@
   "vector.transfer_write"
   "vector.yield"
 
-  "tensor.empty"
+  "tensor.bitcast"
   "tensor.cast"
-  "tensor.dim"
   "tensor.collapse_shape"
+  "tensor.concat"
+  "tensor.dim"
+  "tensor.empty"
   "tensor.expand_shape"
   "tensor.extract"
-  "tensor.insert"
   "tensor.extract_slice"
-  "tensor.insert_slice"
-  "tensor.parallel_insert_slice"
   "tensor.from_elements"
   "tensor.gather"
-  "tensor.scatter"
-  "tensor.pad"
-  "tensor.reshape"
-  "tensor.splat"
-  "tensor.pack"
-  "tensor.unpack"
   "tensor.generate"
+  "tensor.insert"
+  "tensor.insert_slice"
+  "tensor.pad"
+  "tensor.parallel_insert_slice"
   "tensor.rank"
+  "tensor.reshape"
+  "tensor.scatter"
+  "tensor.splat"
   "tensor.yield"
 
   "bufferization.alloc_tensor"
@@ -337,9 +333,6 @@
   (fastmath_attr)
   (scatter_dims_attr)
   (gather_dims_attr)
-  (outer_dims_perm_attr)
-  (inner_dims_pos_attr)
-  (inner_tiles_attr)
   (unique_attr)
   (nofold_attr)
   (isWrite_attr)

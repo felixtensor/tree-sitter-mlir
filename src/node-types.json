@@ -2321,52 +2321,6 @@
     }
   },
   {
-    "type": "inner_dims_pos_attr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        },
-        {
-          "type": "value_use",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "inner_tiles_attr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        },
-        {
-          "type": "value_use",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "integer_literal",
     "named": true,
     "fields": {}
@@ -3811,29 +3765,6 @@
     }
   },
   {
-    "type": "outer_dims_perm_attr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        },
-        {
-          "type": "value_use",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "pretty_dialect_item",
     "named": true,
     "fields": {},
@@ -4559,6 +4490,28 @@
           }
         ]
       },
+      "dimension": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "dim",
+            "named": false
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          }
+        ]
+      },
       "dynamicExtents": {
         "multiple": true,
         "required": false,
@@ -4735,30 +4688,24 @@
           }
         ]
       },
-      "inner_dims_pos": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "inner_dims_pos_attr",
-            "named": true
-          }
-        ]
-      },
-      "inner_tiles": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "inner_tiles_attr",
-            "named": true
-          }
-        ]
-      },
       "input": {
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "value_use",
+            "named": true
+          }
+        ]
+      },
+      "inputs": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
           {
             "type": "value_use",
             "named": true
@@ -4859,46 +4806,6 @@
           },
           {
             "type": "to",
-            "named": false
-          },
-          {
-            "type": "type",
-            "named": true
-          },
-          {
-            "type": "value_use",
-            "named": true
-          }
-        ]
-      },
-      "outer_dims_perm": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "outer_dims_perm_attr",
-            "named": true
-          }
-        ]
-      },
-      "padding_value": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ":",
-            "named": false
-          },
-          {
-            "type": "padding_value",
             "named": false
           },
           {
@@ -6330,6 +6237,10 @@
     "named": false
   },
   {
+    "type": "dim",
+    "named": false
+  },
+  {
     "type": "do",
     "named": false
   },
@@ -6395,14 +6306,6 @@
   },
   {
     "type": "init",
-    "named": false
-  },
-  {
-    "type": "inner_dims_pos",
-    "named": false
-  },
-  {
-    "type": "inner_tiles",
     "named": false
   },
   {
@@ -7038,15 +6941,7 @@
     "named": false
   },
   {
-    "type": "outer_dims_perm",
-    "named": false
-  },
-  {
     "type": "outs",
-    "named": false
-  },
-  {
-    "type": "padding_value",
     "named": false
   },
   {
@@ -7162,11 +7057,19 @@
     "named": false
   },
   {
+    "type": "tensor.bitcast",
+    "named": false
+  },
+  {
     "type": "tensor.cast",
     "named": false
   },
   {
     "type": "tensor.collapse_shape",
+    "named": false
+  },
+  {
+    "type": "tensor.concat",
     "named": false
   },
   {
@@ -7210,10 +7113,6 @@
     "named": false
   },
   {
-    "type": "tensor.pack",
-    "named": false
-  },
-  {
     "type": "tensor.pad",
     "named": false
   },
@@ -7235,10 +7134,6 @@
   },
   {
     "type": "tensor.splat",
-    "named": false
-  },
-  {
-    "type": "tensor.unpack",
     "named": false
   },
   {

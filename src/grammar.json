@@ -3449,66 +3449,6 @@
         "value": "nofold"
       }
     },
-    "outer_dims_perm_attr": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": "outer_dims_perm"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dense_idx_list"
-        }
-      ]
-    },
-    "inner_dims_pos_attr": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": "inner_dims_pos"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dense_idx_list"
-        }
-      ]
-    },
-    "inner_tiles_attr": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": "inner_tiles"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dense_idx_list"
-        }
-      ]
-    },
     "isWrite_attr": {
       "type": "TOKEN",
       "content": {
@@ -9591,8 +9531,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "tensor.cast"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "tensor.cast"
+                },
+                {
+                  "type": "STRING",
+                  "value": "tensor.bitcast"
+                }
+              ]
             },
             {
               "type": "FIELD",
@@ -10060,6 +10009,75 @@
           "members": [
             {
               "type": "STRING",
+              "value": "tensor.concat"
+            },
+            {
+              "type": "FIELD",
+              "name": "dimension",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "TOKEN",
+                    "content": {
+                      "type": "STRING",
+                      "value": "dim"
+                    }
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "("
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "integer_literal"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ")"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "inputs",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_value_use_list"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "attributes",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "attribute"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "return",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_function_type_annotation"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
               "value": "tensor.gather"
             },
             {
@@ -10407,139 +10425,6 @@
               "content": {
                 "type": "SYMBOL",
                 "name": "_type_annotation"
-              }
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "tensor.pack"
-                },
-                {
-                  "type": "STRING",
-                  "value": "tensor.unpack"
-                }
-              ]
-            },
-            {
-              "type": "FIELD",
-              "name": "source",
-              "content": {
-                "type": "SYMBOL",
-                "name": "value_use"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "padding_value",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "TOKEN",
-                        "content": {
-                          "type": "STRING",
-                          "value": "padding_value"
-                        }
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "("
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_value_use_and_type"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": ")"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "outer_dims_perm",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "outer_dims_perm_attr"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "inner_dims_pos",
-              "content": {
-                "type": "SYMBOL",
-                "name": "inner_dims_pos_attr"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "inner_tiles",
-              "content": {
-                "type": "SYMBOL",
-                "name": "inner_tiles_attr"
-              }
-            },
-            {
-              "type": "TOKEN",
-              "content": {
-                "type": "STRING",
-                "value": "into"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "destination",
-              "content": {
-                "type": "SYMBOL",
-                "name": "value_use"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "attributes",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "attribute"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "return",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_function_type_annotation"
               }
             }
           ]

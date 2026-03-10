@@ -9,7 +9,7 @@ module.exports = {
       field('return', $._type_annotation)),
 
     // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
-    seq('tensor.cast',
+    seq(choice('tensor.cast', 'tensor.bitcast'),
       field('in', $.value_use),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
@@ -83,6 +83,12 @@ module.exports = {
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
+    seq('tensor.concat',
+      field('dimension', seq(token('dim'), '(', $.integer_literal, ')')),
+      field('inputs', $._value_use_list),
+      field('attributes', optional($.attribute)),
+      field('return', $._function_type_annotation)),
+
     // operation ::= `tensor.gather` $source `[` $indices `]`
     //               `gather_dims` `(` $gather_dims `)`
     //               (`unique` $unique^)?
@@ -137,30 +143,6 @@ module.exports = {
       field('input', $.value_use),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
-
-    // operation ::= `tensor.pack` $source
-    //               (`padding_value` `(` $padding_value^ `:` type($padding_value) `)`)?
-    //               (`outer_dims_perm` `=` $outer_dims_perm^)?
-    //               `inner_dims_pos` `=` $inner_dims_pos
-    //               `inner_tiles` `=`
-    //               custom<DynamicIndexList>($inner_tiles, $static_inner_tiles)
-    //               `into` $dest attr-dict `:` type($source) `->` type($dest)
-    // operation ::= `tensor.unpack` $source
-    //               (`outer_dims_perm` `=` $outer_dims_perm^)?
-    //               `inner_dims_pos` `=` $inner_dims_pos
-    //               `inner_tiles` `=`
-    //               custom<DynamicIndexList>($inner_tiles, $static_inner_tiles)
-    //               `into` $dest attr-dict `:` type($source) `->` type($dest)
-    seq(choice('tensor.pack', 'tensor.unpack'),
-      field('source', $.value_use),
-      field('padding_value', optional(seq(token('padding_value'),
-        '(', $._value_use_and_type, ')'))),
-      field('outer_dims_perm', optional($.outer_dims_perm_attr)),
-      field('inner_dims_pos', $.inner_dims_pos_attr),
-      field('inner_tiles', $.inner_tiles_attr), token('into'),
-      field('destination', $.value_use),
-      field('attributes', optional($.attribute)),
-      field('return', $._function_type_annotation)),
 
     // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
     seq('tensor.generate',
