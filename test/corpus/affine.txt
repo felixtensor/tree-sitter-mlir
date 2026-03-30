@@ -81,7 +81,7 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -102,68 +102,65 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
               (op_result
                 (value_use))
               (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id))))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal))))
-                  (value_use)
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal))))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (integer_literal)
-                        (integer_literal)
-                        (integer_literal)))))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id))))
+                (value_use)
+                (value_use)
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect))))))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal))))
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal))))
+                (value_use)
+                (value_use)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (integer_literal)
+                      (integer_literal)
+                      (integer_literal))))))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -184,65 +181,62 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
               (op_result
                 (value_use))
               (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id))))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal))))
-                  (value_use)
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal))))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (integer_literal)
-                        (integer_literal)
-                        (integer_literal)))))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id))))
+                (value_use)
+                (value_use)
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal))))
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal))))
+                (value_use)
+                (value_use)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (integer_literal)
+                      (integer_literal)
+                      (integer_literal))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
 
 ================================================================================
 affine.dma_start and affine.dma_wait with complicated affine expressions
@@ -408,7 +402,7 @@ func.func @semiaffine_floordiv(%arg0: index, %arg1: index) -> index {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -430,30 +424,30 @@ func.func @semiaffine_floordiv(%arg0: index, %arg1: index) -> index {
               (op_result
                 (value_use))
               (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id))))
-                  (value_use)
-                  (value_use))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id))))
+                (value_use)
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type)))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type))))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -475,26 +469,26 @@ func.func @semiaffine_floordiv(%arg0: index, %arg1: index) -> index {
               (op_result
                 (value_use))
               (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id)
-                        (integer_literal)
-                        (bare_id)
-                        (bare_id))))
-                  (value_use)
-                  (value_use))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id)
+                      (integer_literal)
+                      (bare_id)
+                      (bare_id))))
+                (value_use)
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))))))))

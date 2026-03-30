@@ -7,7 +7,7 @@ func.func @abort()
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)))))
 
@@ -23,7 +23,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -45,19 +45,19 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Function with multiple return values
@@ -70,7 +70,7 @@ func.func @count(%x: i64) -> (i64, i64) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -89,15 +89,15 @@ func.func @count(%x: i64) -> (i64, i64) {
           (entry_block
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Variadic function
@@ -108,7 +108,7 @@ llvm.func @variadic(...)
 (toplevel
   (operation
     (custom_operation
-      (llvm_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (variadic))))))
@@ -122,7 +122,7 @@ llvm.func @variadic_args(i32, i32, ...)
 (toplevel
   (operation
     (custom_operation
-      (llvm_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (type
@@ -145,7 +145,7 @@ module {
 (toplevel
   (operation
     (custom_operation
-      (builtin_dialect
+      (module_operation
         (region
           (entry_block
             (operation
@@ -182,7 +182,7 @@ func.func @terminator_with_regions() {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (region
@@ -199,7 +199,7 @@ func.func @terminator_with_regions() {
               (caret_id))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 Function with private specifier, and func.call
@@ -214,7 +214,7 @@ func.func @call_source() -> tensor<f32> {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -226,7 +226,7 @@ func.func @call_source() -> tensor<f32> {
                     (float_type))))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -242,23 +242,22 @@ func.func @call_source() -> tensor<f32> {
               (op_result
                 (value_use))
               (custom_operation
-                (func_dialect
-                  (symbol_ref_id)
-                  (function_type
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))
+                (custom_op_name)
+                (symbol_ref_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))))))))))
 
 ================================================================================
 Module with name
@@ -275,13 +274,13 @@ module @addmodule {
 (toplevel
   (operation
     (custom_operation
-      (builtin_dialect
+      (module_operation
         (symbol_ref_id)
         (region
           (entry_block
             (operation
               (custom_operation
-                (func_dialect
+                (func_operation
                   (symbol_ref_id)
                   (func_arg_list
                     (value_use)
@@ -303,16 +302,16 @@ module @addmodule {
                         (op_result
                           (value_use))
                         (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
+                          (custom_op_name)
+                          (value_use)
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (integer_type)))))
                       (operation
                         (custom_operation
-                          (func_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type)))))))))))))))))
+                          (custom_op_name)
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (integer_type))))))))))))))))
