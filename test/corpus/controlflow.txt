@@ -178,7 +178,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -193,67 +193,59 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
           (entry_block
             (operation
               (custom_operation
-                (cf_dialect
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (bare_id)
+                (successor
+                  (caret_id)
                   (value_use)
                   (type
                     (builtin_type
-                      (integer_type)))
-                  (cf_case_label)
-                  (successor
-                    (caret_id)
-                    (value_use)
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (cf_case_label
-                    (integer_literal))
-                  (successor
-                    (caret_id)
-                    (value_use)
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (cf_case_label
-                    (integer_literal))
-                  (successor
-                    (caret_id)
-                    (value_use)
-                    (type
-                      (builtin_type
-                        (integer_type))))))))
-          (block
-            (block_label
-              (caret_id)
-              (block_arg_list
-                (value_use)
-                (type
-                  (builtin_type
-                    (integer_type)))))
+                      (integer_type))))
+                (integer_literal)
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (integer_literal)
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect))))
-          (block
-            (block_label
-              (caret_id)
-              (block_arg_list
-                (value_use)
-                (type
-                  (builtin_type
-                    (integer_type)))))
+                (custom_op_name)
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect))))
-          (block
-            (block_label
-              (caret_id)
-              (block_arg_list
-                (value_use)
-                (type
-                  (builtin_type
-                    (integer_type)))))
+                (custom_op_name)
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 Simple for-loop written with scf.for
@@ -275,7 +267,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -289,89 +281,87 @@ func.func @for_loop_with_increasing_arg() -> i1 {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (index_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (index_type)))))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Nested for-loop written using scf.for
@@ -394,7 +384,7 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -413,77 +403,80 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
           (entry_block
             (operation
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (value_use)
-                            (value_use)
-                            (region
-                              (entry_block
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (arith_cmp_predicate)
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (arith_cmp_predicate)
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (custom_operation
-                                    (scf_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (region))))))))))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (bare_id)
+                        (value_use)
+                        (bare_id)
+                        (value_use)
+                        (region
+                          (entry_block
+                            (operation
+                              (op_result
+                                (value_use))
+                              (custom_operation
+                                (custom_op_name)
+                                (bare_id)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))
+                                (value_use)))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))
+                                (value_use)))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (bare_id)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))
+                                (value_use)))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (value_use)
+                                (bare_id)
+                                (value_use)
+                                (bare_id)
+                                (value_use)
+                                (region)))))))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 Conditional written with scf.if and scf.yield
@@ -506,7 +499,7 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -525,83 +518,82 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
               (op_result
                 (value_use))
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type)))
-                            (type
-                              (builtin_type
-                                (float_type))))))))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type)))
-                            (type
-                              (builtin_type
-                                (float_type)))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (float_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))
+                        (value_use)))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))
+                        (value_use)))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 Switch statement using scf.index_switch
@@ -633,7 +625,7 @@ func.func @switch(%arg0: index) -> i32 {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -651,87 +643,87 @@ func.func @switch(%arg0: index) -> i32 {
               (op_result
                 (value_use))
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (scf_case_label
-                    (integer_literal))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type))))))))
-                  (scf_case_label
-                    (integer_literal))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type))))))))
-                  (scf_case_label)
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type)))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (bare_id)
+                (integer_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (bare_id)
+                (integer_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (bare_id)
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (operation
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (scf_case_label)
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect))))))))
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Parallel for-loop and reduction using scf.parallel and scf.reduce
@@ -778,7 +770,7 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -803,161 +795,159 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type)))
-                  (type
-                    (builtin_type
-                      (index_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (index_type)))
-                            (region
-                              (block
-                                (block_label
-                                  (caret_id)
-                                  (block_arg_list
-                                    (value_use)
-                                    (type
-                                      (builtin_type
-                                        (index_type)))
-                                    (value_use)
-                                    (type
-                                      (builtin_type
-                                        (index_type)))))
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (custom_operation
-                                    (scf_dialect
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type)))))))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (index_type)))
-                            (region
-                              (block
-                                (block_label
-                                  (caret_id)
-                                  (block_arg_list
-                                    (value_use)
-                                    (type
-                                      (builtin_type
-                                        (index_type)))
-                                    (value_use)
-                                    (type
-                                      (builtin_type
-                                        (index_type)))))
-                                (operation
-                                  (op_result
-                                    (value_use))
-                                  (custom_operation
-                                    (arith_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type))))))
-                                (operation
-                                  (custom_operation
-                                    (scf_dialect
-                                      (value_use)
-                                      (type
-                                        (builtin_type
-                                          (index_type)))))))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type)))
-                  (type
-                    (builtin_type
-                      (index_type)))))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))
+                        (region
+                          (block
+                            (block_label
+                              (caret_id)
+                              (block_arg_list
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))
+                            (operation
+                              (op_result
+                                (value_use))
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))
+                        (region
+                          (block
+                            (block_label
+                              (caret_id)
+                              (block_arg_list
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))
+                            (operation
+                              (op_result
+                                (value_use))
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (type
+                                  (builtin_type
+                                    (index_type)))))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type))))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -972,110 +962,106 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (memref_dialect
-                            (value_use)
-                            (value_use)
-                            (value_use)
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (memref_type
-                                  (dim_list
-                                    (integer_type))))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (value_use)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (memref_type
+                              (dim_list
+                                (integer_type)))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
 
 ================================================================================
 While loop written using scf.while and scf.condition
@@ -1118,7 +1104,7 @@ func.func @infinite_while() {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -1132,60 +1118,60 @@ func.func @infinite_while() {
               (op_result
                 (value_use))
               (custom_operation
-                (scf_dialect
-                  (function_type
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (generic_operation
-                          (string_literal)
-                          (function_type
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type))))))))
-                  (region
-                    (block
-                      (block_label
-                        (caret_id)
-                        (block_arg_list
-                          (value_use)
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (generic_operation
+                        (string_literal)
+                        (function_type
                           (type
                             (builtin_type
-                              (integer_type)))))
-                      (operation
-                        (generic_operation
-                          (string_literal)
-                          (value_use)
-                          (function_type
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect))))))))
+                              (integer_type))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (bare_id)
+                (region
+                  (block
+                    (block_label
+                      (caret_id)
+                      (block_arg_list
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (generic_operation
+                        (string_literal)
+                        (value_use)
+                        (function_type
+                          (type
+                            (builtin_type
+                              (integer_type))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type)))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1207,87 +1193,87 @@ func.func @infinite_while() {
               (op_result
                 (value_use))
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (function_type
-                    (type
-                      (builtin_type
-                        (integer_type)))
-                    (type
-                      (builtin_type
-                        (float_type)))
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (generic_operation
-                          (string_literal)
-                          (value_use)
-                          (function_type
-                            (type
-                              (builtin_type
-                                (integer_type)))
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type))))))))
-                  (region
-                    (block
-                      (block_label
-                        (caret_id)
-                        (block_arg_list
-                          (value_use)
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (generic_operation
+                        (string_literal)
+                        (value_use)
+                        (function_type
                           (type
                             (builtin_type
-                              (integer_type)))))
-                      (operation
-                        (op_result
-                          (value_use))
-                        (generic_operation
-                          (string_literal)
-                          (value_use)
-                          (function_type
-                            (type
-                              (builtin_type
-                                (integer_type)))
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type)))
-                            (type
-                              (builtin_type
-                                (float_type)))))))))))
+                              (integer_type)))
+                          (type
+                            (builtin_type
+                              (integer_type))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (bare_id)
+                (region
+                  (block
+                    (block_label
+                      (caret_id)
+                      (block_arg_list
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (op_result
+                        (value_use))
+                      (generic_operation
+                        (string_literal)
+                        (value_use)
+                        (function_type
+                          (type
+                            (builtin_type
+                              (integer_type)))
+                          (type
+                            (builtin_type
+                              (integer_type))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type)))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (region
@@ -1296,26 +1282,26 @@ func.func @infinite_while() {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (bool_literal))))
+                (custom_op_name)
+                (bool_literal)))
             (operation
               (custom_operation
-                (scf_dialect
-                  (function_type)
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use))))))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect))))))))
+                (custom_op_name)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)))))
+                (bare_id)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 affine.for with attribute aliseses
@@ -1387,7 +1373,7 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
           (integer_literal)))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1404,38 +1390,54 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
           (entry_block
             (operation
               (custom_operation
-                (affine_dialect
-                  (value_use)
-                  (integer_literal)
-                  (attribute
-                    (attribute_alias))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (integer_literal)
-                            (attribute
-                              (attribute_alias))
-                            (value_use)
-                            (region
-                              (entry_block
-                                (operation
-                                  (custom_operation
-                                    (affine_dialect
-                                      (value_use)
-                                      (integer_literal)
-                                      (attribute
-                                        (attribute_alias))
-                                      (value_use)
-                                      (region
-                                        (entry_block
-                                          (operation
-                                            (custom_operation
-                                              (affine_dialect
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (bare_id)
+                (attribute
+                  (attribute_alias))
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (integer_literal)
+                        (bare_id)
+                        (attribute
+                          (attribute_alias))
+                        (value_use)
+                        (region
+                          (entry_block
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (integer_literal)
+                                (bare_id)
+                                (attribute
+                                  (attribute_alias))
+                                (value_use)
+                                (region
+                                  (entry_block
+                                    (operation
+                                      (custom_operation
+                                        (custom_op_name)
+                                        (value_use)
+                                        (integer_literal)
+                                        (bare_id)
+                                        (attribute
+                                          (attribute_alias))
+                                        (value_use)
+                                        (value_use)
+                                        (region
+                                          (entry_block
+                                            (operation
+                                              (custom_operation
+                                                (custom_op_name)
                                                 (value_use)
                                                 (integer_literal)
+                                                (bare_id)
                                                 (attribute
                                                   (attribute_alias))
                                                 (value_use)
@@ -1444,37 +1446,27 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                                                   (entry_block
                                                     (operation
                                                       (custom_operation
-                                                        (affine_dialect
-                                                          (value_use)
-                                                          (integer_literal)
-                                                          (attribute
-                                                            (attribute_alias))
-                                                          (value_use)
-                                                          (value_use)
-                                                          (region
-                                                            (entry_block
-                                                              (operation
-                                                                (custom_operation
-                                                                  (affine_dialect
-                                                                    (value_use)
-                                                                    (integer_literal)
-                                                                    (attribute
-                                                                      (attribute_alias))
-                                                                    (value_use)
-                                                                    (region
-                                                                      (entry_block
-                                                                        (operation
-                                                                          (op_result
-                                                                            (value_use))
-                                                                          (custom_operation
-                                                                            (arith_dialect
-                                                                              (integer_literal)
-                                                                              (type
-                                                                                (builtin_type
-                                                                                  (integer_type))))))))))))))))))))))))))))))))))))
+                                                        (custom_op_name)
+                                                        (value_use)
+                                                        (integer_literal)
+                                                        (bare_id)
+                                                        (attribute
+                                                          (attribute_alias))
+                                                        (value_use)
+                                                        (region
+                                                          (entry_block
+                                                            (operation
+                                                              (op_result
+                                                                (value_use))
+                                                              (custom_operation
+                                                                (custom_op_name)
+                                                                (integer_literal)
+                                                                (type
+                                                                  (builtin_type
+                                                                    (integer_type)))))))))))))))))))))))))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 affine.if and affine.yield
@@ -1493,7 +1485,7 @@ func.func @affine_if() -> f32 {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -1507,47 +1499,47 @@ func.func @affine_if() -> f32 {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (float_literal)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_set)))
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type)))))))))))
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))))))))
+                (custom_op_name)
+                (attribute
+                  (builtin_attribute
+                    (affine_set)))
+                (type
+                  (builtin_type
+                    (float_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))))))))
 
 ================================================================================
 Parallel for loop written using affine.parallel
@@ -1722,7 +1714,7 @@ func.func @execute_region() -> i64 {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -1736,68 +1728,67 @@ func.func @execute_region() -> i64 {
               (op_result
                 (value_use))
               (custom_operation
-                (scf_dialect
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type)))))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (scf_dialect
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (arith_dialect
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (integer_type))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (value_use)
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (integer_type)))
-                            (type
-                              (builtin_type
-                                (integer_type)))))))))))
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Parallel loop written using scf.forall and scf.forall.in_parallel
@@ -1844,7 +1835,7 @@ func.func @normalized_forall_elide_terminator() -> () {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1865,84 +1856,87 @@ func.func @normalized_forall_elide_terminator() -> () {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (tensor_dialect
-                            (value_use)
-                            (value_use)
-                            (integer_literal)
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (tensor_type
-                                  (dim_list
-                                    (float_type)))))
-                            (type
-                              (builtin_type
-                                (tensor_type
-                                  (dim_list
-                                    (float_type))))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (region
-                              (entry_block
-                                (operation
-                                  (custom_operation
-                                    (tensor_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (integer_literal)
-                                      (integer_literal)
-                                      (type
-                                        (builtin_type
-                                          (tensor_type
-                                            (dim_list
-                                              (float_type)))))
-                                      (type
-                                        (builtin_type
-                                          (tensor_type
-                                            (dim_list
-                                              (float_type))))))))))))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (integer_literal)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))
+                        (bare_id)
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (region
+                          (entry_block
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (bare_id)
+                                (value_use)
+                                (value_use)
+                                (integer_literal)
+                                (integer_literal)
+                                (type
+                                  (builtin_type
+                                    (tensor_type
+                                      (dim_list
+                                        (float_type)))))
+                                (bare_id)
+                                (type
+                                  (builtin_type
+                                    (tensor_type
+                                      (dim_list
+                                        (float_type)))))))))))))))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1963,105 +1957,108 @@ func.func @normalized_forall_elide_terminator() -> () {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (region
-                    (entry_block
-                      (operation
-                        (op_result
-                          (value_use))
-                        (custom_operation
-                          (tensor_dialect
-                            (value_use)
-                            (value_use)
-                            (integer_literal)
-                            (integer_literal)
-                            (type
-                              (builtin_type
-                                (tensor_type
-                                  (dim_list
-                                    (float_type)))))
-                            (type
-                              (builtin_type
-                                (tensor_type
-                                  (dim_list
-                                    (float_type))))))))
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (region
-                              (entry_block
-                                (operation
-                                  (custom_operation
-                                    (tensor_dialect
-                                      (value_use)
-                                      (value_use)
-                                      (value_use)
-                                      (integer_literal)
-                                      (integer_literal)
-                                      (type
-                                        (builtin_type
-                                          (tensor_type
-                                            (dim_list
-                                              (float_type)))))
-                                      (type
-                                        (builtin_type
-                                          (tensor_type
-                                            (dim_list
-                                              (float_type))))))))))
-                            (attribute
-                              (dictionary_attribute
-                                (attribute_entry
-                                  (bare_id)
-                                  (attribute_value
-                                    (dialect_attribute
-                                      (pretty_dialect_item
-                                        (dialect_namespace)
-                                        (dialect_ident)
-                                        (pretty_dialect_item_body)))))))))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (integer_literal)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))
+                        (bare_id)
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (region
+                          (entry_block
+                            (operation
+                              (custom_operation
+                                (custom_op_name)
+                                (value_use)
+                                (bare_id)
+                                (value_use)
+                                (value_use)
+                                (integer_literal)
+                                (integer_literal)
+                                (type
+                                  (builtin_type
+                                    (tensor_type
+                                      (dim_list
+                                        (float_type)))))
+                                (bare_id)
+                                (type
+                                  (builtin_type
+                                    (tensor_type
+                                      (dim_list
+                                        (float_type)))))))))
+                        (attribute
+                          (dictionary_attribute
+                            (attribute_entry
+                              (bare_id)
+                              (attribute_value
+                                (dialect_attribute
+                                  (pretty_dialect_item
+                                    (dialect_namespace)
+                                    (dialect_ident)
+                                    (pretty_dialect_item_body)))))))))))))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -2072,32 +2069,33 @@ func.func @normalized_forall_elide_terminator() -> () {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))))
             (operation
               (custom_operation
-                (scf_dialect
-                  (value_use)
-                  (value_use)
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (scf_dialect
-                            (region))))))
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (dialect_attribute
-                            (pretty_dialect_item
-                              (dialect_namespace)
-                              (dialect_ident)
-                              (pretty_dialect_item_body))))))))))
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (region)))))
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body)))))))))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
