@@ -268,16 +268,19 @@ module.exports = grammar({
       $.none_type,
       $.tensor_type,
       $.vector_type,
-      $.tuple_type),
+      $.tuple_type,
+      $.opaque_type),
 
     integer_type: $ => token(prec(5, seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)))),
-    float_type: $ => token(prec(5, choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16',
-      'f8E4M3FN', 'f8E5M2'))),
+    float_type: $ => token(prec(5, choice('f16', 'tf32', 'f32', 'f64', 'f80', 'f128', 'bf16',
+      'f4E2M1FN', 'f6E2M3FN', 'f6E3M2FN', 'f8E3M4', 'f8E4M3', 'f8E4M3FN', 'f8E4M3FNUZ',
+      'f8E4M3B11FNUZ', 'f8E5M2', 'f8E5M2FNUZ', 'f8E8M0FNU'))),
     index_type: $ => token(prec(5, 'index')),
     none_type: $ => token(prec(5, 'none')),
     complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
-      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type),
+      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
+      $.opaque_type),
 
     memref_type: $ => seq(token('memref'), '<',
       field('dimension_list', $.dim_list),
@@ -300,6 +303,10 @@ module.exports = grammar({
 
     tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
     tuple_dim: $ => $._prim_type,
+
+    // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`
+    // e.g. opaque<"llvm", "struct<(i32, float)>">
+    opaque_type: $ => seq(token('opaque'), '<', $.string_literal, ',', $.string_literal, '>'),
 
     // =========================================================================
     // Attributes
