@@ -41,9 +41,15 @@
 [
   (attribute_alias)
   (attribute_alias_def)
+  (dialect_attribute)
 ] @attribute
 
 (dictionary_attribute) @attribute
+
+;; Builtin attribute and affine keywords
+(affine_map "affine_map" @keyword)
+(affine_set "affine_set" @keyword)
+(strided_layout "strided" @keyword)
 
 ;; Strings
 (string_literal) @string
