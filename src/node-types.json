@@ -326,6 +326,10 @@
           "named": true
         },
         {
+          "type": "opaque_type",
+          "named": true
+        },
+        {
           "type": "tensor_type",
           "named": true
         },
@@ -394,6 +398,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -599,6 +607,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -965,6 +977,21 @@
     }
   },
   {
+    "type": "opaque_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "operation",
     "named": true,
     "fields": {
@@ -1103,6 +1130,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -1295,6 +1326,10 @@
           "named": true
         },
         {
+          "type": "opaque_type",
+          "named": true
+        },
+        {
           "type": "tensor_type",
           "named": true
         },
@@ -1422,6 +1457,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -1606,6 +1645,10 @@
   },
   {
     "type": "offset",
+    "named": false
+  },
+  {
+    "type": "opaque",
     "named": false
   },
   {

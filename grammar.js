@@ -16,6 +16,18 @@ export default grammar({
     [$.dictionary_attribute, $.region]
   ],
 
+  // Token-level precedence constants (higher wins the token race):
+  //   20 — Tier-1 structural op keywords (func.func, llvm.func, module, builtin.module)
+  //        Must beat _dotted_op_name (10) so the parser treats these as Tier-1 ops,
+  //        not as generic dialect.op names.
+  //   10 — Tier-2 _dotted_op_name / _bare_op_name
+  //        Must beat bare_id so op names at the start of a body element close
+  //        the previous operation rather than extending it.
+  //    5 — Builtin type tokens (i32, f32, index, none, …)
+  //        Must beat bare_id so primitive type names aren't swallowed as keywords.
+  //    2 — $.type inside _custom_body_element
+  //        Gives type nodes priority over other body elements when both are
+  //        syntactically valid.
   rules: {
     // =========================================================================
     // Top level production:
@@ -39,7 +51,17 @@ export default grammar({
     float_literal: $ => token(seq(
       optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
       optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
-    string_literal: $ => token(seq('"', repeat(/[^\\"\n\f\v\r]+/), '"')),
+    // NOTE: escape sequences (\n, \t, \", \\) are included per MLIR spec.
+    // To also expose escape_sequence as a named AST node (for @string.escape),
+    // this rule needs to become structural (seq instead of token). However,
+    // doing so shifts parser states and currently breaks the external scanner
+    // interaction with tree-sitter 0.26.6. The token form is kept for now;
+    // regenerate with a CLI version that produces a compatible parser.c first.
+    string_literal: $ => token(seq(
+      '"',
+      repeat(choice(/[^\\"\n\f\v\r]+/, seq('\\', /[nt"\\]/))),
+      '"'
+    )),
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),
@@ -156,7 +178,9 @@ export default grammar({
       /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/),
       repeat1(seq('.', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
     ))),
-    // Bare operation names — stable set from MLIR spec (func/builtin dialect aliases)
+    // Bare operation names: stable aliases from the func/builtin dialects only.
+    // Extend only for officially spec-sanctioned no-prefix aliases; all other
+    // dialect ops are handled by _dotted_op_name or _generic_custom_operation.
     _bare_op_name: $ => token(prec(10, choice(
       'return', 'call', 'call_indirect', 'constant', 'unrealized_conversion_cast',
     ))),
@@ -245,22 +269,28 @@ export default grammar({
       $.none_type,
       $.tensor_type,
       $.vector_type,
-      $.tuple_type),
+      $.tuple_type,
+      $.opaque_type),
 
     integer_type: $ => token(prec(5, seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)))),
-    float_type: $ => token(prec(5, choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16',
-      'f8E4M3FN', 'f8E5M2'))),
+    float_type: $ => token(prec(5, choice('f16', 'tf32', 'f32', 'f64', 'f80', 'f128', 'bf16',
+      'f4E2M1FN', 'f6E2M3FN', 'f6E3M2FN', 'f8E3M4', 'f8E4M3', 'f8E4M3FN', 'f8E4M3FNUZ',
+      'f8E4M3B11FNUZ', 'f8E5M2', 'f8E5M2FNUZ', 'f8E8M0FNU'))),
     index_type: $ => token(prec(5, 'index')),
     none_type: $ => token(prec(5, 'none')),
     complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
-      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type),
+      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
+      $.opaque_type),
 
     memref_type: $ => seq(token('memref'), '<',
       field('dimension_list', $.dim_list),
       optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
     dim_list: $ => seq($._dim_primitive, repeat(seq('x', $._dim_primitive))),
+    // NOTE: '*' is only valid in memref (dynamic offset/stride), not in tensor
+    // or vector dimension lists. The grammar accepts it permissively here to
+    // avoid a separate rule; strict validation is left to semantic analysis.
     _dim_primitive: $ => choice($._prim_type, repeat1($._digit), '?', '*'),
 
     tensor_type: $ => seq(token('tensor'), '<', $.dim_list,
@@ -274,6 +304,10 @@ export default grammar({
 
     tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
     tuple_dim: $ => $._prim_type,
+
+    // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`
+    // e.g. opaque<"llvm", "struct<(i32, float)>">
+    opaque_type: $ => seq(token('opaque'), '<', $.string_literal, ',', $.string_literal, '>'),
 
     // =========================================================================
     // Attributes
@@ -321,8 +355,12 @@ export default grammar({
       seq($._affine_expr, $._affine_token, $._affine_expr), $._affine_prim)),
     _affine_prim: $ => choice($.integer_literal, $.value_use, $.bare_id,
       seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
-    _affine_token: $ => token(choice('+', '-', '*', 'ceildiv', 'floordiv', 'mod',
-      '==', '>=', '<=')),
+    _affine_token: $ => token(choice(
+      // arithmetic
+      '+', '-', '*', 'ceildiv', 'floordiv', 'mod',
+      // comparisons (used in affine_set constraints)
+      '==', '>=', '<=',
+    )),
 
     // =========================================================================
     // Function-related rules (used by func_operation tier-1)
