@@ -3,13 +3,14 @@ name = "MLIR"
 grammar = "mlir"
 path_suffixes = ["mlir"]
 line_comments = ["//"]
-autoclose_before = " \n\r\t};)>]"
+word_characters = [".", "$", "@"]
+autoclose_before = " \n\r\t}:)>]"
 
 [brackets]
 paired = [
-  { start = "{", end = "}" },
-  { start = "[", end = "]" },
-  { start = "(", end = ")" },
-  { start = "<", end = ">" },
-  { start = "\"", end = "\"" }
+  { start = "{", end = "}", close = true, newline = true },
+  { start = "[", end = "]", close = true, newline = false },
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "<", end = ">", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false }
 ]
