@@ -10,7 +10,7 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -38,23 +38,23 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (integer_type))))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (integer_type)))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (integer_type))))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (integer_type)))))))))))))
 
 ================================================================================
 vector type with one dimension
@@ -68,7 +68,7 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -96,23 +96,23 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))))))))
 
 ================================================================================
 vector type without dimensions
@@ -126,7 +126,7 @@ func.func @test_cmpi_vector_0d(%arg0 : vector<i64>, %arg1 : vector<i64>) -> vect
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -151,22 +151,22 @@ func.func @test_cmpi_vector_0d(%arg0 : vector<i64>, %arg1 : vector<i64>) -> vect
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (integer_type)))))))
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (integer_type)))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (integer_type))))))))))))
 
 ================================================================================
 vector type with multiple dimensions
@@ -195,7 +195,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -262,195 +262,186 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (arith_cmp_predicate)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type))))
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))))))))
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))))))))
 
 ================================================================================
 Scalable vector type
@@ -465,7 +456,7 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -493,23 +484,23 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (integer_type)))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (integer_type))))))))))))
 
 ================================================================================
 Scalable 2d vector with scalable dimensions
@@ -562,7 +553,7 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
 (toplevel
   (operation
     (custom_operation
-      (llvm_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -580,7 +571,7 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
           (entry_block
             (operation
               (custom_operation
-                (llvm_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 Linalg matmul with memref of unknown dimensions
@@ -600,7 +591,7 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -627,101 +618,102 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (memref_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (integer_type)))))
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (memref_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (integer_type)))))
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (memref_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (integer_type)))))
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (linalg_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type)))))
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type)))))
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (integer_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (integer_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (integer_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
 
 ================================================================================
 Various tensors of dimensions `?` and `*` using tensor.cast
@@ -738,7 +730,7 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -765,69 +757,70 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
               (op_result
                 (value_use))
               (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type)))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
 
 ================================================================================
 Dense and sparse matrix literals
@@ -863,7 +856,7 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -894,215 +887,203 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (arith_dialect
-                  (tensor_literal
-                    (float_literal))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
+                (custom_op_name)
+                (tensor_literal
+                  (float_literal))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (comment)
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (comment)
+                (value_use)))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (arith_dialect
-                  (tensor_literal
+                (custom_op_name)
+                (tensor_literal
+                  (nested_idx_list
+                    (nested_idx_list
+                      (integer_literal)
+                      (integer_literal)
+                      (integer_literal))
+                    (nested_idx_list
+                      (integer_literal)
+                      (integer_literal)
+                      (integer_literal)))
+                  (nested_idx_list
+                    (float_literal)
+                    (float_literal)))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (comment)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (tensor_literal
+                  (nested_idx_list
+                    (nested_idx_list
+                      (integer_literal)
+                      (integer_literal)
+                      (integer_literal)))
+                  (nested_idx_list
+                    (float_literal)))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (float_type)))))
+                (comment)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (tensor_literal
+                  (nested_idx_list
                     (nested_idx_list
                       (nested_idx_list
                         (integer_literal)
-                        (integer_literal)
-                        (integer_literal))
-                      (nested_idx_list
                         (integer_literal)
                         (integer_literal)
                         (integer_literal)))
                     (nested_idx_list
-                      (float_literal)
-                      (float_literal)))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (comment)
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (tensor_literal
-                    (nested_idx_list
                       (nested_idx_list
                         (integer_literal)
                         (integer_literal)
-                        (integer_literal)))
-                    (nested_idx_list
-                      (float_literal)))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
+                        (integer_literal)
+                        (integer_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (integer_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (integer_type)))))
+                (comment)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (tensor_literal
+                  (complex_literal
+                    (float_literal)
+                    (float_literal)))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (complex_type
+                          (float_type))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (complex_type
                           (float_type))))))))
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (comment)
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (tensor_literal
-                    (nested_idx_list
-                      (nested_idx_list
-                        (nested_idx_list
-                          (integer_literal)
-                          (integer_literal)
-                          (integer_literal)
-                          (integer_literal)))
-                      (nested_idx_list
-                        (nested_idx_list
-                          (integer_literal)
-                          (integer_literal)
-                          (integer_literal)
-                          (integer_literal)))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (integer_type))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (integer_type))))))))
-            (comment)
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (tensor_literal
-                    (complex_literal
-                      (float_literal)
-                      (float_literal)))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (complex_type
-                            (float_type)))))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (complex_type
-                            (float_type)))))))))
-            (operation
-              (custom_operation
-                (func_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (type
-                    (builtin_type
-                      (complex_type
-                        (float_type)))))))))))))
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (complex_type
+                      (float_type))))))))))))
 
 ================================================================================
 Empty dense literal
@@ -1116,7 +1097,7 @@ func.func @empty_dense_literal() -> () {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -1140,7 +1121,7 @@ func.func @empty_dense_literal() -> () {
                 (function_type)))
             (operation
               (custom_operation
-                (func_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 !llvm.struct dialect type
@@ -1152,7 +1133,7 @@ llvm.func @return_s_long() ->
 (toplevel
   (operation
     (custom_operation
-      (llvm_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (func_return
@@ -1203,7 +1184,7 @@ llvm.func @aliases() {
               (pretty_dialect_item_body)))))))
   (operation
     (custom_operation
-      (llvm_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list)
         (region
@@ -1226,7 +1207,7 @@ llvm.func @aliases() {
                     (type_alias)))))
             (operation
               (custom_operation
-                (llvm_dialect)))))))))
+                (custom_op_name)))))))))
 
 ================================================================================
 negative constant value_use
@@ -1241,7 +1222,7 @@ func.func @indexCastFold(%arg0: i8) -> index {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1259,30 +1240,30 @@ func.func @indexCastFold(%arg0: i8) -> index {
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (type
-                    (builtin_type
-                      (index_type))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (index_type))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))))))))
 
 ================================================================================
 inf value_use
@@ -1298,7 +1279,7 @@ inf value_use
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1316,37 +1297,35 @@ inf value_use
               (op_result
                 (value_use))
               (custom_operation
-                (arith_dialect
-                  (float_literal)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (integer_literal)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))))))))
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))))))))
 
 ================================================================================
 array literal
@@ -1360,7 +1339,7 @@ func.func @foo(%a : f32) -> vector<1x2xf32> {
 (toplevel
   (operation
     (custom_operation
-      (func_dialect
+      (func_operation
         (symbol_ref_id)
         (func_arg_list
           (value_use)
@@ -1404,10 +1383,10 @@ func.func @foo(%a : f32) -> vector<1x2xf32> {
                         (float_type)))))))
             (operation
               (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (vector_type
-                        (vector_dim_list)
-                        (float_type)))))))))))))
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list)
+                      (float_type))))))))))))

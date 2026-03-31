@@ -2,19 +2,15 @@
 ;; Dialect-agnostic MLIR syntax highlighting
 ;; ---------------------------------------------------------------------------
 
-;; Tier 1: Structural operation names (func, module)
+;; Comments
+(comment) @comment
+
+;; Keywords and Operation names
 (func_operation name: _ @keyword)
 (module_operation name: _ @keyword)
 
-;; Tier 2: Generic custom operation names (dialect.op_name)
-(custom_op_name) @function.builtin
-
-;; Tier 3: Generic operations ("string.op"(...) : type)
-(generic_operation) @function
-
-;; Function and module symbol names
-(func_operation sym_name: (symbol_ref_id) @function)
-(module_operation sym_name: (symbol_ref_id) @module)
+(custom_op_name) @function.method
+(generic_operation (string_literal) @function)
 
 ;; Types
 (builtin_type) @type.builtin
@@ -25,29 +21,46 @@
   (type_alias_def)
 ] @type
 
-;; Numeric literals
+;; Numeric and Bool literals
 [
   (integer_literal)
   (float_literal)
   (complex_literal)
 ] @number
 
-;; Constant literals
+(bool_literal) @boolean
+
+;; Attributes and other constants
 [
-  (bool_literal)
   (tensor_literal)
   (array_literal)
   (unit_literal)
+  (uninitialized_literal)
 ] @constant.builtin
 
+[
+  (attribute_alias)
+  (attribute_alias_def)
+] @attribute
+
+(dictionary_attribute) @attribute
+
+;; Strings
 (string_literal) @string
 
-;; Attributes
-[
-  (attribute_alias_def)
-  (attribute_alias)
-  (dictionary_attribute)
-] @attribute
+;; Functions and symbols
+(func_operation sym_name: (symbol_ref_id) @function)
+(module_operation sym_name: (symbol_ref_id) @module)
+(symbol_ref_id) @symbol
+
+;; Variables
+(value_use) @variable
+(func_arg_list (value_use) @variable.parameter)
+(block_arg_list (value_use) @variable.parameter)
+(op_result) @variable
+
+;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
+(bare_id) @keyword
 
 ;; Brackets
 [
@@ -57,6 +70,8 @@
   "}"
   "["
   "]"
+  "<"
+  ">"
 ] @punctuation.bracket
 
 ;; Delimiters
@@ -72,12 +87,5 @@
 ] @operator
 
 ;; Block labels
-(caret_id) @tag
+(caret_id) @label
 
-;; Variables
-(value_use) @variable
-(func_arg_list (value_use) @variable.parameter)
-(block_arg_list (value_use) @variable.parameter)
-
-;; Comments
-(comment) @comment
