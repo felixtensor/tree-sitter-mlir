@@ -287,6 +287,10 @@
           "named": true
         },
         {
+          "type": "dense_resource_literal",
+          "named": true
+        },
+        {
           "type": "strided_layout",
           "named": true
         }
@@ -323,6 +327,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -394,6 +402,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -507,6 +519,25 @@
     }
   },
   {
+    "type": "dense_resource_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bare_id",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dialect_attribute",
     "named": true,
     "fields": {},
@@ -599,6 +630,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -935,15 +970,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
           "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "value_use",
           "named": true
         }
       ]
@@ -961,6 +992,21 @@
           "type": "dialect_namespace",
           "named": true
         },
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "opaque_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
         {
           "type": "string_literal",
           "named": true
@@ -1107,6 +1153,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -1299,6 +1349,10 @@
           "named": true
         },
         {
+          "type": "opaque_type",
+          "named": true
+        },
+        {
           "type": "tensor_type",
           "named": true
         },
@@ -1426,6 +1480,10 @@
         },
         {
           "type": "none_type",
+          "named": true
+        },
+        {
+          "type": "opaque_type",
           "named": true
         },
         {
@@ -1561,6 +1619,10 @@
     "named": false
   },
   {
+    "type": "dense_resource",
+    "named": false
+  },
+  {
     "type": "float_literal",
     "named": true
   },
@@ -1610,6 +1672,10 @@
   },
   {
     "type": "offset",
+    "named": false
+  },
+  {
+    "type": "opaque",
     "named": false
   },
   {

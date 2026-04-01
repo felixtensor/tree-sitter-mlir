@@ -184,8 +184,26 @@
           {
             "type": "REPEAT",
             "content": {
-              "type": "PATTERN",
-              "value": "[^\\\\\"\\n\\f\\v\\r]+"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[^\\\\\"\\n\\f\\v\\r]+"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "\\"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[nt\"\\\\]"
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
@@ -874,7 +892,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "value_use"
+          "name": "_result_value_use"
         },
         {
           "type": "CHOICE",
@@ -2104,6 +2122,10 @@
         {
           "type": "SYMBOL",
           "name": "tuple_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "opaque_type"
         }
       ]
     },
@@ -2161,6 +2183,10 @@
             },
             {
               "type": "STRING",
+              "value": "tf32"
+            },
+            {
+              "type": "STRING",
               "value": "f32"
             },
             {
@@ -2181,11 +2207,47 @@
             },
             {
               "type": "STRING",
+              "value": "f4E2M1FN"
+            },
+            {
+              "type": "STRING",
+              "value": "f6E2M3FN"
+            },
+            {
+              "type": "STRING",
+              "value": "f6E3M2FN"
+            },
+            {
+              "type": "STRING",
+              "value": "f8E3M4"
+            },
+            {
+              "type": "STRING",
+              "value": "f8E4M3"
+            },
+            {
+              "type": "STRING",
               "value": "f8E4M3FN"
             },
             {
               "type": "STRING",
+              "value": "f8E4M3FNUZ"
+            },
+            {
+              "type": "STRING",
+              "value": "f8E4M3B11FNUZ"
+            },
+            {
+              "type": "STRING",
               "value": "f8E5M2"
+            },
+            {
+              "type": "STRING",
+              "value": "f8E5M2FNUZ"
+            },
+            {
+              "type": "STRING",
+              "value": "f8E8M0FNU"
             }
           ]
         }
@@ -2271,6 +2333,10 @@
         {
           "type": "SYMBOL",
           "name": "tensor_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "opaque_type"
         }
       ]
     },
@@ -2620,6 +2686,38 @@
       "type": "SYMBOL",
       "name": "_prim_type"
     },
+    "opaque_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "opaque"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string_literal"
+        },
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string_literal"
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
     "attribute_entry": {
       "type": "SEQ",
       "members": [
@@ -2829,6 +2927,43 @@
         {
           "type": "SYMBOL",
           "name": "affine_set"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dense_resource_literal"
+        }
+      ]
+    },
+    "dense_resource_literal": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "dense_resource"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "bare_id"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string_literal"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ">"
         }
       ]
     },
@@ -3568,7 +3703,12 @@
     ]
   ],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_result_value_use"
+    }
+  ],
   "inline": [],
   "supertypes": [],
   "reserved": {}

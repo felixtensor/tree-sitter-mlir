@@ -35,7 +35,7 @@
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
-[(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
+[(tensor_literal) (dense_resource_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
 (string_literal) @string
 
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────

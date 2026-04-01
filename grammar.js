@@ -333,8 +333,11 @@ module.exports = grammar({
     builtin_attribute: $ => choice(
       $.strided_layout,
       $.affine_map,
-      $.affine_set
+      $.affine_set,
+      $.dense_resource_literal,
     ),
+    dense_resource_literal: $ => seq(token('dense_resource'), '<',
+      choice($.bare_id, $.string_literal), '>'),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
