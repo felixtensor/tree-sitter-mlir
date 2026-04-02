@@ -71,7 +71,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (builtin_type
               (memref_type
                 (dim_list
-                  (float_type))
+                  (type
+                    (builtin_type
+                      (float_type))))
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
@@ -81,7 +83,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (builtin_type
               (memref_type
                 (dim_list
-                  (float_type))
+                  (type
+                    (builtin_type
+                      (float_type))))
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
@@ -91,7 +95,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (builtin_type
               (memref_type
                 (dim_list
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (region
           (entry_block
             (operation
@@ -104,7 +110,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type))
+                        (type
+                          (builtin_type
+                            (float_type))))
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
@@ -113,7 +121,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type))
+                        (type
+                          (builtin_type
+                            (float_type))))
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
@@ -124,7 +134,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))
@@ -159,7 +171,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (dimension_size)
                   (dimension_size)
                   (dimension_size)
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
@@ -168,7 +182,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (dimension_size)
                   (dimension_size)
                   (dimension_size)
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (func_return
           (type_list_attr_parens
             (type
@@ -179,7 +195,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                     (dimension_size)
                     (dimension_size)
                     (dimension_size)
-                    (float_type)))))))
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
         (region
           (entry_block
             (operation
@@ -203,7 +221,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -223,7 +243,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
@@ -232,7 +254,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -249,7 +273,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (integer_type)))))))
+                                (type
+                                  (builtin_type
+                                    (integer_type)))))))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
@@ -260,7 +286,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (integer_type)))))))))
+                                (type
+                                  (builtin_type
+                                    (integer_type)))))))))))
                 (bare_id)
                 (value_use)
                 (value_use)
@@ -271,7 +299,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
@@ -279,7 +309,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -290,7 +322,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
@@ -299,7 +333,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -312,7 +348,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
 
 ================================================================================
 Generic function bracketed attributes
@@ -342,7 +380,15 @@ Generic function bracketed attributes
                     (dialect_namespace)
                     (dialect_ident)
                     (pretty_dialect_item_body
-                      (pretty_dialect_item_body)))))))
+                      (bare_id)
+                      (bare_id)
+                      (pretty_dialect_item_body
+                        (type
+                          (builtin_type
+                            (integer_type))))
+                      (type
+                        (builtin_type
+                          (integer_type)))))))))
           (attribute_entry
             (bare_id)
             (attribute_value
@@ -426,26 +472,34 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
             (builtin_type
               (tensor_type
                 (dim_list
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (func_return
           (type_list_attr_parens
             (type
               (builtin_type
                 (tensor_type
                   (dim_list
-                    (float_type)))))))
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
         (region
           (entry_block
             (operation
@@ -475,7 +529,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -485,7 +541,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -509,19 +567,25 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (value_use)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (region
                   (block
                     (block_label
@@ -560,7 +624,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -571,7 +637,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -582,7 +650,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -607,19 +677,25 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (value_use)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (region
                   (block
                     (block_label
@@ -658,7 +734,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -667,7 +745,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
 
 ================================================================================
 linalg.generic with attribute alias
@@ -742,7 +822,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
               (builtin_type
                 (tensor_type
                   (dim_list
-                    (integer_type)))))))
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))
         (attribute
           (dictionary_attribute))
         (region
@@ -765,7 +847,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -783,7 +867,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -794,7 +880,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (successor
                   (caret_id)
                   (value_use)
@@ -802,7 +890,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (comment)
                 (value_use)))
             (operation
@@ -812,7 +902,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -826,19 +918,25 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (bare_id)
                 (value_use)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (region
                   (block
                     (block_label
@@ -878,7 +976,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -888,7 +988,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -900,7 +1002,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (successor
                   (caret_id)
                   (value_use)
@@ -908,7 +1012,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (successor
                   (caret_id)
                   (value_use)
@@ -916,7 +1022,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (comment)
                 (value_use)))
             (operation
@@ -926,7 +1034,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -940,19 +1050,25 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (bare_id)
                 (value_use)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (region
                   (block
                     (block_label
@@ -991,7 +1107,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -1002,7 +1120,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))
                 (successor
                   (caret_id)
                   (value_use)
@@ -1010,7 +1130,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (builtin_type
                       (tensor_type
                         (dim_list
-                          (integer_type))))))))
+                          (type
+                            (builtin_type
+                              (integer_type))))))))))
             (comment)
             (operation
               (custom_operation
@@ -1020,7 +1142,9 @@ func.func @main() -> (tensor<i32>) attributes {} {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (integer_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))))))))
 
 ================================================================================
 linalg.generic with inline attributes
@@ -1050,7 +1174,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (builtin_type
               (memref_type
                 (dim_list
-                  (float_type))
+                  (type
+                    (builtin_type
+                      (float_type))))
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
@@ -1060,7 +1186,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (builtin_type
               (memref_type
                 (dim_list
-                  (float_type))
+                  (type
+                    (builtin_type
+                      (float_type))))
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
@@ -1093,7 +1221,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type))
+                        (type
+                          (builtin_type
+                            (float_type))))
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
@@ -1104,7 +1234,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type))
+                        (type
+                          (builtin_type
+                            (float_type))))
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
@@ -1159,7 +1291,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                 (dim_list
                   (dimension_size)
                   (dimension_size)
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
@@ -1168,7 +1302,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                   (dimension_size)
                   (dimension_size)
                   (dimension_size)
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (func_return
           (type_list_attr_parens
             (type
@@ -1178,7 +1314,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                     (dimension_size)
                     (dimension_size)
                     (dimension_size)
-                    (float_type)))))))
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
         (region
           (entry_block
             (operation
@@ -1194,7 +1332,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                       (dim_list
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -1204,7 +1344,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (integer_literal)))
             (operation
@@ -1218,4 +1360,6 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))

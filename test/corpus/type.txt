@@ -20,7 +20,9 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                 (dim_list
                   (dimension_size)
                   (dimension_size)
-                  (integer_type)))))
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
           (value_use)
           (type
             (builtin_type
@@ -28,7 +30,9 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                 (dim_list
                   (dimension_size)
                   (dimension_size)
-                  (integer_type))))))
+                  (type
+                    (builtin_type
+                      (integer_type))))))))
         (func_return
           (type_list_attr_parens
             (type
@@ -37,7 +41,9 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                   (dim_list
                     (dimension_size)
                     (dimension_size)
-                    (integer_type)))))))
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))
         (region
           (entry_block
             (operation
@@ -53,7 +59,9 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                       (dim_list
                         (dimension_size)
                         (dimension_size)
-                        (integer_type)))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -64,7 +72,9 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                       (dim_list
                         (dimension_size)
                         (dimension_size)
-                        (integer_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))))))))
 
 ================================================================================
 vector type with one dimension
@@ -648,7 +658,10 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
               (pretty_dialect_item
                 (dialect_namespace)
                 (dialect_ident)
-                (pretty_dialect_item_body))))
+                (pretty_dialect_item_body
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
           (attribute
             (dictionary_attribute
               (attribute_entry
@@ -685,7 +698,9 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
             (builtin_type
               (memref_type
                 (dim_list
-                  (integer_type)))))
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
           (value_use)
           (type
             (builtin_type
@@ -729,13 +744,17 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -748,13 +767,17 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -767,13 +790,17 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -784,19 +811,25 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (value_use)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))
@@ -824,7 +857,9 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
             (builtin_type
               (tensor_type
                 (dim_list
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
@@ -832,13 +867,17 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                 (dim_list
                   (dimension_size)
                   (dimension_size)
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (region
           (entry_block
             (operation
@@ -851,13 +890,17 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -869,13 +912,17 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                       (dim_list
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -885,14 +932,18 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -903,13 +954,17 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))
@@ -1011,7 +1066,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -1023,7 +1080,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (comment)
                 (value_use)))
             (operation
@@ -1049,7 +1108,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -1065,7 +1126,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (comment)
                 (value_use)))
             (operation
@@ -1086,7 +1149,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -1102,7 +1167,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (comment)
                 (value_use)))
             (operation
@@ -1129,7 +1196,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -1145,7 +1214,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (dimension_size)
                         (dimension_size)
-                        (integer_type)))))
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
                 (comment)
                 (value_use)))
             (operation
@@ -1159,8 +1230,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (complex_type
-                          (float_type))))))
+                        (type
+                          (builtin_type
+                            (complex_type
+                              (float_type))))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -1170,8 +1243,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (complex_type
-                          (float_type))))))))
+                        (type
+                          (builtin_type
+                            (complex_type
+                              (float_type))))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -1230,7 +1305,9 @@ func.func @empty_dense_literal() -> () {
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (integer_type)))))))))
+                                (type
+                                  (builtin_type
+                                    (integer_type)))))))))))
                 (function_type)))
             (operation
               (custom_operation
@@ -1257,9 +1334,26 @@ llvm.func @return_s_long() ->
                   (dialect_namespace)
                   (dialect_ident)
                   (pretty_dialect_item_body
-                    (pretty_dialect_item_body)
+                    (string_literal)
+                    (type
+                      (builtin_type
+                        (integer_type)))
+                    (bare_id)
                     (pretty_dialect_item_body
-                      (pretty_dialect_item_body))))))))))))
+                      (type
+                        (builtin_type
+                          (integer_type)))
+                      (type
+                        (builtin_type
+                          (integer_type))))
+                    (type
+                      (builtin_type
+                        (float_type)))
+                    (bare_id)
+                    (pretty_dialect_item_body
+                      (bare_id)
+                      (pretty_dialect_item_body
+                        (bare_id)))))))))))))
 
 ================================================================================
 Type alias definition
@@ -1285,7 +1379,9 @@ llvm.func @aliases() {
         (pretty_dialect_item
           (dialect_namespace)
           (dialect_ident)
-          (pretty_dialect_item_body)))))
+          (pretty_dialect_item_body
+            (type
+              (type_alias)))))))
   (type_alias_def
     (type
       (dialect_type
@@ -1293,8 +1389,12 @@ llvm.func @aliases() {
           (dialect_namespace)
           (dialect_ident)
           (pretty_dialect_item_body
+            (string_literal)
+            (bare_id)
             (pretty_dialect_item_body
-              (pretty_dialect_item_body)))))))
+              (bare_id)
+              (pretty_dialect_item_body
+                (string_literal))))))))
   (operation
     (custom_operation
       (func_operation
@@ -1311,7 +1411,15 @@ llvm.func @aliases() {
                       (pretty_dialect_item
                         (dialect_namespace)
                         (dialect_ident)
-                        (pretty_dialect_item_body)))))))
+                        (pretty_dialect_item_body
+                          (type
+                            (builtin_type
+                              (integer_type)))
+                          (type
+                            (builtin_type
+                              (float_type)))
+                          (type
+                            (type_alias)))))))))
             (operation
               (generic_operation
                 (string_literal)

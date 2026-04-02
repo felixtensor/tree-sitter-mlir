@@ -797,7 +797,9 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
             (builtin_type
               (memref_type
                 (dim_list
-                  (integer_type))))))
+                  (type
+                    (builtin_type
+                      (integer_type))))))))
         (region
           (entry_block
             (operation
@@ -897,7 +899,9 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
                           (builtin_type
                             (memref_type
                               (dim_list
-                                (integer_type)))))))
+                                (type
+                                  (builtin_type
+                                    (integer_type)))))))))
                     (operation
                       (custom_operation
                         (custom_op_name)))))))
@@ -1533,14 +1537,18 @@ func.func @normalized_forall_elide_terminator() -> () {
               (tensor_type
                 (dim_list
                   (dimension_size)
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (dimension_size)
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (region
           (entry_block
             (operation
@@ -1575,7 +1583,9 @@ func.func @normalized_forall_elide_terminator() -> () {
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (region
                   (entry_block
                     (operation
@@ -1592,14 +1602,18 @@ func.func @normalized_forall_elide_terminator() -> () {
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (float_type)))))
+                                (type
+                                  (builtin_type
+                                    (float_type)))))))
                         (bare_id)
                         (type
                           (builtin_type
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (float_type)))))))
+                                (type
+                                  (builtin_type
+                                    (float_type)))))))))
                     (operation
                       (custom_operation
                         (custom_op_name)
@@ -1619,14 +1633,18 @@ func.func @normalized_forall_elide_terminator() -> () {
                                     (tensor_type
                                       (dim_list
                                         (dimension_size)
-                                        (float_type)))))
+                                        (type
+                                          (builtin_type
+                                            (float_type)))))))
                                 (bare_id)
                                 (type
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
                                         (dimension_size)
-                                        (float_type)))))))))))))))
+                                        (type
+                                          (builtin_type
+                                            (float_type)))))))))))))))))
             (operation
               (custom_operation
                 (custom_op_name))))))))
@@ -1641,14 +1659,18 @@ func.func @normalized_forall_elide_terminator() -> () {
               (tensor_type
                 (dim_list
                   (dimension_size)
-                  (float_type)))))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (dimension_size)
-                  (float_type))))))
+                  (type
+                    (builtin_type
+                      (float_type))))))))
         (region
           (entry_block
             (operation
@@ -1694,7 +1716,9 @@ func.func @normalized_forall_elide_terminator() -> () {
                     (tensor_type
                       (dim_list
                         (dimension_size)
-                        (float_type)))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))
                 (region
                   (entry_block
                     (operation
@@ -1711,14 +1735,18 @@ func.func @normalized_forall_elide_terminator() -> () {
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (float_type)))))
+                                (type
+                                  (builtin_type
+                                    (float_type)))))))
                         (bare_id)
                         (type
                           (builtin_type
                             (tensor_type
                               (dim_list
                                 (dimension_size)
-                                (float_type)))))))
+                                (type
+                                  (builtin_type
+                                    (float_type)))))))))
                     (operation
                       (custom_operation
                         (custom_op_name)
@@ -1738,14 +1766,18 @@ func.func @normalized_forall_elide_terminator() -> () {
                                     (tensor_type
                                       (dim_list
                                         (dimension_size)
-                                        (float_type)))))
+                                        (type
+                                          (builtin_type
+                                            (float_type)))))))
                                 (bare_id)
                                 (type
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
                                         (dimension_size)
-                                        (float_type)))))))))
+                                        (type
+                                          (builtin_type
+                                            (float_type)))))))))))
                         (attribute
                           (dictionary_attribute
                             (attribute_entry
@@ -1755,7 +1787,8 @@ func.func @normalized_forall_elide_terminator() -> () {
                                   (pretty_dialect_item
                                     (dialect_namespace)
                                     (dialect_ident)
-                                    (pretty_dialect_item_body)))))))))))))
+                                    (pretty_dialect_item_body
+                                      (bare_id))))))))))))))
             (operation
               (custom_operation
                 (custom_op_name))))))))
@@ -1798,7 +1831,8 @@ func.func @normalized_forall_elide_terminator() -> () {
                           (pretty_dialect_item
                             (dialect_namespace)
                             (dialect_ident)
-                            (pretty_dialect_item_body)))))))))
+                            (pretty_dialect_item_body
+                              (bare_id))))))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))
