@@ -23,6 +23,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -30,6 +31,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -44,6 +46,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (region
                   (entry_block
@@ -71,6 +74,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -100,18 +104,21 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (region
           (entry_block
@@ -125,11 +132,13 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (value_use)
@@ -137,6 +146,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)
                 (type
@@ -374,6 +384,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -392,6 +404,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -405,6 +419,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -427,6 +443,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -442,6 +460,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -467,6 +487,7 @@ func.func @legal_collapsing_reshape_dynamic_tensor
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -492,6 +513,7 @@ func.func @legal_collapsing_reshape_dynamic_tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -540,18 +562,27 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (index_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (integer_type))))))
         (region
           (entry_block
@@ -570,16 +601,27 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -595,16 +637,25 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (index_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -622,21 +673,35 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (index_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -654,21 +719,33 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -702,6 +779,9 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -744,6 +824,9 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -769,12 +852,18 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -794,12 +883,17 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -841,24 +935,34 @@ func.func @insert_slice(
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -907,39 +1011,18 @@ func.func @insert_slice(
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (value_use)
-                (bare_id)
-                (value_use)
-                (value_use)
-                (value_use)
-                (value_use)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (value_use)
-                (integer_literal)
-                (value_use)
-                (type
-                  (builtin_type
-                    (tensor_type
-                      (dim_list
-                        (float_type)))))
-                (bare_id)
-                (type
-                  (builtin_type
-                    (tensor_type
-                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -948,25 +1031,31 @@ func.func @insert_slice(
                 (value_use)
                 (bare_id)
                 (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
                 (integer_literal)
                 (integer_literal)
                 (integer_literal)
+                (value_use)
                 (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
+                (value_use)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -976,10 +1065,10 @@ func.func @insert_slice(
                 (bare_id)
                 (value_use)
                 (integer_literal)
-                (value_use)
                 (integer_literal)
                 (integer_literal)
-                (value_use)
+                (integer_literal)
+                (integer_literal)
                 (integer_literal)
                 (integer_literal)
                 (integer_literal)
@@ -988,12 +1077,49 @@ func.func @insert_slice(
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (integer_literal)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (float_type)))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1179,6 +1305,7 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -1186,6 +1313,9 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -1217,6 +1347,7 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (integer_type)))))
                 (value_use)))
             (operation
@@ -1228,16 +1359,21 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (integer_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1247,6 +1383,9 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -1283,6 +1422,9 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -1302,6 +1444,7 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -1353,12 +1496,16 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1368,6 +1515,7 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type))))))))))))
   (operation
     (custom_operation
@@ -1379,6 +1527,8 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -1390,6 +1540,8 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -1438,12 +1590,16 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1453,6 +1609,8 @@ func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -1486,6 +1644,7 @@ func.func @test_splat_op(%s : f32) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1518,6 +1677,7 @@ func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (integer_type))))))
         (region
           (entry_block
@@ -1537,6 +1697,7 @@ func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (integer_type)))))
                 (type
                   (builtin_type
@@ -1569,12 +1730,18 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -1582,6 +1749,8 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -1603,11 +1772,17 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -1617,6 +1792,8 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -1635,11 +1812,17 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1649,6 +1832,8 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -1681,6 +1866,7 @@ func.func @memref_copy() {
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -1691,6 +1877,7 @@ func.func @memref_copy() {
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -1706,6 +1893,7 @@ func.func @memref_copy() {
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -1716,6 +1904,7 @@ func.func @memref_copy() {
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -1796,6 +1985,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
+                      (dimension_size)
                       (integer_literal)))))))
           (value_use)
           (type
@@ -1805,16 +1995,20 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                   (float_type))
                 (attribute_value
                   (builtin_attribute
-                    (strided_layout))))))
+                    (strided_layout
+                      (dimension_size)))))))
           (value_use)
           (type
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type))
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
+                      (dimension_size)
+                      (dimension_size)
                       (integer_literal))))))))
         (region
           (entry_block
@@ -1856,6 +2050,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -1873,6 +2068,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
+                            (dimension_size)
                             (integer_literal)))))))
                 (bare_id)
                 (type
@@ -1883,6 +2079,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
+                            (dimension_size)
                             (integer_literal)))))))
                 (value_use)))
             (operation
@@ -1900,16 +2097,19 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
+                            (dimension_size)
                             (integer_literal)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type))
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
+                            (dimension_size)
                             (integer_literal)))))))
                 (value_use)))
             (operation
@@ -1917,55 +2117,6 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                 (custom_op_name)
                 (value_use)
                 (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (float_type))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout))))))
-                (bare_id)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (float_type))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout))))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (value_use)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (float_type))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout))))))
-                (bare_id)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (float_type))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout))))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (value_use)
                 (integer_literal)
                 (integer_literal)
                 (type
@@ -1976,6 +2127,63 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
+                            (dimension_size)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (float_type))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (float_type))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (float_type))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (dimension_size)
                             (integer_literal)))))))
                 (bare_id)
                 (type
@@ -1985,7 +2193,8 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                         (float_type))
                       (attribute_value
                         (builtin_attribute
-                          (strided_layout))))))
+                          (strided_layout
+                            (dimension_size)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -2000,12 +2209,14 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                         (float_type))
                       (attribute_value
                         (builtin_attribute
-                          (strided_layout))))))
+                          (strided_layout
+                            (dimension_size)))))))
                 (bare_id)
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -2031,6 +2242,7 @@ func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -2056,6 +2268,7 @@ func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -2093,6 +2306,8 @@ func.func @rank(%t : memref<4x4x?xf32>) {
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type))))))
         (region
           (entry_block
@@ -2106,6 +2321,8 @@ func.func @rank(%t : memref<4x4x?xf32>) {
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -2287,10 +2504,12 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
               (builtin_type
                 (memref_type
                   (dim_list
+                    (dimension_size)
                     (float_type))
                   (attribute_value
                     (builtin_attribute
-                      (strided_layout))))))))
+                      (strided_layout
+                        (dimension_size)))))))))
         (region
           (entry_block
             (operation
@@ -2318,10 +2537,12 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type))
                       (attribute_value
                         (builtin_attribute
-                          (strided_layout))))))))
+                          (strided_layout
+                            (dimension_size)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -2330,10 +2551,12 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type))
                       (attribute_value
                         (builtin_attribute
-                          (strided_layout))))))))))))))
+                          (strided_layout
+                            (dimension_size)))))))))))))))
 
 ================================================================================
 memref.extract_strided_metadata
@@ -2365,6 +2588,7 @@ func.func @extract_strided_metadata(%memref : memref<10x?xf32>)
             (builtin_type
               (memref_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -2394,6 +2618,7 @@ func.func @extract_strided_metadata(%memref : memref<10x?xf32>)
                   (builtin_type
                     (memref_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
@@ -2558,7 +2783,8 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size))
                   (integer_type))))))
         (region
           (entry_block
@@ -2579,7 +2805,8 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -2589,13 +2816,15 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))
                 (bare_id)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))
             (operation
               (custom_operation
@@ -2604,7 +2833,8 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))))))))
 
 ================================================================================
@@ -2702,6 +2932,7 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -2713,6 +2944,7 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -2726,6 +2958,7 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -2737,6 +2970,7 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -2746,6 +2980,8 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -2753,23 +2989,6 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                 (custom_op_name)
                 (value_use)
                 (value_use)
-                (type
-                  (builtin_type
-                    (tensor_type
-                      (dim_list
-                        (float_type)))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (bare_id)
-                (value_use)
-                (attribute
-                  (dictionary_attribute
-                    (attribute_entry
-                      (bare_id)
-                      (attribute_value
-                        (bool_literal)))))
                 (type
                   (builtin_type
                     (tensor_type
@@ -2791,6 +3010,25 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (float_type)))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (bool_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -2810,6 +3048,8 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type))
                       (tensor_encoding
                         (attribute_value
@@ -2838,6 +3078,7 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -2901,7 +3142,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
               (memref_type
                 (dim_list
                   (vector_type
-                    (vector_dim_list)
+                    (vector_dim_list
+                      (dimension_size)
+                      (dimension_size))
                     (float_type))))))
           (value_use)
           (type
@@ -2909,7 +3152,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
               (memref_type
                 (dim_list
                   (vector_type
-                    (vector_dim_list)
+                    (vector_dim_list
+                      (dimension_size)
+                      (dimension_size))
                     (integer_type))))))
           (value_use)
           (type
@@ -2917,7 +3162,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
               (memref_type
                 (dim_list
                   (vector_type
-                    (vector_dim_list)
+                    (vector_dim_list
+                      (dimension_size)
+                      (dimension_size))
                     (index_type))))))
           (value_use)
           (type
@@ -2984,7 +3231,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -2994,7 +3243,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -3004,7 +3255,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (index_type))))
                 (value_use)))
             (operation
@@ -3020,7 +3273,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -3030,7 +3284,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -3058,7 +3314,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3087,7 +3344,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3115,7 +3374,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3143,7 +3403,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3169,12 +3430,18 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (float_type))))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3196,12 +3463,18 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (float_type))))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3216,12 +3489,16 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (integer_type))))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -3236,12 +3513,16 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (index_type))))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -3260,7 +3541,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (value_use)))
             (operation
@@ -3293,7 +3575,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))))
             (operation
               (custom_operation
@@ -3315,7 +3600,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (type
                   (builtin_type
@@ -3343,7 +3629,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (type
                   (builtin_type
@@ -3371,14 +3659,20 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (float_type))))))))
             (operation
               (custom_operation
@@ -3397,14 +3691,20 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (float_type))))))))
             (operation
               (custom_operation
@@ -3416,14 +3716,18 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (integer_type))))))))
             (operation
               (custom_operation
@@ -3435,14 +3739,18 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (memref_type
                       (dim_list
                         (vector_type
-                          (vector_dim_list)
+                          (vector_dim_list
+                            (dimension_size)
+                            (dimension_size))
                           (index_type))))))))
             (operation
               (custom_operation
@@ -3455,7 +3763,8 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (float_type))))
                 (type
                   (builtin_type
