@@ -166,7 +166,8 @@ module {
                             (pretty_dialect_item
                               (dialect_namespace)
                               (dialect_ident)
-                              (pretty_dialect_item_body))))))))
+                              (pretty_dialect_item_body
+                                (bare_id)))))))))
                 (function_type)))))))))
 
 ================================================================================
@@ -223,7 +224,9 @@ func.func @call_source() -> tensor<f32> {
               (builtin_type
                 (tensor_type
                   (dim_list
-                    (float_type))))))))))
+                    (type
+                      (builtin_type
+                        (float_type))))))))))))
   (operation
     (custom_operation
       (func_operation
@@ -235,7 +238,9 @@ func.func @call_source() -> tensor<f32> {
               (builtin_type
                 (tensor_type
                   (dim_list
-                    (float_type)))))))
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
         (region
           (entry_block
             (operation
@@ -248,7 +253,9 @@ func.func @call_source() -> tensor<f32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -257,7 +264,9 @@ func.func @call_source() -> tensor<f32> {
                   (builtin_type
                     (tensor_type
                       (dim_list
-                        (float_type)))))))))))))
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
 
 ================================================================================
 Module with name

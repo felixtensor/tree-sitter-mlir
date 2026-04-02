@@ -6,7 +6,10 @@ export default grammar({
   extras: $ => [/\s/, $.comment],
   conflicts: $ => [
     [$._static_dim_list, $._static_dim_list],
-    [$.dictionary_attribute, $.region]
+    [$.dictionary_attribute, $.region],
+    [$.type_alias, $.dialect_namespace],
+    [$.dialect_namespace, $.attribute_alias],
+    [$.pretty_dialect_item]
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -63,7 +66,7 @@ export default grammar({
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal)), '>'),
-    array_literal: $ => seq(token('array'), '<', $.type, ':', $._idx_list, '>'),
+    array_literal: $ => seq(token('array'), '<', $.type, optional(seq(':', $._idx_list)), '>'),
     _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
       $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal, $.uninitialized_literal),
 
@@ -249,8 +252,15 @@ export default grammar({
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
       optional($.pretty_dialect_item_body)),
     pretty_dialect_item_body: $ => seq('<', repeat($._pretty_dialect_item_contents), '>'),
-    _pretty_dialect_item_contents: $ => prec.left(choice($.pretty_dialect_item_body,
-      repeat1(/[^<>]/))),
+    _pretty_dialect_item_contents: $ => prec.left(choice(
+      $.pretty_dialect_item_body,
+      $.type,
+      $.attribute,
+      $._literal,
+      $.bare_id,
+      ',', ':', '=', '->', '(', ')', '[', ']', '{', '}',
+      token(prec(-1, /[^<>]/))
+    )),
 
     // Builtin types
     builtin_type: $ => choice(
@@ -285,7 +295,7 @@ export default grammar({
     // or vector dimension lists. The grammar accepts it permissively here to
     // avoid a separate rule; strict validation is left to semantic analysis.
     dimension_size: $ => repeat1($._digit),
-    _dim_primitive: $ => choice($._prim_type, $.dimension_size, '?', '*'),
+    _dim_primitive: $ => choice(prec(1, $.type), $.dimension_size, '?', '*'),
 
     tensor_type: $ => seq(token('tensor'), '<', $.dim_list,
       optional(seq(',', $.tensor_encoding)), '>'),
