@@ -18,12 +18,16 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (integer_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (integer_type))))))
         (func_return
           (type_list_attr_parens
@@ -31,6 +35,8 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
                     (integer_type)))))))
         (region
           (entry_block
@@ -45,6 +51,8 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))))
             (operation
               (custom_operation
@@ -54,6 +62,8 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))))))))))
 
 ================================================================================
@@ -75,20 +85,23 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
           (type
             (builtin_type
               (vector_type
-                (vector_dim_list)
+                (vector_dim_list
+                  (dimension_size))
                 (integer_type))))
           (value_use)
           (type
             (builtin_type
               (vector_type
-                (vector_dim_list)
+                (vector_dim_list
+                  (dimension_size))
                 (integer_type)))))
         (func_return
           (type_list_attr_parens
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size))
                   (integer_type))))))
         (region
           (entry_block
@@ -102,7 +115,8 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))
             (operation
               (custom_operation
@@ -111,7 +125,8 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))))))))
 
 ================================================================================
@@ -202,59 +217,81 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
           (type
             (builtin_type
               (vector_type
-                (vector_dim_list)
+                (vector_dim_list
+                  (dimension_size)
+                  (dimension_size))
                 (integer_type)))))
         (func_return
           (type_list_attr_parens
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (integer_type))))))
         (region
           (entry_block
@@ -269,7 +306,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -281,7 +320,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -293,7 +334,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -305,7 +348,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -317,7 +362,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -329,7 +376,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -341,7 +390,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -353,7 +404,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -365,7 +418,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (value_use)))
             (operation
@@ -377,7 +432,9 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))))
             (operation
               (custom_operation
@@ -395,52 +452,72 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (integer_type))))))))))))
 
 ================================================================================
@@ -463,20 +540,23 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
           (type
             (builtin_type
               (vector_type
-                (vector_dim_list)
+                (vector_dim_list
+                  (dimension_size))
                 (integer_type))))
           (value_use)
           (type
             (builtin_type
               (vector_type
-                (vector_dim_list)
+                (vector_dim_list
+                  (dimension_size))
                 (integer_type)))))
         (func_return
           (type_list_attr_parens
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size))
                   (integer_type))))))
         (region
           (entry_block
@@ -490,7 +570,8 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))
             (operation
               (custom_operation
@@ -499,7 +580,8 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size))
                       (integer_type))))))))))))
 
 ================================================================================
@@ -510,7 +592,8 @@ Scalable 2d vector with scalable dimensions
 
 (toplevel
   (operation
-    (op_result)
+    (op_result
+      (value_use))
     (generic_operation
       (string_literal)
       (function_type
@@ -531,7 +614,8 @@ Scalable vector with bf16
 
 (toplevel
   (operation
-    (op_result)
+    (op_result
+      (value_use))
     (generic_operation
       (string_literal)
       (function_type
@@ -746,6 +830,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
@@ -781,6 +867,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -803,6 +891,7 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -813,6 +902,7 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (type
@@ -920,6 +1010,7 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -931,6 +1022,7 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (comment)
                 (value_use)))
@@ -954,6 +1046,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -967,6 +1062,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (comment)
                 (value_use)))
@@ -985,6 +1083,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -998,6 +1099,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (comment)
                 (value_use)))
@@ -1022,6 +1126,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))
                 (value_use)))
             (operation
@@ -1035,6 +1142,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (integer_type)))))
                 (comment)
                 (value_use)))
@@ -1354,7 +1464,9 @@ func.func @foo(%a : f32) -> vector<1x2xf32> {
             (type
               (builtin_type
                 (vector_type
-                  (vector_dim_list)
+                  (vector_dim_list
+                    (dimension_size)
+                    (dimension_size))
                   (float_type))))))
         (region
           (entry_block
@@ -1382,7 +1494,9 @@ func.func @foo(%a : f32) -> vector<1x2xf32> {
                   (type
                     (builtin_type
                       (vector_type
-                        (vector_dim_list)
+                        (vector_dim_list
+                          (dimension_size)
+                          (dimension_size))
                         (float_type)))))))
             (operation
               (custom_operation
@@ -1391,5 +1505,7 @@ func.func @foo(%a : f32) -> vector<1x2xf32> {
                 (type
                   (builtin_type
                     (vector_type
-                      (vector_dim_list)
+                      (vector_dim_list
+                        (dimension_size)
+                        (dimension_size))
                       (float_type))))))))))))

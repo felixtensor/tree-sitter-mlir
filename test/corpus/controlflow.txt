@@ -1532,12 +1532,14 @@ func.func @normalized_forall_elide_terminator() -> () {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (region
           (entry_block
@@ -1572,6 +1574,7 @@ func.func @normalized_forall_elide_terminator() -> () {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (region
                   (entry_block
@@ -1588,12 +1591,14 @@ func.func @normalized_forall_elide_terminator() -> () {
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (float_type)))))
                         (bare_id)
                         (type
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (float_type)))))))
                     (operation
                       (custom_operation
@@ -1613,12 +1618,14 @@ func.func @normalized_forall_elide_terminator() -> () {
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
+                                        (dimension_size)
                                         (float_type)))))
                                 (bare_id)
                                 (type
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
+                                        (dimension_size)
                                         (float_type)))))))))))))))
             (operation
               (custom_operation
@@ -1633,12 +1640,14 @@ func.func @normalized_forall_elide_terminator() -> () {
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
                   (float_type))))))
         (region
           (entry_block
@@ -1684,6 +1693,7 @@ func.func @normalized_forall_elide_terminator() -> () {
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
                         (float_type)))))
                 (region
                   (entry_block
@@ -1700,12 +1710,14 @@ func.func @normalized_forall_elide_terminator() -> () {
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (float_type)))))
                         (bare_id)
                         (type
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (float_type)))))))
                     (operation
                       (custom_operation
@@ -1725,12 +1737,14 @@ func.func @normalized_forall_elide_terminator() -> () {
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
+                                        (dimension_size)
                                         (float_type)))))
                                 (bare_id)
                                 (type
                                   (builtin_type
                                     (tensor_type
                                       (dim_list
+                                        (dimension_size)
                                         (float_type)))))))))
                         (attribute
                           (dictionary_attribute

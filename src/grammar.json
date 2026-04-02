@@ -892,7 +892,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_result_value_use"
+          "name": "value_use"
         },
         {
           "type": "CHOICE",
@@ -3701,12 +3701,7 @@
     ]
   ],
   "precedences": [],
-  "externals": [
-    {
-      "type": "SYMBOL",
-      "name": "_result_value_use"
-    }
-  ],
+  "externals": [],
   "inline": [],
   "supertypes": [],
   "reserved": {}

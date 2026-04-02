@@ -156,12 +156,18 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -169,6 +175,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -189,6 +199,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -205,11 +219,19 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (value_use)))
             (operation
@@ -226,6 +248,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (integer_type)))))))
                     (attribute_entry
                       (bare_id)
@@ -236,6 +259,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (integer_type)))))))))
                 (bare_id)
                 (value_use)
@@ -244,11 +268,17 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (value_use)
@@ -256,11 +286,19 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (type
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))
             (operation
               (custom_operation
@@ -270,6 +308,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))
 
 ================================================================================
@@ -1115,12 +1157,17 @@ func.func @broadcast(%input: tensor<8x32xf32>,
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
                   (float_type)))))
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (dimension_size)
                   (float_type))))))
         (func_return
           (type_list_attr_parens
@@ -1128,6 +1175,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
               (builtin_type
                 (tensor_type
                   (dim_list
+                    (dimension_size)
+                    (dimension_size)
+                    (dimension_size)
                     (float_type)))))))
         (region
           (entry_block
@@ -1142,6 +1192,8 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (value_use)
@@ -1149,6 +1201,9 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))
                 (bare_id)
                 (integer_literal)))
@@ -1160,4 +1215,7 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                   (builtin_type
                     (tensor_type
                       (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (dimension_size)
                         (float_type)))))))))))))

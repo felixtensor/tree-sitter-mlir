@@ -4,13 +4,6 @@
 export default grammar({
   name: 'mlir',
   extras: $ => [/\s/, $.comment],
-  externals: $ => [
-    // External scanner token: matches `%suffix_id` ONLY when followed by
-    // optional whitespace and `=`. This allows the parser to distinguish
-    // operation results (%x = op_name ...) from operands (%x) in custom
-    // operation bodies.
-    $._result_value_use,
-  ],
   conflicts: $ => [
     [$._static_dim_list, $._static_dim_list],
     [$.dictionary_attribute, $.region]
@@ -118,7 +111,7 @@ export default grammar({
         optional($._region_list), optional($.attribute), ':', $.function_type),
 
     _op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
-    op_result: $ => seq($._result_value_use, optional(seq(':', $.integer_literal))),
+    op_result: $ => seq($.value_use, optional(seq(':', $.integer_literal))),
     _successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)), ']'),
     successor: $ => prec.right(seq($.caret_id, optional($._value_arg_list))),
     _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
