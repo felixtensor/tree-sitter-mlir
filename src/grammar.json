@@ -2435,6 +2435,13 @@
         }
       ]
     },
+    "dimension_size": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_digit"
+      }
+    },
     "_dim_primitive": {
       "type": "CHOICE",
       "members": [
@@ -2443,11 +2450,8 @@
           "name": "_prim_type"
         },
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_digit"
-          }
+          "type": "SYMBOL",
+          "name": "dimension_size"
         },
         {
           "type": "STRING",
@@ -2615,11 +2619,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_digit"
-          }
+          "type": "SYMBOL",
+          "name": "dimension_size"
         },
         {
           "type": "REPEAT",
@@ -2631,11 +2632,8 @@
                 "value": "x"
               },
               {
-                "type": "REPEAT1",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_digit"
-                }
+                "type": "SYMBOL",
+                "name": "dimension_size"
               }
             ]
           }

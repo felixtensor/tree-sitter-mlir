@@ -22,8 +22,16 @@
 (module_operation sym_name: (symbol_ref_id) @function)
 
 ;; ── Types & Attributes ──────────────────────────────────────────────────────
-(builtin_type) @type.builtin
+;; Individual builtin type nodes — captures nested types inside dim_list
+;; (e.g. vector inside memref<256 x 256 x vector<8 x f32>>) which are
+;; reached through the hidden _prim_type rule, not through builtin_type.
+[(builtin_type)
+ (memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
+ (opaque_type) (integer_type) (float_type) (index_type) (none_type)] @type.builtin
 [(type_alias) (type_alias_def) (dialect_type)] @type
+
+;; Dimension sizes inside type dimension lists (256, 8, etc.)
+(dimension_size) @number
 
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
