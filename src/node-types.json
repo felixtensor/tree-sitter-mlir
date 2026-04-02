@@ -287,6 +287,10 @@
           "named": true
         },
         {
+          "type": "dense_resource_literal",
+          "named": true
+        },
+        {
           "type": "strided_layout",
           "named": true
         }
@@ -515,6 +519,25 @@
     }
   },
   {
+    "type": "dense_resource_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bare_id",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dialect_attribute",
     "named": true,
     "fields": {},
@@ -590,6 +613,10 @@
           "named": true
         },
         {
+          "type": "dimension_size",
+          "named": true
+        },
+        {
           "type": "float_type",
           "named": true
         },
@@ -623,6 +650,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "dimension_size",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "entry_block",
@@ -1109,6 +1141,10 @@
           "named": true
         },
         {
+          "type": "dimension_size",
+          "named": true
+        },
+        {
           "type": "float_type",
           "named": true
         },
@@ -1425,7 +1461,17 @@
   {
     "type": "vector_dim_list",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dimension_size",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "vector_type",
@@ -1593,6 +1639,10 @@
   },
   {
     "type": "complex",
+    "named": false
+  },
+  {
+    "type": "dense_resource",
     "named": false
   },
   {

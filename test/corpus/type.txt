@@ -510,16 +510,17 @@ Scalable 2d vector with scalable dimensions
 
 (toplevel
   (operation
-    (op_result
-      (value_use))
+    (op_result)
     (generic_operation
       (string_literal)
       (function_type
         (type
           (builtin_type
             (vector_type
-              (vector_dim_list)
-              (vector_dim_list)
+              (vector_dim_list
+                (dimension_size))
+              (vector_dim_list
+                (dimension_size))
               (float_type))))))))
 
 ================================================================================
@@ -530,16 +531,17 @@ Scalable vector with bf16
 
 (toplevel
   (operation
-    (op_result
-      (value_use))
+    (op_result)
     (generic_operation
       (string_literal)
       (function_type
         (type
           (builtin_type
             (vector_type
-              (vector_dim_list)
-              (vector_dim_list)
+              (vector_dim_list
+                (dimension_size))
+              (vector_dim_list
+                (dimension_size))
               (float_type))))))))
 
 ================================================================================
@@ -1117,6 +1119,7 @@ func.func @empty_dense_literal() -> () {
                           (builtin_type
                             (tensor_type
                               (dim_list
+                                (dimension_size)
                                 (integer_type)))))))))
                 (function_type)))
             (operation

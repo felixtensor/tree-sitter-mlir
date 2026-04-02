@@ -2435,6 +2435,13 @@
         }
       ]
     },
+    "dimension_size": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_digit"
+      }
+    },
     "_dim_primitive": {
       "type": "CHOICE",
       "members": [
@@ -2443,11 +2450,8 @@
           "name": "_prim_type"
         },
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_digit"
-          }
+          "type": "SYMBOL",
+          "name": "dimension_size"
         },
         {
           "type": "STRING",
@@ -2615,11 +2619,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_digit"
-          }
+          "type": "SYMBOL",
+          "name": "dimension_size"
         },
         {
           "type": "REPEAT",
@@ -2631,11 +2632,8 @@
                 "value": "x"
               },
               {
-                "type": "REPEAT1",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_digit"
-                }
+                "type": "SYMBOL",
+                "name": "dimension_size"
               }
             ]
           }
@@ -2927,6 +2925,43 @@
         {
           "type": "SYMBOL",
           "name": "affine_set"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dense_resource_literal"
+        }
+      ]
+    },
+    "dense_resource_literal": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "dense_resource"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "bare_id"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string_literal"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ">"
         }
       ]
     },

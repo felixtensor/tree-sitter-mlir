@@ -1,97 +1,72 @@
 ;; ---------------------------------------------------------------------------
-;; Dialect-agnostic MLIR syntax highlighting
+;; MLIR Syntax Highlighting
+;; For Neovim (nvim-treesitter), Helix, and other tree-sitter-compatible
+;; editors. Uses standard tree-sitter capture names.
 ;; ---------------------------------------------------------------------------
 
-;; Comments
 (comment) @comment
 
-;; Keywords and Operation names
-(func_operation name: _ @keyword)
-(module_operation name: _ @keyword)
+;; ── Operations (Tiered) ─────────────────────────────────────────────────────
+;; Builtin/Standard operations
+(func_operation name: _ @function.builtin)
+(module_operation name: _ @function.builtin)
+(func_operation ["private" "attributes"] @keyword)
 
-(custom_op_name) @function.method
-(generic_operation (string_literal) @function)
+;; Dialect operations (e.g., arith.addi)
+(custom_op_name) @function.builtin
+(generic_operation (string_literal) @function.builtin)
 
-;; Types
-(builtin_type) @type.builtin
+;; Symbols (@name)
+(symbol_ref_id) @string.special.symbol
+(func_operation sym_name: (symbol_ref_id) @function)
+(module_operation sym_name: (symbol_ref_id) @function)
 
-[
-  (type_alias)
-  (dialect_type)
-  (type_alias_def)
-] @type
+;; ── Types & Attributes ──────────────────────────────────────────────────────
+;; Individual builtin type nodes — captures nested types inside dim_list
+;; (e.g. vector inside memref<256 x 256 x vector<8 x f32>>) which are
+;; reached through the hidden _prim_type rule, not through builtin_type.
+[(builtin_type)
+ (memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
+ (opaque_type) (integer_type) (float_type) (index_type) (none_type)] @type.builtin
+[(type_alias) (type_alias_def) (dialect_type)] @type
 
-;; Numeric and Bool literals
-[
-  (integer_literal)
-  (float_literal)
-  (complex_literal)
-] @number
+;; Dimension sizes inside type dimension lists (256, 8, etc.)
+(dimension_size) @number
 
+[(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
+
+;; Specific attribute content
+(affine_map ["max" "min" "symbol"] @keyword)
+(affine_set ["max" "min" "symbol"] @keyword)
+(strided_layout "offset" @keyword)
+
+;; ── Literals ────────────────────────────────────────────────────────────────
+[(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
-
-;; Attributes and other constants
-[
-  (tensor_literal)
-  (array_literal)
-  (unit_literal)
-  (uninitialized_literal)
-] @constant.builtin
-
-[
-  (attribute_alias)
-  (attribute_alias_def)
-  (dialect_attribute)
-] @attribute
-
-(dictionary_attribute) @attribute
-
-;; Builtin attribute and affine keywords
-(affine_map "affine_map" @keyword)
-(affine_set "affine_set" @keyword)
-(strided_layout "strided" @keyword)
-
-;; Strings
+[(tensor_literal) (dense_resource_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
 (string_literal) @string
 
-;; Functions and symbols
-(func_operation sym_name: (symbol_ref_id) @function)
-(module_operation sym_name: (symbol_ref_id) @module)
-(symbol_ref_id) @symbol
-
-;; Variables
+;; ── SSA Variables (%name) ───────────────────────────────────────────────────
+;; General uses and results (catch-all, overridden by more specific rules below)
+(op_result) @variable
 (value_use) @variable
+
+;; Formal Parameters override the general variable rule above
 (func_arg_list (value_use) @variable.parameter)
 (block_arg_list (value_use) @variable.parameter)
-(op_result) @variable
 
-;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
+;; ── Control Flow ────────────────────────────────────────────────────────────
+(caret_id) @label
+(trailing_location "loc" @keyword)
+(variadic) @punctuation.special
+
+;; ── Punctuation ─────────────────────────────────────────────────────────────
+["(" ")" "{" "}" "[" "]" "<" ">"] @punctuation.bracket
+["," ":"] @punctuation.delimiter
+["=" "->" "::"] @operator
+
+;; Catch-all for bare keywords in Op bodies (ins, outs, etc.)
 (bare_id) @keyword
 
-;; Brackets
-[
-  "("
-  ")"
-  "{"
-  "}"
-  "["
-  "]"
-  "<"
-  ">"
-] @punctuation.bracket
-
-;; Delimiters
-[
-  ":"
-  ","
-] @punctuation.delimiter
-
-;; Operators
-[
-  "="
-  "->"
-] @operator
-
-;; Block labels
-(caret_id) @label
-
+;; Dictionary attribute keys override the bare_id catch-all above
+(attribute_entry (bare_id) @attribute)

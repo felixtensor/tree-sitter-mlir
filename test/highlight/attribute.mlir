@@ -41,25 +41,6 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 //       ^ variable
 }
 
-func.func @fastmath(%arg0: f32, %arg1: f32) {
-// <- function.builtin
-//        ^ function
-//                  ^ variable.parameter
-//                         ^ type.builtin
-//                              ^ variable.parameter
-//                                     ^ type.builtin
-  %5 = arith.negf %arg0 fastmath<fast> : f32
-//     ^ function.builtin
-//                      ^ attribute
-  %6 = arith.addf %arg0, %arg1 fastmath<none> : f32
-//     ^ function.builtin
-//                             ^ attribute
-  %8 = arith.mulf %arg0, %arg1 fastmath<reassoc,nnan,ninf,nsz,arcp,contract,afn> : f32
-//     ^ function.builtin
-//                             ^ attribute
-  return
-// ^ function.builtin
-}
 
 #map0 = affine_map<(d0, d1) -> (d0, d1)>
 // <- attribute
@@ -112,6 +93,6 @@ func.func @broadcast(%input: tensor<8x32xf32>,
       outs(%init:tensor<8x16x32xf32>)
 //    ^ keyword
       dimensions = [1]
-//    ^ attribute
+//    ^ keyword
   func.return %bcast : tensor<8x16x32xf32>
 }

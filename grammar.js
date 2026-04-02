@@ -291,7 +291,8 @@ export default grammar({
     // NOTE: '*' is only valid in memref (dynamic offset/stride), not in tensor
     // or vector dimension lists. The grammar accepts it permissively here to
     // avoid a separate rule; strict validation is left to semantic analysis.
-    _dim_primitive: $ => choice($._prim_type, repeat1($._digit), '?', '*'),
+    dimension_size: $ => repeat1($._digit),
+    _dim_primitive: $ => choice($._prim_type, $.dimension_size, '?', '*'),
 
     tensor_type: $ => seq(token('tensor'), '<', $.dim_list,
       optional(seq(',', $.tensor_encoding)), '>'),
@@ -300,7 +301,7 @@ export default grammar({
     vector_type: $ => seq(token('vector'), '<', repeat($.vector_dim_list), $._prim_type, '>'),
     vector_dim_list: $ => prec.left(choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
-    _static_dim_list: $ => seq(repeat1($._digit), repeat(seq('x', repeat1($._digit)))),
+    _static_dim_list: $ => seq($.dimension_size, repeat(seq('x', $.dimension_size))),
 
     tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
     tuple_dim: $ => $._prim_type,
@@ -334,8 +335,11 @@ export default grammar({
     builtin_attribute: $ => choice(
       $.strided_layout,
       $.affine_map,
-      $.affine_set
+      $.affine_set,
+      $.dense_resource_literal,
     ),
+    dense_resource_literal: $ => seq(token('dense_resource'), '<',
+      choice($.bare_id, $.string_literal), '>'),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
