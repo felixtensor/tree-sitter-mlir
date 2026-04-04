@@ -1495,6 +1495,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "combining_kind"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_literal"
         },
         {
@@ -1516,6 +1520,23 @@
         {
           "type": "STRING",
           "value": "->"
+        }
+      ]
+    },
+    "combining_kind": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bare_id"
+        },
+        {
+          "type": "STRING",
+          "value": ">"
         }
       ]
     },

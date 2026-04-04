@@ -191,10 +191,17 @@ module.exports = grammar({
       $.region,                 // { ... } (regions with operations)
       $._custom_body_paren,     // ( ... )
       $._custom_body_bracket,   // [ ... ]
+      $.combining_kind,         // <add>, <mul>, <newline>, etc. (enum attrs)
       $._literal,               // 42, 3.14, "string", true, dense<...>
       $.bare_id,                // keywords: to, from, step, ins, outs, etc.
       ',', '=', ':', '->',
     ),
+
+    // combining-kind ::= `<` bare-id `>`
+    // Used by vector.reduction, vector.print, sparse_tensor ops, etc.
+    // Represents enum-valued attributes written with angle brackets in custom
+    // assembly format (e.g. <add>, <mul>, <newline>).
+    combining_kind: $ => seq('<', $.bare_id, '>'),
 
     _custom_body_paren: $ => seq('(', repeat($._custom_body_element), ')'),
     _custom_body_bracket: $ => seq('[', repeat($._custom_body_element), ']'),
