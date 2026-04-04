@@ -357,9 +357,10 @@ module.exports = grammar({
     ),
     dense_resource_literal: $ => seq(token('dense_resource'), '<',
       choice($.bare_id, $.string_literal), '>'),
-    strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
-      optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
-    _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
+    strided_layout: $ => seq(token('strided'), '<', '[', optional($._stride_list_comma), ']',
+      optional(seq(',', token('offset'), ':', $._stride_primitive)), '>'),
+    _stride_list_comma: $ => seq($._stride_primitive, repeat(seq(',', $._stride_primitive))),
+    _stride_primitive: $ => choice($.integer_literal, '?', '*'),
 
     // =========================================================================
     // Affine expressions

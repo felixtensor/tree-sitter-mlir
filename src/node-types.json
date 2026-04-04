@@ -1216,15 +1216,7 @@
       "required": false,
       "types": [
         {
-          "type": "dimension_size",
-          "named": true
-        },
-        {
           "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "type",
           "named": true
         }
       ]

@@ -167,7 +167,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)
+                      (integer_literal)
                       (integer_literal)))))))
           (value_use)
           (type
@@ -180,7 +180,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)))))))
+                      (integer_literal)))))))
           (value_use)
           (type
             (builtin_type
@@ -193,8 +193,8 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)
-                      (dimension_size)
+                      (integer_literal)
+                      (integer_literal)
                       (integer_literal))))))))
         (region
           (entry_block
@@ -264,7 +264,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
+                            (integer_literal)
                             (integer_literal)))))))
                 (bare_id)
                 (type
@@ -277,7 +277,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
+                            (integer_literal)
                             (integer_literal)))))))
                 (value_use)))
             (operation
@@ -297,7 +297,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
+                            (integer_literal)
                             (integer_literal)))))))
                 (bare_id)
                 (type
@@ -311,7 +311,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
+                            (integer_literal)
                             (integer_literal)))))))
                 (value_use)))
             (operation
@@ -331,71 +331,6 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
-                (bare_id)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (type
-                          (builtin_type
-                            (float_type))))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout
-                            (dimension_size)))))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (value_use)
-                (integer_literal)
-                (integer_literal)
-                (integer_literal)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (type
-                          (builtin_type
-                            (float_type))))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout
-                            (dimension_size)))))))
-                (bare_id)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (dimension_size)
-                        (type
-                          (builtin_type
-                            (float_type))))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout
-                            (dimension_size)))))))
-                (value_use)))
-            (operation
-              (custom_operation
-                (custom_op_name)
-                (value_use)
-                (integer_literal)
-                (integer_literal)
-                (type
-                  (builtin_type
-                    (memref_type
-                      (dim_list
-                        (dimension_size)
-                        (type
-                          (builtin_type
-                            (float_type))))
-                      (attribute_value
-                        (builtin_attribute
-                          (strided_layout
-                            (dimension_size)
-                            (dimension_size)
                             (integer_literal)))))))
                 (bare_id)
                 (type
@@ -408,7 +343,72 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (integer_literal)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (integer_literal)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (integer_literal)
+                            (integer_literal)
+                            (integer_literal)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (integer_literal)))))))
                 (value_use)))
             (operation
               (custom_operation
@@ -426,7 +426,7 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
                 (bare_id)
                 (type
                   (builtin_type
@@ -749,7 +749,7 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                   (attribute_value
                     (builtin_attribute
                       (strided_layout
-                        (dimension_size)))))))))
+                        (integer_literal)))))))))
         (region
           (entry_block
             (operation
@@ -786,7 +786,7 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))))
+                            (integer_literal)))))))))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -802,7 +802,7 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))))))))))
+                            (integer_literal)))))))))))))))
 
 ================================================================================
 memref.extract_strided_metadata
@@ -1035,8 +1035,8 @@ func.func @subview(%src: memref<8x16xf32>) -> memref<4x8xf32, strided<[16, 1], o
                   (attribute_value
                     (builtin_attribute
                       (strided_layout
-                        (dimension_size)
-                        (dimension_size)
+                        (integer_literal)
+                        (integer_literal)
                         (integer_literal)))))))))
         (region
           (entry_block
@@ -1074,8 +1074,8 @@ func.func @subview(%src: memref<8x16xf32>) -> memref<4x8xf32, strided<[16, 1], o
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
-                            (dimension_size)
+                            (integer_literal)
+                            (integer_literal)
                             (integer_literal)))))))))
             (operation
               (custom_operation
@@ -1093,8 +1093,8 @@ func.func @subview(%src: memref<8x16xf32>) -> memref<4x8xf32, strided<[16, 1], o
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)
-                            (dimension_size)
+                            (integer_literal)
+                            (integer_literal)
                             (integer_literal)))))))))))))))
 
 ================================================================================
