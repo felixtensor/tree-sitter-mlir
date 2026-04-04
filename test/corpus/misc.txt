@@ -1,0 +1,266 @@
+================================================================================
+arith.cmpi with string parameter
+================================================================================
+func.func @notCmpEQ(%arg0: i8, %arg1: i8) -> i1 {
+  %true = arith.constant true
+  %cmp = arith.cmpi "eq", %arg0, %arg1 : i8
+  %ncmp = arith.xori %cmp, %true : i1
+  return %ncmp : i1
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (bool_literal)
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+bufferization.alloc_tensor
+================================================================================
+func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
+  -> tensor<?x5xf32>
+{
+  %0 = bufferization.alloc_tensor(%sz) : tensor<?x5xf32>
+  %1 = bufferization.alloc_tensor() copy(%t) : tensor<?x5xf32>
+  %2 = bufferization.alloc_tensor() : tensor<5x6xf32>
+  %3 = bufferization.alloc_tensor(%sz, %sz) : tensor<?x?xf32>
+  %4 = bufferization.alloc_tensor() copy(%t) {escape = true} : tensor<?x5xf32>
+  %5 = bufferization.alloc_tensor() copy(%t) {escape = false} : tensor<?x5xf32>
+  %c100 = arith.constant 100 : index
+  %6 = bufferization.alloc_tensor() size_hint=%c100 : tensor<100x100xf64, #CSR>
+  %7 = bufferization.alloc_tensor(%sz) {memory_space = "foo"} : tensor<?xf32>
+  return %1 : tensor<?x5xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (bool_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (bool_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (tensor_encoding
+                        (attribute_value
+                          (attribute_alias))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
+

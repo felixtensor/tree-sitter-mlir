@@ -1,0 +1,1315 @@
+================================================================================
+memref.alloc, memref.cast, and memref.copy
+================================================================================
+func.func @memref_copy() {
+  %0 = memref.alloc() : memref<2xf32>
+  %1 = memref.cast %0 : memref<2xf32> to memref<*xf32>
+  %2 = memref.alloc() : memref<2xf32>
+  %3 = memref.cast %0 : memref<2xf32> to memref<*xf32>
+  memref.copy %1, %3 : memref<*xf32> to memref<*xf32>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+memref.expand_shape and memref.collapse_shape
+================================================================================
+func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
+         %arg1: memref<?x?x?xf32, strided<[?, ?, 1], offset: 0>>,
+         %arg2: memref<?x?x?xf32, strided<[?, ?, 1], offset: ?>>,
+         %arg3: memref<?x42xf32, strided<[42, 1], offset: 0>>) {
+  %0 = memref.collapse_shape %arg0 [[0, 1], [2]] :
+    memref<?x?x?xf32> into memref<?x?xf32>
+  %r0 = memref.expand_shape %0 [[0, 1], [2]] :
+    memref<?x?xf32> into memref<?x4x?xf32>
+  %1 = memref.collapse_shape %arg1 [[0, 1], [2]] :
+    memref<?x?x?xf32, strided<[?, ?, 1], offset: 0>> into
+    memref<?x?xf32, strided<[?, 1], offset: 0>>
+  %r1 = memref.expand_shape %1 [[0, 1], [2]] :
+    memref<?x?xf32, strided<[?, 1], offset: 0>> into
+    memref<?x4x?xf32, strided<[?, ?, 1], offset: 0>>
+  %2 = memref.collapse_shape %arg2 [[0, 1], [2]] :
+    memref<?x?x?xf32, strided<[?, ?, 1], offset: ?>> into
+    memref<?x?xf32, strided<[?, 1], offset: ?>>
+  %r2 = memref.expand_shape %2 [[0, 1], [2]] :
+    memref<?x?xf32, strided<[?, 1], offset: ?>> into
+    memref<?x4x?xf32, strided<[?, ?, 1], offset: ?>>
+  %3 = memref.collapse_shape %arg3 [[0, 1]] :
+    memref<?x42xf32, strided<[42, 1], offset: 0>> into
+    memref<?xf32, strided<[1]>>
+  %r3 = memref.expand_shape %3 [[0, 1]] :
+    memref<?xf32, strided<[1]>> into memref<?x42xf32>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (float_type))))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dimension_size)
+                      (integer_literal)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (float_type))))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dimension_size)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dimension_size)
+                      (dimension_size)
+                      (integer_literal))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (integer_literal)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (integer_literal)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (integer_literal)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (integer_literal)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (dimension_size)
+                            (integer_literal)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+memref.realloc
+================================================================================
+func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
+  %0 = memref.realloc %src(%d) : memref<2xf32> to memref<?xf32>
+  return %0 : memref<?xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
+
+================================================================================
+memref.rank
+================================================================================
+func.func @rank(%t : memref<4x4x?xf32>) {
+  %0 = memref.rank %t : memref<4x4x?xf32>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+memref.store
+================================================================================
+func.func @truncation_spillover(%arg0 : memref<?xi32>) -> index {
+    %c0 = arith.constant 0 : index
+    %c1 = arith.constant 1 : index
+    %c2 = arith.constant 2 : index
+    %c49 = arith.constant 49 : index
+    %0 = scf.for %arg1 = %c0 to %c2 step %c1 iter_args(%arg2 = %c0) -> index {
+        %1 = arith.divsi %arg2, %c49 : index
+        %2 = arith.index_cast %1 : index to i32
+        memref.store %2, %arg0[%c0] : memref<?xi32>
+        %3 = arith.addi %arg2, %arg1 : index
+        scf.yield %3 : index
+    }
+  func.return %0 : index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (integer_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (op_result
+                        (value_use))
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))
+                        (value_use)))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))
+                        (bare_id)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (memref_type
+                              (dim_list
+                                (type
+                                  (builtin_type
+                                    (integer_type)))))))
+                        (value_use)))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (index_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))))))))
+
+================================================================================
+memref.reinterpret_cast
+================================================================================
+func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
+    -> memref<10x?xf32, strided<[?, 1], offset: ?>> {
+  %out = memref.reinterpret_cast %in to
+           offset: [1], sizes: [10, 10], strides: [1, 1]
+           : memref<?xf32> to memref<10x?xf32, strided<[?, 1], offset: ?>>
+  return %out : memref<10x?xf32, strided<[?, 1], offset: ?>>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type))))
+                  (attribute_value
+                    (builtin_attribute
+                      (strided_layout
+                        (dimension_size)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (bare_id)
+                (integer_literal)
+                (bare_id)
+                (integer_literal)
+                (integer_literal)
+                (bare_id)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)))))))))))))))
+
+================================================================================
+memref.extract_strided_metadata
+================================================================================
+func.func @extract_strided_metadata(%memref : memref<10x?xf32>)
+  -> memref<?x?xf32, strided<[?, ?], offset: ?>> {
+
+  %base, %offset, %sizes:2, %strides:2 = memref.extract_strided_metadata %memref
+    : memref<10x?xf32> -> memref<f32>, index, index, index, index, index
+
+  %m2 = memref.reinterpret_cast %base to
+      offset: [%offset],
+      sizes: [%sizes#0, %sizes#1],
+      strides: [%strides#0, %strides#1]
+    : memref<f32> to memref<?x?xf32, strided<[?, ?], offset: ?>>
+
+  return %m2: memref<?x?xf32, strided<[?, ?], offset: ?>>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (type
+                      (builtin_type
+                        (float_type))))
+                  (attribute_value
+                    (builtin_attribute
+                      (strided_layout))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout))))))))))))))
+
+================================================================================
+memref.extract_aligned_pointer_as_index
+================================================================================
+func.func @memref_extract_aligned_pointer(%src : memref<?xf32>) -> index {
+  %0 = memref.extract_aligned_pointer_as_index %src : memref<?xf32> -> index
+  return %0 : index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))))))))
+
+================================================================================
+memref.subview with static offsets, sizes and strides
+================================================================================
+func.func @subview(%src: memref<8x16xf32>) -> memref<4x8xf32, strided<[16, 1], offset: 0>> {
+  %sub = memref.subview %src[0, 0][4, 8][1, 1]
+    : memref<8x16xf32> to memref<4x8xf32, strided<[16, 1], offset: 0>>
+  return %sub : memref<4x8xf32, strided<[16, 1], offset: 0>>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (dimension_size)
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type))))
+                  (attribute_value
+                    (builtin_attribute
+                      (strided_layout
+                        (dimension_size)
+                        (dimension_size)
+                        (integer_literal)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (dimension_size)
+                            (integer_literal)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type))))
+                      (attribute_value
+                        (builtin_attribute
+                          (strided_layout
+                            (dimension_size)
+                            (dimension_size)
+                            (integer_literal)))))))))))))))
+
+================================================================================
+memref.load and memref.alloca
+================================================================================
+func.func @load_alloca(%src: memref<4x8xf32>) -> f32 {
+  %buf = memref.alloca() : memref<1xf32>
+  %c0 = arith.constant 0 : index
+  %val = memref.load %src[%c0, %c0] : memref<4x8xf32>
+  return %val : f32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))))))))
+
+================================================================================
+memref.dim
+================================================================================
+func.func @dim(%m: memref<?x4xf32>) -> index {
+  %c0 = arith.constant 0 : index
+  %d = memref.dim %m, %c0 : memref<?x4xf32>
+  return %d : index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))))))))
+
+================================================================================
+memref.global and memref.get_global
+================================================================================
+memref.global "private" @gv : memref<4xf32> = dense<[0.0, 1.0, 2.0, 3.0]>
+
+func.func @get_global() -> memref<4xf32> {
+  %0 = memref.get_global @gv : memref<4xf32>
+  return %0 : memref<4xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (symbol_ref_id)
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type)))))))
+      (tensor_literal
+        (nested_idx_list
+          (float_literal)
+          (float_literal)
+          (float_literal)
+          (float_literal)))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (symbol_ref_id)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
