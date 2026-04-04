@@ -8,7 +8,8 @@ module.exports = grammar({
     [$.dictionary_attribute, $.region],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
-    [$.pretty_dialect_item]
+    [$.pretty_dialect_item],
+    [$._value_use_list, $._value_use_and_type],
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -220,7 +221,10 @@ module.exports = grammar({
     _value_use_and_type_list: $ => seq($._value_use_and_type,
       repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
-    _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
+    _value_arg_list: $ => seq('(', optional(choice(
+      $._value_use_type_list,       // bulk format: (%v0, %v1 : t0, t1)
+      $._value_use_and_type_list,   // per-pair format: (%v0 : t0, %v1 : t1)
+    )), ')'),
     _value_use_type_list: $ => seq($._value_use_list, ':', $._type_list_no_parens),
 
     // =========================================================================

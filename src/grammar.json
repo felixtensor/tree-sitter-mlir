@@ -1729,8 +1729,17 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_value_use_type_list"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_value_use_type_list"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_value_use_and_type_list"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -3807,6 +3816,10 @@
     ],
     [
       "pretty_dialect_item"
+    ],
+    [
+      "_value_use_list",
+      "_value_use_and_type"
     ]
   ],
   "precedences": [],
