@@ -1018,8 +1018,7 @@ func.func @reduction(%v: vector<8xf32>, %acc: f32) -> f32 {
                 (value_use))
               (custom_operation
                 (custom_op_name)
-                (combining_kind
-                  (bare_id))
+                (bare_id)
                 (value_use)
                 (type
                   (builtin_type
@@ -1035,8 +1034,7 @@ func.func @reduction(%v: vector<8xf32>, %acc: f32) -> f32 {
             (operation
               (custom_operation
                 (custom_op_name)
-                (combining_kind
-                  (bare_id))
+                (bare_id)
                 (value_use)
                 (value_use)
                 (type

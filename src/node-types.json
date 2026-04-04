@@ -70,6 +70,10 @@
           "named": true
         },
         {
+          "type": "string_literal",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         }
@@ -176,6 +180,10 @@
           "named": true
         },
         {
+          "type": "symbol_ref_id",
+          "named": true
+        },
+        {
           "type": "tensor_literal",
           "named": true
         },
@@ -189,6 +197,10 @@
         },
         {
           "type": "unit_literal",
+          "named": true
+        },
+        {
+          "type": "value_use",
           "named": true
         }
       ]
@@ -208,6 +220,10 @@
         },
         {
           "type": "attribute_alias",
+          "named": true
+        },
+        {
+          "type": "bare_id",
           "named": true
         },
         {
@@ -239,6 +255,10 @@
           "named": true
         },
         {
+          "type": "symbol_ref_id",
+          "named": true
+        },
+        {
           "type": "tensor_literal",
           "named": true
         },
@@ -252,6 +272,10 @@
         },
         {
           "type": "unit_literal",
+          "named": true
+        },
+        {
+          "type": "value_use",
           "named": true
         }
       ]
@@ -398,21 +422,6 @@
     "fields": {}
   },
   {
-    "type": "combining_kind",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "bare_id",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "complex_literal",
     "named": true,
     "fields": {},
@@ -444,6 +453,10 @@
           "named": true
         },
         {
+          "type": "dialect_type",
+          "named": true
+        },
+        {
           "type": "float_type",
           "named": true
         },
@@ -469,6 +482,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "type_alias",
           "named": true
         },
         {
@@ -516,10 +533,6 @@
         },
         {
           "type": "bool_literal",
-          "named": true
-        },
-        {
-          "type": "combining_kind",
           "named": true
         },
         {
@@ -616,11 +629,6 @@
     }
   },
   {
-    "type": "dialect_ident",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "dialect_namespace",
     "named": true,
     "fields": {}
@@ -699,6 +707,65 @@
     }
   },
   {
+    "type": "external_resources",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_literal",
+          "named": true
+        },
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "bare_id",
+          "named": true
+        },
+        {
+          "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "pretty_dialect_item_body",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "tensor_literal",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "uninitialized_literal",
+          "named": true
+        },
+        {
+          "type": "unit_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "func_arg_list",
     "named": true,
     "fields": {},
@@ -708,6 +775,10 @@
       "types": [
         {
           "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "function_type",
           "named": true
         },
         {
@@ -744,12 +815,12 @@
         "required": false,
         "types": [
           {
-            "type": "attribute",
-            "named": true
-          },
-          {
             "type": "attributes",
             "named": false
+          },
+          {
+            "type": "dictionary_attribute",
+            "named": true
           }
         ]
       },
@@ -1000,6 +1071,14 @@
         },
         {
           "type": "nested_idx_list",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -1306,6 +1385,14 @@
         {
           "type": "nested_idx_list",
           "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
         }
       ]
     }
@@ -1340,6 +1427,10 @@
       "types": [
         {
           "type": "attribute_alias_def",
+          "named": true
+        },
+        {
+          "type": "external_resources",
           "named": true
         },
         {
@@ -1381,6 +1472,10 @@
           "named": true
         },
         {
+          "type": "dialect_type",
+          "named": true
+        },
+        {
           "type": "float_type",
           "named": true
         },
@@ -1406,6 +1501,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "type_alias",
           "named": true
         },
         {
@@ -1525,6 +1624,10 @@
           "named": true
         },
         {
+          "type": "dialect_type",
+          "named": true
+        },
+        {
           "type": "float_type",
           "named": true
         },
@@ -1553,6 +1656,10 @@
           "named": true
         },
         {
+          "type": "type_alias",
+          "named": true
+        },
+        {
           "type": "vector_dim_list",
           "named": true
         },
@@ -1572,7 +1679,15 @@
     "named": false
   },
   {
+    "type": "#-}",
+    "named": false
+  },
+  {
     "type": "%",
+    "named": false
+  },
+  {
+    "type": "&",
     "named": false
   },
   {
@@ -1585,6 +1700,10 @@
   },
   {
     "type": "*",
+    "named": false
+  },
+  {
+    "type": "+",
     "named": false
   },
   {
@@ -1604,6 +1723,10 @@
     "named": false
   },
   {
+    "type": "/",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
@@ -1616,11 +1739,23 @@
     "named": false
   },
   {
+    "type": "<=",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
   {
+    "type": "==",
+    "named": false
+  },
+  {
     "type": ">",
+    "named": false
+  },
+  {
+    "type": ">=",
     "named": false
   },
   {
@@ -1672,6 +1807,10 @@
     "named": false
   },
   {
+    "type": "ceildiv",
+    "named": false
+  },
+  {
     "type": "comment",
     "named": true,
     "extra": true
@@ -1681,8 +1820,20 @@
     "named": false
   },
   {
+    "type": "compressed",
+    "named": false
+  },
+  {
+    "type": "dense",
+    "named": false
+  },
+  {
     "type": "dense_resource",
     "named": false
+  },
+  {
+    "type": "dialect_ident",
+    "named": true
   },
   {
     "type": "float_literal",
@@ -1691,6 +1842,10 @@
   {
     "type": "float_type",
     "named": true
+  },
+  {
+    "type": "floordiv",
+    "named": false
   },
   {
     "type": "func.func",
@@ -1713,6 +1868,10 @@
     "named": false
   },
   {
+    "type": "loose_compressed",
+    "named": false
+  },
+  {
     "type": "max",
     "named": false
   },
@@ -1725,7 +1884,15 @@
     "named": false
   },
   {
+    "type": "mod",
+    "named": false
+  },
+  {
     "type": "module",
+    "named": false
+  },
+  {
+    "type": "n_out_of_m",
     "named": false
   },
   {
@@ -1742,6 +1909,14 @@
   },
   {
     "type": "private",
+    "named": false
+  },
+  {
+    "type": "singleton",
+    "named": false
+  },
+  {
+    "type": "sparse",
     "named": false
   },
   {
@@ -1789,7 +1964,19 @@
     "named": false
   },
   {
+    "type": "{-#",
+    "named": false
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "~",
     "named": false
   }
 ]

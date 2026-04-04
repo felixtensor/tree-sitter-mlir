@@ -825,8 +825,7 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (type
                       (builtin_type
                         (integer_type)))))))))
-        (attribute
-          (dictionary_attribute))
+        (dictionary_attribute)
         (region
           (entry_block
             (operation
