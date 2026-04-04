@@ -14,16 +14,20 @@
     }
   ],
   "metadata": {
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "Apache-2.0",
     "description": "Tree sitter grammar for MLIR",
     "authors": [
+      {
+        "name": "Buyun Xu",
+        "email": "xubuyun@outlook.com"
+      },
       {
         "name": "Ramkumar Ramachandra"
       }
     ],
     "links": {
-      "repository": "https://github.com/tree-sitter/tree-sitter-mlir"
+      "repository": "https://github.com/felixtensor/tree-sitter-mlir"
     }
   },
   "bindings": {

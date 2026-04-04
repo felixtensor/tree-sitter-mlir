@@ -1,8 +1,11 @@
 {
   "name": "tree-sitter-mlir",
   "description": "Tree sitter grammar for MLIR",
-  "version": "0.0.1",
-  "author": "Ramkumar Ramachandra",
+  "version": "0.1.0",
+  "author": "Buyun Xu",
+  "contributors": [
+    "Ramkumar Ramachandra"
+  ],
   "license": "Apache-2.0",
   "main": "grammar.js",
   "types": "bindings/node",

@@ -5,21 +5,21 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tree-sitter-mlir"
 description = "Mlir grammar for tree-sitter"
-version = "0.0.1"
+version = "0.1.0"
 keywords = ["incremental", "parsing", "tree-sitter", "mlir"]
 classifiers = [
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Topic :: Software Development :: Compilers",
   "Topic :: Text Processing :: Linguistic",
   "Typing :: Typed"
 ]
 requires-python = ">=3.8"
-license.text = "MIT"
+license.text = "Apache-2.0"
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/tree-sitter/tree-sitter-mlir"
+Homepage = "https://github.com/felixtensor/tree-sitter-mlir"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.21"]
