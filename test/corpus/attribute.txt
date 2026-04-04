@@ -77,7 +77,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)))))))
+                      (integer_literal)))))))
           (value_use)
           (type
             (builtin_type
@@ -89,7 +89,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)))))))
+                      (integer_literal)))))))
           (value_use)
           (type
             (builtin_type
@@ -116,7 +116,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
                 (type
                   (builtin_type
                     (memref_type
@@ -127,7 +127,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -825,8 +825,7 @@ func.func @main() -> (tensor<i32>) attributes {} {
                     (type
                       (builtin_type
                         (integer_type)))))))))
-        (attribute
-          (dictionary_attribute))
+        (dictionary_attribute)
         (region
           (entry_block
             (operation
@@ -1180,7 +1179,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size)))))))
+                      (integer_literal)))))))
           (value_use)
           (type
             (builtin_type
@@ -1192,7 +1191,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                 (attribute_value
                   (builtin_attribute
                     (strided_layout
-                      (dimension_size))))))))
+                      (integer_literal))))))))
         (region
           (entry_block
             (operation
@@ -1227,7 +1226,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -1240,7 +1239,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (attribute_value
                         (builtin_attribute
                           (strided_layout
-                            (dimension_size)))))))
+                            (integer_literal)))))))
                 (region
                   (block
                     (block_label

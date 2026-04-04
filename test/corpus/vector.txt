@@ -980,6 +980,82 @@ func.func @broadcast(%s: f32, %row: vector<4xf32>) -> vector<8x4xf32> {
                       (float_type))))))))))))
 
 ================================================================================
+vector.reduction
+================================================================================
+func.func @reduction(%v: vector<8xf32>, %acc: f32) -> f32 {
+  %sum = vector.reduction <add>, %v : vector<8xf32> into f32
+  %sum_acc = vector.reduction <add>, %v, %acc : vector<8xf32> into f32
+  return %sum_acc : f32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list
+                  (dimension_size))
+                (float_type))))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list
+                        (dimension_size))
+                      (float_type))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (vector_type
+                      (vector_dim_list
+                        (dimension_size))
+                      (float_type))))
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))))))))
+
+================================================================================
 vector.extract_strided_slice and vector.insert_strided_slice
 ================================================================================
 func.func @strided_slice(%src: vector<4x8xf32>, %dst: vector<8x16xf32>) -> vector<4x8xf32> {

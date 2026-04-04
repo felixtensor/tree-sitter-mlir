@@ -9,7 +9,8 @@ export default grammar({
     [$.dictionary_attribute, $.region],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
-    [$.pretty_dialect_item]
+    [$.pretty_dialect_item],
+    [$._value_use_list, $._value_use_and_type],
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -30,7 +31,9 @@ export default grammar({
     //   (operation | attribute-alias-def | type-alias-def)
     // =========================================================================
     toplevel: $ => seq($._toplevel, repeat($._toplevel)),
-    _toplevel: $ => choice($.operation, $.attribute_alias_def, $.type_alias_def),
+    _toplevel: $ => choice($.operation, $.attribute_alias_def, $.type_alias_def,
+      $.external_resources),
+    external_resources: $ => seq('{-#', repeat($._pretty_dialect_item_contents), '#-}'),
 
     // =========================================================================
     // Common syntax (lang-ref)
@@ -47,12 +50,8 @@ export default grammar({
     float_literal: $ => token(seq(
       optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
       optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
-    // NOTE: escape sequences (\n, \t, \", \\) are included per MLIR spec.
-    // To also expose escape_sequence as a named AST node (for @string.escape),
-    // this rule needs to become structural (seq instead of token). However,
-    // doing so shifts parser states and currently breaks the external scanner
-    // interaction with tree-sitter 0.26.6. The token form is kept for now;
-    // regenerate with a CLI version that produces a compatible parser.c first.
+    // NOTE: kept as token (not seq) to avoid breaking external scanner in tree-sitter 0.26.6.
+    // Switch to structural form when a compatible parser.c can be generated.
     string_literal: $ => token(seq(
       '"',
       repeat(choice(/[^\\"\n\f\v\r]+/, seq('\\', /[nt"\\]/))),
@@ -61,21 +60,27 @@ export default grammar({
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),
-    complex_literal: $ => prec(3, seq('(', choice($.integer_literal, $.float_literal), ',',
-      choice($.integer_literal, $.float_literal), ')')),
+    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
+      choice($.integer_literal, $.float_literal), ')'),
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
-      optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
-        $._primitive_idx_literal)), '>'),
+      optional(seq(
+        optional(seq($.type, ':')),
+        choice(
+          seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
+          $._primitive_element
+        )
+      )), '>'),
     array_literal: $ => seq(token('array'), '<', $.type, optional(seq(':', $._idx_list)), '>'),
     _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal, $.uninitialized_literal),
+      $.tensor_literal, $.array_literal, $.unit_literal, $.uninitialized_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),
-    _idx_list: $ => prec.right(seq($._primitive_idx_literal,
-      repeat(seq(',', $._primitive_idx_literal)))),
+    _idx_list: $ => prec.right(seq($._primitive_element,
+      repeat(seq(',', $._primitive_element)))),
+    _primitive_element: $ => seq($._primitive_idx_literal, optional(seq(':', $.type))),
     _primitive_idx_literal: $ => choice($.integer_literal, $.float_literal,
-      $.bool_literal, $.complex_literal),
+      $.bool_literal, $.complex_literal, $.string_literal),
 
     // =========================================================================
     // Identifiers
@@ -143,7 +148,7 @@ export default grammar({
       field('sym_name', $.symbol_ref_id),
       field('arguments', $.func_arg_list),
       field('return', optional($.func_return)),
-      field('attributes', optional(seq(optional(token('attributes')), $.attribute))),
+      field('attributes', optional(seq(optional(token('attributes')), $.dictionary_attribute))),
       field('body', optional($.region)),
     )),
 
@@ -151,7 +156,7 @@ export default grammar({
     module_operation: $ => prec.right(seq(
       field('name', choice(token(prec(20, 'builtin.module')), token(prec(20, 'module')))),
       field('sym_name', optional($.symbol_ref_id)),
-      field('attributes', optional($.attribute)),
+      field('attributes', optional(seq(optional(token('attributes')), $.attribute))),
       field('body', $.region),
     )),
 
@@ -174,9 +179,8 @@ export default grammar({
       /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/),
       repeat1(seq('.', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
     ))),
-    // Bare operation names: stable aliases from the func/builtin dialects only.
-    // Extend only for officially spec-sanctioned no-prefix aliases; all other
-    // dialect ops are handled by _dotted_op_name or _generic_custom_operation.
+    // Bare operation names: spec-sanctioned no-prefix aliases only.
+    // All other dialect ops go through _dotted_op_name or _generic_custom_operation.
     _bare_op_name: $ => token(prec(10, choice(
       'return', 'call', 'call_indirect', 'constant', 'unrealized_conversion_cast',
     ))),
@@ -184,21 +188,23 @@ export default grammar({
     // Structural body elements that can appear in custom operation format.
     // These are recognized by sigils (%,^,@,!,#) or by structural delimiters.
     _custom_body_element: $ => choice(
-      $.value_use,              // %foo, %0
-      $.symbol_ref_id,          // @sym, @"string"
-      $.successor,              // ^bb0, ^bb0(%arg : type)
-      prec(2, $.type),          // !type, i32, memref<...>, etc.
-      $.attribute,              // #attr, {dict}, affine_map<...>
-      $.region,                 // { ... } (regions with operations)
-      $._custom_body_paren,     // ( ... )
-      $._custom_body_bracket,   // [ ... ]
-      $._literal,               // 42, 3.14, "string", true, dense<...>
-      $.bare_id,                // keywords: to, from, step, ins, outs, etc.
-      ',', '=', ':', '->',
+      $.value_use,                // %foo, %0
+      $.symbol_ref_id,            // @sym, @"string"
+      $.successor,                // ^bb0, ^bb0(%arg : type)
+      prec(2, $.type),            // !type, i32, memref<...>, etc.
+      $.attribute,                // #attr, {dict}, affine_map<...>
+      $.region,                   // { ... } (regions with operations)
+      $._custom_body_paren,       // ( ... )
+      $._custom_body_bracket,     // [ ... ]
+      $._custom_body_angle_group, // < ... >
+      $._literal,                 // 42, 3.14, "string", true, dense<...>
+      $.bare_id,                  // keywords: to, from, step, ins, outs, etc.
+      ',', '=', ':', '->', '*', '+', '-', '/', '&', '|', '~',
     ),
 
     _custom_body_paren: $ => seq('(', repeat($._custom_body_element), ')'),
     _custom_body_bracket: $ => seq('[', repeat($._custom_body_element), ']'),
+    _custom_body_angle_group: $ => seq('<', repeat($._custom_body_element), '>'),
 
     // =========================================================================
     // Blocks
@@ -214,7 +220,10 @@ export default grammar({
     _value_use_and_type_list: $ => seq($._value_use_and_type,
       repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
-    _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
+    _value_arg_list: $ => seq('(', optional(choice(
+      $._value_use_type_list,       // bulk format: (%v0, %v1 : t0, t1)
+      $._value_use_and_type_list,   // per-pair format: (%v0 : t0, %v1 : t1)
+    )), ')'),
     _value_use_type_list: $ => seq($._value_use_list, ':', $._type_list_no_parens),
 
     // =========================================================================
@@ -247,7 +256,7 @@ export default grammar({
     dialect_type: $ => seq(
       '!', choice($.opaque_dialect_item, $.pretty_dialect_item)),
     dialect_namespace: $ => $._alias_or_dialect_id,
-    dialect_ident: $ => $._alias_or_dialect_id,
+    dialect_ident: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/))),
     opaque_dialect_item: $ => seq($.dialect_namespace, '<', $.string_literal, '>'),
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
       optional($.pretty_dialect_item_body)),
@@ -257,6 +266,7 @@ export default grammar({
       $.type,
       $.attribute,
       $._literal,
+      'dense', 'sparse', 'array',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}',
       token(prec(-1, /[^<>]/))
@@ -275,7 +285,7 @@ export default grammar({
       $.tuple_type,
       $.opaque_type),
 
-    integer_type: $ => token(prec(5, seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)))),
+    integer_type: $ => token(prec(5, seq(choice('si', 'ui', 'i'), /[0-9]/, repeat(/[0-9]/)))),
     float_type: $ => token(prec(5, choice('f16', 'tf32', 'f32', 'f64', 'f80', 'f128', 'bf16',
       'f4E2M1FN', 'f6E2M3FN', 'f6E3M2FN', 'f8E3M4', 'f8E4M3', 'f8E4M3FN', 'f8E4M3FNUZ',
       'f8E4M3B11FNUZ', 'f8E5M2', 'f8E5M2FNUZ', 'f8E8M0FNU'))),
@@ -284,16 +294,14 @@ export default grammar({
     complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
       $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
-      $.opaque_type),
+      $.opaque_type, $.dialect_type, $.type_alias),
 
     memref_type: $ => seq(token('memref'), '<',
       field('dimension_list', $.dim_list),
       optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
     dim_list: $ => seq($._dim_primitive, repeat(seq('x', $._dim_primitive))),
-    // NOTE: '*' is only valid in memref (dynamic offset/stride), not in tensor
-    // or vector dimension lists. The grammar accepts it permissively here to
-    // avoid a separate rule; strict validation is left to semantic analysis.
+    // NOTE: '*' is only valid in memref, not tensor/vector; accepted permissively here.
     dimension_size: $ => repeat1($._digit),
     _dim_primitive: $ => choice(prec(1, $.type), $.dimension_size, '?', '*'),
 
@@ -318,12 +326,17 @@ export default grammar({
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute | builtin-attribute
     // =========================================================================
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal),
-      optional(seq('=', $.attribute_value))),
+    attribute_entry: $ => choice(
+      seq(choice($.bare_id, $.string_literal), optional(seq('=', $.attribute_value))),
+      // Array-valued entry (e.g. {["op.name"]} in transform dialect)
+      seq('[', optional($._attribute_value_nobracket),
+        repeat(seq(',', $._attribute_value_nobracket)), ']'),
+    ),
     attribute_value: $ => choice(seq('[', optional($._attribute_value_nobracket),
       repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
     _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
-      $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type),
+      $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type,
+      $._affine_map_like, $.symbol_ref_id),
     attribute: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute),
 
@@ -337,37 +350,41 @@ export default grammar({
     // Builtin attributes
     builtin_attribute: $ => choice(
       $.strided_layout,
-      $.affine_map,
-      $.affine_set,
+      prec(1, $.affine_map),
+      prec(1, $.affine_set),
       $.dense_resource_literal,
     ),
     dense_resource_literal: $ => seq(token('dense_resource'), '<',
       choice($.bare_id, $.string_literal), '>'),
-    strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
-      optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
-    _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
+    strided_layout: $ => seq(token('strided'), '<', '[', optional($._stride_list_comma), ']',
+      optional(seq(',', token('offset'), ':', $._stride_primitive)), '>'),
+    _stride_list_comma: $ => seq($._stride_primitive, repeat(seq(',', $._stride_primitive))),
+    _stride_primitive: $ => choice($.integer_literal, '?', '*'),
 
     // =========================================================================
     // Affine expressions
     // =========================================================================
     affine_map: $ => seq(token('affine_map'), '<', $._multi_dim_affine_expr_parens,
       optional($._multi_dim_affine_expr_sq), token('->'), $._multi_dim_affine_expr_parens, '>'),
+    _affine_map_like: $ => seq($._multi_dim_affine_expr_parens,
+      optional($._multi_dim_affine_expr_sq), token('->'), $._multi_dim_affine_expr_parens),
     affine_set: $ => seq(token('affine_set'), '<', $._multi_dim_affine_expr_parens,
       optional($._multi_dim_affine_expr_sq), ':', $._multi_dim_affine_expr_parens, '>'),
     _multi_dim_affine_expr_parens: $ => seq('(', optional($._multi_dim_affine_expr), ')'),
     _multi_dim_affine_expr_sq: $ => seq('[', optional($._multi_dim_affine_expr), ']'),
 
     _multi_dim_affine_expr: $ => seq($._affine_expr, repeat(seq(',', $._affine_expr))),
-    _affine_expr: $ => prec.right(choice(seq('(', $._affine_expr, ')'), seq('-', $._affine_expr),
-      seq($._affine_expr, $._affine_token, $._affine_expr), $._affine_prim)),
-    _affine_prim: $ => choice($.integer_literal, $.value_use, $.bare_id,
+    _affine_expr: $ => choice(
+      seq('(', $._affine_expr, ')'),
+      prec(4, seq('-', $._affine_expr)),
+      prec.left(3, seq($._affine_expr, choice('*', 'ceildiv', 'floordiv', 'mod'), $._affine_expr)),
+      prec.left(2, seq($._affine_expr, choice('+', '-'), $._affine_expr)),
+      prec.left(1, seq($._affine_expr, choice('==', '>=', '<='), $._affine_expr)),
+      $._affine_prim
+    ),
+    _affine_prim: $ => choice($.integer_literal, $.value_use,
+      seq(choice($.bare_id, 'dense', 'sparse'), optional(seq(':', choice($.bare_id, 'dense', 'sparse', 'compressed', 'singleton', 'loose_compressed', 'n_out_of_m')))),
       seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
-    _affine_token: $ => token(choice(
-      // arithmetic
-      '+', '-', '*', 'ceildiv', 'floordiv', 'mod',
-      // comparisons (used in affine_set constraints)
-      '==', '>=', '<=',
-    )),
 
     // =========================================================================
     // Function-related rules (used by func_operation tier-1)
@@ -378,7 +395,7 @@ export default grammar({
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
       repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
     _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
-    _function_arg: $ => choice(seq($.value_use, ':', $.type), $.value_use, $.type),
+    _function_arg: $ => choice(seq($.value_use, ':', choice($.type, $.function_type)), $.value_use, $.type, $.function_type),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
       repeat(seq(',', $.type, optional($.attribute))), ')'), seq('(', ')')),
     variadic: $ => token('...'),
