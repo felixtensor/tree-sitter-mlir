@@ -23,18 +23,18 @@ Tier 2 examples are synced from the [LLVM/MLIR test suite](https://github.com/ll
 
 | Dialect | Files | Pass Rate |
 |---------|------:|----------:|
-| ControlFlow | 5 | 80.0% |
-| SCF | 41 | 78.1% |
-| MemRef | 28 | 75.0% |
-| Tensor | 29 | 69.0% |
-| Arith | 21 | 66.7% |
+| ControlFlow | 5 | 100.0% |
+| SCF | 41 | 100.0% |
+| MemRef | 28 | 89.3% |
+| Tensor | 29 | 96.6% |
+| Arith | 21 | 85.7% |
 | Builtin | 3 | 66.7% |
-| Vector | 81 | 50.6% |
-| Func | 2 | 50.0% |
-| Affine | 49 | 49.0% |
-| Linalg | 139 | 44.6% |
+| Vector | 81 | 96.3% |
+| Func | 2 | 100.0% |
+| Affine | 49 | 61.2% |
+| Linalg | 139 | 96.4% |
 | IR | 5 | 40.0% |
-| **Total** | **403** | **55.3%** |
+| **Total** | **403** | **90.6%** |
 
 ## Usage
 

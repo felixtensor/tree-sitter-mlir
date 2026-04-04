@@ -129,8 +129,16 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
+        {
+          "type": "array_literal",
+          "named": true
+        },
+        {
+          "type": "attribute_alias",
+          "named": true
+        },
         {
           "type": "attribute_value",
           "named": true
@@ -140,7 +148,47 @@
           "named": true
         },
         {
+          "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "builtin_attribute",
+          "named": true
+        },
+        {
+          "type": "dialect_attribute",
+          "named": true
+        },
+        {
+          "type": "dictionary_attribute",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
           "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "tensor_literal",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "uninitialized_literal",
+          "named": true
+        },
+        {
+          "type": "unit_literal",
           "named": true
         }
       ]
@@ -168,10 +216,6 @@
         },
         {
           "type": "builtin_attribute",
-          "named": true
-        },
-        {
-          "type": "complex_literal",
           "named": true
         },
         {
@@ -476,10 +520,6 @@
         },
         {
           "type": "combining_kind",
-          "named": true
-        },
-        {
-          "type": "complex_literal",
           "named": true
         },
         {
@@ -885,12 +925,16 @@
     "named": true,
     "fields": {
       "attributes": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
           {
             "type": "attribute",
             "named": true
+          },
+          {
+            "type": "attributes",
+            "named": false
           }
         ]
       },
@@ -1107,10 +1151,6 @@
         },
         {
           "type": "bool_literal",
-          "named": true
-        },
-        {
-          "type": "complex_literal",
           "named": true
         },
         {

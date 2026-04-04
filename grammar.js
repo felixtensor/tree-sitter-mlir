@@ -61,14 +61,14 @@ module.exports = grammar({
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),
-    complex_literal: $ => prec(3, seq('(', choice($.integer_literal, $.float_literal), ',',
-      choice($.integer_literal, $.float_literal), ')')),
+    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
+      choice($.integer_literal, $.float_literal), ')'),
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal)), '>'),
     array_literal: $ => seq(token('array'), '<', $.type, optional(seq(':', $._idx_list)), '>'),
     _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal, $.uninitialized_literal),
+      $.tensor_literal, $.array_literal, $.unit_literal, $.uninitialized_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),
@@ -151,7 +151,7 @@ module.exports = grammar({
     module_operation: $ => prec.right(seq(
       field('name', choice(token(prec(20, 'builtin.module')), token(prec(20, 'module')))),
       field('sym_name', optional($.symbol_ref_id)),
-      field('attributes', optional($.attribute)),
+      field('attributes', optional(seq(optional(token('attributes')), $.attribute))),
       field('body', $.region),
     )),
 
@@ -328,8 +328,12 @@ module.exports = grammar({
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute | builtin-attribute
     // =========================================================================
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal),
-      optional(seq('=', $.attribute_value))),
+    attribute_entry: $ => choice(
+      seq(choice($.bare_id, $.string_literal), optional(seq('=', $.attribute_value))),
+      // Array-valued entry (e.g. {["op.name"]} in transform dialect)
+      seq('[', optional($._attribute_value_nobracket),
+        repeat(seq(',', $._attribute_value_nobracket)), ']'),
+    ),
     attribute_value: $ => choice(seq('[', optional($._attribute_value_nobracket),
       repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
     _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
