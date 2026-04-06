@@ -172,6 +172,10 @@
           "named": true
         },
         {
+          "type": "function_type",
+          "named": true
+        },
+        {
           "type": "integer_literal",
           "named": true
         },
@@ -244,6 +248,10 @@
         },
         {
           "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "function_type",
           "named": true
         },
         {
@@ -430,6 +438,10 @@
       "required": true,
       "types": [
         {
+          "type": "bool_literal",
+          "named": true
+        },
+        {
           "type": "float_literal",
           "named": true
         },
@@ -482,6 +494,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
           "named": true
         },
         {
@@ -622,6 +638,10 @@
           "named": true
         },
         {
+          "type": "parametric_dialect_item",
+          "named": true
+        },
+        {
           "type": "pretty_dialect_item",
           "named": true
         }
@@ -643,6 +663,10 @@
       "types": [
         {
           "type": "opaque_dialect_item",
+          "named": true
+        },
+        {
+          "type": "parametric_dialect_item",
           "named": true
         },
         {
@@ -903,6 +927,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "function_type",
+          "named": true
+        },
         {
           "type": "type",
           "named": true
@@ -1186,6 +1214,25 @@
     }
   },
   {
+    "type": "parametric_dialect_item",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dialect_namespace",
+          "named": true
+        },
+        {
+          "type": "pretty_dialect_item_body",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "pretty_dialect_item",
     "named": true,
     "fields": {},
@@ -1311,6 +1358,10 @@
       "types": [
         {
           "type": "caret_id",
+          "named": true
+        },
+        {
+          "type": "function_type",
           "named": true
         },
         {
@@ -1504,6 +1555,10 @@
           "named": true
         },
         {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
           "type": "type_alias",
           "named": true
         },
@@ -1585,6 +1640,10 @@
           "named": true
         },
         {
+          "type": "function_type",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         }
@@ -1653,6 +1712,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
           "named": true
         },
         {
