@@ -271,7 +271,7 @@ module.exports = grammar({
       'dense', 'sparse', 'array',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}',
-      '@', '#', '!',
+      '@', '#',
       token(prec(-1, /[^<>]/))
     )),
 
