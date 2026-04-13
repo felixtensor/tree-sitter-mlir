@@ -1481,6 +1481,10 @@
         {
           "type": "SYMBOL",
           "name": "_bare_op_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bare_id"
         }
       ]
     },
@@ -2987,24 +2991,37 @@
           "value": "<"
         },
         {
-          "type": "SYMBOL",
-          "name": "tuple_dim"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "SYMBOL",
-                "name": "tuple_dim"
-              }
-            ]
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "tuple_dim"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "tuple_dim"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -4309,6 +4326,10 @@
     [
       "dictionary_attribute",
       "region"
+    ],
+    [
+      "custom_op_name",
+      "attribute_entry"
     ],
     [
       "type_alias",

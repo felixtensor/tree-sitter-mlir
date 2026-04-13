@@ -6,6 +6,7 @@ module.exports = grammar({
   conflicts: $ => [
     [$._static_dim_list, $._static_dim_list],
     [$.dictionary_attribute, $.region],
+    [$.custom_op_name, $.attribute_entry],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
@@ -173,7 +174,13 @@ module.exports = grammar({
     // High token precedence (prec 10) ensures these win over bare_id at the
     // token level, forcing the parser to start a new operation rather than
     // continuing the body of the previous one.
-    custom_op_name: $ => choice($._dotted_op_name, $._bare_op_name),
+    // bare_id fallback: supports MLIR's "default dialect" mechanism where
+    // operations inside a region may omit the dialect prefix (e.g.
+    // `parse_integer_literal` instead of `test.parse_integer_literal`).
+    // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
+    // element when inside a custom op body; it only acts as an op name at
+    // region/block boundaries where operation+ is required.
+    custom_op_name: $ => choice($._dotted_op_name, $._bare_op_name, $.bare_id),
     _dotted_op_name: $ => token(prec(10, seq(
       /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/),
       repeat1(seq('.', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
@@ -317,7 +324,7 @@ module.exports = grammar({
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
     _static_dim_list: $ => seq($.dimension_size, repeat(seq('x', $.dimension_size))),
 
-    tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
+    tuple_type: $ => seq(token('tuple'), '<', optional(seq($.tuple_dim, repeat(seq(',', $.tuple_dim)))), '>'),
     tuple_dim: $ => $._prim_type,
 
     // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`

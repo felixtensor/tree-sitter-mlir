@@ -514,7 +514,17 @@
   {
     "type": "custom_op_name",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "bare_id",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "custom_operation",
@@ -1575,7 +1585,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "tuple_dim",
