@@ -1,4 +1,4 @@
-module github.com/tree-sitter/tree-sitter-mlir
+module github.com/felixtensor/tree-sitter-mlir
 
 go 1.22
 
