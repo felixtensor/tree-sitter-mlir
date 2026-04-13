@@ -7,10 +7,13 @@ export default grammar({
   conflicts: $ => [
     [$._static_dim_list, $._static_dim_list],
     [$.dictionary_attribute, $.region],
+    [$.custom_op_name, $.attribute_entry],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
     [$._value_use_list, $._value_use_and_type],
+    [$._type_list_no_parens, $._type_or_func_type],
+    [$._type_list_parens, $._multi_dim_affine_expr_parens],
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -60,16 +63,14 @@ export default grammar({
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),
-    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
-      choice($.integer_literal, $.float_literal), ')'),
+    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal, $.bool_literal), ',',
+      choice($.integer_literal, $.float_literal, $.bool_literal), ')'),
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       optional(seq(
         optional(seq($.type, ':')),
-        choice(
-          seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
-          $._primitive_element
-        )
+        seq($._tensor_literal_element, repeat(seq(',', $._tensor_literal_element)))
       )), '>'),
+    _tensor_literal_element: $ => choice($.nested_idx_list, $._primitive_element),
     array_literal: $ => seq(token('array'), '<', $.type, optional(seq(':', $._idx_list)), '>'),
     _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
       $.tensor_literal, $.array_literal, $.unit_literal, $.uninitialized_literal),
@@ -174,7 +175,13 @@ export default grammar({
     // High token precedence (prec 10) ensures these win over bare_id at the
     // token level, forcing the parser to start a new operation rather than
     // continuing the body of the previous one.
-    custom_op_name: $ => choice($._dotted_op_name, $._bare_op_name),
+    // bare_id fallback: supports MLIR's "default dialect" mechanism where
+    // operations inside a region may omit the dialect prefix (e.g.
+    // `parse_integer_literal` instead of `test.parse_integer_literal`).
+    // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
+    // element when inside a custom op body; it only acts as an op name at
+    // region/block boundaries where operation+ is required.
+    custom_op_name: $ => choice($._dotted_op_name, $._bare_op_name, $.bare_id),
     _dotted_op_name: $ => token(prec(10, seq(
       /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/),
       repeat1(seq('.', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
@@ -240,7 +247,8 @@ export default grammar({
     //   function-type ::= (type | type-list-parens) `->` (type | type-list-parens)
     // =========================================================================
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
-    _type_list_no_parens: $ => prec.left(seq($.type, repeat(seq(',', $.type)))),
+    _type_list_no_parens: $ => prec.left(seq(choice($.type, $.function_type),
+      repeat(seq(',', choice($.type, $.function_type))))),
     _type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
     function_type: $ => seq(choice($.type, $._type_list_parens), $._function_return),
     _function_return: $ => seq(token('->'), choice($.type, $._type_list_parens)),
@@ -254,12 +262,14 @@ export default grammar({
 
     // Dialect Types
     dialect_type: $ => seq(
-      '!', choice($.opaque_dialect_item, $.pretty_dialect_item)),
+      '!', choice($.opaque_dialect_item, $.pretty_dialect_item, $.parametric_dialect_item)),
     dialect_namespace: $ => $._alias_or_dialect_id,
     dialect_ident: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/))),
-    opaque_dialect_item: $ => seq($.dialect_namespace, '<', $.string_literal, '>'),
+    opaque_dialect_item: $ => prec(1, seq($.dialect_namespace, '<', $.string_literal, '>')),
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
       optional($.pretty_dialect_item_body)),
+    // Parametric dialect item: !namespace<...> or #namespace<...> without dot-separated ident
+    parametric_dialect_item: $ => seq($.dialect_namespace, $.pretty_dialect_item_body),
     pretty_dialect_item_body: $ => seq('<', repeat($._pretty_dialect_item_contents), '>'),
     _pretty_dialect_item_contents: $ => prec.left(choice(
       $.pretty_dialect_item_body,
@@ -269,6 +279,7 @@ export default grammar({
       'dense', 'sparse', 'array',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}',
+      '@', '#',
       token(prec(-1, /[^<>]/))
     )),
 
@@ -294,7 +305,7 @@ export default grammar({
     complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
       $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
-      $.opaque_type, $.dialect_type, $.type_alias),
+      $.tuple_type, $.opaque_type, $.dialect_type, $.type_alias),
 
     memref_type: $ => seq(token('memref'), '<',
       field('dimension_list', $.dim_list),
@@ -314,7 +325,7 @@ export default grammar({
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
     _static_dim_list: $ => seq($.dimension_size, repeat(seq('x', $.dimension_size))),
 
-    tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
+    tuple_type: $ => seq(token('tuple'), '<', optional(seq($.tuple_dim, repeat(seq(',', $.tuple_dim)))), '>'),
     tuple_dim: $ => $._prim_type,
 
     // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`
@@ -336,7 +347,8 @@ export default grammar({
       repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
     _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type,
-      $._affine_map_like, $.symbol_ref_id),
+      $.function_type, $._affine_map_like, $.symbol_ref_id,
+      seq(choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute), $._type_annotation)),
     attribute: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute),
 
@@ -345,7 +357,7 @@ export default grammar({
     attribute_alias: $ => seq('#', $._alias_or_dialect_id),
 
     // Dialect attributes
-    dialect_attribute: $ => seq('#', choice($.opaque_dialect_item, $.pretty_dialect_item)),
+    dialect_attribute: $ => seq('#', choice($.opaque_dialect_item, $.pretty_dialect_item, $.parametric_dialect_item)),
 
     // Builtin attributes
     builtin_attribute: $ => choice(
@@ -396,8 +408,10 @@ export default grammar({
       repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
     _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
     _function_arg: $ => choice(seq($.value_use, ':', choice($.type, $.function_type)), $.value_use, $.type, $.function_type),
-    type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
-      repeat(seq(',', $.type, optional($.attribute))), ')'), seq('(', ')')),
+    _type_or_func_type: $ => choice($.type, $.function_type),
+    type_list_attr_parens: $ => choice($.type, $.function_type,
+      seq('(', $._type_or_func_type, optional($.attribute),
+      repeat(seq(',', $._type_or_func_type, optional($.attribute))), ')'), seq('(', ')')),
     variadic: $ => token('...'),
 
     // =========================================================================

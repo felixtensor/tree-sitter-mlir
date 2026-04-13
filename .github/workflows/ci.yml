@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
@@ -33,5 +33,4 @@ jobs:
       # Using continue-on-error because the parser doesn't yet pass all
       # official MLIR tests. Remove continue-on-error once pass rate is 100%.
       - name: Parse examples
-        continue-on-error: true
         run: npx tree-sitter parse --quiet --stat examples/**/*.mlir

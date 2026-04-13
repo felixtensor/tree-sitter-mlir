@@ -3,23 +3,23 @@
 import * as cp from "node:child_process";
 import * as process from "node:process";
 import * as path from "node:path";
-import * as os from "node:os";
 import { glob } from "glob";
 
 const dialects = {
+  "Affine": 100,
+  "Arith": 100,
   "Builtin": 100,
-  "Func": 100,
-  "Arith": 72,
-  "Math": 87,
   "ControlFlow": 100,
-  "SCF": 73,
-  "Memref": 69,
-  "Tensor": 68,
-  "Affine": 82,
-  "Linalg": 37,
+  "Func": 100,
+  "IR": 80,
+  "Linalg": 100,
+  "MemRef": 100,
+  "SCF": 100,
+  "Tensor": 100,
+  "Vector": 100,
 };
 
-let mlir_testdir = path.join(os.homedir(), "src", "llvm", "mlir", "test", "Dialect");
+let mlir_testdir = path.join(process.cwd(), "examples");
 
 function bench_dialect(dialect, min_pct) {
   let testdir = path.join(mlir_testdir, dialect);

@@ -284,6 +284,10 @@
             {
               "type": "SYMBOL",
               "name": "float_literal"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "bool_literal"
             }
           ]
         },
@@ -301,6 +305,10 @@
             {
               "type": "SYMBOL",
               "name": "float_literal"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "bool_literal"
             }
           ]
         },
@@ -361,36 +369,27 @@
                   ]
                 },
                 {
-                  "type": "CHOICE",
+                  "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "nested_idx_list"
-                        },
-                        {
-                          "type": "REPEAT",
-                          "content": {
-                            "type": "SEQ",
-                            "members": [
-                              {
-                                "type": "STRING",
-                                "value": ","
-                              },
-                              {
-                                "type": "SYMBOL",
-                                "name": "nested_idx_list"
-                              }
-                            ]
-                          }
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "_tensor_literal_element"
                     },
                     {
-                      "type": "SYMBOL",
-                      "name": "_primitive_element"
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ","
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "_tensor_literal_element"
+                          }
+                        ]
+                      }
                     }
                   ]
                 }
@@ -404,6 +403,19 @@
         {
           "type": "STRING",
           "value": ">"
+        }
+      ]
+    },
+    "_tensor_literal_element": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "nested_idx_list"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_primitive_element"
         }
       ]
     },
@@ -1469,6 +1481,10 @@
         {
           "type": "SYMBOL",
           "name": "_bare_op_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bare_id"
         }
       ]
     },
@@ -1959,8 +1975,17 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "type"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "type"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "function_type"
+              }
+            ]
           },
           {
             "type": "REPEAT",
@@ -1972,8 +1997,17 @@
                   "value": ","
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "type"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "function_type"
+                    }
+                  ]
                 }
               ]
             }
@@ -2151,6 +2185,10 @@
             {
               "type": "SYMBOL",
               "name": "pretty_dialect_item"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "parametric_dialect_item"
             }
           ]
         }
@@ -2180,25 +2218,29 @@
       }
     },
     "opaque_dialect_item": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "dialect_namespace"
-        },
-        {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string_literal"
-        },
-        {
-          "type": "STRING",
-          "value": ">"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "dialect_namespace"
+          },
+          {
+            "type": "STRING",
+            "value": "<"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "string_literal"
+          },
+          {
+            "type": "STRING",
+            "value": ">"
+          }
+        ]
+      }
     },
     "pretty_dialect_item": {
       "type": "SEQ",
@@ -2226,6 +2268,19 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "parametric_dialect_item": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "dialect_namespace"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pretty_dialect_item_body"
         }
       ]
     },
@@ -2326,6 +2381,14 @@
           {
             "type": "STRING",
             "value": "}"
+          },
+          {
+            "type": "STRING",
+            "value": "@"
+          },
+          {
+            "type": "STRING",
+            "value": "#"
           },
           {
             "type": "TOKEN",
@@ -2590,6 +2653,10 @@
         {
           "type": "SYMBOL",
           "name": "tensor_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tuple_type"
         },
         {
           "type": "SYMBOL",
@@ -2924,24 +2991,37 @@
           "value": "<"
         },
         {
-          "type": "SYMBOL",
-          "name": "tuple_dim"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "SYMBOL",
-                "name": "tuple_dim"
-              }
-            ]
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "tuple_dim"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "tuple_dim"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -3149,11 +3229,41 @@
         },
         {
           "type": "SYMBOL",
+          "name": "function_type"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_affine_map_like"
         },
         {
           "type": "SYMBOL",
           "name": "symbol_ref_id"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "attribute_alias"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "dialect_attribute"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "builtin_attribute"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_type_annotation"
+            }
+          ]
         }
       ]
     },
@@ -3229,6 +3339,10 @@
             {
               "type": "SYMBOL",
               "name": "pretty_dialect_item"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "parametric_dialect_item"
             }
           ]
         }
@@ -4049,12 +4163,29 @@
         }
       ]
     },
+    "_type_or_func_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_type"
+        }
+      ]
+    },
     "type_list_attr_parens": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
           "name": "type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_type"
         },
         {
           "type": "SEQ",
@@ -4065,7 +4196,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "type"
+              "name": "_type_or_func_type"
             },
             {
               "type": "CHOICE",
@@ -4090,7 +4221,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "type"
+                    "name": "_type_or_func_type"
                   },
                   {
                     "type": "CHOICE",
@@ -4197,6 +4328,10 @@
       "region"
     ],
     [
+      "custom_op_name",
+      "attribute_entry"
+    ],
+    [
       "type_alias",
       "dialect_namespace"
     ],
@@ -4210,6 +4345,14 @@
     [
       "_value_use_list",
       "_value_use_and_type"
+    ],
+    [
+      "_type_list_no_parens",
+      "_type_or_func_type"
+    ],
+    [
+      "_type_list_parens",
+      "_multi_dim_affine_expr_parens"
     ]
   ],
   "precedences": [],
