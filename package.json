@@ -1,12 +1,16 @@
 {
   "name": "tree-sitter-mlir",
-  "description": "Tree sitter grammar for MLIR",
+  "description": "Tree sitter grammar for MLIR. Note: language bindings are untested and may not be fully functional.",
   "version": "0.1.0",
   "author": "Buyun Xu",
   "contributors": [
     "Ramkumar Ramachandra"
   ],
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/felixtensor/tree-sitter-mlir.git"
+  },
   "main": "grammar.js",
   "types": "bindings/node",
   "scripts": {

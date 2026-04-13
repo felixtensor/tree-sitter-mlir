@@ -1,6 +1,6 @@
 [package]
 name = "tree-sitter-mlir"
-description = "Mlir grammar for tree-sitter"
+description = "Mlir grammar for tree-sitter. Note: language bindings are untested and may not be fully functional."
 version = "0.1.0"
 license = "Apache-2.0"
 readme = "README.md"
@@ -20,4 +20,4 @@ path = "bindings/rust/lib.rs"
 tree-sitter = ">=0.22.5"
 
 [build-dependencies]
-cc = "1.0.96"
+cc = "1"
