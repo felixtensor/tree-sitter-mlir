@@ -1,5 +1,7 @@
 node_modules/
 target/
+.build/
 build/
 tmp/
 scratch.mlir
+bindings/python/tree_sitter_mlir.egg-info/

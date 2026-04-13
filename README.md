@@ -10,6 +10,8 @@ This project is based on the work of [Ramkumar Ramachandra](https://github.com/a
 
 The parser targets [generic MLIR syntax](https://mlir.llvm.org/docs/LangRef/) rather than individual dialect-specific assembly formats. It is under active development and not yet fully complete.
 
+> **Note on Language Bindings:** While the repository contains bindings for several languages (C, Go, Node, Python, Rust, Swift) under the `bindings/` directory, these have not been rigorously tested. It is uncertain whether they are fully functional or up to date with the latest tree-sitter versions. Please use them with caution, and contributions to test or fix them are welcome!
+
 ### Test Coverage
 
 We use a two-tier test architecture following [tree-sitter community conventions](https://github.com/tree-sitter/tree-sitter-rust):
