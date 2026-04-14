@@ -6,9 +6,7 @@
       "camelcase": "MLIR",
       "title": "MLIR",
       "scope": "source.mlir",
-      "file-types": [
-        "mlir"
-      ],
+      "file-types": ["mlir"],
       "injection-regex": "^mlir$",
       "class-name": "TreeSitterMlir"
     }
@@ -31,7 +29,6 @@
   "bindings": {
     "c": true,
     "go": true,
-    "java": true,
     "node": true,
     "python": true,
     "rust": true,
