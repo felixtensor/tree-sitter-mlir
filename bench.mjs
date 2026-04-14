@@ -3,7 +3,7 @@
 import * as cp from "node:child_process";
 import * as process from "node:process";
 import * as path from "node:path";
-import { glob } from "glob";
+import * as fs from "node:fs";
 
 const dialects = {
   "Affine": 100,
@@ -11,7 +11,7 @@ const dialects = {
   "Builtin": 100,
   "ControlFlow": 100,
   "Func": 100,
-  "IR": 80,
+  "IR": 100,
   "Linalg": 100,
   "MemRef": 100,
   "SCF": 100,
@@ -23,7 +23,8 @@ let mlir_testdir = path.join(process.cwd(), "examples");
 
 function bench_dialect(dialect, min_pct) {
   let testdir = path.join(mlir_testdir, dialect);
-  let testfiles = glob.sync(`${testdir}/*.mlir`, { ignore: [`${testdir}/invalid.mlir`] });
+  let testfiles = Array.from(fs.globSync(`${testdir}/*.mlir`))
+    .filter((f) => path.basename(f) !== "invalid.mlir");
   let child = cp.spawn("npx", ["tree-sitter", "parse", "-q", "-s", ...testfiles],
     { cwd: process.cwd() });
   let output = "";
