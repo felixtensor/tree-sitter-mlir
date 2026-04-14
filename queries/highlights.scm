@@ -39,6 +39,7 @@
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
 (strided_layout "offset" @keyword)
+["ceildiv" "floordiv" "mod"] @keyword.operator
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number

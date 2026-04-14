@@ -195,17 +195,18 @@ export default grammar({
     // Structural body elements that can appear in custom operation format.
     // These are recognized by sigils (%,^,@,!,#) or by structural delimiters.
     _custom_body_element: $ => choice(
-      $.value_use,                // %foo, %0
-      $.symbol_ref_id,            // @sym, @"string"
-      $.successor,                // ^bb0, ^bb0(%arg : type)
-      prec(2, $.type),            // !type, i32, memref<...>, etc.
-      $.attribute,                // #attr, {dict}, affine_map<...>
-      $.region,                   // { ... } (regions with operations)
-      $._custom_body_paren,       // ( ... )
-      $._custom_body_bracket,     // [ ... ]
-      $._custom_body_angle_group, // < ... >
-      $._literal,                 // 42, 3.14, "string", true, dense<...>
-      $.bare_id,                  // keywords: to, from, step, ins, outs, etc.
+      $.value_use,                  // %foo, %0
+      $.symbol_ref_id,              // @sym, @"string"
+      $.successor,                  // ^bb0, ^bb0(%arg : type)
+      prec(2, $.type),              // !type, i32, memref<...>, etc.
+      $.attribute,                  // #attr, {dict}, affine_map<...>
+      $.region,                     // { ... } (regions with operations)
+      $._custom_body_paren,         // ( ... )
+      $._custom_body_bracket,       // [ ... ]
+      $._custom_body_angle_group,   // < ... >
+      $._literal,                   // 42, 3.14, "string", true, dense<...>
+      'ceildiv', 'floordiv', 'mod', // inline affine keywords
+      $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
       ',', '=', ':', '->', '*', '+', '-', '/', '&', '|', '~',
     ),
 

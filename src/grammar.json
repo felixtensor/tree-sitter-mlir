@@ -1614,6 +1614,18 @@
           "name": "_literal"
         },
         {
+          "type": "STRING",
+          "value": "ceildiv"
+        },
+        {
+          "type": "STRING",
+          "value": "floordiv"
+        },
+        {
+          "type": "STRING",
+          "value": "mod"
+        },
+        {
           "type": "SYMBOL",
           "name": "bare_id"
         },
