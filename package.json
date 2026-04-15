@@ -7,7 +7,6 @@
     "type": "git",
     "url": "git+https://github.com/felixtensor/tree-sitter-mlir.git"
   },
-  "funding": "",
   "license": "Apache-2.0 WITH LLVM-exception",
   "author": {
     "name": "Buyun Xu",
