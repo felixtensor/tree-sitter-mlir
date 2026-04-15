@@ -4,7 +4,7 @@
     .version = "0.1.0",
     .dependencies = .{
         .tree_sitter = .{
-            .url = "git+https://github.com/tree-sitter/zig-tree-sitter#5373b8395bcf6cf17e6a02be1a9996bedb34abf6",
+            .url = "git+https://github.com/tree-sitter/zig-tree-sitter#91f1b7ca97448a47d2fb2544b847214ed4aa1a98",
             .hash = "tree_sitter-0.25.0-8heIf7iZAQDu5oiKLKffYhdvWpEuxc5OhsySDlkFLxFT",
             .lazy = true,
         },
