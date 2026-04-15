@@ -10,7 +10,8 @@
 ;; Builtin/Standard operations
 (func_operation name: _ @function.builtin)
 (module_operation name: _ @function.builtin)
-(func_operation ["private" "attributes"] @keyword)
+(func_operation ["private" "public" "attributes"] @keyword)
+(module_operation "attributes" @keyword)
 
 ;; Dialect operations (e.g., arith.addi)
 (custom_op_name) @function.builtin

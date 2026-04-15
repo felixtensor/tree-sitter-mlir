@@ -145,7 +145,7 @@ export default grammar({
     // Token prec 20 ensures these keywords win over _dotted_op_name (prec 10)
     func_operation: $ => prec.right(seq(
       field('name', choice(token(prec(20, 'func.func')), token(prec(20, 'llvm.func')))),
-      field('visibility', optional('private')),
+      field('visibility', optional(choice('private', 'public'))),
       field('sym_name', $.symbol_ref_id),
       field('arguments', $.func_arg_list),
       field('return', optional($.func_return)),

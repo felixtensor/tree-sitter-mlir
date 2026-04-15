@@ -1247,8 +1247,17 @@
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "private"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "private"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "public"
+                    }
+                  ]
                 },
                 {
                   "type": "BLANK"
