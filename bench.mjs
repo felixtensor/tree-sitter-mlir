@@ -5,27 +5,20 @@ import * as process from "node:process";
 import * as path from "node:path";
 import * as fs from "node:fs";
 
-const dialects = {
-  "Affine": 100,
-  "Arith": 100,
-  "Builtin": 100,
-  "ControlFlow": 100,
-  "Func": 100,
-  "IR": 100,
-  "Linalg": 100,
-  "MemRef": 100,
-  "SCF": 100,
-  "Tensor": 100,
-  "Vector": 100,
-};
+const MIN_PCT = 100;
 
 let mlir_testdir = path.join(process.cwd(), "examples");
 
-function bench_dialect(dialect, min_pct) {
+let dialects = fs.readdirSync(mlir_testdir, { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => d.name)
+  .sort();
+
+function bench_dialect(dialect) {
   let testdir = path.join(mlir_testdir, dialect);
-  let testfiles = Array.from(fs.globSync(`${testdir}/*.mlir`))
-    .filter((f) => path.basename(f) !== "invalid.mlir");
-  let child = cp.spawn("npx", ["tree-sitter", "parse", "-q", "-s", ...testfiles],
+  let testfiles = Array.from(fs.globSync(`${testdir}/*.mlir`));
+  if (testfiles.length === 0) return;
+  let child = cp.spawn("npx", ["tree-sitter", "parse", "-q", "--stat", ...testfiles],
     { cwd: process.cwd() });
   let output = "";
   child.stdout.setEncoding("utf8");
@@ -33,8 +26,8 @@ function bench_dialect(dialect, min_pct) {
   child.on("close", () => {
     let match = output.match(/success percentage: (\d+\.\d+)%/i);
     let pass_pct = parseFloat(match[1]);
-    if (pass_pct < min_pct) {
-      console.log("%s, %f%% passed; minimum required is %d%%", dialect, pass_pct, min_pct);
+    if (pass_pct < MIN_PCT) {
+      console.log("%s, %f%% passed; minimum required is %d%%", dialect, pass_pct, MIN_PCT);
       process.exit(1);
     }
     console.log("%s, %f%% passed", dialect, pass_pct);
@@ -42,6 +35,6 @@ function bench_dialect(dialect, min_pct) {
   child.on("error", (err) => console.log(err));
 }
 
-for (const [k, v] of Object.entries(dialects)) {
-  bench_dialect(k, v);
+for (const dialect of dialects) {
+  bench_dialect(dialect);
 }
