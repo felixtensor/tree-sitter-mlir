@@ -3,21 +3,21 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - grammar.js
-      - src/**
-      - test/**
-      - bindings/**
-      - binding.gyp
-      - .github/workflows/ci.yml
+    paths-ignore:
+      - LICENSE
+      - README.md
+      - docs/**
+      - .editorconfig
+      - .gitattributes
+      - .gitignore
   pull_request:
-    paths:
-      - grammar.js
-      - src/**
-      - test/**
-      - bindings/**
-      - binding.gyp
-      - .github/workflows/ci.yml
+    paths-ignore:
+      - LICENSE
+      - README.md
+      - docs/**
+      - .editorconfig
+      - .gitattributes
+      - .gitignore
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
