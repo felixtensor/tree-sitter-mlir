@@ -45,3 +45,13 @@ zig-out/
 *.tgz
 *.zip
 *.jar
+
+# ide files
+.idea/
+.cursor/
+.vscode/
+.trae/
+.zed/
+
+# temporary files
+tmp/
