@@ -50,9 +50,7 @@ jobs:
           test-swift: true
           test-zig: true
 
-      # Tier 2: Examples tests (no ERROR nodes) — informational for now
-      # Using continue-on-error because the parser doesn't yet pass all
-      # official MLIR tests. Remove continue-on-error once pass rate is 100%.
+      # Tier 2: Examples tests — CI fails if any file produces an ERROR node
       - name: Parse examples
         uses: tree-sitter/parse-action@v4
         id: parse-files
