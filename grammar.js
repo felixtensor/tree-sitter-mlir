@@ -53,13 +53,11 @@ export default grammar({
     float_literal: $ => token(seq(
       optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
       optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
-    // NOTE: kept as token (not seq) to avoid breaking external scanner in tree-sitter 0.26.6.
-    // Switch to structural form when a compatible parser.c can be generated.
-    string_literal: $ => token(seq(
+    string_literal: $ => seq(
       '"',
       repeat(choice(/[^\\"\n\f\v\r]+/, seq('\\', /[nt"\\]/))),
       '"'
-    )),
+    ),
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),

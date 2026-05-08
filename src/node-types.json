@@ -1363,6 +1363,11 @@
     }
   },
   {
+    "type": "string_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "successor",
     "named": true,
     "fields": {},
@@ -1752,6 +1757,10 @@
     "named": false
   },
   {
+    "type": "\"",
+    "named": false
+  },
+  {
     "type": "#",
     "named": false
   },
@@ -1845,6 +1854,10 @@
   },
   {
     "type": "[",
+    "named": false
+  },
+  {
+    "type": "\\",
     "named": false
   },
   {
@@ -2003,10 +2016,6 @@
   {
     "type": "strided",
     "named": false
-  },
-  {
-    "type": "string_literal",
-    "named": true
   },
   {
     "type": "symbol",
