@@ -95,10 +95,38 @@ for dialect in $DIALECTS; do
   sync_dir "$src" "$dst"
 done
 
+# ── Record source provenance ────────────────────────────────────────────────
+# Writes examples/SOURCE.md with the upstream commit SHA. Does NOT fetch from
+# the upstream repository — only reads `git rev-parse HEAD` of the local
+# checkout that was passed in.
+SOURCE_FILE="$EXAMPLES_DIR/SOURCE.md"
+SYNCED_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+if git -C "$LLVM_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+  COMMIT_SHA="$(git -C "$LLVM_DIR" rev-parse HEAD)"
+  COMMIT_DATE="$(git -C "$LLVM_DIR" log -1 --format=%cI HEAD)"
+else
+  COMMIT_SHA="unknown (source is not a git checkout)"
+  COMMIT_DATE="unknown"
+fi
+
+cat > "$SOURCE_FILE" <<EOF
+# examples/ source
+
+This directory is synced from a local checkout of \`llvm/llvm-project\` via
+\`scripts/sync-examples.sh\`. The script does not fetch from upstream — it
+only copies from the directory you point it at.
+
+- commit:       $COMMIT_SHA
+- commit_date:  $COMMIT_DATE
+- synced_at:    $SYNCED_AT
+EOF
+
 # ── Summary ──────────────────────────────────────────────────────────────────
 echo ""
 total_files=$(find "$EXAMPLES_DIR" -name '*.mlir' | wc -l | tr -d ' ')
 total_lines=$(find "$EXAMPLES_DIR" -name '*.mlir' -exec cat {} + | wc -l | tr -d ' ')
 echo "═══════════════════════════════════════════"
 echo "  Total: $total_files files, $total_lines lines"
+echo "  Source: $COMMIT_SHA"
 echo "═══════════════════════════════════════════"
