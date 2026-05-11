@@ -104,7 +104,7 @@ export default grammar({
     //   operation         ::= op-result-list? (generic-operation |
     //                         custom-operation) trailing-location?
     //   generic-operation ::= string-literal `(` value-use-list? `)`
-    //                         successor-list? region-list?
+    //                         successor-list? properties? region-list?
     //                         dictionary-attribute? `:` function-type
     //   custom-operation  ::= bare-id custom-operation-format
     // =========================================================================
@@ -115,13 +115,16 @@ export default grammar({
 
     generic_operation: $ =>
       seq($.string_literal, $._value_use_list_parens, optional($._successor_list),
-        optional($._region_list), optional($.attribute), ':', $.function_type),
+        optional($.properties), optional($._region_list), optional($.attribute),
+        ':', $.function_type),
 
     _op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
     op_result: $ => seq($.value_use, optional(seq(':', $.integer_literal))),
     _successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)), ']'),
     successor: $ => prec.right(seq($.caret_id, optional($._value_arg_list))),
     _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
+    properties: $ => seq('<{', optional($.attribute_entry),
+      repeat(seq(',', $.attribute_entry)), '}>'),
     dictionary_attribute: $ => seq('{', optional($.attribute_entry),
       repeat(seq(',', $.attribute_entry)), '}'),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
