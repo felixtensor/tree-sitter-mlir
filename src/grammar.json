@@ -2391,6 +2391,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "_pretty_dialect_bang_body_token"
+          },
+          {
+            "type": "SYMBOL",
             "name": "type"
           },
           {
@@ -2477,6 +2481,26 @@
             }
           }
         ]
+      }
+    },
+    "_pretty_dialect_bang_body_token": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "!"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[^a-zA-Z_<>]"
+            }
+          ]
+        }
       }
     },
     "builtin_type": {

@@ -277,6 +277,7 @@ export default grammar({
     pretty_dialect_item_body: $ => seq('<', repeat($._pretty_dialect_item_contents), '>'),
     _pretty_dialect_item_contents: $ => prec.left(choice(
       $.pretty_dialect_item_body,
+      $._pretty_dialect_bang_body_token,
       $.type,
       $.attribute,
       $._literal,
@@ -286,6 +287,8 @@ export default grammar({
       '@', '#',
       token(prec(-1, /[^<>]/))
     )),
+    _pretty_dialect_bang_body_token: $ => token(prec(1,
+      seq('!', /[^a-zA-Z_<>]/))),
 
     // Builtin types
     builtin_type: $ => choice(

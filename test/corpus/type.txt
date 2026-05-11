@@ -673,6 +673,58 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
                 (custom_op_name)))))))))
 
 ================================================================================
+Pretty dialect type with special body tokens
+================================================================================
+func.func @pretty_dialect_type_body_tokens() {
+  %0 = "foo.unknown_op"() : () -> !foo.complextype<abcd<[f]$$[32]>>
+  %1 = "foo.unknown_op"() : () -> !foo.dialect<!x@#!@#>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)
+                        (pretty_dialect_item_body
+                          (bare_id)
+                          (pretty_dialect_item_body
+                            (bare_id)
+                            (integer_literal)))))))))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)
+                        (pretty_dialect_item_body
+                          (type
+                            (type_alias)))))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
 Linalg matmul with memref of unknown dimensions
 ================================================================================
 func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
