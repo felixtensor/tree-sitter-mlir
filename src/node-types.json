@@ -969,6 +969,10 @@
           "named": true
         },
         {
+          "type": "properties",
+          "named": true
+        },
+        {
           "type": "region",
           "named": true
         },
@@ -1323,6 +1327,21 @@
         },
         {
           "type": "unit_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "properties",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute_entry",
           "named": true
         }
       ]
@@ -1829,6 +1848,10 @@
     "named": false
   },
   {
+    "type": "<{",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
@@ -2063,6 +2086,10 @@
   },
   {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "}>",
     "named": false
   },
   {

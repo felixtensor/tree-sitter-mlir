@@ -69,7 +69,7 @@ sync_dir() {
 echo "IR (selected files):"
 mkdir -p "$EXAMPLES_DIR/IR"
 ir_count=0
-for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir; do
+for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties-bytecode-roundtrip.mlir; do
   if [ -f "$MLIR_TEST_DIR/IR/$f" ]; then
     cp "$MLIR_TEST_DIR/IR/$f" "$EXAMPLES_DIR/IR/"
     ir_count=$((ir_count + 1))

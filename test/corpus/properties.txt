@@ -1,0 +1,103 @@
+================================================================================
+Generic operation with properties
+================================================================================
+"test.with_props"() <{value = 3, flag}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)))
+        (attribute_entry
+          (bare_id)))
+      (function_type))))
+
+================================================================================
+Generic operation with properties and attributes
+================================================================================
+"test.with_props_and_attrs"() <{value = 3 : i32, nested = {label = "x"}}> {sym_name = "foo"} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type)))))
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)
+                (attribute_value
+                  (string_literal)))))))
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal)))))
+      (function_type))))
+
+================================================================================
+Generic operation with empty properties
+================================================================================
+"test.with_empty_props"() <{}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties)
+      (function_type))))
+
+================================================================================
+Generic operation with region and properties
+================================================================================
+"test.with_region_props"() <{value = [1, 2]}> ({}) : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (integer_literal))))
+      (region)
+      (function_type))))
+
+================================================================================
+Generic operation with successor and properties
+================================================================================
+"test.with_successor_props"()[^bb0] <{value = 1}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (successor
+        (caret_id))
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal))))
+      (function_type))))
