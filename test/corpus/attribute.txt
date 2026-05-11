@@ -407,6 +407,79 @@ Generic function bracketed attributes
       (function_type))))
 
 ================================================================================
+Pretty dialect attribute with special body tokens
+================================================================================
+func.func @pretty_dialect_attribute_body_tokens() {
+  "foo.unknown_op"() {foo = #foo.complexattr<abcd<[f]$$[32]>>} : () -> ()
+  "foo.unknown_op"() {bar = #foo.dialect<!x@#!@#>} : () -> ()
+  "test.slash_attr"() {attr = #test.slash_attr<1 / 2>} : () -> ()
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body
+                              (bare_id)
+                              (pretty_dialect_item_body
+                                (bare_id)
+                                (integer_literal)))))))))
+                (function_type)))
+            (operation
+              rhs: (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body
+                              (type
+                                (type_alias)))))))))
+                (function_type)))
+            (operation
+              rhs: (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body
+                              (integer_literal)
+                              (integer_literal))))))))
+                (function_type)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
 linalg.generic with attributes using attribute aliases
 ================================================================================
 #map0 = affine_map<(d0, d1) -> (d0, d1)>
