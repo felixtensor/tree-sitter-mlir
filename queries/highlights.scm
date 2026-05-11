@@ -36,8 +36,11 @@
 
 ;; 'x' separator inside dimension lists — render as delimiter rather than
 ;; inheriting the outer @type.builtin highlight (e.g. tensor<?x?x16xbf16>).
-[(dim_list "x")
- (vector_dim_list "x")] @punctuation.delimiter
+;; @cap binds to the "x" literal (parent-internal anonymous token), not the
+;; whole dim_list — placing @cap outside an alternation would capture the
+;; parent node instead.
+(dim_list "x" @punctuation.delimiter)
+(vector_dim_list "x" @punctuation.delimiter)
 
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
