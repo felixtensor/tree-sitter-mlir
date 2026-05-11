@@ -1740,6 +1740,285 @@ func.func @test(%arg0: f32) -> vector<2x2xf32> {
                       (float_type))))))))))))
 
 ================================================================================
+All builtin float type variants (17 total)
+================================================================================
+func.func @builtin_float_types() {
+  %f16 = arith.constant 1.0 : f16
+  %tf32 = arith.constant 2.0 : tf32
+  %f32 = arith.constant 3.0 : f32
+  %f64 = arith.constant 4.0 : f64
+  %f80 = arith.constant 0xK3FFF8000000000000000 : f80
+  %f128 = arith.constant 0xL00000000000000003FFF000000000000 : f128
+  %bf16 = arith.constant 5.0 : bf16
+  %f4E2M1FN = arith.constant 0x1 : f4E2M1FN
+  %f6E2M3FN = arith.constant 0x1 : f6E2M3FN
+  %f6E3M2FN = arith.constant 0x1 : f6E3M2FN
+  %f8E3M4 = arith.constant 0x1 : f8E3M4
+  %f8E4M3 = arith.constant 0x1 : f8E4M3
+  %f8E4M3FN = arith.constant 0x1 : f8E4M3FN
+  %f8E4M3FNUZ = arith.constant 0x1 : f8E4M3FNUZ
+  %f8E4M3B11FNUZ = arith.constant 0x1 : f8E4M3B11FNUZ
+  %f8E5M2 = arith.constant 0x1 : f8E5M2
+  %f8E5M2FNUZ = arith.constant 0x1 : f8E5M2FNUZ
+  %f8E8M0FNU = arith.constant 0x1 : f8E8M0FNU
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (float_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (value_use)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+none type
+================================================================================
+func.func @none_type() {
+  %none_val = "foo.unknown_op"() : () -> none
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (none_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+tuple type
+================================================================================
+func.func @tuple_types() {
+  %0 = "test.tuple_op"() : () -> tuple<>
+  %1 = "test.tuple_op"() : () -> tuple<i32, f32>
+  %2 = "test.tuple_op"() : () -> tuple<i32, f32, tensor<i1>>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (tuple_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (tuple_type
+                        (tuple_dim
+                          (integer_type))
+                        (tuple_dim
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (tuple_type
+                        (tuple_dim
+                          (integer_type))
+                        (tuple_dim
+                          (float_type))
+                        (tuple_dim
+                          (tensor_type
+                            (dim_list
+                              (type
+                                (builtin_type
+                                  (integer_type))))))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 Unknown dialect type without dot-qualified mnemonic
 ================================================================================
 func.func @unknown_dialect_type() -> !bar<> {
