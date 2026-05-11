@@ -34,6 +34,11 @@
 ;; Dimension sizes inside type dimension lists (256, 8, etc.)
 (dimension_size) @number
 
+;; 'x' separator inside dimension lists — render as delimiter rather than
+;; inheriting the outer @type.builtin highlight (e.g. tensor<?x?x16xbf16>).
+[(dim_list "x")
+ (vector_dim_list "x")] @punctuation.delimiter
+
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
