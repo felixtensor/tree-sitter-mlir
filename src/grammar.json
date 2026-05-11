@@ -1674,6 +1674,10 @@
         },
         {
           "type": "STRING",
+          "value": "array"
+        },
+        {
+          "type": "STRING",
           "value": "ceildiv"
         },
         {
@@ -4412,6 +4416,10 @@
     ],
     [
       "pretty_dialect_item"
+    ],
+    [
+      "array_literal",
+      "_custom_body_element"
     ],
     [
       "_value_use_list",

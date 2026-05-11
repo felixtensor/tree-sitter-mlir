@@ -11,6 +11,7 @@ export default grammar({
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
+    [$.array_literal, $._custom_body_element],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
@@ -206,6 +207,7 @@ export default grammar({
       $._custom_body_bracket,       // [ ... ]
       $._custom_body_angle_group,   // < ... >
       $._literal,                   // 42, 3.14, "string", true, dense<...>
+      'array',                      // property names may collide with array<...>
       'ceildiv', 'floordiv', 'mod', // inline affine keywords
       $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
       ',', '=', ':', '->', '*', '+', '-', '/', '&', '|', '~',

@@ -101,3 +101,19 @@ Generic operation with successor and properties
           (attribute_value
             (integer_literal))))
       (function_type))))
+
+================================================================================
+Custom operation with array property name
+================================================================================
+test.with_array_properties array = [1, 2] array32 = [5, 6]
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (integer_literal)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (integer_literal))))
