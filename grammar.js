@@ -311,7 +311,9 @@ export default grammar({
       optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
     dim_list: $ => seq($._dim_primitive, repeat(seq('x', $._dim_primitive))),
-    // NOTE: '*' is only valid in memref, not tensor/vector; accepted permissively here.
+    // '*' represents the unranked form for both memref and tensor types
+    // (UnrankedMemRefType, UnrankedTensorType). Vector uses its own
+    // vector_dim_list / _static_dim_list and disallows '*' by construction.
     dimension_size: $ => repeat1($._digit),
     _dim_primitive: $ => choice(prec(1, $.type), $.dimension_size, '?', '*'),
 
