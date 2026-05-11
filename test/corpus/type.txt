@@ -1686,3 +1686,108 @@ func.func @test(%arg0: f32) -> vector<2x2xf32> {
                         (dimension_size)
                         (dimension_size))
                       (float_type))))))))))))
+
+================================================================================
+Unknown dialect type without dot-qualified mnemonic
+================================================================================
+func.func @unknown_dialect_type() -> !bar<> {
+  %0 = "foo"() : () -> !bar<>
+  %1 = "foo"() : () -> !bar<baz>
+  return %0 : !bar<>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (dialect_type
+                (parametric_dialect_item
+                  (dialect_namespace)
+                  (pretty_dialect_item_body))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (parametric_dialect_item
+                        (dialect_namespace)
+                        (pretty_dialect_item_body)))))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (parametric_dialect_item
+                        (dialect_namespace)
+                        (pretty_dialect_item_body
+                          (bare_id))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (type_alias))))))))))
+
+================================================================================
+Pretty dialect type with nested body
+================================================================================
+func.func @pretty_dialect_type() {
+  %0 = "foo.unknown_op"() : () -> !foo.simpletype
+  %1 = "foo.unknown_op"() : () -> !foo.complextype<abcd<f32>>
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)))))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)
+                        (pretty_dialect_item_body
+                          (bare_id)
+                          (pretty_dialect_item_body
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
