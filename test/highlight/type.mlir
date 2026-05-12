@@ -1,19 +1,19 @@
-!baz = i64
+!pair = !llvm.struct<(i32, f32)>
 // <- type
-//     ^ type.builtin
-!qux = !llvm.struct<(!baz)>
+//      ^ type
+!ptr = !llvm.ptr
 // <- type
 //     ^ type
-!rec = !llvm.struct<"a", (ptr<struct<"a">>)>
+!rec = !llvm.struct<(i32, !ptr)>
 // <- type
 //     ^ type
 llvm.func @aliases() {
 // <- function.builtin
 //        ^ function
-  "some.op"() : () -> !llvm.struct<(i32, f32, !qux)>
-//                    ^ type
-  "some.op"() : () -> !rec
-//                    ^ type
+  %0 = llvm.mlir.zero : !ptr
+// ^ variable
+//     ^ function.builtin
+//                      ^ type
   llvm.return
 // ^ function.builtin
 }

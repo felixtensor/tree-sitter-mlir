@@ -1,14 +1,14 @@
-func.func @simple(i64, i1) -> i64 {
+func.func @simple(i64, i64) -> i64 {
 // <- function.builtin
 //        ^ function
 //               ^ punctuation.bracket
 //                ^ type.builtin
 //                   ^ punctuation.delimiter
 //                     ^ type.builtin
-//                       ^ punctuation.bracket
-//                         ^ operator
-//                            ^ type.builtin
-//                                ^ punctuation.bracket
+//                        ^ punctuation.bracket
+//                          ^ operator
+//                             ^ type.builtin
+//                                 ^ punctuation.bracket
 ^bb1(%d : i64, %e : i64):
 // <- label
 //   ^ variable.parameter

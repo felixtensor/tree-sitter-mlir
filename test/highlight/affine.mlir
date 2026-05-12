@@ -1,0 +1,43 @@
+#map0 = affine_map<(d0, d1)[s0] -> (d0 + s0, d1 floordiv 4)>
+// <- attribute
+//      ^ attribute
+//                                                 ^ keyword.operator
+#set0 = affine_set<(d0)[s0] : (d0 >= 0, d0 - s0 mod 4 == 0)>
+// <- attribute
+//      ^ attribute
+//                                             ^ attribute
+
+func.func @affine_highlights(%n : index, %A : memref<?xf32>) {
+// <- function.builtin
+//        ^ function
+//                           ^ variable.parameter
+//                                ^ type.builtin
+//                                        ^ variable.parameter
+//                                             ^ type.builtin
+  affine.for %i = 0 to %n step 4 {
+// ^ function.builtin
+//            ^ variable
+//                      ^ variable.parameter
+    %bound = affine.min #map0(%i, %i)[%n]
+//  ^ variable
+//           ^ function.builtin
+//                      ^ attribute
+//                            ^ variable
+    affine.if #set0(%i)[%n] {
+//   ^ function.builtin
+//             ^ attribute
+      %v = affine.load %A[%i] : memref<?xf32>
+//    ^ variable
+//         ^ function.builtin
+//                     ^ variable.parameter
+//                        ^ variable
+//                              ^ type.builtin
+      affine.store %v, %A[%i] : memref<?xf32>
+//    ^ function.builtin
+//                 ^ variable
+//                     ^ variable.parameter
+    }
+  }
+  return
+// ^ function.builtin
+}
