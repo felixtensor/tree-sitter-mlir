@@ -1,0 +1,77 @@
+================================================================================
+Triton dialect shaped custom types
+================================================================================
+tt.func @triton_types(
+  %arg0: !ttg.memdesc<128x256xf8E5M2, #shared, #ttg.shared_memory, mutable>,
+  %arg1: !tt.tensordesc<256x64xf16, #shared>,
+  %arg2: !ttg.memdesc<64x32xf16, #shared, #smem, mutable, 64x128>) {
+  tt.return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (dialect_dim_list
+                (dimension_size)
+                (dimension_separator)
+                (dimension_size)
+                (dimension_separator)
+                (type
+                  (builtin_type
+                    (float_type))))
+              (attribute_alias)
+              (dialect_attribute)
+              (bare_id)))))
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (dialect_dim_list
+                (dimension_size)
+                (dimension_separator)
+                (dimension_size)
+                (dimension_separator)
+                (type
+                  (builtin_type
+                    (float_type))))
+              (attribute_alias)))))
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (dialect_dim_list
+                (dimension_size)
+                (dimension_separator)
+                (dimension_size)
+                (dimension_separator)
+                (type
+                  (builtin_type
+                    (float_type))))
+              (attribute_alias)
+              (attribute_alias)
+              (bare_id)
+              (dialect_dim_list
+                (dimension_size)
+                (dimension_separator)
+                (dimension_size))))))
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name))))))))

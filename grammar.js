@@ -278,8 +278,10 @@ export default grammar({
     _pretty_dialect_item_contents: $ => prec.left(choice(
       $.pretty_dialect_item_body,
       $._pretty_dialect_bang_body_token,
+      $._pretty_dialect_body_attribute,
+      $.dialect_dim_list,
       $.type,
-      $.attribute,
+      prec(2, $.attribute),
       $._literal,
       'dense', 'sparse', 'array',
       $.bare_id,
@@ -289,6 +291,22 @@ export default grammar({
     )),
     _pretty_dialect_bang_body_token: $ => token(prec(1,
       seq('!', /[^a-zA-Z_<>]/))),
+    _pretty_dialect_body_attribute: $ => choice(
+      alias($._pretty_dialect_attribute_token, $.dialect_attribute),
+      alias($._pretty_attribute_alias_token, $.attribute_alias)),
+    _pretty_attribute_alias_token: $ => token(prec(2,
+      seq('#', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/)))),
+    _pretty_dialect_attribute_token: $ => token(prec(2,
+      seq('#', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/), '.',
+        /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/)))),
+    dimension_separator: $ => token(prec(10, 'x')),
+    dialect_dim_list: $ => prec.dynamic(1, seq($._dialect_dim_primitive,
+      repeat1(seq($.dimension_separator, $._dialect_dim_primitive)))),
+    _dialect_dim_primitive: $ => choice(
+      prec(1, $.type),
+      alias($.integer_literal, $.dimension_size),
+      '?',
+      '*'),
 
     // Builtin types
     builtin_type: $ => choice(
@@ -322,7 +340,7 @@ export default grammar({
     // '*' represents the unranked form for both memref and tensor types
     // (UnrankedMemRefType, UnrankedTensorType). Vector uses its own
     // vector_dim_list / _static_dim_list and disallows '*' by construction.
-    dimension_size: $ => repeat1($._digit),
+    dimension_size: $ => token(repeat1(/[0-9]/)),
     _dim_primitive: $ => choice(prec(1, $.type), $.dimension_size, '?', '*'),
 
     tensor_type: $ => seq(token('tensor'), '<', $.dim_list,

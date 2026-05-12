@@ -2395,11 +2395,23 @@
           },
           {
             "type": "SYMBOL",
-            "name": "type"
+            "name": "_pretty_dialect_body_attribute"
           },
           {
             "type": "SYMBOL",
-            "name": "attribute"
+            "name": "dialect_dim_list"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type"
+          },
+          {
+            "type": "PREC",
+            "value": 2,
+            "content": {
+              "type": "SYMBOL",
+              "name": "attribute"
+            }
           },
           {
             "type": "SYMBOL",
@@ -2502,6 +2514,168 @@
           ]
         }
       }
+    },
+    "_pretty_dialect_body_attribute": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_pretty_dialect_attribute_token"
+          },
+          "named": true,
+          "value": "dialect_attribute"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_pretty_attribute_alias_token"
+          },
+          "named": true,
+          "value": "attribute_alias"
+        }
+      ]
+    },
+    "_pretty_attribute_alias_token": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 2,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "#"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z_]"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "PATTERN",
+                "value": "[a-zA-Z0-9_$]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "_pretty_dialect_attribute_token": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 2,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "#"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z_]"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "PATTERN",
+                "value": "[a-zA-Z0-9_$]"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "."
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z_]"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "PATTERN",
+                "value": "[a-zA-Z0-9_$.-]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "dimension_separator": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 10,
+        "content": {
+          "type": "STRING",
+          "value": "x"
+        }
+      }
+    },
+    "dialect_dim_list": {
+      "type": "PREC_DYNAMIC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_dialect_dim_primitive"
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "dimension_separator"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_dialect_dim_primitive"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "_dialect_dim_primitive": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "type"
+          }
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "integer_literal"
+          },
+          "named": true,
+          "value": "dimension_size"
+        },
+        {
+          "type": "STRING",
+          "value": "?"
+        },
+        {
+          "type": "STRING",
+          "value": "*"
+        }
+      ]
     },
     "builtin_type": {
       "type": "CHOICE",
@@ -2867,10 +3041,13 @@
       ]
     },
     "dimension_size": {
-      "type": "REPEAT1",
+      "type": "TOKEN",
       "content": {
-        "type": "SYMBOL",
-        "name": "_digit"
+        "type": "REPEAT1",
+        "content": {
+          "type": "PATTERN",
+          "value": "[0-9]"
+        }
       }
     },
     "_dim_primitive": {

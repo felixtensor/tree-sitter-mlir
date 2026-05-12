@@ -40,6 +40,7 @@
 ;; whole dim_list — placing @cap outside an alternation would capture the
 ;; parent node instead.
 (dim_list "x" @punctuation.delimiter)
+(dimension_separator) @punctuation.delimiter
 (vector_dim_list "x" @punctuation.delimiter)
 
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute

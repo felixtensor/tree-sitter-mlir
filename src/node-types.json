@@ -641,7 +641,7 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "opaque_dialect_item",
@@ -653,6 +653,29 @@
         },
         {
           "type": "pretty_dialect_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dialect_dim_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dimension_separator",
+          "named": true
+        },
+        {
+          "type": "dimension_size",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -757,11 +780,23 @@
           "named": true
         },
         {
+          "type": "attribute_alias",
+          "named": true
+        },
+        {
           "type": "bare_id",
           "named": true
         },
         {
           "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "dialect_attribute",
+          "named": true
+        },
+        {
+          "type": "dialect_dim_list",
           "named": true
         },
         {
@@ -1290,11 +1325,23 @@
           "named": true
         },
         {
+          "type": "attribute_alias",
+          "named": true
+        },
+        {
           "type": "bare_id",
           "named": true
         },
         {
           "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "dialect_attribute",
+          "named": true
+        },
+        {
+          "type": "dialect_dim_list",
           "named": true
         },
         {
@@ -1946,6 +1993,10 @@
   },
   {
     "type": "dialect_ident",
+    "named": true
+  },
+  {
+    "type": "dimension_separator",
     "named": true
   },
   {
