@@ -264,3 +264,26 @@ func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
                           (builtin_type
                             (float_type)))))))))))))))
 
+================================================================================
+String literal escape sequences
+================================================================================
+"test.op"() {value = "plain\n\t\"\\\0A\q"} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal
+                (escape_sequence)
+                (escape_sequence)
+                (escape_sequence)
+                (escape_sequence)
+                (escape_sequence)
+                (invalid_escape))))))
+      (function_type))))

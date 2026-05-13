@@ -1431,7 +1431,21 @@
   {
     "type": "string_literal",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "invalid_escape",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "successor",
@@ -1927,10 +1941,6 @@
     "named": false
   },
   {
-    "type": "\\",
-    "named": false
-  },
-  {
     "type": "]",
     "named": false
   },
@@ -2000,6 +2010,10 @@
     "named": true
   },
   {
+    "type": "escape_sequence",
+    "named": true
+  },
+  {
     "type": "float_literal",
     "named": true
   },
@@ -2021,6 +2035,10 @@
   },
   {
     "type": "integer_type",
+    "named": true
+  },
+  {
+    "type": "invalid_escape",
     "named": true
   },
   {

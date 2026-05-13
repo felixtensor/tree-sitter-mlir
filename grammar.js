@@ -56,9 +56,11 @@ export default grammar({
       optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
     string_literal: $ => seq(
       '"',
-      repeat(choice(/[^\\"\n\f\v\r]+/, seq('\\', /[nt"\\]/))),
+      repeat(choice(/[^\\"\n\f\v\r]+/, $.escape_sequence, $.invalid_escape)),
       '"'
     ),
+    escape_sequence: $ => token(seq('\\', choice(/[nt"\\]/, /[0-9a-fA-F]{2}/))),
+    invalid_escape: $ => token(seq('\\', /[^\n\f\v\r]/)),
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     uninitialized_literal: $ => token('uninitialized'),
