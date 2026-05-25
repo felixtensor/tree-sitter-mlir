@@ -1,0 +1,436 @@
+================================================================================
+trailing loc(unknown)
+================================================================================
+func.func @f() {
+  "test.op"() : () -> () loc(unknown)
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (function_type))
+              (trailing_location
+                (location
+                  (unknown_location))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+custom operation trailing location remains operation location
+================================================================================
+func.func @f() {
+  return loc(unknown)
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name))
+              (trailing_location
+                (location
+                  (unknown_location))))))))))
+
+================================================================================
+trailing loc filelinecol with line and column
+================================================================================
+"test.op"() : () -> () loc("source.mlir":10:8)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (string_literal)
+        (integer_literal)
+        (integer_literal)))))
+
+================================================================================
+trailing loc filelinecol line only
+================================================================================
+"test.op"() : () -> () loc("source.mlir":10)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (string_literal)
+        (integer_literal)))))
+
+================================================================================
+trailing loc filelocrange end column only
+================================================================================
+"test.op"() : () -> () loc("source.mlir":10:8 to :12)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (string_literal)
+        (integer_literal)
+        (integer_literal)
+        (integer_literal)))))
+
+================================================================================
+trailing loc filelocrange full range
+================================================================================
+"test.op"() : () -> () loc("source.mlir":10:8 to 12:4)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (string_literal)
+        (integer_literal)
+        (integer_literal)
+        (integer_literal)
+        (integer_literal)))))
+
+================================================================================
+trailing loc callsite
+================================================================================
+"test.op"() : () -> () loc(callsite("foo" at "mysource.cc":10:8))
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (callsite_location
+          (location
+            (string_literal))
+          (location
+            (string_literal)
+            (integer_literal)
+            (integer_literal)))))))
+
+================================================================================
+trailing loc callsite nested
+================================================================================
+"test.op"() : () -> () loc(callsite("foo" at callsite("bar" at "baz")))
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (callsite_location
+          (location
+            (string_literal))
+          (location
+            (callsite_location
+              (location
+                (string_literal))
+              (location
+                (string_literal)))))))))
+
+================================================================================
+trailing loc fused without metadata
+================================================================================
+"test.op"() : () -> () loc(fused["foo", "mysource.cc":10:8])
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (fused_location
+          (location
+            (string_literal))
+          (location
+            (string_literal)
+            (integer_literal)
+            (integer_literal)))))))
+
+================================================================================
+trailing loc fused with metadata attribute
+================================================================================
+"test.op"() : () -> () loc(fused<"myPass">["foo", "foo2"])
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (fused_location
+          (attribute_value
+            (string_literal))
+          (location
+            (string_literal))
+          (location
+            (string_literal)))))))
+
+================================================================================
+trailing loc alias reference
+================================================================================
+"test.op"() : () -> () loc(#loc)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (attribute_alias)))))
+
+================================================================================
+loc as attribute alias rhs
+================================================================================
+#loc1 = loc("source.mlir":12:14)
+#loc2 = loc(unknown)
+#loc3 = loc(fused<#loc1>[#loc2])
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (trailing_location
+        (location
+          (string_literal)
+          (integer_literal)
+          (integer_literal)))))
+  (attribute_alias_def
+    (attribute_value
+      (trailing_location
+        (location
+          (unknown_location)))))
+  (attribute_alias_def
+    (attribute_value
+      (trailing_location
+        (location
+          (fused_location
+            (attribute_value
+              (attribute_alias))
+            (location
+              (attribute_alias))))))))
+
+================================================================================
+loc inside dictionary attribute value
+================================================================================
+"test.op"() {tag = loc("source.mlir":10:8)} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (trailing_location
+                (location
+                  (string_literal)
+                  (integer_literal)
+                  (integer_literal)))))))
+      (function_type))))
+
+================================================================================
+trailing loc name location with child
+================================================================================
+"test.op"() : () -> () loc("callee"("source.mlir":10:8))
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (string_literal)
+        (location
+          (string_literal)
+          (integer_literal)
+          (integer_literal))))))
+
+================================================================================
+trailing loc custom dialect location punctuation
+================================================================================
+"test.op"() : () -> () loc(#test.custom_location<"foo.mlir" * 1234>)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))
+    (trailing_location
+      (location
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (string_literal)
+              (integer_literal))))))))
+
+================================================================================
+affine induction variable location preserves operation location
+================================================================================
+func.func @f() {
+  affine.for %i0 loc("IVlocation") = 0 to 8 {
+  } loc(fused["foo"])
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (trailing_location
+                  (location
+                    (string_literal)))
+                (integer_literal)
+                (bare_id)
+                (integer_literal)
+                (region))
+              (trailing_location
+                (location
+                  (fused_location
+                    (location
+                      (string_literal))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+loc inside nested custom assembly argument
+================================================================================
+func.func @f() {
+  test.attr_with_loc("dialectLoc" loc(#test.custom_location<"foo.mlir"*32>))
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (trailing_location
+                  (location
+                    (dialect_attribute
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)
+                        (pretty_dialect_item_body
+                          (string_literal)
+                          (integer_literal))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+function and block argument locations
+================================================================================
+func.func @argument_location(%x: i32 loc("arg")) {
+  "foo.region"() ({
+  ^bb0(%y: i32 loc("block")):
+    return
+  }) : () -> ()
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (trailing_location
+            (location
+              (string_literal))))
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (region
+                  (block
+                    (block_label
+                      (caret_id)
+                      (block_arg_list
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))
+                        (trailing_location
+                          (location
+                            (string_literal)))))
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))

@@ -131,7 +131,38 @@ export default grammar({
     dictionary_attribute: $ => seq('{', optional($.attribute_entry),
       repeat(seq(',', $.attribute_entry)), '}'),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
-    location: $ => $.string_literal,
+    // LangRef "Source Locations": location ::= unknown | name | filelinecol |
+    //   filelocrange | callsite | fused | loc-alias-ref
+    location: $ => choice(
+      $.unknown_location,
+      $._string_location,
+      $.callsite_location,
+      $.fused_location,
+      $.attribute_alias,
+      $.dialect_attribute,
+    ),
+    unknown_location: $ => token('unknown'),
+    callsite_location: $ => seq(token('callsite'), '(',
+      $.location, token('at'), $.location, ')'),
+    fused_location: $ => seq(token('fused'),
+      optional(seq('<', $.attribute_value, '>')),
+      '[', $.location, repeat(seq(',', $.location)), ']'),
+    // Combines name-location and filelinecol-location (LangRef uses the same
+    // string-literal prefix; what follows distinguishes them).
+    _string_location: $ => seq(
+      $.string_literal,
+      optional(choice(
+        $._filelinecol_suffix,
+        seq('(', $.location, ')'),
+      )),
+    ),
+    _filelinecol_suffix: $ => seq(
+      ':', $.integer_literal,
+      optional(seq(':', $.integer_literal)),
+      optional(seq(token('to'),
+        optional($.integer_literal),
+        ':', $.integer_literal)),
+    ),
 
     // =========================================================================
     // Three-tier custom operation system
@@ -142,6 +173,7 @@ export default grammar({
     custom_operation: $ => choice(
       prec(2, $.func_operation),
       prec(2, $.module_operation),
+      prec(2, $._affine_for_operation),
       $._generic_custom_operation,
     ),
 
@@ -163,6 +195,15 @@ export default grammar({
       field('sym_name', optional($.symbol_ref_id)),
       field('attributes', optional(seq(optional(token('attributes')), $.attribute))),
       field('body', $.region),
+    )),
+
+    // Structured only where affine assembly syntax puts a location before the
+    // remaining operation body instead of at the operation end.
+    _affine_for_operation: $ => prec.right(seq(
+      field('name', alias(token(prec(20, 'affine.for')), $.custom_op_name)),
+      $.value_use,
+      optional(field('induction_location', $.trailing_location)),
+      repeat($._custom_body_element),
     )),
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
@@ -215,9 +256,10 @@ export default grammar({
       ',', '=', ':', '->', '*', '+', '-', '/', '&', '|', '~',
     ),
 
-    _custom_body_paren: $ => seq('(', repeat($._custom_body_element), ')'),
-    _custom_body_bracket: $ => seq('[', repeat($._custom_body_element), ']'),
-    _custom_body_angle_group: $ => seq('<', repeat($._custom_body_element), '>'),
+    _custom_body_paren: $ => seq('(', repeat($._nested_custom_body_element), ')'),
+    _custom_body_bracket: $ => seq('[', repeat($._nested_custom_body_element), ']'),
+    _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
+    _nested_custom_body_element: $ => choice($._custom_body_element, $.trailing_location),
 
     // =========================================================================
     // Blocks
@@ -229,7 +271,8 @@ export default grammar({
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
-    _value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type))),
+    _value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type)),
+      optional($.trailing_location)),
     _value_use_and_type_list: $ => seq($._value_use_and_type,
       repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
@@ -287,7 +330,7 @@ export default grammar({
       $._literal,
       'dense', 'sparse', 'array',
       $.bare_id,
-      ',', ':', '=', '->', '(', ')', '[', ']', '{', '}',
+      ',', ':', '=', '->', '(', ')', '[', ']', '{', '}', '*',
       '@', '#',
       token(prec(-1, /[^<>]/))
     )),
@@ -376,7 +419,7 @@ export default grammar({
       repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
     _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type,
-      $.function_type, $._affine_map_like, $.symbol_ref_id,
+      $.function_type, $._affine_map_like, $.symbol_ref_id, $.trailing_location,
       seq(choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute), $._type_annotation)),
     attribute: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute),
@@ -435,7 +478,8 @@ export default grammar({
       $._value_id_and_type_attr_list)), ')'),
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
       repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
-    _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
+    _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute),
+      optional($.trailing_location)),
     _function_arg: $ => choice(seq($.value_use, ':', choice($.type, $.function_type)), $.value_use, $.type, $.function_type),
     _type_or_func_type: $ => choice($.type, $.function_type),
     type_list_attr_parens: $ => choice($.type, $.function_type,

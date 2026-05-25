@@ -192,6 +192,10 @@
           "named": true
         },
         {
+          "type": "trailing_location",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         },
@@ -271,6 +275,10 @@
           "named": true
         },
         {
+          "type": "trailing_location",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         },
@@ -316,6 +324,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "trailing_location",
+          "named": true
+        },
         {
           "type": "type",
           "named": true
@@ -419,6 +431,21 @@
         },
         {
           "type": "vector_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "callsite_location",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "location",
           "named": true
         }
       ]
@@ -530,6 +557,16 @@
     "type": "custom_operation",
     "named": true,
     "fields": {
+      "induction_location": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "trailing_location",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": false,
@@ -595,6 +632,10 @@
         },
         {
           "type": "tensor_literal",
+          "named": true
+        },
+        {
+          "type": "trailing_location",
           "named": true
         },
         {
@@ -851,6 +892,10 @@
           "named": true
         },
         {
+          "type": "trailing_location",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         },
@@ -988,6 +1033,25 @@
     }
   },
   {
+    "type": "fused_location",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute_value",
+          "named": true
+        },
+        {
+          "type": "location",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "generic_operation",
     "named": true,
     "fields": {},
@@ -1036,11 +1100,39 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
+          "type": "attribute_alias",
+          "named": true
+        },
+        {
+          "type": "callsite_location",
+          "named": true
+        },
+        {
+          "type": "dialect_attribute",
+          "named": true
+        },
+        {
+          "type": "fused_location",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "location",
+          "named": true
+        },
+        {
           "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unknown_location",
           "named": true
         }
       ]
@@ -1461,6 +1553,10 @@
         },
         {
           "type": "function_type",
+          "named": true
+        },
+        {
+          "type": "trailing_location",
           "named": true
         },
         {
@@ -1961,6 +2057,10 @@
     "named": false
   },
   {
+    "type": "at",
+    "named": false
+  },
+  {
     "type": "attributes",
     "named": false
   },
@@ -1974,6 +2074,10 @@
   },
   {
     "type": "builtin.module",
+    "named": false
+  },
+  {
+    "type": "callsite",
     "named": false
   },
   {
@@ -2027,6 +2131,10 @@
   },
   {
     "type": "func.func",
+    "named": false
+  },
+  {
+    "type": "fused",
     "named": false
   },
   {
@@ -2118,6 +2226,10 @@
     "named": false
   },
   {
+    "type": "to",
+    "named": false
+  },
+  {
     "type": "tuple",
     "named": false
   },
@@ -2127,6 +2239,10 @@
   },
   {
     "type": "unit_literal",
+    "named": true
+  },
+  {
+    "type": "unknown_location",
     "named": true
   },
   {
