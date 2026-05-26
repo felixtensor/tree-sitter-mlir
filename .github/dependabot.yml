@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # Keep updates separate so auto-merge can enforce a single patch update type.
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -9,9 +10,6 @@ updates:
       prefix: ci
     labels: [dependencies]
     open-pull-requests-limit: 1
-    groups:
-      actions:
-        patterns: ["*"]
 
   - package-ecosystem: npm
     versioning-strategy: increase
@@ -23,6 +21,3 @@ updates:
       prefix: "build(deps)"
     labels: [dependencies]
     open-pull-requests-limit: 3
-    groups:
-      npm:
-        patterns: ["*"]

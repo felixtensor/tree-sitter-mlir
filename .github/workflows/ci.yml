@@ -23,6 +23,10 @@ concurrency:
   group: ${{github.workflow}}-${{github.ref}}
   cancel-in-progress: true
 
+env:
+  # GitHub hosted runners force JavaScript actions to Node 24 from 2026-06-02.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   test:
     name: Test parser
@@ -50,7 +54,7 @@ jobs:
           test-swift: true
           test-zig: true
 
-      # Tier 2: Examples tests — CI fails if any file produces an ERROR node
+      # Parse examples without ERROR nodes as a required integration corpus.
       - name: Parse examples
         uses: tree-sitter/parse-action@v4
         id: parse-files

@@ -4,8 +4,7 @@ on:
   pull_request:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
@@ -13,5 +12,28 @@ concurrency:
 
 jobs:
   regenerate:
-    uses: tree-sitter/workflows/.github/workflows/regenerate.yml@main
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: tree-sitter/workflows/.github/workflows/regenerate.yml@216133f5cb4469b112c5e83415869e58b25c353a
+    with:
+      # tree-sitter@0.25.0 fails to build its Node binding under Node 24.
+      node-version: "22"
+
+  regeneration-gate:
+    name: Parser regeneration
+    needs: regenerate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check regeneration result
+        env:
+          IS_DEPENDABOT: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+          RESULT: ${{ needs.regenerate.result }}
+        run: |
+          if [[ "$IS_DEPENDABOT" == "true" && "$RESULT" != "success" ]]; then
+            printf '::error::Dependabot parser regeneration did not succeed (%s).\n' "$RESULT"
+            exit 1
+          fi
+          printf 'Parser regeneration requirement satisfied (%s).\n' "$RESULT"
