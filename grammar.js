@@ -197,8 +197,12 @@ export default grammar({
       field('body', $.region),
     )),
 
-    // Structured only where affine assembly syntax puts a location before the
-    // remaining operation body instead of at the operation end.
+    // affine.for prints its induction-variable location before the body
+    // (`affine.for %i loc("iv") = 0 to 8 { ... } loc(...)`). The generic
+    // operation rule already attaches a single `trailing_location` to the
+    // operation; without this structured rule, that machinery would bind the
+    // induction loc to the operation slot and leave the operation's own
+    // trailing loc unparseable.
     _affine_for_operation: $ => prec.right(seq(
       field('name', alias(token(prec(20, 'affine.for')), $.custom_op_name)),
       $.value_use,
@@ -259,6 +263,10 @@ export default grammar({
     _custom_body_paren: $ => seq('(', repeat($._nested_custom_body_element), ')'),
     _custom_body_bracket: $ => seq('[', repeat($._nested_custom_body_element), ']'),
     _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
+    // Only nested groups accept `trailing_location` as a body element.
+    // At the top level it is omitted on purpose so the operation rule
+    // captures a trailing `loc(...)` as the operation's location instead of
+    // it being swallowed by the body repetition.
     _nested_custom_body_element: $ => choice($._custom_body_element, $.trailing_location),
 
     // =========================================================================

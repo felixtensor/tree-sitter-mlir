@@ -434,3 +434,32 @@ func.func @argument_location(%x: i32 loc("arg")) {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+at is bare_id in transform.func custom assembly
+================================================================================
+transform.func.deduplicate_func_args @foo at %arg0 : (!transform.any_op) -> (!transform.any_op, !transform.any_op)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)))))))
