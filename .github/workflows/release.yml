@@ -30,3 +30,11 @@ jobs:
     uses: tree-sitter/workflows/.github/workflows/package-pypi.yml@216133f5cb4469b112c5e83415869e58b25c353a
     secrets:
       PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
+
+  npm:
+    uses: tree-sitter/workflows/.github/workflows/package-npm.yml@216133f5cb4469b112c5e83415869e58b25c353a
+    with:
+      package-name: "@felixtensor/tree-sitter-mlir"
+      node-version: "22"
+    secrets:
+      NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}

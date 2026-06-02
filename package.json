@@ -1,5 +1,5 @@
 {
-  "name": "tree-sitter-mlir",
+  "name": "@felixtensor/tree-sitter-mlir",
   "version": "0.1.0",
   "description": "MLIR grammar for tree-sitter",
   "type": "module",
@@ -60,5 +60,8 @@
     "test:all": "npm run test && npm run test:examples",
     "bench": "node bench.mjs",
     "prebuildify": "prebuildify --napi --strip"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
