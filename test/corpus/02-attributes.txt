@@ -1435,3 +1435,31 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                         (type
                           (builtin_type
                             (float_type)))))))))))))))
+
+================================================================================
+dialect attribute body with dynamic-dimension question marks
+================================================================================
+#a = #sparse_tensor<slice(1, ?, 1)>
+#b = #test.custom_struct<value = ?, opt_value = 1>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (dialect_attribute
+        (parametric_dialect_item
+          (dialect_namespace)
+          (pretty_dialect_item_body
+            (bare_id)
+            (integer_literal)
+            (integer_literal))))))
+  (attribute_alias_def
+    (attribute_value
+      (dialect_attribute
+        (pretty_dialect_item
+          (dialect_namespace)
+          (dialect_ident)
+          (pretty_dialect_item_body
+            (bare_id)
+            (bare_id)
+            (integer_literal)))))))
