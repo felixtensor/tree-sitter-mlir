@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+# No workflow_dispatch: the reusable release.yml uses GITHUB_REF_NAME as the
+# version when creating the release, so a manual dispatch (ref = branch name)
+# would create a bogus release. Re-run failed jobs from the Actions tab instead.
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  github-release:
+    uses: tree-sitter/workflows/.github/workflows/release.yml@216133f5cb4469b112c5e83415869e58b25c353a
+
+  crates:
+    uses: tree-sitter/workflows/.github/workflows/package-crates.yml@216133f5cb4469b112c5e83415869e58b25c353a
+    secrets:
+      CARGO_REGISTRY_TOKEN: ${{secrets.CARGO_REGISTRY_TOKEN}}
+
+  pypi:
+    uses: tree-sitter/workflows/.github/workflows/package-pypi.yml@216133f5cb4469b112c5e83415869e58b25c353a
+    secrets:
+      PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
