@@ -31,10 +31,103 @@ jobs:
     secrets:
       PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
 
+  npm-wasm:
+    name: Build npm Wasm binary
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm i --omit peer --omit optional
+
+      - name: Build Wasm binary
+        run: npm x -- tree-sitter build --wasm
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v7
+        with:
+          path: "*.wasm"
+          name: prebuilds-wasm
+          retention-days: 2
+
+  npm-prebuilds:
+    name: Build npm prebuild on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-15
+          - macos-15-intel
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm i --omit peer --omit optional
+
+      - name: Build binary
+        run: npm x -- prebuildify -t 20.19.5
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v7
+        with:
+          path: prebuilds/**
+          name: prebuilds-${{matrix.os}}
+          retention-days: 2
+
   npm:
-    uses: tree-sitter/workflows/.github/workflows/package-npm.yml@216133f5cb4469b112c5e83415869e58b25c353a
-    with:
-      package-name: "@felixtensor/tree-sitter-mlir"
-      node-version: "22"
-    secrets:
-      NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+    name: Publish npm package
+    needs: [npm-wasm, npm-prebuilds]
+    runs-on: ubuntu-24.04
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/@felixtensor/tree-sitter-mlir
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version: "22"
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install npm with trusted publishing support
+        run: npm install -g npm@latest
+
+      - name: Download binaries
+        uses: actions/download-artifact@v8
+        with:
+          path: prebuilds
+          pattern: prebuilds-*
+          merge-multiple: true
+
+      - name: Check binaries
+        run: find prebuilds -type f -maxdepth 3 -print | sort
+
+      - name: Move Wasm binary to root
+        run: mv -v prebuilds/*.wasm .
+
+      - name: Publish to npm
+        run: npm publish

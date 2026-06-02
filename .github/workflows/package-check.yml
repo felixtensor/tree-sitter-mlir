@@ -1,0 +1,133 @@
+name: Package check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/package-check.yml
+      - Cargo.toml
+      - pyproject.toml
+      - setup.py
+      - package.json
+      - package-lock.json
+      - binding.gyp
+      - bindings/**
+      - grammar.js
+      - queries/**
+      - src/**
+      - tree-sitter.json
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/package-check.yml
+      - Cargo.toml
+      - pyproject.toml
+      - setup.py
+      - package.json
+      - package-lock.json
+      - binding.gyp
+      - bindings/**
+      - grammar.js
+      - queries/**
+      - src/**
+      - tree-sitter.json
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  cargo:
+    name: Check crates.io package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check package file list
+        run: |
+          cargo package --list | tee /tmp/cargo-package-files
+          ! grep -E '(^|/)tmp/|(^|/)node_modules/|^build/' /tmp/cargo-package-files
+
+      - name: Dry-run publish
+        run: cargo publish --dry-run
+
+  python:
+    name: Check PyPI package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Build package
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Install wheel and smoke test
+        run: |
+          python -m venv /tmp/tree-sitter-mlir-py
+          /tmp/tree-sitter-mlir-py/bin/pip install dist/tree_sitter_mlir-*.whl
+          /tmp/tree-sitter-mlir-py/bin/python -c "import tree_sitter_mlir as mlir; assert mlir.language(); assert mlir.HIGHLIGHTS_QUERY; assert mlir.INJECTIONS_QUERY; assert mlir.LOCALS_QUERY"
+
+  npm:
+    name: Check npm package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build local prebuild
+        run: npm x -- prebuildify -t 20.19.5
+
+      - name: Run Node binding test
+        run: npm run test:bindings
+
+      - name: Dry-run pack
+        run: |
+          npm pack --dry-run --json | tee /tmp/npm-pack.json
+          node - <<'JS'
+          const fs = require("fs");
+          const pack = JSON.parse(fs.readFileSync("/tmp/npm-pack.json", "utf8"))[0];
+          const paths = pack.files.map(file => file.path);
+
+          for (const required of [
+            "grammar.js",
+            "tree-sitter.json",
+            "binding.gyp",
+            "src/parser.c",
+            "queries/highlights.scm",
+          ]) {
+            if (!paths.includes(required)) throw new Error(`missing ${required}`);
+          }
+
+          if (!paths.some(path => path.startsWith("prebuilds/"))) {
+            throw new Error("missing prebuilds");
+          }
+
+          for (const forbidden of ["tmp/", "node_modules/", "target/"]) {
+            if (paths.some(path => path.startsWith(forbidden))) {
+              throw new Error(`packed forbidden path ${forbidden}`);
+            }
+          }
+          JS
