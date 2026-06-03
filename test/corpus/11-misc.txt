@@ -324,3 +324,19 @@ acc.routine @routine_vec func(@host_bar) vector
       (symbol_ref_id)
       (bare_id)
       (symbol_ref_id))))
+
+================================================================================
+Custom operation body braced value group
+================================================================================
+acc.loop tile({%c4 : index})
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (index_type))))))
