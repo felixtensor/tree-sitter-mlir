@@ -73,11 +73,10 @@ jobs:
       - name: Set up NodeJS
         uses: actions/setup-node@v6
         with:
-          cache: npm
           node-version: "22"
 
       - name: Install dependencies
-        run: npm i --omit peer --omit optional
+        run: npm ci --omit peer --omit optional
 
       - name: Build Wasm binary
         run: npm x -- tree-sitter build --wasm
@@ -111,11 +110,10 @@ jobs:
       - name: Set up NodeJS
         uses: actions/setup-node@v6
         with:
-          cache: npm
           node-version: "22"
 
       - name: Install dependencies
-        run: npm i --omit peer --omit optional
+        run: npm ci --omit peer --omit optional
 
       - name: Build binary
         run: npm x -- prebuildify -t 20.19.5
@@ -144,13 +142,12 @@ jobs:
       - name: Set up NodeJS
         uses: actions/setup-node@v6
         with:
-          cache: npm
           node-version: "22"
           registry-url: https://registry.npmjs.org/
 
       # npm >= 11.5.1 is required for OIDC trusted publishing.
       - name: Update npm
-        run: npm install -g npm@latest
+        run: npm install -g npm@11
 
       - name: Download binaries
         uses: actions/download-artifact@v8

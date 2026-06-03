@@ -5,31 +5,55 @@ on:
   pull_request:
     paths:
       - .github/workflows/package-check.yml
+      - .github/workflows/release.yml
+      - CMakeLists.txt
       - Cargo.toml
+      - Cargo.lock
+      - Makefile
+      - Package.resolved
+      - Package.swift
+      - build.zig
+      - build.zig.zon
       - pyproject.toml
       - setup.py
       - package.json
       - package-lock.json
       - binding.gyp
+      - go.mod
+      - LICENSE
+      - README.md
       - bindings/**
       - grammar.js
       - queries/**
       - src/**
+      - test/**
       - tree-sitter.json
   push:
     branches: [main]
     paths:
       - .github/workflows/package-check.yml
+      - .github/workflows/release.yml
+      - CMakeLists.txt
       - Cargo.toml
+      - Cargo.lock
+      - Makefile
+      - Package.resolved
+      - Package.swift
+      - build.zig
+      - build.zig.zon
       - pyproject.toml
       - setup.py
       - package.json
       - package-lock.json
       - binding.gyp
+      - go.mod
+      - LICENSE
+      - README.md
       - bindings/**
       - grammar.js
       - queries/**
       - src/**
+      - test/**
       - tree-sitter.json
 
 concurrency:
@@ -103,6 +127,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run Wasm parser tests
+        run: npm run test -- --wasm
+
+      - name: Check highlight captures
+        run: npm x -- tree-sitter highlight --quiet --check --query-paths queries/highlights.scm test/highlight/*.mlir
 
       - name: Build local prebuild
         run: npm x -- prebuildify -t 20.19.5
