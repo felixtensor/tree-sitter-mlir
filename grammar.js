@@ -271,11 +271,11 @@ export default grammar({
 
     // =========================================================================
     // Blocks
-    //   block       ::= block-label operation+
+    //   block       ::= block-label operation*
     //   block-label ::= block-id block-arg-list? `:`
     //   caret-id    ::= `^` suffix-id
     // =========================================================================
-    block: $ => seq($.block_label, repeat1($.operation)),
+    block: $ => seq($.block_label, repeat($.operation)),
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),

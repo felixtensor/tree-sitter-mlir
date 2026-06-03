@@ -2176,7 +2176,7 @@
           "name": "block_label"
         },
         {
-          "type": "REPEAT1",
+          "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
             "name": "operation"
