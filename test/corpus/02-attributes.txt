@@ -413,6 +413,7 @@ func.func @pretty_dialect_attribute_body_tokens() {
   "foo.unknown_op"() {foo = #foo.complexattr<abcd<[f]$$[32]>>} : () -> ()
   "foo.unknown_op"() {bar = #foo.dialect<!x@#!@#>} : () -> ()
   "test.slash_attr"() {attr = #test.slash_attr<1 / 2>} : () -> ()
+  "test.acc_attr"() {routine = #acc.specialized_routine<@routine, <vector>, "host">} : () -> ()
   return
 }
 --------------------------------------------------------------------------------
@@ -474,6 +475,23 @@ func.func @pretty_dialect_attribute_body_tokens() {
                             (pretty_dialect_item_body
                               (integer_literal)
                               (integer_literal))))))))
+                (function_type)))
+            (operation
+              rhs: (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body
+                              (bare_id)
+                              (pretty_dialect_item_body)
+                              (string_literal))))))))
                 (function_type)))
             (operation
               rhs: (custom_operation

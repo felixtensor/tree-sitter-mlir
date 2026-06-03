@@ -2027,6 +2027,10 @@
         },
         {
           "type": "STRING",
+          "value": "vector"
+        },
+        {
+          "type": "STRING",
           "value": "ceildiv"
         },
         {
@@ -2812,6 +2816,10 @@
             "value": "array"
           },
           {
+            "type": "STRING",
+            "value": "vector"
+          },
+          {
             "type": "SYMBOL",
             "name": "bare_id"
           },
@@ -3515,35 +3523,39 @@
       "name": "attribute_value"
     },
     "vector_type": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "TOKEN",
-          "content": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "TOKEN",
+            "content": {
+              "type": "STRING",
+              "value": "vector"
+            }
+          },
+          {
             "type": "STRING",
-            "value": "vector"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
+            "value": "<"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "vector_dim_list"
+            }
+          },
+          {
             "type": "SYMBOL",
-            "name": "vector_dim_list"
+            "name": "_prim_type"
+          },
+          {
+            "type": "STRING",
+            "value": ">"
           }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_prim_type"
-        },
-        {
-          "type": "STRING",
-          "value": ">"
-        }
-      ]
+        ]
+      }
     },
     "vector_dim_list": {
       "type": "PREC_LEFT",
