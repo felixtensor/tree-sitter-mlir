@@ -599,6 +599,10 @@
           "named": true
         },
         {
+          "type": "dimension_separator",
+          "named": true
+        },
+        {
           "type": "float_literal",
           "named": true
         },

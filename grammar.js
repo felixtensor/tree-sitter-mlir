@@ -257,7 +257,7 @@ export default grammar({
       'array',                      // property names may collide with array<...>
       'ceildiv', 'floordiv', 'mod', // inline affine keywords
       $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
-      ',', '=', ':', '->', '*', '+', '-', '/', '&', '|', '~',
+      ',', '=', ':', '->', '*', '?', $.dimension_separator, '+', '-', '/', '&', '|', '~',
     ),
 
     _custom_body_paren: $ => seq('(', repeat($._nested_custom_body_element), ')'),
