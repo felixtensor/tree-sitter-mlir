@@ -95,6 +95,19 @@ for dialect in $DIALECTS; do
   sync_dir "$src" "$dst"
 done
 
+echo "OpenACC (selected files):"
+mkdir -p "$EXAMPLES_DIR/OpenACC"
+openacc_count=0
+for f in acc-routine-lowering.mlir; do
+  if [ -f "$MLIR_TEST_DIR/Dialect/OpenACC/$f" ]; then
+    cp "$MLIR_TEST_DIR/Dialect/OpenACC/$f" "$EXAMPLES_DIR/OpenACC/"
+    openacc_count=$((openacc_count + 1))
+  else
+    echo "  Warning: $f not found in $MLIR_TEST_DIR/Dialect/OpenACC/"
+  fi
+done
+echo "  $openacc_count files synced"
+
 # ── Record source provenance ────────────────────────────────────────────────
 # Writes examples/SOURCE.md with the upstream commit SHA. Does NOT fetch from
 # the upstream repository — only reads `git rev-parse HEAD` of the local

@@ -255,6 +255,7 @@ export default grammar({
       $._custom_body_angle_group,   // < ... >
       $._literal,                   // 42, 3.14, "string", true, dense<...>
       'array',                      // property names may collide with array<...>
+      'vector',                     // OpenACC keyword may collide with vector<...>
       'ceildiv', 'floordiv', 'mod', // inline affine keywords
       $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
       ',', '=', ':', '->', '*', '?', $.dimension_separator, '+', '-', '/', '&', '|', '~',
@@ -336,7 +337,7 @@ export default grammar({
       $.type,
       prec(2, $.attribute),
       $._literal,
-      'dense', 'sparse', 'array',
+      'dense', 'sparse', 'array', 'vector',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}', '*', '?',
       '@', '#',
@@ -400,7 +401,7 @@ export default grammar({
       optional(seq(',', $.tensor_encoding)), '>'),
     tensor_encoding: $ => $.attribute_value,
 
-    vector_type: $ => seq(token('vector'), '<', repeat($.vector_dim_list), $._prim_type, '>'),
+    vector_type: $ => prec(1, seq(token('vector'), '<', repeat($.vector_dim_list), $._prim_type, '>')),
     vector_dim_list: $ => prec.left(choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
     _static_dim_list: $ => seq($.dimension_size, repeat(seq('x', $.dimension_size))),

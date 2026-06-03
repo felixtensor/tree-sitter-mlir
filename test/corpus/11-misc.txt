@@ -310,3 +310,17 @@ test.custom_dimension_list_attr dimension_list = ?x?
       (custom_op_name)
       (bare_id)
       (dimension_separator))))
+
+================================================================================
+Custom operation body keyword named vector
+================================================================================
+acc.routine @routine_vec func(@host_bar) vector
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (symbol_ref_id))))
