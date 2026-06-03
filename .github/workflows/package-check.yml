@@ -81,6 +81,13 @@ jobs:
           /tmp/tree-sitter-mlir-py/bin/pip install dist/tree_sitter_mlir-*.whl
           /tmp/tree-sitter-mlir-py/bin/python -c "import tree_sitter_mlir as mlir; assert mlir.language(); assert mlir.HIGHLIGHTS_QUERY; assert mlir.INJECTIONS_QUERY; assert mlir.LOCALS_QUERY"
 
+      - name: Install sdist and smoke test
+        # Exercises the from-source compile path, not just the prebuilt wheel.
+        run: |
+          python -m venv /tmp/tree-sitter-mlir-sdist
+          /tmp/tree-sitter-mlir-sdist/bin/pip install dist/tree_sitter_mlir-*.tar.gz
+          /tmp/tree-sitter-mlir-sdist/bin/python -c "import tree_sitter_mlir as mlir; assert mlir.language(); assert mlir.HIGHLIGHTS_QUERY; assert mlir.INJECTIONS_QUERY; assert mlir.LOCALS_QUERY"
+
   npm:
     name: Check npm package
     runs-on: ubuntu-24.04

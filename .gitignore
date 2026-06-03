@@ -33,6 +33,7 @@ dist/
 # Zig artifacts
 .zig-cache/
 zig-cache/
+zig-pkg/
 zig-out/
 
 # Grammar volatiles
