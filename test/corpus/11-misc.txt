@@ -287,3 +287,26 @@ String literal escape sequences
                 (escape_sequence)
                 (invalid_escape))))))
       (function_type))))
+
+================================================================================
+Custom operation dimension lists with dynamic markers
+================================================================================
+shard.grid @grid0(shape = 4x?x2)
+test.custom_dimension_list_attr dimension_list = ?x?
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (integer_literal)
+      (dimension_separator)
+      (dimension_separator)
+      (integer_literal)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (dimension_separator))))

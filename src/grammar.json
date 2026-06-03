@@ -2063,6 +2063,14 @@
         },
         {
           "type": "STRING",
+          "value": "?"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dimension_separator"
+        },
+        {
+          "type": "STRING",
           "value": "+"
         },
         {
