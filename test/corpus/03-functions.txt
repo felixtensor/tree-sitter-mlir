@@ -203,6 +203,29 @@ func.func @terminator_with_regions() {
                 (custom_op_name)))))))))
 
 ================================================================================
+Generic operation region with an empty block
+================================================================================
+"region"() ({
+^bb0(%arg0 : i32):
+}) : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (region
+        (block
+          (block_label
+            (caret_id)
+            (block_arg_list
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (function_type))))
+
+================================================================================
 Function with private specifier, and func.call
 ================================================================================
 func.func private @source() -> tensor<f32>
