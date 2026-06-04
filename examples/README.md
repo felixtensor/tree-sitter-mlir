@@ -29,7 +29,10 @@ examples/
 ├── Tensor/        ← mlir/test/Dialect/Tensor/
 ├── Affine/        ← mlir/test/Dialect/Affine/
 ├── Vector/        ← mlir/test/Dialect/Vector/
-└── Linalg/        ← mlir/test/Dialect/Linalg/
+├── Linalg/        ← mlir/test/Dialect/Linalg/
+├── OpenACC/       ← mlir/test/Dialect/OpenACC/
+├── LLVMIR/        ← mlir/test/Dialect/LLVMIR/
+└── LLVM/          ← mlir/test/Dialect/LLVM/
 ```
 
 ## Running Tests

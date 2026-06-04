@@ -80,7 +80,7 @@ done
 echo "  $ir_count files synced"
 
 # ── Sync dialect tests ───────────────────────────────────────────────────────
-DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg"
+DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM"
 
 for dialect in $DIALECTS; do
   src="$MLIR_TEST_DIR/Dialect/$dialect"
@@ -94,19 +94,6 @@ for dialect in $DIALECTS; do
   echo "$dialect:"
   sync_dir "$src" "$dst"
 done
-
-echo "OpenACC (selected files):"
-mkdir -p "$EXAMPLES_DIR/OpenACC"
-openacc_count=0
-for f in acc-routine-lowering.mlir; do
-  if [ -f "$MLIR_TEST_DIR/Dialect/OpenACC/$f" ]; then
-    cp "$MLIR_TEST_DIR/Dialect/OpenACC/$f" "$EXAMPLES_DIR/OpenACC/"
-    openacc_count=$((openacc_count + 1))
-  else
-    echo "  Warning: $f not found in $MLIR_TEST_DIR/Dialect/OpenACC/"
-  fi
-done
-echo "  $openacc_count files synced"
 
 # ── Record source provenance ────────────────────────────────────────────────
 # Writes examples/SOURCE.md with the upstream commit SHA. Does NOT fetch from

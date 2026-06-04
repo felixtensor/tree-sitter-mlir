@@ -4,6 +4,6 @@ This directory is synced from a local checkout of `llvm/llvm-project` via
 `scripts/sync-examples.sh`. The script does not fetch from upstream — it
 only copies from the directory you point it at.
 
-- commit:       fe52a6c99b6b1fa8222b28ffc70d9f43effdfbca
-- commit_date:  2026-05-06T19:01:12-07:00
-- synced_at:    2026-05-08T03:47:57Z
+- commit:       28be1eaf755a36187c40c2e251a663f811db5d9c
+- commit_date:  2026-06-01T09:25:47+08:00
+- synced_at:    2026-06-04T14:28:40Z
