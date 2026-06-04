@@ -1609,6 +1609,22 @@
             }
           },
           {
+            "type": "REPEAT",
+            "content": {
+              "type": "FIELD",
+              "name": "specifier",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "bare_id"
+                },
+                "named": true,
+                "value": "function_specifier"
+              }
+            }
+          },
+          {
             "type": "FIELD",
             "name": "sym_name",
             "content": {

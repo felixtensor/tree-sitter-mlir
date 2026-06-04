@@ -976,6 +976,16 @@
           }
         ]
       },
+      "specifier": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "function_specifier",
+            "named": true
+          }
+        ]
+      },
       "sym_name": {
         "multiple": false,
         "required": true,
@@ -2136,6 +2146,10 @@
   {
     "type": "func.func",
     "named": false
+  },
+  {
+    "type": "function_specifier",
+    "named": true
   },
   {
     "type": "fused",
