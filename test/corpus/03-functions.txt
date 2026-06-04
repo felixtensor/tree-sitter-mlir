@@ -134,6 +134,28 @@ llvm.func @variadic_args(i32, i32, ...)
           (variadic))))))
 
 ================================================================================
+Variadic marker inside argument list
+================================================================================
+llvm.func @variadic_inside(%arg0: i32, ..., %arg1: i32)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (variadic)
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))))))
+
+================================================================================
 Generic operation in a module, with attributes
 ================================================================================
 module {

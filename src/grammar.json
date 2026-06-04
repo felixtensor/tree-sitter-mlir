@@ -2889,6 +2889,14 @@
             "value": "vector"
           },
           {
+            "type": "STRING",
+            "value": "tensor"
+          },
+          {
+            "type": "STRING",
+            "value": "opaque"
+          },
+          {
             "type": "SYMBOL",
             "name": "bare_id"
           },
@@ -3126,6 +3134,14 @@
           }
         },
         {
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "_pretty_dialect_body_type"
+          }
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -3141,6 +3157,28 @@
         {
           "type": "STRING",
           "value": "*"
+        }
+      ]
+    },
+    "_pretty_dialect_body_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "bare_id"
+            },
+            {
+              "type": "STRING",
+              "value": "array"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pretty_dialect_item_body"
         }
       ]
     },
@@ -4821,32 +4859,20 @@
                 "value": ","
               },
               {
-                "type": "SYMBOL",
-                "name": "_value_id_and_type_attr"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_value_id_and_type_attr"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "variadic"
+                  }
+                ]
               }
             ]
           }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": ","
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "variadic"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
         }
       ]
     },

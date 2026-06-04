@@ -349,7 +349,7 @@ export default grammar({
       $.type,
       prec(2, $.attribute),
       $._literal,
-      'dense', 'sparse', 'array', 'vector',
+      'dense', 'sparse', 'array', 'vector', 'tensor', 'opaque',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}', '*', '?',
       '@', '#',
@@ -370,9 +370,13 @@ export default grammar({
       repeat1(seq($.dimension_separator, $._dialect_dim_primitive)))),
     _dialect_dim_primitive: $ => choice(
       prec(1, $.type),
+      prec(1, $._pretty_dialect_body_type),
       alias($.integer_literal, $.dimension_size),
       '?',
       '*'),
+    _pretty_dialect_body_type: $ => seq(
+      choice($.bare_id, 'array'),
+      $.pretty_dialect_item_body),
 
     // Builtin types
     builtin_type: $ => choice(
@@ -498,7 +502,7 @@ export default grammar({
     func_arg_list: $ => seq('(', optional(choice($.variadic,
       $._value_id_and_type_attr_list)), ')'),
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
-      repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
+      repeat(seq(',', choice($._value_id_and_type_attr, $.variadic)))),
     _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute),
       optional($.trailing_location)),
     _function_arg: $ => choice(seq($.value_use, ':', choice($.type, $.function_type)), $.value_use, $.type, $.function_type),

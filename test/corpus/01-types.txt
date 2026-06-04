@@ -2122,3 +2122,47 @@ func.func @pretty_dialect_type() {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+LLVM dialect nested bare type body tokens
+================================================================================
+llvm.func @nested_llvm_types(
+  !llvm.array<10 x ptr<4>>,
+  !llvm.struct<"opaque", opaque>,
+  !ptr.ptr<#nvvm.memory_space<tensor>>
+)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_dim_list
+                    (dimension_size)
+                    (dimension_separator)
+                    (bare_id)
+                    (pretty_dialect_item_body
+                      (integer_literal)))))))
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (string_literal)))))
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_attribute)
+                  (pretty_dialect_item_body))))))))))

@@ -712,11 +712,19 @@
       "required": true,
       "types": [
         {
+          "type": "bare_id",
+          "named": true
+        },
+        {
           "type": "dimension_separator",
           "named": true
         },
         {
           "type": "dimension_size",
+          "named": true
+        },
+        {
+          "type": "pretty_dialect_item_body",
           "named": true
         },
         {
