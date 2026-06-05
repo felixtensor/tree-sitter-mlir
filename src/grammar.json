@@ -103,6 +103,29 @@
         ]
       }
     },
+    "_unsigned_decimal_literal": {
+      "type": "TOKEN",
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "PATTERN",
+          "value": "[0-9]"
+        }
+      }
+    },
+    "_unsigned_integer_literal": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_unsigned_decimal_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_hexadecimal_literal"
+        }
+      ]
+    },
     "_hexadecimal_literal": {
       "type": "TOKEN",
       "content": {
@@ -4235,8 +4258,13 @@
           "value": "["
         },
         {
-          "type": "SYMBOL",
-          "name": "integer_literal"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_unsigned_integer_literal"
+          },
+          "named": true,
+          "value": "integer_literal"
         },
         {
           "type": "STRING",
