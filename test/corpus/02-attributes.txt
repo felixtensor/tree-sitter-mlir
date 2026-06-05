@@ -441,6 +441,45 @@ Nested array attribute values
       (function_type))))
 
 ================================================================================
+Distinct builtin attribute values
+================================================================================
+#distinct = distinct[0]<42 : i32>
+"test.op"() {distinct.attr = distinct[1]<>, nested = distinct[2]<#distinct>} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (distinct_attribute
+          (integer_literal)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type))))))))
+  (operation
+    (generic_operation
+      (string_literal)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (builtin_attribute
+                (distinct_attribute
+                  (integer_literal)))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (builtin_attribute
+                (distinct_attribute
+                  (integer_literal)
+                  (attribute_value
+                    (attribute_alias))))))))
+      (function_type))))
+
+================================================================================
 Pretty dialect attribute with special body tokens
 ================================================================================
 func.func @pretty_dialect_attribute_body_tokens() {
