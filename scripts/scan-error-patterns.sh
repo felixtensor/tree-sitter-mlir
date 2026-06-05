@@ -96,15 +96,45 @@ TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/tree-sitter-mlir-scan.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 PATHS_FILE="$TMP_DIR/paths.txt"
+PATHS_SHELL_FILE="$TMP_DIR/paths-shell.txt"
 PARSER_LIB="$TMP_DIR/mlir.dylib"
 STAT_FILE="$TMP_DIR/parse-stat.txt"
 RECORDS_FILE="$TMP_DIR/records.tsv"
 : > "$RECORDS_FILE"
 
-find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
-  | LC_ALL=C sort > "$PATHS_FILE"
+IS_MSYS=0
+case "$(uname -s 2>/dev/null || true)" in
+  MINGW*|MSYS*|CYGWIN*)
+    if command -v cygpath >/dev/null 2>&1; then
+      IS_MSYS=1
+    fi
+    ;;
+esac
 
-TOTAL_FILES="$(wc -l < "$PATHS_FILE" | tr -d ' ')"
+to_cli_path() {
+  if [ "$IS_MSYS" -eq 1 ]; then
+    cygpath -w "$1"
+  else
+    printf '%s\n' "$1"
+  fi
+}
+
+to_shell_path() {
+  if [ "$IS_MSYS" -eq 1 ]; then
+    cygpath -u "$1"
+  else
+    printf '%s\n' "$1"
+  fi
+}
+
+find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
+  | LC_ALL=C sort > "$PATHS_SHELL_FILE"
+
+while IFS= read -r path; do
+  to_cli_path "$path"
+done < "$PATHS_SHELL_FILE" > "$PATHS_FILE"
+
+TOTAL_FILES="$(wc -l < "$PATHS_SHELL_FILE" | tr -d ' ')"
 
 if [ "$TOTAL_FILES" -eq 0 ]; then
   echo "No .mlir files found under $MLIR_TEST_DIR/IR or $MLIR_TEST_DIR/Dialect"
@@ -187,6 +217,7 @@ while IFS= read -r parse_line; do
 
   file="${parse_line%%$'\t'*}"
   file="$(printf '%s' "$file" | sed -E 's/[[:space:]]+$//')"
+  file="$(to_shell_path "$file")"
   diag="${parse_line##*$'\t'}"
 
   rel="${file#"$MLIR_TEST_DIR/"}"
@@ -213,7 +244,7 @@ while IFS= read -r parse_line; do
   fi
   line_no=$((row + 1))
 
-  raw_snippet="$(sed -n "${line_no}p" "$file" | tr '\t' ' ')"
+  raw_snippet="$(sed -n "${line_no}p" "$file" | tr '\000\t' '  ')"
   snippet="$(printf '%s' "$raw_snippet" | normalize_line)"
 
   if [ "$kind" = "MISSING" ] && [ -n "$missing_token" ]; then
