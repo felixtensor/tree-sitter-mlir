@@ -111,14 +111,6 @@ case "$(uname -s 2>/dev/null || true)" in
     ;;
 esac
 
-to_cli_path() {
-  if [ "$IS_MSYS" -eq 1 ]; then
-    cygpath -w "$1"
-  else
-    printf '%s\n' "$1"
-  fi
-}
-
 to_shell_path() {
   if [ "$IS_MSYS" -eq 1 ]; then
     cygpath -u "$1"
@@ -130,9 +122,11 @@ to_shell_path() {
 find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
   | LC_ALL=C sort > "$PATHS_SHELL_FILE"
 
-while IFS= read -r path; do
-  to_cli_path "$path"
-done < "$PATHS_SHELL_FILE" > "$PATHS_FILE"
+if [ "$IS_MSYS" -eq 1 ]; then
+  cygpath -w -f "$PATHS_SHELL_FILE" > "$PATHS_FILE"
+else
+  cp "$PATHS_SHELL_FILE" "$PATHS_FILE"
+fi
 
 TOTAL_FILES="$(wc -l < "$PATHS_SHELL_FILE" | tr -d ' ')"
 
