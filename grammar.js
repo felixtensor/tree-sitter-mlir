@@ -50,6 +50,8 @@ export default grammar({
     _digit: $ => /[0-9]/,
     integer_literal: $ => choice($._decimal_literal, $._hexadecimal_literal),
     _decimal_literal: $ => token(seq(optional(/[-+]/), repeat1(/[0-9]/))),
+    _unsigned_decimal_literal: $ => token(repeat1(/[0-9]/)),
+    _unsigned_integer_literal: $ => choice($._unsigned_decimal_literal, $._hexadecimal_literal),
     _hexadecimal_literal: $ => token(seq('0x', repeat1(/[0-9a-fA-F]/))),
     float_literal: $ => token(seq(
       optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
@@ -469,7 +471,8 @@ export default grammar({
     dense_resource_literal: $ => seq(token('dense_resource'), '<',
       choice($.bare_id, $.string_literal), '>'),
     distinct_attribute: $ => seq(token('distinct'), '[',
-      $.integer_literal, ']', '<', optional($.attribute_value), '>'),
+      alias($._unsigned_integer_literal, $.integer_literal), ']',
+      '<', optional($.attribute_value), '>'),
     strided_layout: $ => seq(token('strided'), '<', '[', optional($._stride_list_comma), ']',
       optional(seq(',', token('offset'), ':', $._stride_primitive)), '>'),
     _stride_list_comma: $ => seq($._stride_primitive, repeat(seq(',', $._stride_primitive))),

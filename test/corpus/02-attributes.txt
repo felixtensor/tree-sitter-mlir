@@ -480,6 +480,24 @@ Distinct builtin attribute values
       (function_type))))
 
 ================================================================================
+Distinct builtin attribute rejects signed ID
+================================================================================
+"test.op"() {bad = distinct[-1]<unit>} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id))
+          (ERROR
+            (unit_literal))))
+      (function_type))))
+
+================================================================================
 Pretty dialect attribute with special body tokens
 ================================================================================
 func.func @pretty_dialect_attribute_body_tokens() {
