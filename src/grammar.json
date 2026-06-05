@@ -4180,6 +4180,10 @@
         {
           "type": "SYMBOL",
           "name": "dense_resource_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "distinct_attribute"
         }
       ]
     },
@@ -4207,6 +4211,50 @@
             {
               "type": "SYMBOL",
               "name": "string_literal"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
+    "distinct_attribute": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "distinct"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "SYMBOL",
+          "name": "integer_literal"
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "attribute_value"
+            },
+            {
+              "type": "BLANK"
             }
           ]
         },

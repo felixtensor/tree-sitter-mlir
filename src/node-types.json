@@ -379,6 +379,10 @@
           "named": true
         },
         {
+          "type": "distinct_attribute",
+          "named": true
+        },
+        {
           "type": "strided_layout",
           "named": true
         }
@@ -800,6 +804,25 @@
     "type": "dimension_size",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "distinct_attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute_value",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "entry_block",
@@ -2134,6 +2157,10 @@
   {
     "type": "dimension_separator",
     "named": true
+  },
+  {
+    "type": "distinct",
+    "named": false
   },
   {
     "type": "escape_sequence",
