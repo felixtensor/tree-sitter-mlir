@@ -439,8 +439,7 @@ export default grammar({
     attribute_entry: $ => choice(
       seq(choice($.bare_id, $.string_literal), optional(seq('=', $.attribute_value))),
       // Array-valued entry (e.g. {["op.name"]} in transform dialect)
-      seq('[', optional($._attribute_value_nobracket),
-        repeat(seq(',', $._attribute_value_nobracket)), ']'),
+      $._attribute_array,
     ),
     attribute_value: $ => choice($._attribute_array, $._attribute_value_nobracket),
     _attribute_array: $ => seq('[', optional($._attribute_array_element),
