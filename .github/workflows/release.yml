@@ -16,7 +16,15 @@ permissions:
   attestations: write
 
 jobs:
-  # Tags must already include tree-sitter-managed version metadata and generated artifacts.
+  # Block the release if the tag version is not fully reflected in the files
+  # that tree-sitter itself manages. Avoid hard-coding version-bearing paths:
+  # let the tree-sitter CLI update everything it knows about, regenerate parser
+  # metadata, then require the checkout to remain clean.
+  #
+  # This is a belt-and-suspenders check: main is the real gate (a branch
+  # ruleset makes the CI "Check generated files" status check required, so a
+  # stale parser.c can't reach main in the first place). We only tag commits
+  # that are already green.
   verify-version:
     name: Verify version metadata matches tag
     runs-on: ubuntu-24.04
@@ -29,14 +37,15 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
         with:
-          # Sync with package.json and ci.yml for reproducible generated files.
+          # Pin to the tree-sitter-cli version in package.json so `generate` is
+          # reproducible; a drifting CLI would make this gate fail spuriously.
+          # Bump this together with package.json's tree-sitter-cli.
           tree-sitter-ref: v0.26.9
 
       - name: Set up NodeJS
         uses: actions/setup-node@v6
         with:
           node-version: "22"
-
       - name: Check tree-sitter-managed version metadata
         run: |
           set -euo pipefail
@@ -44,7 +53,9 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           echo "Checking tree-sitter-managed version metadata for ${version}"
 
-          # Let tree-sitter update every version-bearing file it owns.
+          # `tree-sitter version` is the source of truth for version-bearing
+          # metadata files. `tree-sitter generate` stamps that version into
+          # generated artifacts such as src/parser.c.
           tree-sitter version "$version"
           tree-sitter generate
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund
@@ -70,7 +81,13 @@ jobs:
           git --no-pager diff --no-ext-diff
           exit 1
 
-  # Environment approval gates all publish jobs after npm binaries are built.
+  # Manual approval checkpoint in front of every publish job. Replaces the old
+  # cross-workflow check-run scraping (which raced main's CI and was coupled to
+  # job-name strings). The gate is the `release` environment's "Required
+  # reviewers" rule (Settings -> Environments), currently armed, so each
+  # release waits for a maintainer to approve before any publish job runs.
+  # It needs the npm build jobs so the prompt only appears once binaries are
+  # green; a build failure then blocks every publish (no partial release).
   release-approval:
     name: Approve release
     needs: [verify-version, npm-wasm, npm-prebuilds]
@@ -124,7 +141,7 @@ jobs:
         with:
           path: "*.wasm"
           name: prebuilds-wasm
-          # Keep artifacts through manual approval.
+          # Outlast the release-approval wait before the npm job downloads these.
           retention-days: 5
 
   npm-prebuilds:
@@ -163,7 +180,7 @@ jobs:
         with:
           path: prebuilds/**
           name: prebuilds-${{matrix.os}}
-          # Keep artifacts through manual approval.
+          # Outlast the release-approval wait before the npm job downloads these.
           retention-days: 5
 
   # npm uses OIDC trusted publishing; no long-lived token is needed.
