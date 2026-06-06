@@ -172,6 +172,20 @@ is_invalid_like() {
   esac
 }
 
+has_expected_diagnostic_near() {
+  local file="$1"
+  local line_no="$2"
+  local start
+
+  start=$((line_no - 2))
+  if [ "$start" -lt 1 ]; then
+    start=1
+  fi
+
+  sed -n "${start},${line_no}p" "$file" \
+    | grep -Eq 'expected-(error|warning|remark)|verify-diagnostics'
+}
+
 anchor_at() {
   local text="$1"
   local col="$2"
@@ -214,13 +228,6 @@ while IFS= read -r parse_line; do
   file="$(to_shell_path "$file")"
   diag="${parse_line##*$'\t'}"
 
-  rel="${file#"$MLIR_TEST_DIR/"}"
-  if is_invalid_like "$rel"; then
-    category="invalid-like"
-  else
-    category="valid-like"
-  fi
-
   kind="ERROR"
   missing_token=""
   if [[ "$diag" == \(MISSING* ]]; then
@@ -237,6 +244,13 @@ while IFS= read -r parse_line; do
     col="${BASH_REMATCH[2]}"
   fi
   line_no=$((row + 1))
+
+  rel="${file#"$MLIR_TEST_DIR/"}"
+  if is_invalid_like "$rel" || has_expected_diagnostic_near "$file" "$line_no"; then
+    category="invalid-like"
+  else
+    category="valid-like"
+  fi
 
   raw_snippet="$(sed -n "${line_no}p" "$file" | tr '\000\t' '  ')"
   snippet="$(printf '%s' "$raw_snippet" | normalize_line)"
