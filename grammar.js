@@ -12,6 +12,7 @@ export default grammar({
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
     [$.array_literal, $._custom_body_element],
+    [$._custom_body_element, $.tensor_type],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
@@ -269,6 +270,7 @@ export default grammar({
       $._literal,                   // 42, 3.14, "string", true, dense<...>
       'array',                      // property names may collide with array<...>
       'vector',                     // OpenACC keyword may collide with vector<...>
+      'tensor',                     // AMDGPU/NVGPU keyword may collide with tensor<...>
       'ceildiv', 'floordiv', 'mod', // inline affine keywords
       $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
       ',', '=', ':', '->', '*', '?', $.dimension_separator, '+', '-', '/', '&', '|', '~',

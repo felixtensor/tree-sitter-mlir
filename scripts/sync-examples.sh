@@ -65,6 +65,46 @@ sync_dir() {
   echo "  $count files synced, $skipped skipped (invalid)"
 }
 
+sync_selected_files() {
+  local label="$1"
+  local src="$2"
+  local dst="$3"
+  shift 3
+  local selected=("$@")
+  local count=0
+
+  mkdir -p "$dst"
+  echo "$label (selected files):"
+
+  for existing in "$dst"/*.mlir; do
+    [ -f "$existing" ] || continue
+    local basename="$(basename "$existing")"
+    local keep=0
+
+    for f in "${selected[@]}"; do
+      if [ "$basename" = "$f" ] && [ -f "$src/$f" ]; then
+        keep=1
+        break
+      fi
+    done
+
+    if [ "$keep" -eq 0 ]; then
+      rm "$existing"
+    fi
+  done
+
+  for f in "${selected[@]}"; do
+    if [ -f "$src/$f" ]; then
+      cp "$src/$f" "$dst/"
+      count=$((count + 1))
+    else
+      echo "  Warning: $f not found in $src/"
+    fi
+  done
+
+  echo "  $count files synced"
+}
+
 # ── Sync IR tests (from mlir/test/IR/) ───────────────────────────────────────
 echo "IR (selected files):"
 mkdir -p "$EXAMPLES_DIR/IR"
@@ -78,6 +118,12 @@ for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mli
   fi
 done
 echo "  $ir_count files synced"
+
+# ── Sync selected dialect tests ──────────────────────────────────────────────
+sync_selected_files "AMDGPU" "$MLIR_TEST_DIR/Dialect/AMDGPU" "$EXAMPLES_DIR/AMDGPU" \
+  canonicalize.mlir
+sync_selected_files "NVGPU" "$MLIR_TEST_DIR/Dialect/NVGPU" "$EXAMPLES_DIR/NVGPU" \
+  canonicalization.mlir
 
 # ── Sync dialect tests ───────────────────────────────────────────────────────
 DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM PDL PDLInterp"
