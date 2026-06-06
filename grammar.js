@@ -262,6 +262,7 @@ export default grammar({
       $.attribute,                  // #attr, {dict}, affine_map<...>
       $.region,                     // { ... } (regions with operations)
       $._custom_body_value_group,   // {%v : type, ...}
+      $._custom_body_ssa_dict,      // {"attr" = %value, ...}
       $._custom_body_paren,         // ( ... )
       $._custom_body_bracket,       // [ ... ]
       $._custom_body_angle_group,   // < ... >
@@ -277,6 +278,9 @@ export default grammar({
     _custom_body_bracket: $ => seq('[', repeat($._nested_custom_body_element), ']'),
     _custom_body_value_group: $ => seq('{', $.value_use, ':', $.type,
       repeat(seq(',', $.value_use, ':', $.type)), '}'),
+    _custom_body_ssa_dict: $ => seq('{', $._custom_body_ssa_dict_entry,
+      repeat(seq(',', $._custom_body_ssa_dict_entry)), '}'),
+    _custom_body_ssa_dict_entry: $ => seq($.string_literal, '=', $.value_use),
     _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule

@@ -340,3 +340,35 @@ acc.loop tile({%c4 : index})
       (type
         (builtin_type
           (index_type))))))
+
+================================================================================
+Custom operation body SSA value dictionary
+================================================================================
+%op0 = operation {"attr" = %attribute} -> (%type : !pdl.type)
+%op1 = pdl_interp.create_operation "foo.op" {"attr" = %attribute, "attr1" = %attribute}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name
+        (bare_id))
+      (string_literal)
+      (value_use)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (string_literal)
+      (value_use)
+      (string_literal)
+      (value_use))))
