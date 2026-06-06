@@ -17,12 +17,17 @@ permissions:
   attestations: write
 
 jobs:
-  # Block the release if the tag and any manifest version disagree. `tree-sitter
-  # version` rewrites every version-bearing file (Cargo.toml, package.json,
-  # package-lock.json, pyproject.toml, tree-sitter.json, Makefile, CMakeLists.txt,
-  # build.zig.zon) to the tag, so a non-empty diff means something was out of sync.
+  # Block the release if the tag version is not fully reflected in the files
+  # that tree-sitter itself manages. Avoid hard-coding version-bearing paths:
+  # let the tree-sitter CLI update everything it knows about, regenerate parser
+  # metadata, then require the checkout to remain clean.
+  #
+  # This is a belt-and-suspenders check: main is the real gate (a branch
+  # ruleset makes the CI "Check generated files" status check required, so a
+  # stale parser.c can't reach main in the first place). We only tag commits
+  # that are already green.
   verify-version:
-    name: Verify versions match tag
+    name: Verify version metadata matches tag
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -32,28 +37,74 @@ jobs:
 
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
+        with:
+          # Pin to the tree-sitter-cli version in package.json so `generate` is
+          # reproducible; a drifting CLI would make this gate fail spuriously.
+          # Bump this together with package.json's tree-sitter-cli.
+          tree-sitter-ref: v0.26.9
 
-      - name: Check manifests match the tag
+      - name: Check tree-sitter-managed version metadata
         run: |
-          tree-sitter version "${GITHUB_REF_NAME#v}"
-          if ! git diff --quiet; then
-            echo "::error::Version files are out of sync with tag ${GITHUB_REF_NAME}:"
-            git --no-pager diff --name-only
-            exit 1
+          set -euo pipefail
+
+          version="${GITHUB_REF_NAME#v}"
+          echo "Checking tree-sitter-managed version metadata for ${version}"
+
+          # `tree-sitter version` is the source of truth for version-bearing
+          # metadata files. `tree-sitter generate` stamps that version into
+          # generated artifacts such as src/parser.c.
+          tree-sitter version "$version"
+          tree-sitter generate
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Version metadata is already committed for ${GITHUB_REF_NAME}."
+            exit 0
           fi
 
+          echo "::error::Version metadata is not fully committed for ${GITHUB_REF_NAME}."
+          echo "Run these commands before creating the release tag, then commit the resulting changes:"
+          echo "  tree-sitter version ${version}"
+          echo "  tree-sitter generate"
+          echo ""
+          echo "Changed files after applying tree-sitter's version/generate steps:"
+          git status --short
+          echo ""
+          echo "Diff summary:"
+          git --no-pager diff --stat
+          echo ""
+          echo "Diff:"
+          git --no-pager diff --no-ext-diff
+          exit 1
+
+  # Manual approval checkpoint in front of every publish job. Replaces the old
+  # cross-workflow check-run scraping (which raced main's CI and was coupled to
+  # job-name strings). The gate is the `release` environment's "Required
+  # reviewers" rule (Settings -> Environments), currently armed, so each
+  # release waits for a maintainer to approve before any publish job runs.
+  # It needs the npm build jobs so the prompt only appears once binaries are
+  # green; a build failure then blocks every publish (no partial release).
+  release-approval:
+    name: Approve release
+    needs: [verify-version, npm-wasm, npm-prebuilds]
+    runs-on: ubuntu-24.04
+    permissions: {}
+    environment: release
+    steps:
+      - name: Confirm release
+        run: echo "Release ${GITHUB_REF_NAME} approved; publishing."
+
   github-release:
-    needs: verify-version
+    needs: release-approval
     uses: tree-sitter/workflows/.github/workflows/release.yml@216133f5cb4469b112c5e83415869e58b25c353a
 
   crates:
-    needs: verify-version
+    needs: release-approval
     uses: tree-sitter/workflows/.github/workflows/package-crates.yml@216133f5cb4469b112c5e83415869e58b25c353a
     secrets:
       CARGO_REGISTRY_TOKEN: ${{secrets.CARGO_REGISTRY_TOKEN}}
 
   pypi:
-    needs: verify-version
+    needs: release-approval
     uses: tree-sitter/workflows/.github/workflows/package-pypi.yml@216133f5cb4469b112c5e83415869e58b25c353a
     secrets:
       PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
@@ -74,6 +125,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "22"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --omit peer --omit optional
@@ -86,7 +138,8 @@ jobs:
         with:
           path: "*.wasm"
           name: prebuilds-wasm
-          retention-days: 2
+          # Outlast the release-approval wait before the npm job downloads these.
+          retention-days: 5
 
   npm-prebuilds:
     name: Build npm prebuild on ${{matrix.os}}
@@ -111,6 +164,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "22"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --omit peer --omit optional
@@ -123,11 +177,12 @@ jobs:
         with:
           path: prebuilds/**
           name: prebuilds-${{matrix.os}}
-          retention-days: 2
+          # Outlast the release-approval wait before the npm job downloads these.
+          retention-days: 5
 
   npm:
     name: Publish npm package
-    needs: [npm-wasm, npm-prebuilds]
+    needs: [release-approval, npm-wasm, npm-prebuilds]
     runs-on: ubuntu-24.04
     environment:
       name: npm
@@ -143,6 +198,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "22"
+          cache: npm
           registry-url: https://registry.npmjs.org/
 
       # npm >= 11.5.1 is required for OIDC trusted publishing.
