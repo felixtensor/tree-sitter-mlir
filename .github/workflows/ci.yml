@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  # GitHub hosted runners force JavaScript actions to Node 24 from 2026-06-16.
+  # Hosted runners force JavaScript actions to Node 24 starting 2026-06-16.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
@@ -31,10 +31,9 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
         with:
-          # Keep in sync with package.json's tree-sitter-cli and release.yml.
+          # Sync with package.json and release.yml.
           tree-sitter-ref: v0.26.9
 
-      # Tier 1: Corpus tests & Binding tests
       - name: Run parser and binding tests
         uses: tree-sitter/parser-test-action@v3
         with:
@@ -47,7 +46,7 @@ jobs:
           test-swift: true
           test-zig: true
 
-      # Parse examples without ERROR nodes as a required integration corpus.
+      # Required integration corpus: examples must parse without ERROR nodes.
       - name: Parse examples
         uses: tree-sitter/parse-action@v4
         id: parse-files
@@ -62,9 +61,7 @@ jobs:
           path: ${{steps.parse-files.outputs.failures}}
           retention-days: 7
 
-  # Root-cause gate for the 0.1.2 incident: a stale src/parser.c (including the
-  # version metadata stamped from tree-sitter.json) must never reach main. We
-  # regenerate from grammar.js and require the result to be already committed.
+  # Regenerate parser artifacts and fail if committed files are stale.
   generated:
     name: Check generated files
     runs-on: ubuntu-latest
@@ -75,7 +72,7 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
         with:
-          # Keep in sync with package.json's tree-sitter-cli and release.yml.
+          # Sync with package.json and release.yml.
           tree-sitter-ref: v0.26.9
 
       - name: Verify committed parser is up to date
