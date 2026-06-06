@@ -475,3 +475,29 @@ Custom operation body SSA value dictionary
       (value_use)
       (string_literal)
       (value_use))))
+
+================================================================================
+Custom operation body mapped-from arrow
+================================================================================
+omp.fuse(%fused) <- (%canonloop_s0, %canonloop_s1)
+omp.tile(%grid, %intratile) <- (%canonloop) sizes(%ts : i32)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type))))))
