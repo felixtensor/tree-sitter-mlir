@@ -69,7 +69,7 @@ export default grammar({
     uninitialized_literal: $ => token('uninitialized'),
     complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal, $.bool_literal), ',',
       choice($.integer_literal, $.float_literal, $.bool_literal), ')'),
-    tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
+    tensor_literal: $ => seq(choice($._dense_keyword, $._sparse_keyword), '<',
       optional(seq(
         optional(seq($.type, ':')),
         seq($._tensor_literal_element, repeat(seq(',', $._tensor_literal_element)))
@@ -264,6 +264,7 @@ export default grammar({
       $.region,                     // { ... } (regions with operations)
       $._custom_body_value_group,   // {%v : type, ...}
       $._custom_body_ssa_dict,      // {"attr" = %value, ...}
+      $._custom_body_sparse_operand, // sparse(%idx : type)
       $._custom_body_paren,         // ( ... )
       $._custom_body_bracket,       // [ ... ]
       $._custom_body_angle_group,   // < ... >
@@ -283,6 +284,7 @@ export default grammar({
     _custom_body_ssa_dict: $ => seq('{', $._custom_body_ssa_dict_entry,
       repeat(seq(',', $._custom_body_ssa_dict_entry)), '}'),
     _custom_body_ssa_dict_entry: $ => seq($.string_literal, '=', $.value_use),
+    _custom_body_sparse_operand: $ => seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule
@@ -357,7 +359,7 @@ export default grammar({
       $.type,
       prec(2, $.attribute),
       $._literal,
-      'dense', 'sparse', 'array', 'vector', 'tensor', 'opaque',
+      $._dense_keyword, $._sparse_keyword, 'array', 'vector', 'tensor', 'opaque',
       $.bare_id,
       ',', ':', '=', '->', '(', ')', '[', ']', '{', '}', '*', '?',
       '@', '#',
@@ -473,7 +475,7 @@ export default grammar({
       $.dense_resource_literal,
       $.distinct_attribute,
     ),
-    dense_resource_literal: $ => seq(token('dense_resource'), '<',
+    dense_resource_literal: $ => seq(token(prec(2, 'dense_resource')), '<',
       choice($.bare_id, $.string_literal), '>'),
     distinct_attribute: $ => seq(token('distinct'), '[',
       alias($._unsigned_integer_literal, $.integer_literal), ']',
@@ -505,7 +507,7 @@ export default grammar({
       $._affine_prim
     ),
     _affine_prim: $ => choice($.integer_literal, $.value_use,
-      seq(choice($.bare_id, 'dense', 'sparse'), optional(seq(':', choice($.bare_id, 'dense', 'sparse', 'compressed', 'singleton', 'loose_compressed', 'n_out_of_m')))),
+      seq(choice($.bare_id, $._dense_keyword, $._sparse_keyword), optional(seq(':', choice($.bare_id, $._dense_keyword, $._sparse_keyword, 'compressed', 'singleton', 'loose_compressed', 'n_out_of_m')))),
       seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
 
     // =========================================================================
@@ -532,5 +534,7 @@ export default grammar({
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
+    _dense_keyword: $ => token(prec(1, 'dense')),
+    _sparse_keyword: $ => token(prec(1, 'sparse')),
   }
 });
