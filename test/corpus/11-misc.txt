@@ -326,6 +326,58 @@ acc.routine @routine_vec func(@host_bar) vector
       (symbol_ref_id))))
 
 ================================================================================
+Custom operation body keyword named tensor
+================================================================================
+amdgpu.memory_counter_wait load(1) store(2) ds(3) exp(4) tensor(5)
+nvgpu.tma.async.store %view -> <tensor = memref<128x32xf32, 3>, swizzle = none>
+foo.op tensor<5xf32>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (integer_literal)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type))))
+            (attribute_value
+              (integer_literal)))))
+      (bare_id)
+      (type
+        (builtin_type
+          (none_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (type
+        (builtin_type
+          (tensor_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type))))))))))
+
+================================================================================
 Custom operation body braced value group
 ================================================================================
 acc.loop tile({%c4 : index})

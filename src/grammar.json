@@ -2078,6 +2078,10 @@
         },
         {
           "type": "STRING",
+          "value": "tensor"
+        },
+        {
+          "type": "STRING",
           "value": "ceildiv"
         },
         {
@@ -5244,6 +5248,10 @@
     [
       "array_literal",
       "_custom_body_element"
+    ],
+    [
+      "_custom_body_element",
+      "tensor_type"
     ],
     [
       "_value_use_list",
