@@ -3,21 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - LICENSE
-      - README.md
-      - docs/**
-      - .editorconfig
-      - .gitattributes
-      - .gitignore
   pull_request:
-    paths-ignore:
-      - LICENSE
-      - README.md
-      - docs/**
-      - .editorconfig
-      - .gitattributes
-      - .gitignore
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
@@ -44,6 +30,9 @@ jobs:
 
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
+        with:
+          # Keep in sync with package.json's tree-sitter-cli and release.yml.
+          tree-sitter-ref: v0.26.9
 
       # Tier 1: Corpus tests & Binding tests
       - name: Run parser and binding tests
@@ -72,3 +61,36 @@ jobs:
           name: parse-failures-${{matrix.os}}
           path: ${{steps.parse-files.outputs.failures}}
           retention-days: 7
+
+  # Root-cause gate for the 0.1.2 incident: a stale src/parser.c (including the
+  # version metadata stamped from tree-sitter.json) must never reach main. We
+  # regenerate from grammar.js and require the result to be already committed.
+  generated:
+    name: Check generated files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v2
+        with:
+          # Keep in sync with package.json's tree-sitter-cli and release.yml.
+          tree-sitter-ref: v0.26.9
+
+      - name: Verify committed parser is up to date
+        run: |
+          set -euo pipefail
+
+          tree-sitter generate
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Generated files are up to date."
+            exit 0
+          fi
+
+          echo "::error::Generated files are out of date. Run 'tree-sitter generate' and commit the result."
+          git status --short
+          echo ""
+          git --no-pager diff --no-ext-diff
+          exit 1
