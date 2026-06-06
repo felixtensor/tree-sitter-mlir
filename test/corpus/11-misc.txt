@@ -378,6 +378,57 @@ foo.op tensor<5xf32>
                   (float_type))))))))))
 
 ================================================================================
+Custom operation body sparse operand marker
+================================================================================
+amdgpu.sparse_mfma 16x16x32 %a * %b + %c sparse(%idx : vector<4xi8>) : vector<4xf16>, vector<8xf16>, vector<4xf32>
+foo.op sparse<[[0]], [1.0]>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (integer_literal)
+      (bare_id)
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (integer_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (tensor_literal
+        (nested_idx_list
+          (nested_idx_list
+            (integer_literal)))
+        (nested_idx_list
+          (float_literal))))))
+
+================================================================================
 Custom operation body braced value group
 ================================================================================
 acc.loop tile({%c4 : index})

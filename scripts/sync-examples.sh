@@ -121,7 +121,8 @@ echo "  $ir_count files synced"
 
 # ── Sync selected dialect tests ──────────────────────────────────────────────
 sync_selected_files "AMDGPU" "$MLIR_TEST_DIR/Dialect/AMDGPU" "$EXAMPLES_DIR/AMDGPU" \
-  canonicalize.mlir
+  canonicalize.mlir \
+  ops.mlir
 sync_selected_files "NVGPU" "$MLIR_TEST_DIR/Dialect/NVGPU" "$EXAMPLES_DIR/NVGPU" \
   canonicalization.mlir
 
