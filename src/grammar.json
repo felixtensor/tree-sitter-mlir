@@ -2098,6 +2098,10 @@
           "name": "bare_id"
         },
         {
+          "type": "SYMBOL",
+          "name": "_custom_body_arrow"
+        },
+        {
           "type": "STRING",
           "value": ","
         },
@@ -2320,6 +2324,19 @@
         {
           "type": "STRING",
           "value": ">"
+        }
+      ]
+    },
+    "_custom_body_arrow": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "STRING",
+          "value": "-"
         }
       ]
     },
@@ -5292,6 +5309,10 @@
     [
       "_custom_body_element",
       "tensor_type"
+    ],
+    [
+      "_custom_body_element",
+      "_custom_body_arrow"
     ],
     [
       "_value_use_list",

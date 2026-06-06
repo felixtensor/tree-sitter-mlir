@@ -125,6 +125,9 @@ sync_selected_files "AMDGPU" "$MLIR_TEST_DIR/Dialect/AMDGPU" "$EXAMPLES_DIR/AMDG
   ops.mlir
 sync_selected_files "NVGPU" "$MLIR_TEST_DIR/Dialect/NVGPU" "$EXAMPLES_DIR/NVGPU" \
   canonicalization.mlir
+sync_selected_files "OpenMP" "$MLIR_TEST_DIR/Dialect/OpenMP" "$EXAMPLES_DIR/OpenMP" \
+  cli-fuse.mlir \
+  cli-tile.mlir
 
 # ── Sync dialect tests ───────────────────────────────────────────────────────
 DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM PDL PDLInterp"

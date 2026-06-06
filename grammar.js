@@ -13,6 +13,7 @@ export default grammar({
     [$.pretty_dialect_item],
     [$.array_literal, $._custom_body_element],
     [$._custom_body_element, $.tensor_type],
+    [$._custom_body_element, $._custom_body_arrow],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
@@ -274,6 +275,7 @@ export default grammar({
       'tensor',                     // AMDGPU/NVGPU keyword may collide with tensor<...>
       'ceildiv', 'floordiv', 'mod', // inline affine keywords
       $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
+      $._custom_body_arrow,         // <- (mapped-from, e.g. omp.fuse <- (...))
       ',', '=', ':', '->', '*', '?', $.dimension_separator, '+', '-', '/', '&', '|', '~',
     ),
 
@@ -286,6 +288,16 @@ export default grammar({
     _custom_body_ssa_dict_entry: $ => seq($.string_literal, '=', $.value_use),
     _custom_body_sparse_operand: $ => seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
+    // "Mapped-from" arrow used by OpenMP loop-transform ops, e.g.
+    //   omp.fuse(%fused) <- (%loop0, %loop1)
+    //   omp.tile(%grid, %intratile) <- (%loop) sizes(%ts : i32)
+    // Deliberately built from the existing single-char '<' and '-' tokens
+    // rather than a combined '<-' token: a length-2 '<-' token would win
+    // tree-sitter's longest-match at a dialect-attribute body boundary and
+    // mis-lex negative payloads like `#smt.bv<-1>` as `<-` `1`. Keeping the
+    // tokens separate leaves the lexer unchanged; GLR distinguishes the arrow
+    // from `_custom_body_angle_group` (which requires a closing '>').
+    _custom_body_arrow: $ => seq('<', '-'),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule
     // captures a trailing `loc(...)` as the operation's location instead of
