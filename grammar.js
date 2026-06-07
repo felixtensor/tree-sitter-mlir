@@ -3,7 +3,7 @@
 
 export default grammar({
   name: "mlir",
-  extras: ($) => [/\s/, $.comment],
+  extras: ($) => [/[\s\x00]/, $.comment],
   conflicts: ($) => [
     [$._static_dim_list, $._static_dim_list],
     [$.dictionary_attribute, $.region],
@@ -430,6 +430,7 @@ export default grammar({
         $._custom_body_complex_label, // complex: %value (IRDL operand label)
         prec(2, $.type), // !type, i32, memref<...>, etc.
         $.attribute, // #attr, {dict}, affine_map<...>
+        $._custom_body_tuple_group, // {(%v), (%w)}
         $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
@@ -474,6 +475,14 @@ export default grammar({
         repeat(seq(",", $.value_use, ":", $.type)),
         "}",
       ),
+    _custom_body_tuple_group: ($) =>
+      seq(
+        "{",
+        $._custom_body_tuple,
+        repeat(seq(",", $._custom_body_tuple)),
+        "}",
+      ),
+    _custom_body_tuple: ($) => seq("(", $._value_use_list, ")"),
     _custom_body_location_attr_dict: ($) =>
       seq($.trailing_location, $.dictionary_attribute),
     _custom_body_complex_label: ($) =>
