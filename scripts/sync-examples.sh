@@ -109,7 +109,7 @@ sync_selected_files() {
 echo "IR (selected files):"
 mkdir -p "$EXAMPLES_DIR/IR"
 ir_count=0
-for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties.mlir properties-bytecode-roundtrip.mlir custom-print-parse.mlir distinct-attr.mlir check-help-output.mlir locations.mlir; do
+for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties.mlir properties-bytecode-roundtrip.mlir custom-print-parse.mlir distinct-attr.mlir check-help-output.mlir locations.mlir test-fold-adaptor.mlir zero_whitespace.mlir; do
   if [ -f "$MLIR_TEST_DIR/IR/$f" ]; then
     cp "$MLIR_TEST_DIR/IR/$f" "$EXAMPLES_DIR/IR/"
     ir_count=$((ir_count + 1))

@@ -445,6 +445,46 @@ acc.loop tile({%c4 : index})
           (index_type))))))
 
 ================================================================================
+Custom operation body braced SSA tuple group
+================================================================================
+%res = test.fold_with_fold_adaptor %c5, [ %c1, %c2], { (%c3), (%c3) } {
+  %c0 = "test.constant"() {value = 0 : i32} : () -> i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (generic_operation
+              (string_literal)
+              (attribute
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (integer_literal)
+                      (type
+                        (builtin_type
+                          (integer_type)))))))
+              (function_type
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
 Custom operation body SSA value dictionary
 ================================================================================
 %op0 = operation {"attr" = %attribute} -> (%type : !pdl.type)
