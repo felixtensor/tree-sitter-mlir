@@ -14,6 +14,7 @@ export default grammar({
     [$.array_literal, $._custom_body_element_base],
     [$._custom_body_element_base, $.tensor_type],
     [$._custom_body_element_base, $._custom_body_arrow],
+    [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
     [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
@@ -277,6 +278,7 @@ export default grammar({
         prec(2, $.func_operation),
         prec(2, $.module_operation),
         prec(2, $._affine_for_operation),
+        $._generic_custom_operation_with_location_attr_dict,
         $._generic_custom_operation,
       ),
 
@@ -357,6 +359,18 @@ export default grammar({
         -1,
         prec.right(
           seq(field("name", $.custom_op_name), repeat($._custom_body_element)),
+        ),
+      ),
+
+    _generic_custom_operation_with_location_attr_dict: ($) =>
+      prec.dynamic(
+        -1,
+        prec.right(
+          seq(
+            field("name", alias($._dotted_op_name, $.custom_op_name)),
+            $._custom_body_location_attr_dict,
+            repeat($._custom_body_element),
+          ),
         ),
       ),
 
@@ -460,6 +474,8 @@ export default grammar({
         repeat(seq(",", $.value_use, ":", $.type)),
         "}",
       ),
+    _custom_body_location_attr_dict: ($) =>
+      seq($.trailing_location, $.dictionary_attribute),
     _custom_body_complex_label: ($) =>
       prec(1, seq($._complex_label_start, $.value_use)),
     _custom_body_ssa_dict: ($) =>

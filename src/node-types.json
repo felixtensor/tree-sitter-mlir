@@ -607,6 +607,10 @@
           "named": true
         },
         {
+          "type": "dictionary_attribute",
+          "named": true
+        },
+        {
           "type": "dimension_separator",
           "named": true
         },
