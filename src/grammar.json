@@ -2265,23 +2265,28 @@
         ]
       }
     },
-    "_complex_label_start": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 2,
-        "content": {
-          "type": "PATTERN",
-          "value": "complex:"
-        }
-      }
-    },
     "_custom_body_ssa_dict": {
       "type": "SEQ",
       "members": [
         {
           "type": "STRING",
           "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_custom_body_attr_dict_entry"
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              }
+            ]
+          }
         },
         {
           "type": "SYMBOL",
@@ -2298,7 +2303,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "_custom_body_ssa_dict_entry"
+                "name": "_custom_body_mixed_dict_entry"
               }
             ]
           }
@@ -2309,12 +2314,16 @@
         }
       ]
     },
-    "_custom_body_ssa_dict_entry": {
+    "_custom_body_dict_key": {
+      "type": "SYMBOL",
+      "name": "string_literal"
+    },
+    "_custom_body_attr_dict_entry": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "string_literal"
+          "name": "_custom_body_dict_key"
         },
         {
           "type": "STRING",
@@ -2322,7 +2331,96 @@
         },
         {
           "type": "SYMBOL",
+          "name": "attribute_value"
+        }
+      ]
+    },
+    "_custom_body_ssa_dict_entry": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_dict_key"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "value_use"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_custom_body_ssa_value_array"
+            }
+          ]
+        }
+      ]
+    },
+    "_custom_body_mixed_dict_entry": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_dict_key"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "attribute_value"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "value_use"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_custom_body_ssa_value_array"
+            }
+          ]
+        }
+      ]
+    },
+    "_custom_body_ssa_value_array": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "SYMBOL",
           "name": "value_use"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "value_use"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "]"
         }
       ]
     },
@@ -3533,17 +3631,6 @@
           "value": ">"
         }
       ]
-    },
-    "_complex_type_start": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 1,
-        "content": {
-          "type": "PATTERN",
-          "value": "complex<"
-        }
-      }
     },
     "_prim_type": {
       "type": "CHOICE",
@@ -5302,6 +5389,28 @@
           "value": "sparse"
         }
       }
+    },
+    "_complex_label_start": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 2,
+        "content": {
+          "type": "PATTERN",
+          "value": "complex:"
+        }
+      }
+    },
+    "_complex_type_start": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "complex<"
+        }
+      }
     }
   },
   "extras": [
@@ -5349,6 +5458,10 @@
     [
       "_custom_body_element",
       "_custom_body_arrow"
+    ],
+    [
+      "_custom_body_dict_key",
+      "attribute_entry"
     ],
     [
       "_value_use_list",

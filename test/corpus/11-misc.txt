@@ -513,3 +513,49 @@ irdl.operands(complex: %0)
     (custom_operation
       (custom_op_name)
       (value_use))))
+
+================================================================================
+Custom operation body mixed string-key SSA dictionary
+================================================================================
+transform.apply_registered_pass "canonicalize" with options = { "top-down" = false, "max-iterations" = %max_iter, "test-convergence" = true, "max-num-rewrites" = %max_rewrites } to %1 : (!transform.any_op, !transform.any_param, !transform.any_param) -> !transform.any_op
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (bare_id)
+      (bare_id)
+      (string_literal)
+      (attribute_value
+        (bool_literal))
+      (string_literal)
+      (value_use)
+      (string_literal)
+      (attribute_value
+        (bool_literal))
+      (string_literal)
+      (value_use)
+      (bare_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)))))))

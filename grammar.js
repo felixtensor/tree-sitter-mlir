@@ -2,9 +2,9 @@
 // @ts-check
 
 export default grammar({
-  name: 'mlir',
-  extras: $ => [/\s/, $.comment],
-  conflicts: $ => [
+  name: "mlir",
+  extras: ($) => [/\s/, $.comment],
+  conflicts: ($) => [
     [$._static_dim_list, $._static_dim_list],
     [$.dictionary_attribute, $.region],
     [$.custom_op_name, $.attribute_entry],
@@ -14,6 +14,7 @@ export default grammar({
     [$.array_literal, $._custom_body_element],
     [$._custom_body_element, $.tensor_type],
     [$._custom_body_element, $._custom_body_arrow],
+    [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
@@ -36,10 +37,16 @@ export default grammar({
     // Top level production:
     //   (operation | attribute-alias-def | type-alias-def)
     // =========================================================================
-    toplevel: $ => seq($._toplevel, repeat($._toplevel)),
-    _toplevel: $ => choice($.operation, $.attribute_alias_def, $.type_alias_def,
-      $.external_resources),
-    external_resources: $ => seq('{-#', repeat($._pretty_dialect_item_contents), '#-}'),
+    toplevel: ($) => seq($._toplevel, repeat($._toplevel)),
+    _toplevel: ($) =>
+      choice(
+        $.operation,
+        $.attribute_alias_def,
+        $.type_alias_def,
+        $.external_resources,
+      ),
+    external_resources: ($) =>
+      seq("{-#", repeat($._pretty_dialect_item_contents), "#-}"),
 
     // =========================================================================
     // Common syntax (lang-ref)
@@ -49,44 +56,95 @@ export default grammar({
     //  float-literal ::= [-+]?[0-9]+[.][0-9]*([eE][-+]?[0-9]+)?
     //  string-literal  ::= `"` [^"\n\f\v\r]* `"`
     // =========================================================================
-    _digit: $ => /[0-9]/,
-    integer_literal: $ => choice($._decimal_literal, $._hexadecimal_literal),
-    _decimal_literal: $ => token(seq(optional(/[-+]/), repeat1(/[0-9]/))),
-    _unsigned_decimal_literal: $ => token(repeat1(/[0-9]/)),
-    _unsigned_integer_literal: $ => choice($._unsigned_decimal_literal, $._hexadecimal_literal),
-    _hexadecimal_literal: $ => token(seq('0x', repeat1(/[0-9a-fA-F]/))),
-    float_literal: $ => token(seq(
-      optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
-      optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
-    string_literal: $ => seq(
-      '"',
-      repeat(choice(/[^\\"\n\f\v\r]+/, $.escape_sequence, $.invalid_escape)),
-      '"'
-    ),
-    escape_sequence: $ => token(seq('\\', choice(/[nt"\\]/, /[0-9a-fA-F]{2}/))),
-    invalid_escape: $ => token(seq('\\', /[^\n\f\v\r]/)),
-    bool_literal: $ => token(choice('true', 'false')),
-    unit_literal: $ => token('unit'),
-    uninitialized_literal: $ => token('uninitialized'),
-    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal, $.bool_literal), ',',
-      choice($.integer_literal, $.float_literal, $.bool_literal), ')'),
-    tensor_literal: $ => seq(choice($._dense_keyword, $._sparse_keyword), '<',
-      optional(seq(
-        optional(seq($.type, ':')),
-        seq($._tensor_literal_element, repeat(seq(',', $._tensor_literal_element)))
-      )), '>'),
-    _tensor_literal_element: $ => choice($.nested_idx_list, $._primitive_element),
-    array_literal: $ => seq(token('array'), '<', $.type, optional(seq(':', $._idx_list)), '>'),
-    _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.array_literal, $.unit_literal, $.uninitialized_literal),
+    _digit: ($) => /[0-9]/,
+    integer_literal: ($) => choice($._decimal_literal, $._hexadecimal_literal),
+    _decimal_literal: ($) => token(seq(optional(/[-+]/), repeat1(/[0-9]/))),
+    _unsigned_decimal_literal: ($) => token(repeat1(/[0-9]/)),
+    _unsigned_integer_literal: ($) =>
+      choice($._unsigned_decimal_literal, $._hexadecimal_literal),
+    _hexadecimal_literal: ($) => token(seq("0x", repeat1(/[0-9a-fA-F]/))),
+    float_literal: ($) =>
+      token(
+        seq(
+          optional(/[-+]/),
+          repeat1(/[0-9]/),
+          ".",
+          repeat(/[0-9]/),
+          optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))),
+        ),
+      ),
+    string_literal: ($) =>
+      seq(
+        '"',
+        repeat(choice(/[^\\"\n\f\v\r]+/, $.escape_sequence, $.invalid_escape)),
+        '"',
+      ),
+    escape_sequence: ($) =>
+      token(seq("\\", choice(/[nt"\\]/, /[0-9a-fA-F]{2}/))),
+    invalid_escape: ($) => token(seq("\\", /[^\n\f\v\r]/)),
+    bool_literal: ($) => token(choice("true", "false")),
+    unit_literal: ($) => token("unit"),
+    uninitialized_literal: ($) => token("uninitialized"),
+    complex_literal: ($) =>
+      seq(
+        "(",
+        choice($.integer_literal, $.float_literal, $.bool_literal),
+        ",",
+        choice($.integer_literal, $.float_literal, $.bool_literal),
+        ")",
+      ),
+    tensor_literal: ($) =>
+      seq(
+        choice($._dense_keyword, $._sparse_keyword),
+        "<",
+        optional(
+          seq(
+            optional(seq($.type, ":")),
+            seq(
+              $._tensor_literal_element,
+              repeat(seq(",", $._tensor_literal_element)),
+            ),
+          ),
+        ),
+        ">",
+      ),
+    _tensor_literal_element: ($) =>
+      choice($.nested_idx_list, $._primitive_element),
+    array_literal: ($) =>
+      seq(token("array"), "<", $.type, optional(seq(":", $._idx_list)), ">"),
+    _literal: ($) =>
+      choice(
+        $.integer_literal,
+        $.float_literal,
+        $.string_literal,
+        $.bool_literal,
+        $.tensor_literal,
+        $.array_literal,
+        $.unit_literal,
+        $.uninitialized_literal,
+      ),
 
-    nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
-      repeat(seq(',', $.nested_idx_list)), ']'),
-    _idx_list: $ => prec.right(seq($._primitive_element,
-      repeat(seq(',', $._primitive_element)))),
-    _primitive_element: $ => seq($._primitive_idx_literal, optional(seq(':', $.type))),
-    _primitive_idx_literal: $ => choice($.integer_literal, $.float_literal,
-      $.bool_literal, $.complex_literal, $.string_literal),
+    nested_idx_list: ($) =>
+      seq(
+        "[",
+        optional(choice($.nested_idx_list, $._idx_list)),
+        repeat(seq(",", $.nested_idx_list)),
+        "]",
+      ),
+    _idx_list: ($) =>
+      prec.right(
+        seq($._primitive_element, repeat(seq(",", $._primitive_element))),
+      ),
+    _primitive_element: ($) =>
+      seq($._primitive_idx_literal, optional(seq(":", $.type))),
+    _primitive_idx_literal: ($) =>
+      choice(
+        $.integer_literal,
+        $.float_literal,
+        $.bool_literal,
+        $.complex_literal,
+        $.string_literal,
+      ),
 
     // =========================================================================
     // Identifiers
@@ -95,16 +153,28 @@ export default grammar({
     //   suffix-id ::= (digit+ | ((letter|id-punct) (letter|id-punct|digit)*))
     //   symbol-ref-id ::= `@` (suffix-id | string-literal) (`::` symbol-ref-id)?
     // =========================================================================
-    bare_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
-    _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/))),
-    bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
-    value_use: $ => seq('%', $._suffix_id),
-    _suffix_id: $ => token(seq(choice(repeat1(/[0-9]/),
-      seq(/[a-zA-Z_$.-]/, repeat(/[a-zA-Z0-9_$.-]/))),
-      optional(seq(choice(':', '#'), repeat1(/[0-9]/))))),
-    symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
-      optional(seq('::', $.symbol_ref_id))),
-    _value_use_list: $ => seq($.value_use, repeat(seq(',', $.value_use))),
+    bare_id: ($) => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
+    _alias_or_dialect_id: ($) =>
+      token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/))),
+    bare_id_list: ($) => seq($.bare_id, repeat(seq(",", $.bare_id))),
+    value_use: ($) => seq("%", $._suffix_id),
+    _suffix_id: ($) =>
+      token(
+        seq(
+          choice(
+            repeat1(/[0-9]/),
+            seq(/[a-zA-Z_$.-]/, repeat(/[a-zA-Z0-9_$.-]/)),
+          ),
+          optional(seq(choice(":", "#"), repeat1(/[0-9]/))),
+        ),
+      ),
+    symbol_ref_id: ($) =>
+      seq(
+        "@",
+        choice($._suffix_id, $.string_literal),
+        optional(seq("::", $.symbol_ref_id)),
+      ),
+    _value_use_list: ($) => seq($.value_use, repeat(seq(",", $.value_use))),
 
     // =========================================================================
     // Operations
@@ -115,58 +185,86 @@ export default grammar({
     //                         dictionary-attribute? `:` function-type
     //   custom-operation  ::= bare-id custom-operation-format
     // =========================================================================
-    operation: $ => seq(
-      field('lhs', optional($._op_result_list)),
-      field('rhs', choice($.generic_operation, $.custom_operation)),
-      field('location', optional($.trailing_location))),
+    operation: ($) =>
+      seq(
+        field("lhs", optional($._op_result_list)),
+        field("rhs", choice($.generic_operation, $.custom_operation)),
+        field("location", optional($.trailing_location)),
+      ),
 
-    generic_operation: $ =>
-      seq($.string_literal, $._value_use_list_parens, optional($._successor_list),
-        optional($.properties), optional($._region_list), optional($.attribute),
-        ':', $.function_type),
+    generic_operation: ($) =>
+      seq(
+        $.string_literal,
+        $._value_use_list_parens,
+        optional($._successor_list),
+        optional($.properties),
+        optional($._region_list),
+        optional($.attribute),
+        ":",
+        $.function_type,
+      ),
 
-    _op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
-    op_result: $ => seq($.value_use, optional(seq(':', $.integer_literal))),
-    _successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)), ']'),
-    successor: $ => prec.right(seq($.caret_id, optional($._value_arg_list))),
-    _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
-    properties: $ => seq('<{', optional($.attribute_entry),
-      repeat(seq(',', $.attribute_entry)), '}>'),
-    dictionary_attribute: $ => seq('{', optional($.attribute_entry),
-      repeat(seq(',', $.attribute_entry)), '}'),
-    trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
+    _op_result_list: ($) =>
+      seq($.op_result, repeat(seq(",", $.op_result)), "="),
+    op_result: ($) => seq($.value_use, optional(seq(":", $.integer_literal))),
+    _successor_list: ($) =>
+      seq("[", $.successor, repeat(seq(",", $.successor)), "]"),
+    successor: ($) => prec.right(seq($.caret_id, optional($._value_arg_list))),
+    _region_list: ($) => seq("(", $.region, repeat(seq(",", $.region)), ")"),
+    properties: ($) =>
+      seq(
+        "<{",
+        optional($.attribute_entry),
+        repeat(seq(",", $.attribute_entry)),
+        "}>",
+      ),
+    dictionary_attribute: ($) =>
+      seq(
+        "{",
+        optional($.attribute_entry),
+        repeat(seq(",", $.attribute_entry)),
+        "}",
+      ),
+    trailing_location: ($) => seq(token("loc"), "(", $.location, ")"),
     // LangRef "Source Locations": location ::= unknown | name | filelinecol |
     //   filelocrange | callsite | fused | loc-alias-ref
-    location: $ => choice(
-      $.unknown_location,
-      $._string_location,
-      $.callsite_location,
-      $.fused_location,
-      $.attribute_alias,
-      $.dialect_attribute,
-    ),
-    unknown_location: $ => token('unknown'),
-    callsite_location: $ => seq(token('callsite'), '(',
-      $.location, token('at'), $.location, ')'),
-    fused_location: $ => seq(token('fused'),
-      optional(seq('<', $.attribute_value, '>')),
-      '[', $.location, repeat(seq(',', $.location)), ']'),
+    location: ($) =>
+      choice(
+        $.unknown_location,
+        $._string_location,
+        $.callsite_location,
+        $.fused_location,
+        $.attribute_alias,
+        $.dialect_attribute,
+      ),
+    unknown_location: ($) => token("unknown"),
+    callsite_location: ($) =>
+      seq(token("callsite"), "(", $.location, token("at"), $.location, ")"),
+    fused_location: ($) =>
+      seq(
+        token("fused"),
+        optional(seq("<", $.attribute_value, ">")),
+        "[",
+        $.location,
+        repeat(seq(",", $.location)),
+        "]",
+      ),
     // Combines name-location and filelinecol-location (LangRef uses the same
     // string-literal prefix; what follows distinguishes them).
-    _string_location: $ => seq(
-      $.string_literal,
-      optional(choice(
-        $._filelinecol_suffix,
-        seq('(', $.location, ')'),
-      )),
-    ),
-    _filelinecol_suffix: $ => seq(
-      ':', $.integer_literal,
-      optional(seq(':', $.integer_literal)),
-      optional(seq(token('to'),
-        optional($.integer_literal),
-        ':', $.integer_literal)),
-    ),
+    _string_location: ($) =>
+      seq(
+        $.string_literal,
+        optional(choice($._filelinecol_suffix, seq("(", $.location, ")"))),
+      ),
+    _filelinecol_suffix: ($) =>
+      seq(
+        ":",
+        $.integer_literal,
+        optional(seq(":", $.integer_literal)),
+        optional(
+          seq(token("to"), optional($.integer_literal), ":", $.integer_literal),
+        ),
+      ),
 
     // =========================================================================
     // Three-tier custom operation system
@@ -174,41 +272,65 @@ export default grammar({
     // Tier 1: func_operation, module_operation — structural ops for navigation
     // Tier 2: _generic_custom_operation — all other dialect.op_name patterns
     // =========================================================================
-    custom_operation: $ => choice(
-      prec(2, $.func_operation),
-      prec(2, $.module_operation),
-      prec(2, $._affine_for_operation),
-      $._generic_custom_operation,
-    ),
+    custom_operation: ($) =>
+      choice(
+        prec(2, $.func_operation),
+        prec(2, $.module_operation),
+        prec(2, $._affine_for_operation),
+        $._generic_custom_operation,
+      ),
 
     // Tier 1: Function operations (func.func, llvm.func)
     // Token prec 20 ensures these keywords win over _dotted_op_name (prec 10)
-    func_operation: $ => prec.right(seq(
-      field('name', choice(token(prec(20, 'func.func')), token(prec(20, 'llvm.func')))),
-      field('visibility', optional(choice('private', 'public'))),
-      // Optional leading specifier keywords between the function name and its
-      // symbol. Covers MLIR symbol visibility (`nested`) and the LLVM dialect's
-      // llvm.func linkage / calling-convention / unnamed_addr / visibility
-      // keywords (internal, external, linkonce, fastcc, amdgpu_kernelcc,
-      // local_unnamed_addr, hidden, ...). MLIR's CConv enum alone has ~50
-      // keywords, so rather than enumerate a brittle list we accept bare_id-
-      // shaped specifiers here; the trailing `@symbol` (symbol_ref_id) is an
-      // unambiguous terminator.
-      repeat(field('specifier', alias($.bare_id, $.function_specifier))),
-      field('sym_name', $.symbol_ref_id),
-      field('arguments', $.func_arg_list),
-      field('return', optional($.func_return)),
-      field('attributes', optional(seq(optional(token('attributes')), $.dictionary_attribute))),
-      field('body', optional($.region)),
-    )),
+    func_operation: ($) =>
+      prec.right(
+        seq(
+          field(
+            "name",
+            choice(token(prec(20, "func.func")), token(prec(20, "llvm.func"))),
+          ),
+          field("visibility", optional(choice("private", "public"))),
+          // Optional leading specifier keywords between the function name and its
+          // symbol. Covers MLIR symbol visibility (`nested`) and the LLVM dialect's
+          // llvm.func linkage / calling-convention / unnamed_addr / visibility
+          // keywords (internal, external, linkonce, fastcc, amdgpu_kernelcc,
+          // local_unnamed_addr, hidden, ...). MLIR's CConv enum alone has ~50
+          // keywords, so rather than enumerate a brittle list we accept bare_id-
+          // shaped specifiers here; the trailing `@symbol` (symbol_ref_id) is an
+          // unambiguous terminator.
+          repeat(field("specifier", alias($.bare_id, $.function_specifier))),
+          field("sym_name", $.symbol_ref_id),
+          field("arguments", $.func_arg_list),
+          field("return", optional($.func_return)),
+          field(
+            "attributes",
+            optional(
+              seq(optional(token("attributes")), $.dictionary_attribute),
+            ),
+          ),
+          field("body", optional($.region)),
+        ),
+      ),
 
     // Tier 1: Module operations (module, builtin.module)
-    module_operation: $ => prec.right(seq(
-      field('name', choice(token(prec(20, 'builtin.module')), token(prec(20, 'module')))),
-      field('sym_name', optional($.symbol_ref_id)),
-      field('attributes', optional(seq(optional(token('attributes')), $.attribute))),
-      field('body', $.region),
-    )),
+    module_operation: ($) =>
+      prec.right(
+        seq(
+          field(
+            "name",
+            choice(
+              token(prec(20, "builtin.module")),
+              token(prec(20, "module")),
+            ),
+          ),
+          field("sym_name", optional($.symbol_ref_id)),
+          field(
+            "attributes",
+            optional(seq(optional(token("attributes")), $.attribute)),
+          ),
+          field("body", $.region),
+        ),
+      ),
 
     // affine.for prints its induction-variable location before the body
     // (`affine.for %i loc("iv") = 0 to 8 { ... } loc(...)`). The generic
@@ -216,21 +338,27 @@ export default grammar({
     // operation; without this structured rule, that machinery would bind the
     // induction loc to the operation slot and leave the operation's own
     // trailing loc unparseable.
-    _affine_for_operation: $ => prec.right(seq(
-      field('name', alias(token(prec(20, 'affine.for')), $.custom_op_name)),
-      $.value_use,
-      optional(field('induction_location', $.trailing_location)),
-      repeat($._custom_body_element),
-    )),
+    _affine_for_operation: ($) =>
+      prec.right(
+        seq(
+          field("name", alias(token(prec(20, "affine.for")), $.custom_op_name)),
+          $.value_use,
+          optional(field("induction_location", $.trailing_location)),
+          repeat($._custom_body_element),
+        ),
+      ),
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
     // Negative dynamic precedence makes the parser prefer ending the body
     // and starting a new operation (with _op_result_list) over extending
     // the body with more elements, when both paths are valid (GLR).
-    _generic_custom_operation: $ => prec.dynamic(-1, prec.right(seq(
-      field('name', $.custom_op_name),
-      repeat($._custom_body_element),
-    ))),
+    _generic_custom_operation: ($) =>
+      prec.dynamic(
+        -1,
+        prec.right(
+          seq(field("name", $.custom_op_name), repeat($._custom_body_element)),
+        ),
+      ),
 
     // Operation name: dotted form (arith.addi, scf.forall.in_parallel)
     // or known bare names (return, call, constant, etc.)
@@ -243,54 +371,120 @@ export default grammar({
     // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
     // element when inside a custom op body; it only acts as an op name at
     // region/block boundaries where operation+ is required.
-    custom_op_name: $ => choice($._dotted_op_name, $._bare_op_name, $.bare_id),
-    _dotted_op_name: $ => token(prec(10, seq(
-      /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/),
-      repeat1(seq('.', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
-    ))),
+    custom_op_name: ($) =>
+      choice($._dotted_op_name, $._bare_op_name, $.bare_id),
+    _dotted_op_name: ($) =>
+      token(
+        prec(
+          10,
+          seq(
+            /[a-zA-Z_]/,
+            repeat(/[a-zA-Z0-9_$]/),
+            repeat1(seq(".", /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
+          ),
+        ),
+      ),
     // Bare operation names: spec-sanctioned no-prefix aliases only.
     // All other dialect ops go through _dotted_op_name or _generic_custom_operation.
-    _bare_op_name: $ => token(prec(10, choice(
-      'return', 'call', 'call_indirect', 'constant', 'unrealized_conversion_cast',
-    ))),
+    _bare_op_name: ($) =>
+      token(
+        prec(
+          10,
+          choice(
+            "return",
+            "call",
+            "call_indirect",
+            "constant",
+            "unrealized_conversion_cast",
+          ),
+        ),
+      ),
 
     // Structural body elements that can appear in custom operation format.
     // These are recognized by sigils (%,^,@,!,#) or by structural delimiters.
-    _custom_body_element: $ => choice(
-      $.value_use,                  // %foo, %0
-      $.symbol_ref_id,              // @sym, @"string"
-      $.successor,                  // ^bb0, ^bb0(%arg : type)
-      $._custom_body_complex_label, // complex: %arg
-      prec(2, $.type),              // !type, i32, memref<...>, etc.
-      $.attribute,                  // #attr, {dict}, affine_map<...>
-      $.region,                     // { ... } (regions with operations)
-      $._custom_body_value_group,   // {%v : type, ...}
-      $._custom_body_ssa_dict,      // {"attr" = %value, ...}
-      $._custom_body_sparse_operand, // sparse(%idx : type)
-      $._custom_body_paren,         // ( ... )
-      $._custom_body_bracket,       // [ ... ]
-      $._custom_body_angle_group,   // < ... >
-      $._literal,                   // 42, 3.14, "string", true, dense<...>
-      'array',                      // property names may collide with array<...>
-      'vector',                     // OpenACC keyword may collide with vector<...>
-      'tensor',                     // AMDGPU/NVGPU keyword may collide with tensor<...>
-      'ceildiv', 'floordiv', 'mod', // inline affine keywords
-      $.bare_id,                    // keywords: to, from, step, ins, outs, etc.
-      $._custom_body_arrow,         // <- (mapped-from, e.g. omp.fuse <- (...))
-      ',', '=', ':', '->', '*', '?', $.dimension_separator, '+', '-', '/', '&', '|', '~',
-    ),
+    _custom_body_element: ($) =>
+      choice(
+        $.value_use, // %foo, %0
+        $.symbol_ref_id, // @sym, @"string"
+        $.successor, // ^bb0, ^bb0(%arg : type)
+        $._custom_body_complex_label, // complex: %value (IRDL operand label)
+        prec(2, $.type), // !type, i32, memref<...>, etc.
+        $.attribute, // #attr, {dict}, affine_map<...>
+        $.region, // { ... } (regions with operations)
+        $._custom_body_value_group, // {%v : type, ...}
+        $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
+        $._custom_body_sparse_operand, // sparse(%idx : type)
+        $._custom_body_paren, // ( ... )
+        $._custom_body_bracket, // [ ... ]
+        $._custom_body_angle_group, // < ... >
+        $._literal, // 42, 3.14, "string", true, dense<...>
+        "array", // property names may collide with array<...>
+        "vector", // OpenACC keyword may collide with vector<...>
+        "tensor", // AMDGPU/NVGPU keyword may collide with tensor<...>
+        "ceildiv",
+        "floordiv",
+        "mod", // inline affine keywords
+        $.bare_id, // keywords: to, from, step, ins, outs, etc.
+        $._custom_body_arrow, // <- (mapped-from, e.g. omp.fuse <- (...))
+        ",",
+        "=",
+        ":",
+        "->",
+        "*",
+        "?",
+        $.dimension_separator,
+        "+",
+        "-",
+        "/",
+        "&",
+        "|",
+        "~",
+      ),
 
-    _custom_body_paren: $ => seq('(', repeat($._nested_custom_body_element), ')'),
-    _custom_body_bracket: $ => seq('[', repeat($._nested_custom_body_element), ']'),
-    _custom_body_value_group: $ => seq('{', $.value_use, ':', $.type,
-      repeat(seq(',', $.value_use, ':', $.type)), '}'),
-    _custom_body_complex_label: $ => prec(1, seq($._complex_label_start, $.value_use)),
-    _complex_label_start: $ => token(prec(2, /complex:/)),
-    _custom_body_ssa_dict: $ => seq('{', $._custom_body_ssa_dict_entry,
-      repeat(seq(',', $._custom_body_ssa_dict_entry)), '}'),
-    _custom_body_ssa_dict_entry: $ => seq($.string_literal, '=', $.value_use),
-    _custom_body_sparse_operand: $ => seq($._sparse_keyword, $._custom_body_paren),
-    _custom_body_angle_group: $ => seq('<', repeat($._nested_custom_body_element), '>'),
+    _custom_body_paren: ($) =>
+      seq("(", repeat($._nested_custom_body_element), ")"),
+    _custom_body_bracket: ($) =>
+      seq("[", repeat($._nested_custom_body_element), "]"),
+    _custom_body_value_group: ($) =>
+      seq(
+        "{",
+        $.value_use,
+        ":",
+        $.type,
+        repeat(seq(",", $.value_use, ":", $.type)),
+        "}",
+      ),
+    _custom_body_complex_label: ($) =>
+      prec(1, seq($._complex_label_start, $.value_use)),
+    _custom_body_ssa_dict: ($) =>
+      seq(
+        "{",
+        repeat(seq($._custom_body_attr_dict_entry, ",")),
+        $._custom_body_ssa_dict_entry,
+        repeat(seq(",", $._custom_body_mixed_dict_entry)),
+        "}",
+      ),
+    _custom_body_dict_key: ($) => $.string_literal,
+    _custom_body_attr_dict_entry: ($) =>
+      seq($._custom_body_dict_key, "=", $.attribute_value),
+    _custom_body_ssa_dict_entry: ($) =>
+      seq(
+        $._custom_body_dict_key,
+        "=",
+        choice($.value_use, $._custom_body_ssa_value_array),
+      ),
+    _custom_body_mixed_dict_entry: ($) =>
+      seq(
+        $._custom_body_dict_key,
+        "=",
+        choice($.attribute_value, $.value_use, $._custom_body_ssa_value_array),
+      ),
+    _custom_body_ssa_value_array: ($) =>
+      seq("[", $.value_use, repeat(seq(",", $.value_use)), "]"),
+    _custom_body_sparse_operand: ($) =>
+      seq($._sparse_keyword, $._custom_body_paren),
+    _custom_body_angle_group: ($) =>
+      seq("<", repeat($._nested_custom_body_element), ">"),
     // "Mapped-from" arrow used by OpenMP loop-transform ops, e.g.
     //   omp.fuse(%fused) <- (%loop0, %loop1)
     //   omp.tile(%grid, %intratile) <- (%loop) sizes(%ts : i32)
@@ -300,12 +494,13 @@ export default grammar({
     // mis-lex negative payloads like `#smt.bv<-1>` as `<-` `1`. Keeping the
     // tokens separate leaves the lexer unchanged; GLR distinguishes the arrow
     // from `_custom_body_angle_group` (which requires a closing '>').
-    _custom_body_arrow: $ => seq('<', '-'),
+    _custom_body_arrow: ($) => seq("<", "-"),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule
     // captures a trailing `loc(...)` as the operation's location instead of
     // it being swallowed by the body repetition.
-    _nested_custom_body_element: $ => choice($._custom_body_element, $.trailing_location),
+    _nested_custom_body_element: ($) =>
+      choice($._custom_body_element, $.trailing_location),
 
     // =========================================================================
     // Blocks
@@ -313,244 +508,532 @@ export default grammar({
     //   block-label ::= block-id block-arg-list? `:`
     //   caret-id    ::= `^` suffix-id
     // =========================================================================
-    block: $ => seq($.block_label, repeat($.operation)),
-    block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
-    _block_id: $ => $.caret_id,
-    caret_id: $ => seq('^', $._suffix_id),
-    _value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type)),
-      optional($.trailing_location)),
-    _value_use_and_type_list: $ => seq($._value_use_and_type,
-      repeat(seq(',', $._value_use_and_type))),
-    block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
-    _value_arg_list: $ => seq('(', optional(choice(
-      $._value_use_type_list,       // bulk format: (%v0, %v1 : t0, t1)
-      $._value_use_and_type_list,   // per-pair format: (%v0 : t0, %v1 : t1)
-    )), ')'),
-    _value_use_type_list: $ => seq($._value_use_list, ':', $._type_list_no_parens),
+    block: ($) => seq($.block_label, repeat($.operation)),
+    block_label: ($) => seq($._block_id, optional($.block_arg_list), ":"),
+    _block_id: ($) => $.caret_id,
+    caret_id: ($) => seq("^", $._suffix_id),
+    _value_use_and_type: ($) =>
+      seq(
+        $.value_use,
+        optional(seq(":", $.type)),
+        optional($.trailing_location),
+      ),
+    _value_use_and_type_list: ($) =>
+      seq($._value_use_and_type, repeat(seq(",", $._value_use_and_type))),
+    block_arg_list: ($) => seq("(", optional($._value_use_and_type_list), ")"),
+    _value_arg_list: ($) =>
+      seq(
+        "(",
+        optional(
+          choice(
+            $._value_use_type_list, // bulk format: (%v0, %v1 : t0, t1)
+            $._value_use_and_type_list, // per-pair format: (%v0 : t0, %v1 : t1)
+          ),
+        ),
+        ")",
+      ),
+    _value_use_type_list: ($) =>
+      seq($._value_use_list, ":", $._type_list_no_parens),
 
     // =========================================================================
     // Regions
     //   region      ::= `{` entry-block? block* `}`
     //   entry-block ::= operation+
     // =========================================================================
-    region: $ => seq('{', optional($.entry_block), repeat($.block), '}'),
-    entry_block: $ => repeat1($.operation),
+    region: ($) => seq("{", optional($.entry_block), repeat($.block), "}"),
+    entry_block: ($) => repeat1($.operation),
 
     // =========================================================================
     // Types
     //   type ::= type-alias | dialect-type | builtin-type
     //   function-type ::= (type | type-list-parens) `->` (type | type-list-parens)
     // =========================================================================
-    type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
-    _type_list_no_parens: $ => prec.left(seq(choice($.type, $.function_type),
-      repeat(seq(',', choice($.type, $.function_type))))),
-    _type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
-    function_type: $ => seq(choice($.type, $._type_list_parens), $._function_return),
-    _function_return: $ => seq(token('->'), choice($.type, $._type_list_parens)),
-    _type_annotation: $ => seq(':', $._type_list_no_parens),
-    _function_type_annotation: $ => seq(':', $.function_type),
-    _literal_and_type: $ => seq($._literal, optional($._type_annotation)),
+    type: ($) => choice($.type_alias, $.dialect_type, $.builtin_type),
+    _type_list_no_parens: ($) =>
+      prec.left(
+        seq(
+          choice($.type, $.function_type),
+          repeat(seq(",", choice($.type, $.function_type))),
+        ),
+      ),
+    _type_list_parens: ($) => seq("(", optional($._type_list_no_parens), ")"),
+    function_type: ($) =>
+      seq(choice($.type, $._type_list_parens), $._function_return),
+    _function_return: ($) =>
+      seq(token("->"), choice($.type, $._type_list_parens)),
+    _type_annotation: ($) => seq(":", $._type_list_no_parens),
+    _function_type_annotation: ($) => seq(":", $.function_type),
+    _literal_and_type: ($) => seq($._literal, optional($._type_annotation)),
 
     // Type aliases
-    type_alias_def: $ => seq('!', $._alias_or_dialect_id, '=', $.type),
-    type_alias: $ => seq('!', $._alias_or_dialect_id),
+    type_alias_def: ($) => seq("!", $._alias_or_dialect_id, "=", $.type),
+    type_alias: ($) => seq("!", $._alias_or_dialect_id),
 
     // Dialect Types
-    dialect_type: $ => seq(
-      '!', choice($.opaque_dialect_item, $.pretty_dialect_item, $.parametric_dialect_item)),
-    dialect_namespace: $ => $._alias_or_dialect_id,
-    dialect_ident: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/))),
-    opaque_dialect_item: $ => prec(1, seq($.dialect_namespace, '<', $.string_literal, '>')),
-    pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
-      optional($.pretty_dialect_item_body)),
+    dialect_type: ($) =>
+      seq(
+        "!",
+        choice(
+          $.opaque_dialect_item,
+          $.pretty_dialect_item,
+          $.parametric_dialect_item,
+        ),
+      ),
+    dialect_namespace: ($) => $._alias_or_dialect_id,
+    dialect_ident: ($) => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/))),
+    opaque_dialect_item: ($) =>
+      prec(1, seq($.dialect_namespace, "<", $.string_literal, ">")),
+    pretty_dialect_item: ($) =>
+      seq(
+        $.dialect_namespace,
+        ".",
+        $.dialect_ident,
+        optional($.pretty_dialect_item_body),
+      ),
     // Parametric dialect item: !namespace<...> or #namespace<...> without dot-separated ident
-    parametric_dialect_item: $ => seq($.dialect_namespace, $.pretty_dialect_item_body),
-    pretty_dialect_item_body: $ => seq('<', repeat($._pretty_dialect_item_contents), '>'),
-    _pretty_dialect_item_contents: $ => prec.left(choice(
-      $.pretty_dialect_item_body,
-      $._pretty_dialect_bang_body_token,
-      $._pretty_dialect_body_attribute,
-      $.dialect_dim_list,
-      $.type,
-      prec(2, $.attribute),
-      $._literal,
-      $._dense_keyword, $._sparse_keyword, 'array', 'vector', 'tensor', 'opaque',
-      $.bare_id,
-      ',', ':', '=', '->', '(', ')', '[', ']', '{', '}', '*', '?',
-      '@', '#',
-      token(prec(-1, /[^<>]/))
-    )),
-    _pretty_dialect_bang_body_token: $ => token(prec(1,
-      seq('!', /[^a-zA-Z_<>]/))),
-    _pretty_dialect_body_attribute: $ => choice(
-      alias($._pretty_dialect_attribute_token, $.dialect_attribute),
-      alias($._pretty_attribute_alias_token, $.attribute_alias)),
-    _pretty_attribute_alias_token: $ => token(prec(2,
-      seq('#', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/)))),
-    _pretty_dialect_attribute_token: $ => token(prec(2,
-      seq('#', /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/), '.',
-        /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/)))),
-    dimension_separator: $ => token(prec(10, 'x')),
-    dialect_dim_list: $ => prec.dynamic(1, seq($._dialect_dim_primitive,
-      repeat1(seq($.dimension_separator, $._dialect_dim_primitive)))),
-    _dialect_dim_primitive: $ => choice(
-      prec(1, $.type),
-      prec(1, $._pretty_dialect_body_type),
-      alias($.integer_literal, $.dimension_size),
-      '?',
-      '*'),
-    _pretty_dialect_body_type: $ => seq(
-      choice($.bare_id, 'array'),
-      $.pretty_dialect_item_body),
+    parametric_dialect_item: ($) =>
+      seq($.dialect_namespace, $.pretty_dialect_item_body),
+    pretty_dialect_item_body: ($) =>
+      seq("<", repeat($._pretty_dialect_item_contents), ">"),
+    _pretty_dialect_item_contents: ($) =>
+      prec.left(
+        choice(
+          $.pretty_dialect_item_body,
+          $._pretty_dialect_bang_body_token,
+          $._pretty_dialect_body_attribute,
+          $.dialect_dim_list,
+          $.type,
+          prec(2, $.attribute),
+          $._literal,
+          $._dense_keyword,
+          $._sparse_keyword,
+          "array",
+          "vector",
+          "tensor",
+          "opaque",
+          $.bare_id,
+          ",",
+          ":",
+          "=",
+          "->",
+          "(",
+          ")",
+          "[",
+          "]",
+          "{",
+          "}",
+          "*",
+          "?",
+          "@",
+          "#",
+          token(prec(-1, /[^<>]/)),
+        ),
+      ),
+    _pretty_dialect_bang_body_token: ($) =>
+      token(prec(1, seq("!", /[^a-zA-Z_<>]/))),
+    _pretty_dialect_body_attribute: ($) =>
+      choice(
+        alias($._pretty_dialect_attribute_token, $.dialect_attribute),
+        alias($._pretty_attribute_alias_token, $.attribute_alias),
+      ),
+    _pretty_attribute_alias_token: ($) =>
+      token(prec(2, seq("#", /[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/)))),
+    _pretty_dialect_attribute_token: ($) =>
+      token(
+        prec(
+          2,
+          seq(
+            "#",
+            /[a-zA-Z_]/,
+            repeat(/[a-zA-Z0-9_$]/),
+            ".",
+            /[a-zA-Z_]/,
+            repeat(/[a-zA-Z0-9_$.-]/),
+          ),
+        ),
+      ),
+    dimension_separator: ($) => token(prec(10, "x")),
+    dialect_dim_list: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          $._dialect_dim_primitive,
+          repeat1(seq($.dimension_separator, $._dialect_dim_primitive)),
+        ),
+      ),
+    _dialect_dim_primitive: ($) =>
+      choice(
+        prec(1, $.type),
+        prec(1, $._pretty_dialect_body_type),
+        alias($.integer_literal, $.dimension_size),
+        "?",
+        "*",
+      ),
+    _pretty_dialect_body_type: ($) =>
+      seq(choice($.bare_id, "array"), $.pretty_dialect_item_body),
 
     // Builtin types
-    builtin_type: $ => choice(
-      $.integer_type,
-      $.float_type,
-      $.complex_type,
-      $.index_type,
-      $.memref_type,
-      $.none_type,
-      $.tensor_type,
-      $.vector_type,
-      $.tuple_type,
-      $.opaque_type),
+    builtin_type: ($) =>
+      choice(
+        $.integer_type,
+        $.float_type,
+        $.complex_type,
+        $.index_type,
+        $.memref_type,
+        $.none_type,
+        $.tensor_type,
+        $.vector_type,
+        $.tuple_type,
+        $.opaque_type,
+      ),
 
-    integer_type: $ => token(prec(5, seq(choice('si', 'ui', 'i'), /[0-9]/, repeat(/[0-9]/)))),
-    float_type: $ => token(prec(5, choice('f16', 'tf32', 'f32', 'f64', 'f80', 'f128', 'bf16',
-      'f4E2M1FN', 'f6E2M3FN', 'f6E3M2FN', 'f8E3M4', 'f8E4M3', 'f8E4M3FN', 'f8E4M3FNUZ',
-      'f8E4M3B11FNUZ', 'f8E5M2', 'f8E5M2FNUZ', 'f8E8M0FNU'))),
-    index_type: $ => token(prec(5, 'index')),
-    none_type: $ => token(prec(5, 'none')),
-    complex_type: $ => seq($._complex_type_start, $._prim_type, '>'),
-    _complex_type_start: $ => token(prec(1, /complex</)),
-    _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
-      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
-      $.tuple_type, $.opaque_type, $.dialect_type, $.type_alias),
+    integer_type: ($) =>
+      token(prec(5, seq(choice("si", "ui", "i"), /[0-9]/, repeat(/[0-9]/)))),
+    float_type: ($) =>
+      token(
+        prec(
+          5,
+          choice(
+            "f16",
+            "tf32",
+            "f32",
+            "f64",
+            "f80",
+            "f128",
+            "bf16",
+            "f4E2M1FN",
+            "f6E2M3FN",
+            "f6E3M2FN",
+            "f8E3M4",
+            "f8E4M3",
+            "f8E4M3FN",
+            "f8E4M3FNUZ",
+            "f8E4M3B11FNUZ",
+            "f8E5M2",
+            "f8E5M2FNUZ",
+            "f8E8M0FNU",
+          ),
+        ),
+      ),
+    index_type: ($) => token(prec(5, "index")),
+    none_type: ($) => token(prec(5, "none")),
+    complex_type: ($) => seq($._complex_type_start, $._prim_type, ">"),
+    _prim_type: ($) =>
+      choice(
+        $.integer_type,
+        $.float_type,
+        $.index_type,
+        $.complex_type,
+        $.none_type,
+        $.memref_type,
+        $.vector_type,
+        $.tensor_type,
+        $.tuple_type,
+        $.opaque_type,
+        $.dialect_type,
+        $.type_alias,
+      ),
 
-    memref_type: $ => seq(token('memref'), '<',
-      field('dimension_list', $.dim_list),
-      optional(seq(',', $.attribute_value)),
-      optional(seq(',', $.attribute_value)), '>'),
-    dim_list: $ => seq($._dim_primitive, repeat(seq('x', $._dim_primitive))),
+    memref_type: ($) =>
+      seq(
+        token("memref"),
+        "<",
+        field("dimension_list", $.dim_list),
+        optional(seq(",", $.attribute_value)),
+        optional(seq(",", $.attribute_value)),
+        ">",
+      ),
+    dim_list: ($) => seq($._dim_primitive, repeat(seq("x", $._dim_primitive))),
     // '*' represents the unranked form for both memref and tensor types
     // (UnrankedMemRefType, UnrankedTensorType). Vector uses its own
     // vector_dim_list / _static_dim_list and disallows '*' by construction.
-    dimension_size: $ => token(repeat1(/[0-9]/)),
-    _dim_primitive: $ => choice(prec(1, $.type), $.dimension_size, '?', '*'),
+    dimension_size: ($) => token(repeat1(/[0-9]/)),
+    _dim_primitive: ($) => choice(prec(1, $.type), $.dimension_size, "?", "*"),
 
-    tensor_type: $ => seq(token('tensor'), '<', $.dim_list,
-      optional(seq(',', $.tensor_encoding)), '>'),
-    tensor_encoding: $ => $.attribute_value,
+    tensor_type: ($) =>
+      seq(
+        token("tensor"),
+        "<",
+        $.dim_list,
+        optional(seq(",", $.tensor_encoding)),
+        ">",
+      ),
+    tensor_encoding: ($) => $.attribute_value,
 
-    vector_type: $ => prec(1, seq(token('vector'), '<', repeat($.vector_dim_list), $._prim_type, '>')),
-    vector_dim_list: $ => prec.left(choice(seq($._static_dim_list, 'x',
-      optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
-    _static_dim_list: $ => seq($.dimension_size, repeat(seq('x', $.dimension_size))),
+    vector_type: ($) =>
+      prec(
+        1,
+        seq(token("vector"), "<", repeat($.vector_dim_list), $._prim_type, ">"),
+      ),
+    vector_dim_list: ($) =>
+      prec.left(
+        choice(
+          seq(
+            $._static_dim_list,
+            "x",
+            optional(seq("[", $._static_dim_list, "]", "x")),
+          ),
+          seq("[", $._static_dim_list, "]", "x"),
+        ),
+      ),
+    _static_dim_list: ($) =>
+      seq($.dimension_size, repeat(seq("x", $.dimension_size))),
 
-    tuple_type: $ => seq(token('tuple'), '<', optional(seq($.tuple_dim, repeat(seq(',', $.tuple_dim)))), '>'),
-    tuple_dim: $ => $._prim_type,
+    tuple_type: ($) =>
+      seq(
+        token("tuple"),
+        "<",
+        optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
+        ">",
+      ),
+    tuple_dim: ($) => $._prim_type,
 
     // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`
     // e.g. opaque<"llvm", "struct<(i32, float)>">
-    opaque_type: $ => seq(token('opaque'), '<', $.string_literal, ',', $.string_literal, '>'),
+    opaque_type: ($) =>
+      seq(token("opaque"), "<", $.string_literal, ",", $.string_literal, ">"),
 
     // =========================================================================
     // Attributes
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute | builtin-attribute
     // =========================================================================
-    attribute_entry: $ => choice(
-      seq(choice($.bare_id, $.string_literal), optional(seq('=', $.attribute_value))),
-      // Array-valued entry (e.g. {["op.name"]} in transform dialect)
-      $._attribute_array,
-    ),
-    attribute_value: $ => choice($._attribute_array, $._attribute_value_nobracket),
-    _attribute_array: $ => seq('[', optional($._attribute_array_element),
-      repeat(seq(',', $._attribute_array_element)), ']'),
-    _attribute_array_element: $ => choice($._attribute_array, $._attribute_value_nobracket),
-    _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
-      $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type,
-      $.function_type, $._affine_map_like, $.symbol_ref_id, $.trailing_location,
-      seq(choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute), $._type_annotation)),
-    attribute: $ => choice($.attribute_alias, $.dialect_attribute,
-      $.builtin_attribute, $.dictionary_attribute),
+    attribute_entry: ($) =>
+      choice(
+        seq(
+          choice($.bare_id, $.string_literal),
+          optional(seq("=", $.attribute_value)),
+        ),
+        // Array-valued entry (e.g. {["op.name"]} in transform dialect)
+        $._attribute_array,
+      ),
+    attribute_value: ($) =>
+      choice($._attribute_array, $._attribute_value_nobracket),
+    _attribute_array: ($) =>
+      seq(
+        "[",
+        optional($._attribute_array_element),
+        repeat(seq(",", $._attribute_array_element)),
+        "]",
+      ),
+    _attribute_array_element: ($) =>
+      choice($._attribute_array, $._attribute_value_nobracket),
+    _attribute_value_nobracket: ($) =>
+      choice(
+        $.attribute_alias,
+        $.dialect_attribute,
+        $.builtin_attribute,
+        $.dictionary_attribute,
+        $._literal_and_type,
+        $.type,
+        $.function_type,
+        $._affine_map_like,
+        $.symbol_ref_id,
+        $.trailing_location,
+        seq(
+          choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute),
+          $._type_annotation,
+        ),
+      ),
+    attribute: ($) =>
+      choice(
+        $.attribute_alias,
+        $.dialect_attribute,
+        $.builtin_attribute,
+        $.dictionary_attribute,
+      ),
 
     // Attribute aliases
-    attribute_alias_def: $ => seq('#', $._alias_or_dialect_id, '=', $.attribute_value),
-    attribute_alias: $ => seq('#', $._alias_or_dialect_id),
+    attribute_alias_def: ($) =>
+      seq("#", $._alias_or_dialect_id, "=", $.attribute_value),
+    attribute_alias: ($) => seq("#", $._alias_or_dialect_id),
 
     // Dialect attributes
-    dialect_attribute: $ => seq('#', choice($.opaque_dialect_item, $.pretty_dialect_item, $.parametric_dialect_item)),
+    dialect_attribute: ($) =>
+      seq(
+        "#",
+        choice(
+          $.opaque_dialect_item,
+          $.pretty_dialect_item,
+          $.parametric_dialect_item,
+        ),
+      ),
 
     // Builtin attributes
-    builtin_attribute: $ => choice(
-      $.strided_layout,
-      prec(1, $.affine_map),
-      prec(1, $.affine_set),
-      $.dense_resource_literal,
-      $.distinct_attribute,
-    ),
-    dense_resource_literal: $ => seq(token(prec(2, 'dense_resource')), '<',
-      choice($.bare_id, $.string_literal), '>'),
-    distinct_attribute: $ => seq(token('distinct'), '[',
-      alias($._unsigned_integer_literal, $.integer_literal), ']',
-      '<', optional($.attribute_value), '>'),
-    strided_layout: $ => seq(token('strided'), '<', '[', optional($._stride_list_comma), ']',
-      optional(seq(',', token('offset'), ':', $._stride_primitive)), '>'),
-    _stride_list_comma: $ => seq($._stride_primitive, repeat(seq(',', $._stride_primitive))),
-    _stride_primitive: $ => choice($.integer_literal, '?', '*'),
+    builtin_attribute: ($) =>
+      choice(
+        $.strided_layout,
+        prec(1, $.affine_map),
+        prec(1, $.affine_set),
+        $.dense_resource_literal,
+        $.distinct_attribute,
+      ),
+    dense_resource_literal: ($) =>
+      seq(
+        token(prec(2, "dense_resource")),
+        "<",
+        choice($.bare_id, $.string_literal),
+        ">",
+      ),
+    distinct_attribute: ($) =>
+      seq(
+        token("distinct"),
+        "[",
+        alias($._unsigned_integer_literal, $.integer_literal),
+        "]",
+        "<",
+        optional($.attribute_value),
+        ">",
+      ),
+    strided_layout: ($) =>
+      seq(
+        token("strided"),
+        "<",
+        "[",
+        optional($._stride_list_comma),
+        "]",
+        optional(seq(",", token("offset"), ":", $._stride_primitive)),
+        ">",
+      ),
+    _stride_list_comma: ($) =>
+      seq($._stride_primitive, repeat(seq(",", $._stride_primitive))),
+    _stride_primitive: ($) => choice($.integer_literal, "?", "*"),
 
     // =========================================================================
     // Affine expressions
     // =========================================================================
-    affine_map: $ => seq(token('affine_map'), '<', $._multi_dim_affine_expr_parens,
-      optional($._multi_dim_affine_expr_sq), token('->'), $._multi_dim_affine_expr_parens, '>'),
-    _affine_map_like: $ => seq($._multi_dim_affine_expr_parens,
-      optional($._multi_dim_affine_expr_sq), token('->'), $._multi_dim_affine_expr_parens),
-    affine_set: $ => seq(token('affine_set'), '<', $._multi_dim_affine_expr_parens,
-      optional($._multi_dim_affine_expr_sq), ':', $._multi_dim_affine_expr_parens, '>'),
-    _multi_dim_affine_expr_parens: $ => seq('(', optional($._multi_dim_affine_expr), ')'),
-    _multi_dim_affine_expr_sq: $ => seq('[', optional($._multi_dim_affine_expr), ']'),
+    affine_map: ($) =>
+      seq(
+        token("affine_map"),
+        "<",
+        $._multi_dim_affine_expr_parens,
+        optional($._multi_dim_affine_expr_sq),
+        token("->"),
+        $._multi_dim_affine_expr_parens,
+        ">",
+      ),
+    _affine_map_like: ($) =>
+      seq(
+        $._multi_dim_affine_expr_parens,
+        optional($._multi_dim_affine_expr_sq),
+        token("->"),
+        $._multi_dim_affine_expr_parens,
+      ),
+    affine_set: ($) =>
+      seq(
+        token("affine_set"),
+        "<",
+        $._multi_dim_affine_expr_parens,
+        optional($._multi_dim_affine_expr_sq),
+        ":",
+        $._multi_dim_affine_expr_parens,
+        ">",
+      ),
+    _multi_dim_affine_expr_parens: ($) =>
+      seq("(", optional($._multi_dim_affine_expr), ")"),
+    _multi_dim_affine_expr_sq: ($) =>
+      seq("[", optional($._multi_dim_affine_expr), "]"),
 
-    _multi_dim_affine_expr: $ => seq($._affine_expr, repeat(seq(',', $._affine_expr))),
-    _affine_expr: $ => choice(
-      seq('(', $._affine_expr, ')'),
-      prec(4, seq('-', $._affine_expr)),
-      prec.left(3, seq($._affine_expr, choice('*', 'ceildiv', 'floordiv', 'mod'), $._affine_expr)),
-      prec.left(2, seq($._affine_expr, choice('+', '-'), $._affine_expr)),
-      prec.left(1, seq($._affine_expr, choice('==', '>=', '<='), $._affine_expr)),
-      $._affine_prim
-    ),
-    _affine_prim: $ => choice($.integer_literal, $.value_use,
-      seq(choice($.bare_id, $._dense_keyword, $._sparse_keyword), optional(seq(':', choice($.bare_id, $._dense_keyword, $._sparse_keyword, 'compressed', 'singleton', 'loose_compressed', 'n_out_of_m')))),
-      seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
+    _multi_dim_affine_expr: ($) =>
+      seq($._affine_expr, repeat(seq(",", $._affine_expr))),
+    _affine_expr: ($) =>
+      choice(
+        seq("(", $._affine_expr, ")"),
+        prec(4, seq("-", $._affine_expr)),
+        prec.left(
+          3,
+          seq(
+            $._affine_expr,
+            choice("*", "ceildiv", "floordiv", "mod"),
+            $._affine_expr,
+          ),
+        ),
+        prec.left(2, seq($._affine_expr, choice("+", "-"), $._affine_expr)),
+        prec.left(
+          1,
+          seq($._affine_expr, choice("==", ">=", "<="), $._affine_expr),
+        ),
+        $._affine_prim,
+      ),
+    _affine_prim: ($) =>
+      choice(
+        $.integer_literal,
+        $.value_use,
+        seq(
+          choice($.bare_id, $._dense_keyword, $._sparse_keyword),
+          optional(
+            seq(
+              ":",
+              choice(
+                $.bare_id,
+                $._dense_keyword,
+                $._sparse_keyword,
+                "compressed",
+                "singleton",
+                "loose_compressed",
+                "n_out_of_m",
+              ),
+            ),
+          ),
+        ),
+        seq("symbol", "(", $.value_use, ")"),
+        seq(choice("max", "min"), "(", $._value_use_list, ")"),
+      ),
 
     // =========================================================================
     // Function-related rules (used by func_operation tier-1)
     // =========================================================================
-    func_return: $ => seq(token('->'), $.type_list_attr_parens),
-    func_arg_list: $ => seq('(', optional(choice($.variadic,
-      $._value_id_and_type_attr_list)), ')'),
-    _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
-      repeat(seq(',', choice($._value_id_and_type_attr, $.variadic)))),
-    _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute),
-      optional($.trailing_location)),
-    _function_arg: $ => choice(seq($.value_use, ':', choice($.type, $.function_type)), $.value_use, $.type, $.function_type),
-    _type_or_func_type: $ => choice($.type, $.function_type),
-    type_list_attr_parens: $ => choice($.type, $.function_type,
-      seq('(', $._type_or_func_type, optional($.attribute),
-      repeat(seq(',', $._type_or_func_type, optional($.attribute))), ')'), seq('(', ')')),
-    variadic: $ => token('...'),
+    func_return: ($) => seq(token("->"), $.type_list_attr_parens),
+    func_arg_list: ($) =>
+      seq(
+        "(",
+        optional(choice($.variadic, $._value_id_and_type_attr_list)),
+        ")",
+      ),
+    _value_id_and_type_attr_list: ($) =>
+      seq(
+        $._value_id_and_type_attr,
+        repeat(seq(",", choice($._value_id_and_type_attr, $.variadic))),
+      ),
+    _value_id_and_type_attr: ($) =>
+      seq(
+        $._function_arg,
+        optional($.attribute),
+        optional($.trailing_location),
+      ),
+    _function_arg: ($) =>
+      choice(
+        seq($.value_use, ":", choice($.type, $.function_type)),
+        $.value_use,
+        $.type,
+        $.function_type,
+      ),
+    _type_or_func_type: ($) => choice($.type, $.function_type),
+    type_list_attr_parens: ($) =>
+      choice(
+        $.type,
+        $.function_type,
+        seq(
+          "(",
+          $._type_or_func_type,
+          optional($.attribute),
+          repeat(seq(",", $._type_or_func_type, optional($.attribute))),
+          ")",
+        ),
+        seq("(", ")"),
+      ),
+    variadic: ($) => token("..."),
 
     // =========================================================================
     // Shared helpers
     // =========================================================================
-    _value_use_list_parens: $ => seq('(', optional($._value_use_list), ')'),
+    _value_use_list_parens: ($) => seq("(", optional($._value_use_list), ")"),
 
     // Comment (standard BCPL)
-    comment: $ => token(seq('//', /.*/)),
-    _dense_keyword: $ => token(prec(1, 'dense')),
-    _sparse_keyword: $ => token(prec(1, 'sparse')),
-  }
+    comment: ($) => token(seq("//", /.*/)),
+    _dense_keyword: ($) => token(prec(1, "dense")),
+    _sparse_keyword: ($) => token(prec(1, "sparse")),
+    _complex_label_start: ($) => token(prec(2, /complex:/)),
+    _complex_type_start: ($) => token(prec(1, /complex</)),
+  },
 });
