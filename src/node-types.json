@@ -2135,10 +2135,6 @@
     "extra": true
   },
   {
-    "type": "complex",
-    "named": false
-  },
-  {
     "type": "compressed",
     "named": false
   },

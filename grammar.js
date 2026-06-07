@@ -260,6 +260,7 @@ export default grammar({
       $.value_use,                  // %foo, %0
       $.symbol_ref_id,              // @sym, @"string"
       $.successor,                  // ^bb0, ^bb0(%arg : type)
+      $._custom_body_complex_label, // complex: %arg
       prec(2, $.type),              // !type, i32, memref<...>, etc.
       $.attribute,                  // #attr, {dict}, affine_map<...>
       $.region,                     // { ... } (regions with operations)
@@ -283,6 +284,8 @@ export default grammar({
     _custom_body_bracket: $ => seq('[', repeat($._nested_custom_body_element), ']'),
     _custom_body_value_group: $ => seq('{', $.value_use, ':', $.type,
       repeat(seq(',', $.value_use, ':', $.type)), '}'),
+    _custom_body_complex_label: $ => prec(1, seq($._complex_label_start, $.value_use)),
+    _complex_label_start: $ => token(prec(2, /complex:/)),
     _custom_body_ssa_dict: $ => seq('{', $._custom_body_ssa_dict_entry,
       repeat(seq(',', $._custom_body_ssa_dict_entry)), '}'),
     _custom_body_ssa_dict_entry: $ => seq($.string_literal, '=', $.value_use),
@@ -419,7 +422,8 @@ export default grammar({
       'f8E4M3B11FNUZ', 'f8E5M2', 'f8E5M2FNUZ', 'f8E8M0FNU'))),
     index_type: $ => token(prec(5, 'index')),
     none_type: $ => token(prec(5, 'none')),
-    complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
+    complex_type: $ => seq($._complex_type_start, $._prim_type, '>'),
+    _complex_type_start: $ => token(prec(1, /complex</)),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
       $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type,
       $.tuple_type, $.opaque_type, $.dialect_type, $.type_alias),
