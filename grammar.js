@@ -11,9 +11,9 @@ export default grammar({
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
-    [$.array_literal, $._custom_body_element],
-    [$._custom_body_element, $.tensor_type],
-    [$._custom_body_element, $._custom_body_arrow],
+    [$.array_literal, $._custom_body_element_base],
+    [$._custom_body_element_base, $.tensor_type],
+    [$._custom_body_element_base, $._custom_body_arrow],
     [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
     [$._type_list_no_parens, $._type_or_func_type],
@@ -404,6 +404,12 @@ export default grammar({
     // These are recognized by sigils (%,^,@,!,#) or by structural delimiters.
     _custom_body_element: ($) =>
       choice(
+        $._custom_body_element_base,
+        $._custom_body_successor_marker, // >^bb1 (WasmSSA if continuation)
+      ),
+
+    _custom_body_element_base: ($) =>
+      choice(
         $.value_use, // %foo, %0
         $.symbol_ref_id, // @sym, @"string"
         $.successor, // ^bb0, ^bb0(%arg : type)
@@ -481,6 +487,7 @@ export default grammar({
       ),
     _custom_body_ssa_value_array: ($) =>
       seq("[", $.value_use, repeat(seq(",", $.value_use)), "]"),
+    _custom_body_successor_marker: ($) => seq(">", $.successor),
     _custom_body_sparse_operand: ($) =>
       seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_angle_group: ($) =>
@@ -500,7 +507,7 @@ export default grammar({
     // captures a trailing `loc(...)` as the operation's location instead of
     // it being swallowed by the body repetition.
     _nested_custom_body_element: ($) =>
-      choice($._custom_body_element, $.trailing_location),
+      choice($._custom_body_element_base, $.trailing_location),
 
     // =========================================================================
     // Blocks
