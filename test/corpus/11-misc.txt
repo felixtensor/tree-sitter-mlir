@@ -559,3 +559,47 @@ transform.apply_registered_pass "canonicalize" with options = { "top-down" = fal
           (pretty_dialect_item
             (dialect_namespace)
             (dialect_ident)))))))
+
+================================================================================
+Custom operation body successor marker
+================================================================================
+wasmssa.func @f() {
+  wasmssa.if %cond : {
+    wasmssa.block_return
+  } else {
+    wasmssa.block_return
+  } >^bb1
+^bb1:
+  wasmssa.return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (region
+        (entry_block
+          (operation
+            (custom_operation
+              (custom_op_name)
+              (value_use)
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name)))))
+              (bare_id)
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name)))))
+              (successor
+                (caret_id))
+              (successor
+                (caret_id))))
+          (operation
+            (custom_operation
+              (custom_op_name))))))))

@@ -2015,6 +2015,19 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "_custom_body_element_base"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_successor_marker"
+        }
+      ]
+    },
+    "_custom_body_element_base": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "value_use"
         },
         {
@@ -2424,6 +2437,19 @@
         }
       ]
     },
+    "_custom_body_successor_marker": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ">"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "successor"
+        }
+      ]
+    },
     "_custom_body_sparse_operand": {
       "type": "SEQ",
       "members": [
@@ -2475,7 +2501,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_custom_body_element"
+          "name": "_custom_body_element_base"
         },
         {
           "type": "SYMBOL",
@@ -5449,14 +5475,14 @@
     ],
     [
       "array_literal",
-      "_custom_body_element"
+      "_custom_body_element_base"
     ],
     [
-      "_custom_body_element",
+      "_custom_body_element_base",
       "tensor_type"
     ],
     [
-      "_custom_body_element",
+      "_custom_body_element_base",
       "_custom_body_arrow"
     ],
     [
