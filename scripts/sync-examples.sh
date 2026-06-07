@@ -76,13 +76,16 @@ sync_selected_files() {
   mkdir -p "$dst"
   echo "$label (selected files):"
 
+  # Prune local files that have left the selected list. A selected file that is
+  # only temporarily missing upstream is kept (the copy loop below warns), so a
+  # curated example is never silently deleted on a transient source change.
   for existing in "$dst"/*.mlir; do
     [ -f "$existing" ] || continue
-    local basename="$(basename "$existing")"
+    local name="$(basename "$existing")"
     local keep=0
 
     for f in "${selected[@]}"; do
-      if [ "$basename" = "$f" ] && [ -f "$src/$f" ]; then
+      if [ "$name" = "$f" ]; then
         keep=1
         break
       fi
