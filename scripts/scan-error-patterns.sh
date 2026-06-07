@@ -176,13 +176,18 @@ has_expected_diagnostic_near() {
   local file="$1"
   local line_no="$2"
   local start
+  local end
 
+  # MLIR pins a diagnostic to its source line with `@below` (annotation on the
+  # line above the error) or `@above` (annotation on the line below). Scan a
+  # symmetric window so both styles, plus same-line annotations, are caught.
   start=$((line_no - 2))
+  end=$((line_no + 2))
   if [ "$start" -lt 1 ]; then
     start=1
   fi
 
-  sed -n "${start},${line_no}p" "$file" \
+  sed -n "${start},${end}p" "$file" \
     | grep -Eq 'expected-(error|warning|remark)|verify-diagnostics'
 }
 
