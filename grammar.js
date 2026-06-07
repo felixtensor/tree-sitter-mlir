@@ -35,9 +35,9 @@ export default grammar({
   rules: {
     // =========================================================================
     // Top level production:
-    //   (operation | attribute-alias-def | type-alias-def)
+    //   (operation | attribute-alias-def | type-alias-def)*
     // =========================================================================
-    toplevel: ($) => seq($._toplevel, repeat($._toplevel)),
+    toplevel: ($) => repeat($._toplevel),
     _toplevel: ($) =>
       choice(
         $.operation,

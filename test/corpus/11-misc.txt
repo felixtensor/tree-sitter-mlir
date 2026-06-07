@@ -603,3 +603,16 @@ wasmssa.func @f() {
           (operation
             (custom_operation
               (custom_op_name))))))))
+
+================================================================================
+Comment-only file
+================================================================================
+// RUN: mlir-opt --help | FileCheck %s
+//
+// CHECK: OVERVIEW: MLIR modular optimizer driver
+--------------------------------------------------------------------------------
+
+(toplevel
+  (comment)
+  (comment)
+  (comment))

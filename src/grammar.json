@@ -3,20 +3,11 @@
   "name": "mlir",
   "rules": {
     "toplevel": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_toplevel"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_toplevel"
-          }
-        }
-      ]
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_toplevel"
+      }
     },
     "_toplevel": {
       "type": "CHOICE",
