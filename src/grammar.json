@@ -1553,6 +1553,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_generic_custom_operation_with_location_attr_dict"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_generic_custom_operation"
         }
       ]
@@ -1894,6 +1898,43 @@
                 "type": "SYMBOL",
                 "name": "custom_op_name"
               }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_custom_body_element"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "_generic_custom_operation_with_location_attr_dict": {
+      "type": "PREC_DYNAMIC",
+      "value": -1,
+      "content": {
+        "type": "PREC_RIGHT",
+        "value": 0,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_dotted_op_name"
+                },
+                "named": true,
+                "value": "custom_op_name"
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_custom_body_location_attr_dict"
             },
             {
               "type": "REPEAT",
@@ -2249,6 +2290,19 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "_custom_body_location_attr_dict": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "trailing_location"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dictionary_attribute"
         }
       ]
     },
@@ -5475,6 +5529,10 @@
     [
       "_custom_body_element_base",
       "_custom_body_arrow"
+    ],
+    [
+      "_generic_custom_operation_with_location_attr_dict",
+      "custom_op_name"
     ],
     [
       "_custom_body_dict_key",

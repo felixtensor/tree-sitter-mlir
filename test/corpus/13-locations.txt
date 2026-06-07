@@ -50,6 +50,33 @@ func.func @f() {
                   (unknown_location))))))))))
 
 ================================================================================
+dotted custom operation trailing location remains operation location
+================================================================================
+func.func @f() {
+  test.foo loc(unknown)
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name))
+              (trailing_location
+                (location
+                  (unknown_location))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 trailing loc filelinecol with line and column
 ================================================================================
 "test.op"() : () -> () loc("source.mlir":10:8)
@@ -380,6 +407,44 @@ func.func @f() {
                         (dialect_ident)
                         (pretty_dialect_item_body
                           (string_literal)
+                          (integer_literal))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+loc body element followed by discardable attributes
+================================================================================
+func.func @location_attr() {
+  test.op_with_loc_attr loc("loc1":10:20) {foo.discardable_loc_attr = loc("loc2":20:30)}
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (trailing_location
+                  (location
+                    (string_literal)
+                    (integer_literal)
+                    (integer_literal)))
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (trailing_location
+                        (location
+                          (string_literal)
+                          (integer_literal)
                           (integer_literal))))))))
             (operation
               (custom_operation
