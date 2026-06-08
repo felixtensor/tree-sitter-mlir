@@ -133,6 +133,9 @@ sync_selected_files "OpenMP" "$MLIR_TEST_DIR/Dialect/OpenMP" "$EXAMPLES_DIR/Open
   cli-tile.mlir
 sync_selected_files "IRDL" "$MLIR_TEST_DIR/Dialect/IRDL" "$EXAMPLES_DIR/IRDL" \
   cmath.irdl.mlir
+sync_selected_files "GPU" "$MLIR_TEST_DIR/Dialect/GPU" "$EXAMPLES_DIR/GPU" \
+  ops.mlir \
+  outlining.mlir
 sync_selected_files "WasmSSA" \
   "$MLIR_TEST_DIR/Dialect/WasmSSA/custom_parser" \
   "$EXAMPLES_DIR/WasmSSA" \

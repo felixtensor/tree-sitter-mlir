@@ -2187,6 +2187,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_custom_body_module_symbol_arg"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_custom_body_sparse_operand"
         },
         {
@@ -2633,6 +2637,30 @@
         {
           "type": "SYMBOL",
           "name": "successor"
+        }
+      ]
+    },
+    "_custom_body_module_symbol_arg": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 20,
+            "content": {
+              "type": "STRING",
+              "value": "module("
+            }
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "symbol_ref_id"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
         }
       ]
     },

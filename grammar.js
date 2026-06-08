@@ -461,6 +461,7 @@ export default grammar({
         $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
+        $._custom_body_module_symbol_arg, // module(@sym) kernel attr
         $._custom_body_sparse_operand, // sparse(%idx : type)
         $._custom_body_paren, // ( ... )
         $._custom_body_bracket, // [ ... ]
@@ -541,6 +542,8 @@ export default grammar({
     _custom_body_ssa_value_array: ($) =>
       seq("[", $.value_use, repeat(seq(",", $.value_use)), "]"),
     _custom_body_successor_marker: ($) => seq(">", $.successor),
+    _custom_body_module_symbol_arg: ($) =>
+      seq(token(prec(20, "module(")), $.symbol_ref_id, ")"),
     _custom_body_sparse_operand: ($) =>
       seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_location_list: ($) =>
