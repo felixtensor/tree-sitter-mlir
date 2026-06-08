@@ -32,6 +32,11 @@ jobs:
           # Sync with package.json and ci.yml for reproducible generated files.
           tree-sitter-ref: v0.26.9
 
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
       - name: Check tree-sitter-managed version metadata
         run: |
           set -euo pipefail
@@ -42,6 +47,7 @@ jobs:
           # Let tree-sitter update every version-bearing file it owns.
           tree-sitter version "$version"
           tree-sitter generate
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "Version metadata is already committed for ${GITHUB_REF_NAME}."
@@ -52,8 +58,9 @@ jobs:
           echo "Run these commands before creating the release tag, then commit the resulting changes:"
           echo "  tree-sitter version ${version}"
           echo "  tree-sitter generate"
+          echo "  npm install --package-lock-only --ignore-scripts --no-audit --no-fund"
           echo ""
-          echo "Changed files after applying tree-sitter's version/generate steps:"
+          echo "Changed files after applying version metadata checks:"
           git status --short
           echo ""
           echo "Diff summary:"
