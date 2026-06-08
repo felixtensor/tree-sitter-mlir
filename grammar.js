@@ -465,6 +465,7 @@ export default grammar({
         $._custom_body_paren, // ( ... )
         $._custom_body_bracket, // [ ... ]
         $._custom_body_angle_group, // < ... >
+        $.variadic, // custom assembly ellipsis marker
         $._literal, // 42, 3.14, "string", true, dense<...>
         "array", // property names may collide with array<...>
         "vector", // OpenACC keyword may collide with vector<...>

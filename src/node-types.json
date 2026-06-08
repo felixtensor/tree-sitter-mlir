@@ -669,6 +669,10 @@
         {
           "type": "value_use",
           "named": true
+        },
+        {
+          "type": "variadic",
+          "named": true
         }
       ]
     }
