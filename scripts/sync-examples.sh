@@ -137,6 +137,14 @@ sync_selected_files "WasmSSA" \
   "$MLIR_TEST_DIR/Dialect/WasmSSA/custom_parser" \
   "$EXAMPLES_DIR/WasmSSA" \
   if.mlir
+sync_selected_files "Target/LLVMIR" \
+  "$MLIR_TEST_DIR/Target/LLVMIR" \
+  "$EXAMPLES_DIR/Target/LLVMIR" \
+  llvmir-le-specific.mlir
+sync_selected_files "Rewrite" \
+  "$MLIR_TEST_DIR/Rewrite" \
+  "$EXAMPLES_DIR/Rewrite" \
+  pdl-bytecode.mlir
 
 # ── Sync dialect tests ───────────────────────────────────────────────────────
 DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM PDL PDLInterp"

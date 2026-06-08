@@ -656,3 +656,54 @@ Comment-only file
   (comment)
   (comment)
   (comment))
+
+================================================================================
+External resources with shaped resource keys
+================================================================================
+{-#
+  dialect_resources: {
+    builtin: {
+      dense_resource_test_2xi32: "0x400000000100000002000000",
+      dense_resource_test_2x2xf32: "0x0800000054A3B53ED6C0B33E55D1A2BDE5D2BB3E"
+    }
+  }
+#-}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (external_resources
+    (string_literal)
+    (string_literal)))
+
+================================================================================
+PDLInterp record_match location list
+================================================================================
+func.func @f() {
+  pdl_interp.record_match @rewriters::@success(%root : !pdl.operation) : benefit(1), loc([%root]) -> ^end
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (symbol_ref_id
+                  (symbol_ref_id))
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident))))
+                (bare_id)
+                (integer_literal)
+                (value_use)
+                (successor
+                  (caret_id))))))))))

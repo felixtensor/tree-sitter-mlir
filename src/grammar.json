@@ -41,12 +41,40 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "_pretty_dialect_item_contents"
+            "name": "_external_resource_content"
           }
         },
         {
           "type": "STRING",
           "value": "#-}"
+        }
+      ]
+    },
+    "_external_resource_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "string_literal"
+        },
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": -1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[^#\"\\/]+"
+            }
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "#"
+        },
+        {
+          "type": "STRING",
+          "value": "/"
         }
       ]
     },
@@ -1553,6 +1581,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_pdl_interp_record_match_operation"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_generic_custom_operation_with_location_attr_dict"
         },
         {
@@ -1880,6 +1912,57 @@
             }
           }
         ]
+      }
+    },
+    "_pdl_interp_record_match_operation": {
+      "type": "PREC_DYNAMIC",
+      "value": -1,
+      "content": {
+        "type": "PREC_RIGHT",
+        "value": 0,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "TOKEN",
+                  "content": {
+                    "type": "PREC",
+                    "value": 20,
+                    "content": {
+                      "type": "STRING",
+                      "value": "pdl_interp.record_match"
+                    }
+                  }
+                },
+                "named": true,
+                "value": "custom_op_name"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_custom_body_element"
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_custom_body_location_list"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_custom_body_element"
+              }
+            }
+          ]
+        }
       }
     },
     "_generic_custom_operation": {
@@ -2559,6 +2642,46 @@
         {
           "type": "SYMBOL",
           "name": "_custom_body_paren"
+        }
+      ]
+    },
+    "_custom_body_location_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "loc"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_value_use_list"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
         }
       ]
     },

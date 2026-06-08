@@ -856,63 +856,7 @@
       "required": false,
       "types": [
         {
-          "type": "array_literal",
-          "named": true
-        },
-        {
-          "type": "attribute",
-          "named": true
-        },
-        {
-          "type": "attribute_alias",
-          "named": true
-        },
-        {
-          "type": "bare_id",
-          "named": true
-        },
-        {
-          "type": "bool_literal",
-          "named": true
-        },
-        {
-          "type": "dialect_attribute",
-          "named": true
-        },
-        {
-          "type": "dialect_dim_list",
-          "named": true
-        },
-        {
-          "type": "float_literal",
-          "named": true
-        },
-        {
-          "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "pretty_dialect_item_body",
-          "named": true
-        },
-        {
           "type": "string_literal",
-          "named": true
-        },
-        {
-          "type": "tensor_literal",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        },
-        {
-          "type": "uninitialized_literal",
-          "named": true
-        },
-        {
-          "type": "unit_literal",
           "named": true
         }
       ]
