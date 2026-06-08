@@ -47,7 +47,17 @@ export default grammar({
         $.external_resources,
       ),
     external_resources: ($) =>
-      seq("{-#", repeat($._pretty_dialect_item_contents), "#-}"),
+      seq("{-#", repeat($._external_resource_content), "#-}"),
+    _external_resource_content: ($) =>
+      choice(
+        $.string_literal,
+        // File metadata is YAML-like, not a dialect pretty body. Keep it loose
+        // so resource keys such as dense_resource_test_2xi32 are not split by
+        // dimension-list/type rules.
+        token(prec(-1, /[^#"\/]+/)),
+        "#",
+        "/",
+      ),
 
     // =========================================================================
     // Common syntax (lang-ref)
@@ -278,6 +288,7 @@ export default grammar({
         prec(2, $.func_operation),
         prec(2, $.module_operation),
         prec(2, $._affine_for_operation),
+        $._pdl_interp_record_match_operation,
         $._generic_custom_operation_with_location_attr_dict,
         $._generic_custom_operation,
       ),
@@ -347,6 +358,22 @@ export default grammar({
           $.value_use,
           optional(field("induction_location", $.trailing_location)),
           repeat($._custom_body_element),
+        ),
+      ),
+
+    _pdl_interp_record_match_operation: ($) =>
+      prec.dynamic(
+        -1,
+        prec.right(
+          seq(
+            field(
+              "name",
+              alias(token(prec(20, "pdl_interp.record_match")), $.custom_op_name),
+            ),
+            repeat($._custom_body_element),
+            $._custom_body_location_list,
+            repeat($._custom_body_element),
+          ),
         ),
       ),
 
@@ -515,6 +542,8 @@ export default grammar({
     _custom_body_successor_marker: ($) => seq(">", $.successor),
     _custom_body_sparse_operand: ($) =>
       seq($._sparse_keyword, $._custom_body_paren),
+    _custom_body_location_list: ($) =>
+      seq(token("loc"), "(", "[", optional($._value_use_list), "]", ")"),
     _custom_body_angle_group: ($) =>
       seq("<", repeat($._nested_custom_body_element), ">"),
     // "Mapped-from" arrow used by OpenMP loop-transform ops, e.g.

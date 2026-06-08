@@ -1,5 +1,5 @@
 # Rust artifacts
-target/
+/target/
 Cargo.lock
 
 # Node artifacts
