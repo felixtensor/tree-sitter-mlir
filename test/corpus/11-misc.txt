@@ -707,3 +707,33 @@ func.func @f() {
                 (value_use)
                 (successor
                   (caret_id))))))))))
+
+================================================================================
+Custom operation body ellipsis marker
+================================================================================
+func.func @f(%a: i32) {
+  test.ellipsis(%a ...) : i32 ...
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (variadic)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (variadic)))))))))
