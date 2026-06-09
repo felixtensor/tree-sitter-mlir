@@ -55,9 +55,10 @@
     "compile": "tree-sitter generate",
     "update-tests": "tree-sitter test --update",
     "test": "tree-sitter test",
+    "test:bench": "node --test test/*.test.mjs",
     "test:bindings": "node --test bindings/node/*_test.js",
     "test:examples": "tree-sitter parse --quiet --stat \"examples/**/*.mlir\"",
-    "test:all": "npm run test && npm run test:examples",
+    "test:all": "npm run test && npm run test:bench && npm run test:examples",
     "bench": "node bench.mjs",
     "prebuildify": "prebuildify --napi --strip"
   },

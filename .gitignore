@@ -41,6 +41,11 @@ zig-out/
 *.obj
 *.o
 
+# Bench local outputs
+bench/baseline.json
+bench/local-*.json
+bench/*-report.json
+
 # Archives
 *.tar.gz
 *.tgz
