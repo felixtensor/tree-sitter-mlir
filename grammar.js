@@ -368,7 +368,10 @@ export default grammar({
           seq(
             field(
               "name",
-              alias(token(prec(20, "pdl_interp.record_match")), $.custom_op_name),
+              alias(
+                token(prec(20, "pdl_interp.record_match")),
+                $.custom_op_name,
+              ),
             ),
             repeat($._custom_body_element),
             $._custom_body_location_list,
