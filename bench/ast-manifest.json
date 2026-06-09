@@ -1,0 +1,3305 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-09T07:59:41.290Z",
+  "exampleRoot": "examples",
+  "fileCount": 549,
+  "erroredFileCount": 0,
+  "treeSitterCli": "0.26.9",
+  "note": "Frozen parse manifest + AST surface hashes. astSha256 = sha256 of the position-stripped, newline-normalized parse tree (node types + fields), platform-independent and changing only when the tree shape/fields change. sourceSha256 separates an edited example from a grammar reshape. Verify with `node bench.mjs --verify`.",
+  "files": [
+    {
+      "file": "examples/Affine/access-analysis.mlir",
+      "sourceSha256": "0ef0b35cc996eb9dda04241217ac7694e26259469d6583da9cf443d13737fea0",
+      "astSha256": "0cbef87bb1c2baab9c10749e97dda2ee88aafa55872dc9e73d039f69ecb3824c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/affine-data-copy.mlir",
+      "sourceSha256": "12bcaf0bbc4920e2fdce9c9789ca2b3a19d3a1b113ed483707e61b27a5a4cc1a",
+      "astSha256": "45c691cf402b059a0aa7c254834573069cdf19f9e8278d86cf14dc894449bb85",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/affine-expand-index-ops-as-affine.mlir",
+      "sourceSha256": "c4d3373e2f74b89468184fb1b9947e42f828d8cfa4b8eeb99b79ced64d5a2265",
+      "astSha256": "b91f276fea29c4e6f0f7b734b2670d0f4c27890d199b4e30d6cb27fcc4e77d84",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/affine-expand-index-ops.mlir",
+      "sourceSha256": "bc1ef8c51e08e5becfd4e2acd4b9303455a8a41a21d7f0ea38dc8dc0b3961156",
+      "astSha256": "730abb8901e15cacb72d64991fae804b0e2f2cf13777a59ad84d2530b0be27dc",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/affine-loop-invariant-code-motion.mlir",
+      "sourceSha256": "f6d7db2261b2b922acc2292267f490ffd4e445613e1fbff7331768cbca750445",
+      "astSha256": "136eff215df8dc8e76a5c66037d34ea3a63fb750d177d3892ed8289e143f9ea5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/affine-loop-normalize.mlir",
+      "sourceSha256": "0295c9b719418e25a8e90ee3bbc5d9600916d4aefa53b74a2eba28105380562d",
+      "astSha256": "94c769d1604bb81120dc5a9bd867ce6ff2b19177d7fb6e9d3ea0a108feae4d9e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/canonicalize.mlir",
+      "sourceSha256": "3edd4cdb1aaa1b9857a06c68730bdce91a3865b4b029b21192f5eacb62ee5fe2",
+      "astSha256": "33ea97a823d34fce1585b6cec2d7fef2f4656ec74dc69ac9bd6ce141e89b325f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/constant-fold.mlir",
+      "sourceSha256": "9e4bf9ea69d349083bcd8290eb9663d84d50f19a9b8bb957596309b611328e4d",
+      "astSha256": "46913430978725337a30cdad2d55015d635bad1b290652562bf695184da5e38d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/decompose-affine-ops.mlir",
+      "sourceSha256": "606151d599564964c084ed3fe2387fd17570fd8303d4a4f257c7bd6a5d982281",
+      "astSha256": "a98966683bbdbd5382516f5a68b30f8d4106003f9af604e99a97cd67f2e9f3c3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/dma-generate.mlir",
+      "sourceSha256": "7e29888ffb4d0cc06379d3b2a732d5e592ca66718cf72b920ef322d515de46df",
+      "astSha256": "64d98ab76451f90c7efb15fb4240bc5f809f447327bc92ce33d9747b4360ec5f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/dma.mlir",
+      "sourceSha256": "a45ddc8aeb9f645f8c509d807554afb4371a6eb52e70eee237ab9077f00b3c70",
+      "astSha256": "5ac0bde240f1fa00f56d86833b97b8e5f85c38f92f5217322bf5bb0192f8262e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/fold-memref-alias-ops.mlir",
+      "sourceSha256": "4f25261642aae6429e973ba096c81316c57e23e4f6718e00e24fbed218a19321",
+      "astSha256": "a68ed0bcbf49ebd461674bc7feb4a2335dd9a350a61efed5f19142f9be9dd248",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/inlining.mlir",
+      "sourceSha256": "41f4aba97dfe559971215e3f8458ebbd0b050620df911960a8f3b4052a32e491",
+      "astSha256": "f0dc452e74821ef613526915522c16c70c785f7f5d52f4eca13e43a1cd66ff42",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/int-range-interface.mlir",
+      "sourceSha256": "6d9e2a3397e0c3ce47e6ca56b9b186289371045504ed3b49efe38319ccde1a8b",
+      "astSha256": "7f427f6d170afbe8376b6d7ef26bcb7c64fb8702867590cb59d71506916e1a48",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/load-store.mlir",
+      "sourceSha256": "690bf9f2cd35fd03f59f1775bb59605f2c412a3dd487daaef75d1d98001f7b62",
+      "astSha256": "319db83316a2a367340a4755b55953057b0be473f3e1d540b813853a8cbeb4e3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-coalescing.mlir",
+      "sourceSha256": "47a4aff011fac196547445433696ca105577dd84f3a76e113936ab97af877d93",
+      "astSha256": "57fa56b46edc1c3d4320531a334fb3cd396754ea2d24e084ec16ab0296187cf2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-2.mlir",
+      "sourceSha256": "19fce7659c737aaa5c433b9b4e2fb987a4c5b55b47565c481462251d0013558e",
+      "astSha256": "7add0be3cf3befe3e39359f374aaab18562d0e3a536e4436430bc45f2c2b4aba",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-3.mlir",
+      "sourceSha256": "60c3136f5cd91d605c6d3d74f14d95674559b7f942112a0055e11eca6595c724",
+      "astSha256": "a7796145a1a0158530bba8bd01204862c10d98b1ba07b4eb87ec3d1dc962d75d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-4.mlir",
+      "sourceSha256": "2f34554b0bd01bf465a0b889aa52ed6b121ae84c22fa17bf5d4fa9b43b8bf593",
+      "astSha256": "627c9bde858252745a88ef1603a409c4ce5b5dc3594707a033cd82a340eeb9a8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-dependence-check.mlir",
+      "sourceSha256": "3b21cd5a9b5e6b3074e5e4d7e6692acf8ef8ef3ffe540c1f99d43c0647f3d858",
+      "astSha256": "e02fdeb4eaeb3c7412ce57b32d4bf282296aa2b47b92b0d20dc7e75850941da5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-inner.mlir",
+      "sourceSha256": "51856b6242a33b8ab67a8944fc6246fb0c65f4cee0009491a3f89cdebcbe81b5",
+      "astSha256": "6ec5ac8bcd705bc14266113ed24e7c318ef623d0fc5ff1d482609e42a737baec",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-scf-mixed.mlir",
+      "sourceSha256": "1211a8feb0c5bed92d211c0f73b5e27fa9f6c7a7bbbf06b1ef680aee7c839849",
+      "astSha256": "d7dc565e337b96f030dd338d3c667aa45e065a06a9a36ceee4ad2206e7d61a20",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-sibling.mlir",
+      "sourceSha256": "75e2519561af6b00474b0d76f3be3afdd42256d7061cf78ebfe1c27f6acfa275",
+      "astSha256": "0ce3ede8341c585cd057d32b762f59748d1621947ae0d57baf89d50b1a8febcf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-slice-computation.mlir",
+      "sourceSha256": "e0d778a5f0ae246755364c55309aab45ddc26611534c0ef4dc686fd8176602d2",
+      "astSha256": "425f5155e67614fd37dfaebddce0c4af7828b07d2c15f75ac9235d51d9bc3634",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion-utilities.mlir",
+      "sourceSha256": "66ae87f65ea666b5164202531c31c078bbce626b4664cfefecb1dff94dab8859",
+      "astSha256": "ed6566e91b4c58ecced4b136cc86734d4e073c54cfcf5cf777f6812492ec6295",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-fusion.mlir",
+      "sourceSha256": "73d050b7b043614c82fba5a1d10ed005fc8dd75014f3d03a3a621c2d54b62933",
+      "astSha256": "a2c518cd1305a998a4e388f20b452a255554da9cfaaa421fe8ccf4a6bd3c2cf1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-permute.mlir",
+      "sourceSha256": "a349f9bbfbe974f0cf201dc534c39441f8e3b99dc40eb5c83dd55b16d3a72270",
+      "astSha256": "00cae1052f9d04fa4e611219441fbc98af91a2cc92429f734dfd20d17da7ca1d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-tiling-parametric.mlir",
+      "sourceSha256": "d21647122748a5e3e2bbccb543e2a1f85ce2ec915e478a262e4de4660ec515ea",
+      "astSha256": "fdc84fc5dfb441d310efbd09c04e7475c6bd3d16f04579e9b1345b3deb763265",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-tiling-validity.mlir",
+      "sourceSha256": "5edcbdcb4fd9d613045446754ec0934485eb283ea2b90c02ac638d4870ffebf6",
+      "astSha256": "4fb6cbc6b6368711f3e950de5a3d8a3cb00f897932d29e897eb0ed05354b69f5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-tiling.mlir",
+      "sourceSha256": "23fc8f90981b0318404dc7536b293e0f52bd34d8926cc0f6910ef4c23300b8b1",
+      "astSha256": "367c9e349762d871978aabd1435e580f30359f705d9630d91873f929313ae449",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/loop-unswitch.mlir",
+      "sourceSha256": "7378ce7f8f6c7015e9a8df953e2c06d82139e3d1d710885b6f80fb6c6981216b",
+      "astSha256": "2eef82c08729389e8e32587f83d4af5716261ac5982929dda5a67061f05cfdb3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/memref-bound-check.mlir",
+      "sourceSha256": "a35d4fc20d2f5f2c7930f417b0d33d71e9ae61b7d6d26c94f0102cb388f7d36e",
+      "astSha256": "6a068e622b157f130cd054f6f997af8de1ecdbf33708f73762c1fec48c92aa1d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/memref-dependence-check.mlir",
+      "sourceSha256": "5a9335e8c141b1d92099cc048cd15516c5aac2a403100b6044569e9887a1f245",
+      "astSha256": "b053b3a5a10e08c48774b139216340b4625c9918d209bbccf8ed03e552f487ea",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/memref-stride-calculation.mlir",
+      "sourceSha256": "575baf87e157fd45ac31444343751efeb21a3b06c1dc876f1b70c183fa03b27b",
+      "astSha256": "78462059ee05d7510e20d61a127e1fea8f17591b21bc3de7b00ed23ee121e347",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/ops.mlir",
+      "sourceSha256": "e84edf598c930b1bc60d4a48aa8d60a95a84237bd19cbb566fdb260f02ea81d2",
+      "astSha256": "0d7d32af7a249cdcbc77f8d4b78f3c9a09415927983ecf5666a7d45232111c28",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/parallelize.mlir",
+      "sourceSha256": "0cf390e1c77c2283513cbf5ce0fa6df0cb1cd79c7550653e0febf0bd7c5948ee",
+      "astSha256": "31ce1b9d2e18d34d491cde420cd4e30d916805e09a6211ddb3c6a81d74e91e76",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/pipeline-data-transfer.mlir",
+      "sourceSha256": "2f5b27be526475929bdbba57c56268a4a8d0864e62269a1dbfb2aaa29b4e4f24",
+      "astSha256": "7a01f8ea0d0198c8bbd8e4e47943fac503ecb06ae1c914a4108e790453daf046",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/raise-memref.mlir",
+      "sourceSha256": "d879049aba1155b27377798e749310b762ebd13c740b2f55ec35296a56838cd7",
+      "astSha256": "fda4ee205d38a3d88b8a927d2250441a6a5dc708c38a5f0f835ad914762569dd",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/scalrep.mlir",
+      "sourceSha256": "0c303b3d28adc035bec030d00f3e02df833e7a0093dcfef0b67dc8d315bb413d",
+      "astSha256": "cf21054ffcf34c0387c68148e4494064a54039d71d38a3f76ed34e867797da24",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/simplify-min-max-ops.mlir",
+      "sourceSha256": "130d1da7a3d83ff438023e03c92cb35f5ae75debc4031e4f04cf4a0ef77e2305",
+      "astSha256": "96e5740e86cc12260ad90d360ecd92d82cf40ab7ab5317b48a1a22f82b279ee9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/simplify-structures.mlir",
+      "sourceSha256": "195c7beff46dcf13ffef19d08bbd5d7d0271222ef09c1d37f936658e9fce99ce",
+      "astSha256": "43b13a7371565861b95bdfea3cc65225f7375e649956e8f28fe59f6c815a2237",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/simplify-with-bounds.mlir",
+      "sourceSha256": "cda0729ee9b60c6332694ae68f403415f44db6cb74bb2a92ef72f86b3977fd9a",
+      "astSha256": "19ebdad3bea8ed36a0012795954d43f08eec6738c45c0b043a65997b5c24231d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/slicing-utils.mlir",
+      "sourceSha256": "b3e906634a1f8debfa5eb4120752c4381ae1b3aabd493b8bb7edcc84b6767b23",
+      "astSha256": "a43376c90f428e9e133e0b948b3eb2d443626ec8a34cb39242ac10119fb06f0a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/transform-op-simplify-bounded-affine-ops.mlir",
+      "sourceSha256": "61583f8035ce7b2b62d1d2517b9014a1d96d4f49270f76ea8d9354d4489116da",
+      "astSha256": "e22d32d56aa486d79b972c0d3abd1ee5736e8e7296d8edad4a9e1e75ce19ce7a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/transform-op-simplify-min-max-ops.mlir",
+      "sourceSha256": "ee104702e06f82faefb0f4d162704de6614c78592c4db4a1a8508a5c1777e910",
+      "astSha256": "9f001185e4c6bd24295563cda6481544e52b1e61cd17a7d0a8edf9809a820deb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/unroll-jam.mlir",
+      "sourceSha256": "a7ca9150f324cdd201f5b35f18b6e6de2f4adac6bc24ed2b36041009b64ca6d3",
+      "astSha256": "f6c65dec8f4d54b8b069484d86adfb8200bd6bf94bd7eea1598b3d5cf60f707e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/unroll.mlir",
+      "sourceSha256": "a642cdefd4ee46d87002b4a6e0112cbb8993c24363b58299e4e90b76a95d03e7",
+      "astSha256": "9d27d2da3756c3da61bb6f00fa2e574cebd0859a818aa9b99bb67994c728b412",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "d7fa4314e6a9472e39bd29e03ba5904e5d4988c7edde5a45f0c9e4087fd2e3ce",
+      "astSha256": "d6bb39f7a570395bb5b64397965ca7c529386d75a1193af340935bfcb18f6a3a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Affine/value-bounds-reification.mlir",
+      "sourceSha256": "df770d47a7b41b8e33f3df5c679c475a7381c2f57374fe15921a960133ce9e78",
+      "astSha256": "a34340029d65321fc3b962406a6555bfe58de5ba2da0e5c4787f46b350f96d06",
+      "hasError": false
+    },
+    {
+      "file": "examples/AMDGPU/canonicalize.mlir",
+      "sourceSha256": "83e7f134422af71a027525f3b9864f668e6868505f34183d9deb507044670174",
+      "astSha256": "ecf8f6b91b4b077b4b08d9b3d7d9848e08c1906aeaeb75471d8a23c8d12a7dc7",
+      "hasError": false
+    },
+    {
+      "file": "examples/AMDGPU/ops.mlir",
+      "sourceSha256": "df06c1f4e6ee86601c945f0d4c7e5374da80cd3eb702f523db1260cca8fed007",
+      "astSha256": "960421c247eb3b40a29b0d5d09dba69298aecda47c66183e3a6798f2ef422fc2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/bufferize.mlir",
+      "sourceSha256": "645da198708ac70a3e8b6fd740b3de43cc66245177aa9feade0e7e84f6e14677",
+      "astSha256": "c37b5b658220c294c3d6de77c30171685f5939f0dc5e09a707ea19faa7925ed7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/canonicalize.mlir",
+      "sourceSha256": "64ed11a5a539deb993d844432ced6c84aa1f136a680a834330b2e48bf5a001dd",
+      "astSha256": "d3a3449a54c9afb935cd198d3da861ad2f246e2623e7ad806ce22229f5d8a8f1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/constant-fold.mlir",
+      "sourceSha256": "d569dd8af850b15ef8c853763b75f79a00d39cfa533a3653b93c47577c0444d2",
+      "astSha256": "2d77e1e12973c0bc2faccf2ba3cd95b9237834720dba94cfd9a8dc9f5cb28990",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-narrow-type.mlir",
+      "sourceSha256": "0db6814f4177989493d4b35820a4c60269eb7c6cbeecca0d03ac88e523665d4a",
+      "astSha256": "823387be248c0952557a2e3f1adaf7c5294ee8bdc3b34bfd7884dae72590a9c0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-unsupported-floats.mlir",
+      "sourceSha256": "ea5478b8307040b522927277c7ec59aa7daf7ec9720bf27bc2626e7707b97f93",
+      "astSha256": "4ecece9129be10f70bb598048c9464d65ce3145dfa62079185a2f430bcb191d5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-wide-int-canonicalization.mlir",
+      "sourceSha256": "12405512c64a3c505d4ec415300c02931bae6527a8d0d4ab6868f3bc909d9ab4",
+      "astSha256": "e15230e5e0fef3820668a58d2ebb714d7697588a273f10dc1b79a1d990e4b00e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-wide-int-unsupported.mlir",
+      "sourceSha256": "5daf57cab43fbee7884c3dd0a31ba34b5060f54c487341e62d701a9d15e5fa38",
+      "astSha256": "775197b24dd97d4f0aa60cbab831a1f5af93650625e0e9b43c3e001480cedaeb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-wide-int-very-wide.mlir",
+      "sourceSha256": "4d4e607c511de65a118a3c8ca3acdd79a704031fca2953151f7d825313a9f93a",
+      "astSha256": "858184dc59b3eebb1d717be12d3dd07cb42d8c5b7f8cd5a516cc0cb21df879a1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/emulate-wide-int.mlir",
+      "sourceSha256": "e5183f2b2e2aaebd66b601be47a3a2fdf011f86b70a6b6d5d73e852ee9cae20d",
+      "astSha256": "63abd7c09a08bb80cee0f8ebcdb7df3f3ba0e425ef5fa4a1b2a602de45df00cc",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/expand-flush-denormals.mlir",
+      "sourceSha256": "4b241320e704a672b84425d610e95938caf1ed1b6ec7144415cb3c375bb12e24",
+      "astSha256": "7d09623dce91d0d22d006d1196176fb0467eece676863dd481498eb8c0085e10",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/expand-ops.mlir",
+      "sourceSha256": "e9eea94c6cb9b90d5bd2a82a06fc3647b4453a2c62cc443714aee8442e288acb",
+      "astSha256": "ae89db6f0e3299e84cb0def446d48f5f80436501868a564f59ecb42673de17f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-analysis-convergence.mlir",
+      "sourceSha256": "83231885c79b3b0d3dd0773a3bffc3f7ccaba83bd0dc36aa89fa91b54db37859",
+      "astSha256": "40e05d2c82ed377c8480c9ba41d89ca30fc2296941bd8df71dfc37cb44013fdf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-interface.mlir",
+      "sourceSha256": "cb9a77445a76317489886c6e662aebd49a762b017e0d0ea0879fd105867b42cc",
+      "astSha256": "3e537a51e9be86588dda0f9d5c92d8daff9b3a65e5285b60ee65a0037d3a045b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-loop-iter-args.mlir",
+      "sourceSha256": "9c46af624f5cd0811f8c706d4cebe757245685afabc9559ce415fef8efa23629",
+      "astSha256": "c6ba30f03e4fd4cac11db59165a73e1dfb4de0ac8c360f330ef261b529f2f3c3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-narrowing.mlir",
+      "sourceSha256": "0b0c3fe119a5bedb056616db94e00d21e5a2c58b7a338bb910eac8a8fa3f6046",
+      "astSha256": "0aa28281cf0217afc0b79a80ca8504e26856631eb2744d2bb95ef608840bf8ba",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-opts-bug-119045.mlir",
+      "sourceSha256": "b00b48705414dab35dd3b48ee071f139dca4a11d997d8040e6ad2aefe346f2a8",
+      "astSha256": "41283339e43511015e17061fb8aaf17965f224a332ce0baaae4d908025bb35f7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-opts-crash.mlir",
+      "sourceSha256": "e3dd80b9d12e9f782405451f34d549e859084e95cf40418cf7d1d5535c89e3d3",
+      "astSha256": "a9e88b5c4254762a35b6d825e4b03fa121c651f1d3a827c4c0a10f11fba86fb8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/int-range-opts.mlir",
+      "sourceSha256": "a2a0dce4ab417d32455ed5aac74ee33fe152741416bda73a4bf835ac85a34dc0",
+      "astSha256": "cd6941e149cd226a2c84dcb7091ec181c3c4a6ef8bae376d7169feec0bd4de15",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/one-shot-bufferize.mlir",
+      "sourceSha256": "91337558d89048ac0c23b32986a300d49bcd25bf25c03670d1f87c78ecd4ab37",
+      "astSha256": "7d12298f10fbe979311d648c320e0389baa6236188ab3ef275133b7a4bcb771e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/ops.mlir",
+      "sourceSha256": "1f56c763557c139d067f2877494c6f20036f0acdb61b8ef60f772ae9ded826c0",
+      "astSha256": "6d9d2761a28e5f85b5eda456c1ecc8674486195b87d82ff94a6746b3bb2814e5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/shard-partition.mlir",
+      "sourceSha256": "e9797dcf8894e13fa93dc20607a93a7e2f3d2bf78f32e8cffdae5b74d9b22c7c",
+      "astSha256": "0d011a02e9622120344b5cb7fe4e595a009d3007dc398b0905a2c8157d4fcabc",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/sharding-propagation.mlir",
+      "sourceSha256": "83d3d5c2bb088888a0756fd8d28e9b6888de8a11c9413d75e1958d053c287589",
+      "astSha256": "934888fd5fcebd6883ba105019e553a65c83b9197f8983a4208daeb4082432b5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/test-emulate-wide-int-pass.mlir",
+      "sourceSha256": "cf1792fe26bdc5ebe09321a7407e1a34c165734263e57135bbff2a7604411d1a",
+      "astSha256": "b1290cfc9657fae8add64ca56c270706b7695179925f7b71ca759509d48953d2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/unsigned-when-equivalent.mlir",
+      "sourceSha256": "e8375e34800b8052ec9e57b055ad5b22e97539593cf8f00605b02ce77b280dfd",
+      "astSha256": "b36a2d709990b4417e73320ddad4a829ff4dc2cb7268393133d88bcb8437ac3a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "181c6d918689076093ec027c02fb088eaf530be65913a542afe09dbf7ba04319",
+      "astSha256": "a3e1e2d773e0110f537ed33b9311974e393542d42dc829b64ff0eba6b1d5e9c3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Arith/vscale_constants.mlir",
+      "sourceSha256": "eed41f67f265b9ca0cf6f82a095387cb7c3805f86fde12b089db95473240a956",
+      "astSha256": "7f862bdd1206e7d695df5e61119fe8cbf6c832d7943d6241abcc0765d00e0d4f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Builtin/canonicalize.mlir",
+      "sourceSha256": "41a0cfd52049b7546cf471059b9f0d08fa1161ce3e461a1ab46546cb1b99932d",
+      "astSha256": "039922489cf37721989288d252372048ab217950f3cc246a515e916da6de2ff5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Builtin/ops.mlir",
+      "sourceSha256": "0cda53752b3b8f583ea0406afc37cd0c5a1a7de6d580eb7af1f312b89e58cfa0",
+      "astSha256": "2db54cf645020885d01b43675fd214d4cce41ab4b13069faf81607e4d067e24e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Builtin/types.mlir",
+      "sourceSha256": "534f7a8e4b2cfce37f02105d87826f6686eef891c35fba64e91fe097a429f2b3",
+      "astSha256": "fed6fb8ed45cc10ca44eb2f49bcbab0008edebae7c01308a3fd3e4285a548f25",
+      "hasError": false
+    },
+    {
+      "file": "examples/ControlFlow/canonicalize.mlir",
+      "sourceSha256": "57c73b63501b734416b3317230bd0a13a2402de62a377d0825d33b61ce8ea59f",
+      "astSha256": "2dfe215e2f3e262376f1a4f0d693f408657c7984db40e6af962da6ae43838b30",
+      "hasError": false
+    },
+    {
+      "file": "examples/ControlFlow/one-shot-bufferize-analysis.mlir",
+      "sourceSha256": "dbedc4d547ff8efcc18e69b53b81a21686f28158f1dea894250dc297e46a9c3e",
+      "astSha256": "3739dd26c47edc606a0824ffe51659bd14ffcc64b4e3354c172dedac3cd5639b",
+      "hasError": false
+    },
+    {
+      "file": "examples/ControlFlow/one-shot-bufferize.mlir",
+      "sourceSha256": "2b56b4813212414cb6677b301c6fe264e581ab6ca3a1c8e8ad1abb8ff92d810d",
+      "astSha256": "f7f14c1857cdfcb7b54b8563560c6469ee47bd6210e2f36b4fd673452c566fee",
+      "hasError": false
+    },
+    {
+      "file": "examples/ControlFlow/ops.mlir",
+      "sourceSha256": "aa4730ebddc04457698d08a4111f55882d57dfc767ef4fa1f014f2501fedd8f2",
+      "astSha256": "c098fe6af94b12551e14816479287f7a79e82d01aa89d60c892281504565fe6b",
+      "hasError": false
+    },
+    {
+      "file": "examples/ControlFlow/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "c170ce7e1031d3582fa8b672f292df5e981e49634cc92d235ca866e5182008b6",
+      "astSha256": "0e665c86f3cfbf9d5ee1f8dde91ceecfc4ee9fcac6e1d7d59c2847aae3702ab7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Func/duplicate-function-elimination.mlir",
+      "sourceSha256": "73ba734fe164c2e06cdc9fe726dd865c8c6d0f8798bd11306df7bc6f6fdc254e",
+      "astSha256": "b226902e08c186882929a082b57913a9334628cb183b5e7dcd696704cbb301ee",
+      "hasError": false
+    },
+    {
+      "file": "examples/Func/func-transform.mlir",
+      "sourceSha256": "9a6149a9c7069e936b319105d504ab0dc93e430c695ecbc6e8b92ed50f1b788d",
+      "astSha256": "4fab2ec54b361cf7a2b4310dc9878a5de8c8144395695ea597678a36755ffda9",
+      "hasError": false
+    },
+    {
+      "file": "examples/GPU/ops.mlir",
+      "sourceSha256": "91e7c2c987e166f0785e8ccd087ebed7ebc83cf83bfe3465e0dfaa8b438e92ed",
+      "astSha256": "6d296d11f5f54017e421418177853e2f7c25ae44304d40caa91ea139f0a4f773",
+      "hasError": false
+    },
+    {
+      "file": "examples/GPU/outlining.mlir",
+      "sourceSha256": "8a3f292f27f5eac9d326e3bb3b36872764a95ab1f37e0c13a008cfbcaeeca62e",
+      "astSha256": "5ae10b019b45126f6f34e37c6270115dc6ec1b6f0c1b52aec5f4286b7a3b3351",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/affine-map.mlir",
+      "sourceSha256": "d49dd52d9eb381f0e3b90150d961daba6ed13c69f2d14905a56dac1622030cb0",
+      "astSha256": "d53a42b16dcadee0606ee0d987ac4bcce9a44676907a241243be90bdb99de0d9",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/affine-set.mlir",
+      "sourceSha256": "2257428e522f9228162af8286da92984453e743b0a743fbebb795b85d58a237a",
+      "astSha256": "42ec9ca1f537a3d25d199f8d1ae90048011cccdf60e7c0e96375e50501c5799b",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/attribute.mlir",
+      "sourceSha256": "1b372c97d39f16028b6a56f9c038489e21bbb57a016828aede0a4ff0192ae870",
+      "astSha256": "684ada52f1c43d71aa6f4b649a4823406f1e2cfd5c5be50d117362f1a216ca43",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/check-help-output.mlir",
+      "sourceSha256": "e289de56ad882aa16584f1bb40011d4fa55a9e4d1ee62d7f09b9cf0bd3eb1e62",
+      "astSha256": "f4c1bd66e7b1a70bce2a0b9dd14d8dfbf7c8823c81377b49f7f72e4ff2184782",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/core-ops.mlir",
+      "sourceSha256": "1f4353364305c73daf1359fe22e4f9f7f6c6c30c93342814ac67c217f9e57977",
+      "astSha256": "00d9b5ca176f5c6b25acc81bb03a0a2f633e639b923c9b233f5f4a47aa3061f1",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/custom-print-parse.mlir",
+      "sourceSha256": "7a133e24d7ddb237238db03602f9560030b30f85b9655803d3d208b121758cff",
+      "astSha256": "790e126461b91454363f9dd3fcfda09b5e5b398b67cf9bd8916862f4049b5c92",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/distinct-attr.mlir",
+      "sourceSha256": "9f1f972597f6f5263cb75380ace93fd66cf1e4777d5c917c5fa8e29764abec9f",
+      "astSha256": "465d89eb0f71d83ad846c8bc9658e0fd08f152e77b1f8bd95e3b7084fa8947a9",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/locations.mlir",
+      "sourceSha256": "8de7e714ffc7ff3883b43b6e650b4114902e8be7e650430dff1bf584ab2d777c",
+      "astSha256": "d5022b23fb0a5db04bf6e1f99b9ea9b7bcc0ee74f41fe952a0a36d5cc9a26ce6",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/parser.mlir",
+      "sourceSha256": "4e0a6e4278c94bfa20c31346bce53aabf0c87f547d337ba90ef483c58556628a",
+      "astSha256": "78f8d96b053ef23c2d25e15e3c36f05d909763613ffc141694a65698f5928b39",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/properties-bytecode-roundtrip.mlir",
+      "sourceSha256": "ab325a3da36a4d17d7e4f3635acb43448b26f00f3e17f1efdf2ef3d4e0f2a70a",
+      "astSha256": "5109c09f3121e1a318fb4291d75c5f9ba013c44248cc26245ae0a003053ac506",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/properties.mlir",
+      "sourceSha256": "28bd9fa050c66ae827a47651230209f698fab32985e75458c584cc8f1f260b4f",
+      "astSha256": "41c9d21a7db7d043e147e7fa0a5963006cce7fcffee70b9e968e3fed98ad636e",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/test-fold-adaptor.mlir",
+      "sourceSha256": "b5872aef9030f218bf4aafdde288f4a3b7d796ba004744c8802ea5a476d5568e",
+      "astSha256": "070acdc42a115fc11e4fdcbd9ef929ea51a1f6155e7ee7d7cd1e5ec50425e597",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/test-func-insert-arg.mlir",
+      "sourceSha256": "ec182e6e436bde25260fe808f0640c4aa8e4a7aad5391ec9e531347f607442d3",
+      "astSha256": "706536d626be1694eec85b14334915d951d49b9862e8e6c36dfec348d832e13e",
+      "hasError": false
+    },
+    {
+      "file": "examples/IR/zero_whitespace.mlir",
+      "sourceSha256": "725f961f05545a1257ad63499ef6910f86ae0157c2da0e5917cdd3018e0751ee",
+      "astSha256": "89d2be6f03136fa6a10031880c53ef777cee64c52b357ce328f880bf66b9ee6f",
+      "hasError": false
+    },
+    {
+      "file": "examples/IRDL/cmath.irdl.mlir",
+      "sourceSha256": "caf0c00ebef9fa7d99f82003c514e4fec9805df8a969416cde54fd0eb7cdc3d0",
+      "astSha256": "4680e2392442998b7ef7e55f908fde9871e981f2ec8104f8097474b77d63294f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/affine.mlir",
+      "sourceSha256": "a34e1eae05ae96fd5b3be6be8bb2c7a2b1f331fb644facab40b1ce87d88024e2",
+      "astSha256": "96686914902d9d9f400ecb4cecb80d8b55d109929c4931032d44f4827216f07d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/block-pack-matmul-layout.mlir",
+      "sourceSha256": "82820d44390e1c23df136a33a5a08624df3106e4d24f2b51fd31102014d89d59",
+      "astSha256": "d4357f8e7041b07e632acd504057a5ec49ff66a4e7ac936aa4a51fd5c3b0d2d6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/block-pack-matmul-padding.mlir",
+      "sourceSha256": "21e7150a5a211e3717cade989f729992e959f7a36c5d073ac4bbd1abda0fa23d",
+      "astSha256": "fc0af0a9b1cc4973af1409e8e0bfb19807169274ac8b63993d12ab68ed46a5da",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/block-pack-matmul.mlir",
+      "sourceSha256": "4b730935263aa0b45a981d15b4881a690d6766fcc0c16ef9835a21e19cda86f5",
+      "astSha256": "f639742c20c0aa888d52d5babd24dfd75cd47043b2101ed05d761241fe54bdce",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/bubble-up-extract-slice-op.mlir",
+      "sourceSha256": "17806d470436e7a66b0991cd6f307fbb21846eb5dc79a713268a30c2507c4c77",
+      "astSha256": "3e29a639effb796d222e1e3df06e76a08b8544c4e47f80ffd74e0db80f79dbdf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/bufferize.mlir",
+      "sourceSha256": "6d3c0f2e29e428d1ac3e15526e0b24b680b032fd288813e5cca1ae17cc5b9e3c",
+      "astSha256": "e5e606deaf488488a4ed78f50b900489ea603e1c32cee70aa47b5b12e8e5a210",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/canonicalize.mlir",
+      "sourceSha256": "4965f8d3e19680417832fbde5de1eabcef979d02224efbe95f4b1acbb4bede03",
+      "astSha256": "097cb2441fd2b7a373774b833bf273aaf9f24a414c94d64d9db22165a17d4b6b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/collapse-dim.mlir",
+      "sourceSha256": "dd7f5cc1617e7611f080b25e633b4ba6660955b1a82ea1eafd7ee19f16872039",
+      "astSha256": "568d3bcb19fdae5957c20651af8cb55936fc12d06db4810a0c8ad846955050d5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/constant-fold.mlir",
+      "sourceSha256": "b685701a2854ea5722b3f79b6274cfed781f525bb1bbbd99579f7037cb637509",
+      "astSha256": "85b1399e3fad53721fff4531191be0c7dca35599ba5a9fa4a27e52db07559c68",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/continuous-tiling-full.mlir",
+      "sourceSha256": "3bbe444a4b52666086f72861c1c4d35daf538fb59f365cab91efdd1aba657fdd",
+      "astSha256": "f1a6fa82de1f3c9bd8d808d99120129f15caedd84e8b45e9b55e737efff0062c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/continuous-tiling-multiway-split.mlir",
+      "sourceSha256": "63994bb8fcc4932d1be0204e67b8b4b8500a0009cbdc89387e5514b97eca65b7",
+      "astSha256": "51c44ffb215d6c4bbf17fb6ea90235d073dd8054587c9cf5ec5e54d68e785dde",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/convert-conv2d-to-img2col.mlir",
+      "sourceSha256": "a79f58faff83cf84a8c609f20824c4a844ebd08f811733691dd6a900a4855768",
+      "astSha256": "73dda8aedc0d3ec0d9b5360b839ec8cee0f06785a6508ad4a8a4378c55acca6b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/convert-elementwise-to-linalg.mlir",
+      "sourceSha256": "09f18739a3c221c4a990f1bb09d1e9568dac3a86c781d7a3d57e6dc4553c3550",
+      "astSha256": "73e5607c3dc0d68d750192edb836ed127ba1769cb88ac9411625218aac843925",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/data-layout-propagation.mlir",
+      "sourceSha256": "0c9ba68ff5712a94e24746b579760b4cecf419fd19b35bf000e2deb97c61bfe7",
+      "astSha256": "3bc2f2eabfb04023f909d850d3db76656f27e8dae7835ded2fd4116edbd41618",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-generic-by-unfolding-projected-permutation.mlir",
+      "sourceSha256": "2d77c84357a7a7ea70a530890a2378d69a660398baf101cfcf9dc3731997a131",
+      "astSha256": "7de90ecda7047f2305a4575ff6ff602fe9b67cd8c810348419131315a8083dd1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-ops.mlir",
+      "sourceSha256": "96dd2d7d5937b7b909c44eaf4df7137548f2da0e53f9b5ad33907a8d2d43982b",
+      "astSha256": "02fbda05801a4a8adf8f1db1d5844baf1048fe77099785638d5db4588bd432e3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-pack-tile.mlir",
+      "sourceSha256": "0e8076a48e5316ecba638bfe55624648e111bd0a7daa572094cd78844bfe8675",
+      "astSha256": "68cbf7dfec921f8b6ee7ae12dc071cdd9d1b4b06c10d749d0f38eaeb4bc5d465",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-pack.mlir",
+      "sourceSha256": "43f0b3f1eb191a1a6f9bf6752724057c1f7aa46eb4004802a9dae9a30e2f4e08",
+      "astSha256": "915e274ec1ab70035139b09a2d27eeec3cb167c7bddca274285e096e49cc16b7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-pad-tensor.mlir",
+      "sourceSha256": "1082fac1856e5033f43920939eab42fa846132768b80d71b352babd99e16e17e",
+      "astSha256": "f43c54d5878687f07b698a1d6532ea32cd4d6292033c4d84ac76ab293ff6292e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-unpack-tile.mlir",
+      "sourceSha256": "5dd13445068ae6295623235d9999feeac430d32182a7bee531abcf906a66bb48",
+      "astSha256": "e551e57a142cdf770c55091a884b0d08920724703a4a411ca73703c3ba1f0323",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/decompose-unpack.mlir",
+      "sourceSha256": "04681d3bf8e52c58e67c3c3d7837e0f02fa76bc595c3382f3cac464deda7def6",
+      "astSha256": "6311dfb633b987d565b567c8d2c2c79a695afca18159eb989206595db58a7a7d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/drop-unit-extent-dims.mlir",
+      "sourceSha256": "d19c51dcc9116856913a2e63f76eb138659166dab83dcfe2b118ba65935af56c",
+      "astSha256": "c746575b3261acfddb0b353e2d5274ec234ac7406e740208a2abf8e0d9fdfc8e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/erase-unused-operands-and-results.mlir",
+      "sourceSha256": "a43f6520aef03edfd022ae73ac6875edcd6e5dc082c0914d966e5a9e26b3eb71",
+      "astSha256": "ad3414093fde480cf6741d61b5c9df5ede7b8eb1750eaee75cbad86d7423c987",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fill-custom-scalar-type.mlir",
+      "sourceSha256": "84d9aa28f91625da77c0507d0859a0e59cae12d2c5c1ff26f3bf33e7fc49b651",
+      "astSha256": "3464c5ac841385fa89d1e44b58bb0822841d75c845c3b7f6a0463447db2b5987",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/flatten-elementwise.mlir",
+      "sourceSha256": "7bb2d2a37fc5337b2fdd8ff7d879db600682a790d6ae8322be67393a8491e2ae",
+      "astSha256": "6f487a6930f7c3fc978092a38babe1cd11eb188c14ca8bcc7c476b44d2a360e3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/flatten-unsupported.mlir",
+      "sourceSha256": "8e22ddf166d82bd63b6178b896dd0a7d4562630019bc620947d82c6a27c5d3cb",
+      "astSha256": "317fc3fba97d8e7e532221ffa54dbc9701f2716f8545f21d6259aef1252de831",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fold-add-into-dest.mlir",
+      "sourceSha256": "9e03ef0b59ea3688ce9b681243d48ca18b6b9c70f34583c9d6849dbee022f582",
+      "astSha256": "89920ee26a2bef55b184980e6c423564c9576d9eb57edba0f4eb5aadfe53e778",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fold-empty-op.mlir",
+      "sourceSha256": "812a3f42fb7e8871d93a1f5774265f7c2942ba9790b50af0688ffb6c3dc4d7d4",
+      "astSha256": "b225da4dd1961d5515daccbf3e36afd126b15f5b9d71ebcaf191a452417b799d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/forward-vector-transfers.mlir",
+      "sourceSha256": "5e231f442f87e4bb39f138e57c70e30da43800d05f4097d5a88e738740a01a76",
+      "astSha256": "e65c78f7297c63aa523d3704983b919dff9c829b2dbc1601508e6d74d997c977",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fuse-with-reshape-by-collapsing.mlir",
+      "sourceSha256": "4372eccc333602f638970bc04abc4be7921a2907de47644edb9ec3305ac59ed1",
+      "astSha256": "29311b03ed190f2a35dc88210204dbe451f5f8f086858300b8c575d7045d0efa",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fusion-elementwise-ops.mlir",
+      "sourceSha256": "b82408becd995f43222d10dc51ecdd41032b6ab95ed9fc8d949acf3bc1e55352",
+      "astSha256": "58612767f86725544531d753f6a298e728bc8f3b3e02fb83eb2615610733c393",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fusion-elementwise-options.mlir",
+      "sourceSha256": "f95aa1c183c6c13308642ba97ca6e0e117967690680804479050c496366faf20",
+      "astSha256": "2e1032ee9d333a7f4e4cb4ee6ad7f065890276ba1dd60c945af4a731b6b5a94e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fusion-elementwise.mlir",
+      "sourceSha256": "5324042dd3a8ddcb9c0b809fd8f06dca6fca08c8015704ca239eae195f42cb31",
+      "astSha256": "6b6499e7dbcb68c700a7588c39e4a1a1a06351d57e1a1e2641533df40c974c3f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fusion-multiuse-producer.mlir",
+      "sourceSha256": "2fb72ad04c41c99fe18217c795b0c01bd5302d03820e8ce7505a4ecbd8cdfca6",
+      "astSha256": "015f3f8dd769e29b5bafee7b4a0076eac98567d47aaad328e018dead8bb3ef4e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/fusion-push-reshape.mlir",
+      "sourceSha256": "1d5a099e70703f482f60dddc72c60e70c96a832cf6ceca444765195cd617fd33",
+      "astSha256": "b5479bf5a4b9b6f102a329c2f899982552a220a1eae09f37bafd9a6d5d9e3e39",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/generalize-named-ops.mlir",
+      "sourceSha256": "735f417be0c5fb1260810b8ad11bf068ebc58ff4e1e39ee2d8ab0900f9cd028d",
+      "astSha256": "4f97b4e22d1c2927505edc0d16a61e792d5a7edea0eda1e1604786584cf96734",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/generalize-named-polymorphic-ops.mlir",
+      "sourceSha256": "d7ec655db2f28bf265c80bbae53b357fcbeedb2ae26f5545e23718cfae2355be",
+      "astSha256": "19b4f71737b7e52c4bfcc0942ce522ccbe1af24f90377a049f9c9f93f780a123",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/hoisting.mlir",
+      "sourceSha256": "291ae981a4e23fa64266207fa21ceb33a1a8a674a03e26a13fab88d50cce4416",
+      "astSha256": "5693cbc1573713002c7fa314bed007d8cfa7a8cb0170ce82a918a2e7634bec34",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/inline-scalar-operands.mlir",
+      "sourceSha256": "066df0ca99a78a0b2924136107307892e4749fd774b422d78fadb465e38cc016",
+      "astSha256": "f1eeb6f249da80e45e159ab391e60f1461390e3fbdbba9b7558014de59b0a67c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/inlining.mlir",
+      "sourceSha256": "57a40808e5c08f950943b57230b4831cbb85786bb78571afe1cfe8c76534815d",
+      "astSha256": "ed063eb8d483416acf527b29b4c7e27480d40ed608e0440f359bdcf01e36d0d9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/library-calls.mlir",
+      "sourceSha256": "c7e889bbbf2ac9b22819914dcf0639cd8be583c7b18e70c0786a88fd167d0393",
+      "astSha256": "8c8157fa91c85cbe6d99a87034f795f2a985577014bc9785b11621bc42272e87",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/linalg-morph-category-ops.mlir",
+      "sourceSha256": "202a51dada6558fd775a852b4729a5b8c754d8a13dc3230af09e74ad8748bde4",
+      "astSha256": "37b3a72edec8b930b90b35b76c3a1bb97571ec0754f37c4ed6877c4ddf690a3f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/linalg-morph-multi-step.mlir",
+      "sourceSha256": "d6196fa53e78a8d503c8ec0ed167ca0b653aa6a1ddefe2e2d64105461123e255",
+      "astSha256": "2359a0062c78aae1237628b6a1365839582b96eb66cc81184b78bc3fec6b37d4",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/loops.mlir",
+      "sourceSha256": "056db24b8f6f5c4c20ce363f169a56efcd4855f1c789b501dd7cb4563d980829",
+      "astSha256": "79a2844f46ef38c0227cf8b55c141e40be64458e478aa47a210174cad90e692f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/match-ops-interpreter.mlir",
+      "sourceSha256": "7f6971131272901fe8218b8cba700a744628b057ecdbf0440b55dfe0cc5cf83c",
+      "astSha256": "280f3ced4017819a4dc5bf8cd821423216cf999c39e6dd351c08efdb0d8e29cf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/match-ops.mlir",
+      "sourceSha256": "7d8e16e6e497b006b2ba499e6fdc5ff9f10d293946f68803c273aeb4b0a71466",
+      "astSha256": "cfd1cc1e35e2f2162d018d853ea2c2a52e02ba8c0ab17aeaf53f2fb1108a4a38",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/matmul-shared-memory-padding.mlir",
+      "sourceSha256": "33f6976d6a7a21707e8289f81264402cba88b5743a35c9069aba9be34557b804",
+      "astSha256": "e00e8833654e9a95f9064cf8cf150c597035ad6f7525789e25999e17ca561ea9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/multisize-tiling-full.mlir",
+      "sourceSha256": "baeefc10827377766dbacce67069e9922c343c0925da55bdb9f8739446c1c29f",
+      "astSha256": "c8633081f029db1a248af148087c45b74a7a30b5ef6a4d506e35b8f6fb7ae92c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/named-ops-fail.mlir",
+      "sourceSha256": "8749e66ba72f374859188182ff10e7835b7e1cf00539e89881f673bd02196c64",
+      "astSha256": "c4f5bf4197a46f4a72b05f4b33de48c09d8bdf4130f19ef6506c03408c1c528c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/named-ops.mlir",
+      "sourceSha256": "488462cc462a9e8f003ea81ee10e84df85fa1f618f4731fdbec25daa68e85943",
+      "astSha256": "17c76ef860fa23038229d1a9e821d09e343b51f36f93036d9026c28c721709f0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/one-shot-bufferize-analysis-2fill-extract-matmul-all-perms.mlir",
+      "sourceSha256": "05a031fc5710804327877db0cabc674b255a2f443b4a964cf567aa9217bb89b6",
+      "astSha256": "f1589d8a661e0fcf5a883e124d18823f16c4b580d2db09cb5356e99b094155f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/one-shot-bufferize-analysis.mlir",
+      "sourceSha256": "bb544732bd4c3b677254c42263c10df6b29d5882f4814b45030e8f3270ab4314",
+      "astSha256": "e028fe0cde556eb87ef72d625a47b570299108c9ac0f133b94a397c9a9fbf13f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/one-shot-bufferize-empty-tensor-elimination.mlir",
+      "sourceSha256": "32ce5f9e4281ef7a3800e000380b97b790b11164ede5dc582c2efe4e40cfb3d4",
+      "astSha256": "0332d38b024b5a540da9cfe26ecc01745e1d871cd937c2cec040eb8f9d8b261b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/one-shot-bufferize.mlir",
+      "sourceSha256": "7636d17ed2e1c1478c527b0d30bc1289962f00a3d6f379452c383a484414a0bc",
+      "astSha256": "a0fa2bc4c25c7acc244ef1261b85aaba2e943cccf416fa9bd42c781042beed3a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/pad_fusion.mlir",
+      "sourceSha256": "a76aa9c0a495ca1a88d3ed14df9ce66d5c37c8569adaa3602a9ce92e42ecafe2",
+      "astSha256": "876de4d9cb8ce22877acd83f0df331717b4b8cdaeced6b35db2b7aa9bb3f5799",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/pad-to-specific-memory-space.mlir",
+      "sourceSha256": "72e7eb2010c7cd8c16e5f8f5278a840a7a64c2b9fc92f0678a1c873de2715e13",
+      "astSha256": "fb4b00b35d496c2bda185d98e9e4ea4bed984c15b1a0c2b2cb212c735256797e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/parallel-loops.mlir",
+      "sourceSha256": "5d0a37bd1dca055c746d3db4cf497091f2c8fe06eb9089bac28d9d269092bd03",
+      "astSha256": "37b1ad954aae1816d1bd98bcabe64a98b1c5396f7d9bc6f004d7e4a0c8ed0727",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/promote.mlir",
+      "sourceSha256": "c7bc4851cc0ea745a64fdcf9aff591ce70bc89cd085c0c93d781afdfa8956d29",
+      "astSha256": "7f64d2c693093ebbe5eeda424fa715540aa73a240709858ae30b44ee9baae598",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/promotion_options.mlir",
+      "sourceSha256": "57ff372aff7e9a3653cbffe34dc3dc700259cae1574ad89719d368d25db22362",
+      "astSha256": "e9dc8c0b66e4944d10d1e131d244329a03494943313ea7da254dbe48c8c00627",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/rank-reduce-contraction-ops.mlir",
+      "sourceSha256": "50bc59d39a2d2c4fd5fc7670251330193b28e8851458d31785bd5653093d771f",
+      "astSha256": "0d795cc90427dd23f89f4f2d058e28ef76e09d5c404dc16975e9c75afca7a56b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/reshape_control_fusion.mlir",
+      "sourceSha256": "d120026a5141568d3f42dbc03b9ca077bbb6cac3b4acbc64366a22fee8880124",
+      "astSha256": "fb48a15d3ff3cecf1e1b6ca188cdd84347cd20c1d7cf47bbbd5040ede4ea8fd1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/reshape_fusion.mlir",
+      "sourceSha256": "2dc1b04f1bce1971ffbaffbe43909ac9e3e233ccc45d31ca04f0f0b6fa959846",
+      "astSha256": "b63139b2433e3816243bd3dad93a71aab87770af05adea8cdc3624cf34b4dd92",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/resolve-shaped-type-result-dims.mlir",
+      "sourceSha256": "48113027b32199590f16fcb1b69a1fb6bf3bfcdf032809d5bf2668944c722aca",
+      "astSha256": "8e5d93303caa08121e8168ff724567abaa4199cb3299740722b7229001b388ab",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/roundtrip-broadcast.mlir",
+      "sourceSha256": "6d2c7810e01c3e229f58aa146e8a0a7caa95c69894eff4cf66ac7d044a021256",
+      "astSha256": "883647f020210410b55535fe7c77e25daf3a0894dada5c99a809b1b0cfd8344c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/roundtrip-morphism-linalg-category-ops.mlir",
+      "sourceSha256": "42b9d5b06374ee5e30f2c2abd9aa9106fa3c11ebe3a3087210e1e5b04b5540ed",
+      "astSha256": "24d4e7a099880d7d8635b5703081cb1331304c4bfdd1628aa5acc0c50bfaf5b7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/roundtrip-morphism-linalg-named-ops.mlir",
+      "sourceSha256": "6ccf4d65f0220786e2f63538170549162faf97dac2590a1f91721cf1f5891269",
+      "astSha256": "e87289a72d742c61ed09d80c206cda3720ee49447225683b0dc99623b7936fd9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/roundtrip-transpose.mlir",
+      "sourceSha256": "991a1bd3fc58683d2268626b64ec0f40e838f79559db021d98be983d25e28c9d",
+      "astSha256": "3e585b743422a3659538d961d804ac933b5eb1599325b47e2e8b1e4dcf946723",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/roundtrip.mlir",
+      "sourceSha256": "2c9ccd8684ea418540ef86c40f09150f7ea6ee89db025b1eb2b6c2ba32582b7c",
+      "astSha256": "0ce1602cfd81a1e6bce90df16b1ee22e542fb8a17481c1571c015f093afd4554",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/runtime-verification.mlir",
+      "sourceSha256": "f582cc391657e63522eac54f4263f606265baec2ca5eaa96b6a722c378c7a2e9",
+      "astSha256": "07ac294ef5c523f4254d44b4464e202ea4a254fce72e8e64205eefb23ce1db80",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/shard-partition.mlir",
+      "sourceSha256": "e6c2678a70fe61ca724df457276dbf104177504433e83595fe7f937bf0a0dcfe",
+      "astSha256": "63941050a129a09cb3d3e8ac2133607b21869090dd812d1782906982b01d64f4",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/sharding-propagation.mlir",
+      "sourceSha256": "c2081195c144fc254534be0b94aa81371821c718eea58c03c42cf9b2ee7afe88",
+      "astSha256": "cdf6d9349aec8427f4f3041105e2809a337f409e970172fe41200f533b0da203",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/simplify-depthwise-conv.mlir",
+      "sourceSha256": "0cf05003f4f0cde82ed4fee0873f1df2b2e16072e01221ee872fd0ce9adfa0c9",
+      "astSha256": "24c9675dc365ccb581a67e88d2f9c65d813f99750eea47b643f79ed5c3ca3b2c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/simplify-pack-unpack.mlir",
+      "sourceSha256": "f1c7cbff571ad93cc9a33dec9f5252cebd90caaacc7447c41956d517f1dd5334",
+      "astSha256": "ec13d8a57d6f0d8f1090251654bf94fa8746928bbe29e97a282a3927ae7a430b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/specialize-generic-ops-fail.mlir",
+      "sourceSha256": "db92b6a176176781cde1172855e8e48037603c09afeee940fe4b119e79a2eca0",
+      "astSha256": "75ef0d489c8d7f21b456955e2914b0ff4b8bf57690a900daf0ab041219ba5ce1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/specialize-generic-ops.mlir",
+      "sourceSha256": "a8fbbb802792c68346f5340ce4b766bac099737f6e891cdf72bfb09f6a4a694b",
+      "astSha256": "30292946da85cbf63e19d00760598368df6dc07991399f22a12e849c4054db7f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/standard.mlir",
+      "sourceSha256": "cf0aae1b09b8e6b85826697a9b56cc1bce7b14de18da7adc3db98688580e9ea1",
+      "astSha256": "a4278c81bc00af83958a0bc978fa3303988ac4202b7f646967b3b7b4efd54a68",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/subtensor-of-padtensor.mlir",
+      "sourceSha256": "2c9a92174fc9d108f038253d1ea9dd42d0d5f30c0856b0c6a24faacbea804617",
+      "astSha256": "a28db06f0550e6d25106a47637bd4fc0965f9916e920752fa1ec1f136327cac5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/swap-extract-slice-with-fill.mlir",
+      "sourceSha256": "6536f896da906018b927001d24b85bcde688303f6d3c40ebdb6843e76c50d9de",
+      "astSha256": "9a0b79cb3bd0ed0fdc2b59340bca795d0d9b1c7f95bc937230185faae877d7b6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/test-drop-unit-dims.mlir",
+      "sourceSha256": "c1e53a20da40dff7bad010dc946007a82f0f290e83cfc6531c21d6480c60dcb0",
+      "astSha256": "97b6f0bf2da2947dcdfdbf7d3d0f70f24d3d41086f7312703762487700890169",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-and-fuse-tensors.mlir",
+      "sourceSha256": "efa2768403ed17622b802e6076efef35e924c3d5f487df57c2c470d83dc09b31",
+      "astSha256": "9569194f9a7006c80ead1a201deea3ba951e6e298d827e2aedfbed4b2c51cd05",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-conv.mlir",
+      "sourceSha256": "d653928af5b62926d2b1ddae9da2ef6812ac37ee685cc6f770ac7bffe2bd13e2",
+      "astSha256": "9148a77ffc65dbcb1d239c2b2858861a8814470b7865659181151319e16db91e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-indexed.mlir",
+      "sourceSha256": "6563c988fa3e0e315a3f2ad969bad57d08f1681662efb502181ccba96495fd8b",
+      "astSha256": "b9a0176344ed8ef1831873628ffe670128ac55021e27337c465ea4637e5f4df2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-offset.mlir",
+      "sourceSha256": "1682ef8220d01d19650f29bf633f999d0c4fe8be1d77c5c341acab567587a702",
+      "astSha256": "b3d397e50dfb9595f453c53ee7ee7bb99ea7bea5c2e49c9d1ff636b542cfd0e4",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-softmax.mlir",
+      "sourceSha256": "9a13b4442a0584eff027e605b0a02b4f98c0db369ca05d429eada8d9e022624d",
+      "astSha256": "9247eec90febbf9d0d035612bbc31098d2f2a04250d2d21a5143236273b5dbbf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-tensors.mlir",
+      "sourceSha256": "57e80951b190471acc137e0b2c5e718a868e193751055133af4b35102e9e6992",
+      "astSha256": "c22bd6f671173b583bb47c0811441688b407b57b74c1032009dbe4af4942c857",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/tile-to-forall.mlir",
+      "sourceSha256": "1140851d673e75d1a1f4f2bafd5a101eef952d2dde48612e1aa367927aa50063",
+      "astSha256": "82c5b10632f1461de34f4d5e92cf15f96fe2cd9556557c64c62b00126f36894f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-lower-pack.mlir",
+      "sourceSha256": "94eb5d9d82933ef46e48777afe4ebf2f093e6d373ed8b0b76afae682894c7d35",
+      "astSha256": "edd5c9ab987e56d5f3d8d2f9c1bf268e83b968a4df623fd5216fa14b8be9dd5a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-bufferize-to-allocation.mlir",
+      "sourceSha256": "1905fef67ee1df6ae24d7a9d3e929451af1fa83322247e0bb60e17e100afcaec",
+      "astSha256": "1d930e21b9b6e55ba7495837143cc025f7ea39397e89d0ff96f81721be19d156",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-compose-masked-vectorize-and-cleanups.mlir",
+      "sourceSha256": "2c850f11cdb620f0c3331f2444de98eb001fbd5041e1811cf5e32971d5b1cdc4",
+      "astSha256": "49b6b8d87ea94911b8c2749ed9c3bd5652cc513c5d6e36ce54bda2c8eee5b151",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-decompose.mlir",
+      "sourceSha256": "b814d072f82363136bb676b5331c26c666189eded91a3b971ecaa2e906cf6b67",
+      "astSha256": "cfeb2bf31af1efc297b3be11d9d75a26e67b783f667b3931a26e8f7ea41f34c1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-fuse-into-containing.mlir",
+      "sourceSha256": "917b3d78afa2cc2e44c2049946a9bc88a9e582e0af2abe0f3968eb4522fb51c9",
+      "astSha256": "3c3b7ce65f015950cd61977275f6c104ce6c1b286bbf2c9963e008632adda2fa",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-fuse.mlir",
+      "sourceSha256": "b6b1bca963f4a6ed6e5837bac515a17ce7a5f052182183c716d992a6be0e02f7",
+      "astSha256": "806b9767a9df0ab1d5ee0dcb8848e8a70c832e1ab199ae06375f8c36d2af230a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-generalize.mlir",
+      "sourceSha256": "d973c595ffd6a13b61f09943ef342481427245682dca5a1029d37193fbace2d4",
+      "astSha256": "d719d8cbf5b69426b2c7950e5d40934a32ca984bbf0a520b64c6c72abba34aab",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-gpu-map-copy-to-threads.mlir",
+      "sourceSha256": "4079184bcb99089a3c55310ce80e6b4a4d711b3e1e2dffd3e2733b0d0c3fdfd3",
+      "astSha256": "524c883e1bb505cf7dd38909f0f202279916e39b5c281eefc8409251adaa8acc",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-hoist-pad-build-packing-loop-nest.mlir",
+      "sourceSha256": "4972d121dad503b3441cc5e131dbf8d1a65bd41ed47c719836f1df073603f08d",
+      "astSha256": "fe3f54123c6e7f190b1bca4de2197a19764ad17224a00cbaf3dc47250d01158e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-hoist-pad.mlir",
+      "sourceSha256": "b278e587ee9956f07568b0e1fe8d05d35f32715079a19406e2fa4c7b9c7b8051",
+      "astSha256": "1374dd5f2d693b3658fc95a13f6f5e7cb977ada03345ebad314f5348d034d864",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-insert-slice-to-copy.mlir",
+      "sourceSha256": "932c59e2214fffdc740e415e0b9ee0882dd8e540cd59d64f2aa57120eaf7bd94",
+      "astSha256": "a9ffdeecaeec12cbbf76a6855b0ae44f31ad73b1857fbc6eb2914929849da13a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-interchange.mlir",
+      "sourceSha256": "232c1f6cde9b946fa4be10bce1add502bf6726a34aa1d86fc0d85cb31efe4ccc",
+      "astSha256": "f20a3efd4be16a0fead356592d620b81d80af209f1d63bf1373149ec658179e8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-linalg-copy-to-memref.mlir",
+      "sourceSha256": "5c89f29fbfe4615075ba53b9a27eb595010ff3af63c993a5de919b6d8c539adc",
+      "astSha256": "f9e9f8799393803d7c10fdb56e3446afa23873faff459e9ef2de26cec7321361",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-match.mlir",
+      "sourceSha256": "b83f88435f915963a5ca08c97b8ead07d2e63d7cd4d62421bb4bd3662f3ae4bc",
+      "astSha256": "8962ca6abf7d08f9e893a1c5e39bddd096fa46076e5d0037eeac06cb0ebbdfc8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-matmul-to-outerproduct.mlir",
+      "sourceSha256": "16e725d5cf5ced34799561a4d5fe678ee26e97e51692ad726fd9b79c511afb41",
+      "astSha256": "1eab5946efc96610d3b0b0f95e07c1581358d3d0aaaab6358ce001d3a799a0e4",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-multitile-sizes.mlir",
+      "sourceSha256": "814cf3488e9403f1747a9b429eb4a7a12f4a7192976ab8d1a7aa02835c145a98",
+      "astSha256": "e7a4750c185be746dd9dcfaf9d0dce67d01dc906e2e88316b4ed6ee0685869a3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-pack.mlir",
+      "sourceSha256": "d26f747f85b5359c5e410b2f92802b6fbaa7874ac41801c257501725caf38653",
+      "astSha256": "adcad138529420ef58bf5657f091e37d9d7cee91a9419e0bdf930c41ef0a03e9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-pad-tiling-interface-multiple-of.mlir",
+      "sourceSha256": "29a24bf6724c59391a43922ba584cf4a291ae02a7cf034f138c893d894178f1e",
+      "astSha256": "a15e3b33b43bc1e041f33e22835c49a33b2f10ac8aa3618d2f2d73f5ec52f83b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-pad-tiling-interface.mlir",
+      "sourceSha256": "e65f3b5c3b99f7352cd5f81dcbb8f548c76aea8ebc04b08f690735cfeb2b9ea7",
+      "astSha256": "e210c798d67e43832fe03a0f1397f39a5922d2e47d8e58f7fe9cf6a8d470ce86",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-pad.mlir",
+      "sourceSha256": "cfe44b75cc4bf628169b3730d61333d6d968bfc247a038c7c96052aca894108c",
+      "astSha256": "5cfb78a5efd44cb108450c1369efe4d7e70c1baae9aa97b521542ef48e757ca2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-peel-and-vectorize-conv.mlir",
+      "sourceSha256": "04a2654779332216ca521360ae4f0739bf921dea720bc917378304583ffbd1ad",
+      "astSha256": "91cdf458a238b3607041a2bbb1dfbf807cc903e4aa41dc797b9fe6caf1797588",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-peel-and-vectorize.mlir",
+      "sourceSha256": "c5235ca544ac401059a0756495fa64c334862365c4a0dce177f6502d7c4b0731",
+      "astSha256": "2d70f283f1ea988e5656768a228a44dc3c217a790a934747c34395b29b9b75e6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-replace.mlir",
+      "sourceSha256": "05af940efbf5239a6ccad750993b25c2454c0cc33499f50f66dedf6452c52e17",
+      "astSha256": "deaa0d7ccaa9fdf5cdfa51a2a445de378e9a0a66e59b337bcb8aa9d6fbd457f6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-rewrite-in-destination-passing-style.mlir",
+      "sourceSha256": "b5306a62c2ba287a91a0f7183005c469d2ae664b6c25baafebb55c003422f164",
+      "astSha256": "e9de0bc9e946b8621beea13c82427c7eb6d25e69578970c8853650381b641bbe",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-scalarize.mlir",
+      "sourceSha256": "e21204cee369d55af91a3d63dfd2fc74102dadcfe6b54e9fb1a151d843eeb07a",
+      "astSha256": "8f1203d196afd9a5eb05a4bfd2fde417eeee2d828d17ab4367bc96e7c44aad7d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-specialize-elemwise-binary.mlir",
+      "sourceSha256": "dfd4954e26e30ebc63bca8b3d98551aacb9cfeea2122f4890ebdf8942a831a5c",
+      "astSha256": "d8f157864f0136aaf3460cd462134e55869f35d894fc76e2cec36c5e97fb10c7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-specialize-elemwise-unary.mlir",
+      "sourceSha256": "24a965099f07c7863c5cf728fd46fe6fe78a9671d704ea72bde35c9b2251a19d",
+      "astSha256": "2f55760050cffaefe8edc9ff171778d7badfaffe155ed751708b64b6497d06f0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-specialize-matmul.mlir",
+      "sourceSha256": "86f3aa721362225f316adea126b0d04aac4dfac1c6a53e42fb7e3b371e26679e",
+      "astSha256": "ac9f10da69da6c9fa6cc61fad644742cc56e9aadfd6443eceaf5c14393ce814b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-specialize.mlir",
+      "sourceSha256": "4566e4ea811c76b45656f5aba6a086b9be876e5d868321310ee0b0d548013ce2",
+      "astSha256": "d65dd79d0938b4df654e4fe89a6569909806e4c5da957f1bd8b7c28dc8739bd9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-split-reduction-by-scaling.mlir",
+      "sourceSha256": "1647f8de129098422651c5d63ae139b0c47694a62ef400d45caec591cccc1efa",
+      "astSha256": "838ae25ff6cb3e84a33cee3637a8111bb840762a1f97300a0b43eb682c1c54a6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-split-reduction.mlir",
+      "sourceSha256": "e15a829818e65781c381b8cf0ef735c3eac9a80cda477abd7f2b856e026a7d2a",
+      "astSha256": "6bfa0901b8d13e8f15edc51c4248ef28d9391c5bb165bb48c09c6f10a052865a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-split.mlir",
+      "sourceSha256": "f74c6a060463c5b6182c196a5df6f8fd4e8864ee0612a49c034ceaa9f5d3b65f",
+      "astSha256": "67f0d795182da3b2d11d471acafdf3f4a5b7ee0a603b159a0589e4c3f0bb326e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-tile-pack-unpack.mlir",
+      "sourceSha256": "f06005ed4e774ca893cf3c865d489b44cc721cf604a5291f93f3ed5dde80ae0e",
+      "astSha256": "d2e951da7c5b365e6905d6367572911efb6f4c41ea49dfc0496ef26948436b7c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-tile.mlir",
+      "sourceSha256": "9ab9888c3e454b63ee46ebb0e7246cb2836a03702e38e66ee9093f24ff749bb7",
+      "astSha256": "aabb7df12ed45ff17d290c854ff1bc0ec59c20d3a2ab8e5466a6b78f3aeea30c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-op-vectorize.mlir",
+      "sourceSha256": "fa0dab2fb5509be37dfb6e435decc19a34d199afd17f779712c3eb10222c135e",
+      "astSha256": "33991f5302f9c48b9c3691fdd99dd8b23d58c0d2bb1d8a60f6c8750baff9b36c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-ops.mlir",
+      "sourceSha256": "01fc2a74391f3b7969cd9636971435da074def03c80381d95d7d9b1d493fbc35",
+      "astSha256": "01815c6d40927190fcbac22fc61dbf33bf13b88bb9484db728cd50916964a2c8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-pack-greedily.mlir",
+      "sourceSha256": "f78561c2dca82c7436c575df88d7318cc8b5f01b0eb6af2bcd71ad2c86802efe",
+      "astSha256": "a1cd9f6e4835a22d71189257f3a091fecc8e2d65d76678665dda39b3b6607d84",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-patterns.mlir",
+      "sourceSha256": "71990cc34aeaf02f088b3800befcb48ac67b4c035027d44d8c487ed69473871d",
+      "astSha256": "f316a7a18691441993d5ee7e80f677ab228f2820d0e41b7151e3a170f74975aa",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-promotion.mlir",
+      "sourceSha256": "4bf547127c041f1928ade81efc3df209744afea59fe7592cdc70d896d01bd6b0",
+      "astSha256": "1374e09b37443cb36258d4fb223599048b554688b799e2965997a7d336883edb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-tile-and-fuse-pack-unpack.mlir",
+      "sourceSha256": "ec94cdf5c9530cd10196abeac0140551eac6920384938df1492090d6ebf5aa4e",
+      "astSha256": "259cfbf66076e181a3238be1d0d82ea655b109ac4699ab09ed78371829d80062",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-tile-and-fuse.mlir",
+      "sourceSha256": "c1b56c560a90b256b37be257ff6b8d196d38183359c183796ff52ba506c11aa6",
+      "astSha256": "25d4107cc3fb41d179e05f0a59bf1beb6929574156da993b287073afea749cbb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-tile-and-winograd-rewrite.mlir",
+      "sourceSha256": "6cd1474b69deca950ce6e6d1d469358100f65b7ebe17a2358966897cd62a8ad7",
+      "astSha256": "08c51073bde872e2de715f4d3196c6fa4354b5624d81afcc5d79f426412f7a50",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-tile-reduction.mlir",
+      "sourceSha256": "a39e66669312aa44a2c272ac60491a9a1c656b91310539f0327ce98c4576279c",
+      "astSha256": "c269ad84abd8814dd097e8ad3d6166d6aaa7a6823218d80538a4a9fb0837f8a8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-tile-winograd.mlir",
+      "sourceSha256": "b6f73c1163e8c66afade64dc09e61f59c3902cbb03277e6fc768457d516f5091",
+      "astSha256": "a4a4cf35f7ce2c0b907bbea7f15c1ee03352b33f1f173d044ffef72eb0e47033",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transform-winograd-conv2d.mlir",
+      "sourceSha256": "4b0b11230ba29521486ec8b4f8fc4f52f4d89f6fff9362751f9ae3178eb2b324",
+      "astSha256": "7a59c7b80eb3d773791f09cf2051df35f32da5a7b46c4d59fd9f77a79eb47413",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transpose-conv2d.mlir",
+      "sourceSha256": "693941f0f707e2e6231dd21aeeda38edcea2e5499c93c7c2578a1d311f97d2b5",
+      "astSha256": "f3b6ab1da45fd77206809d4a33fa7339914cb05b2143513953aca3e7c481675c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transpose-matmul-a.mlir",
+      "sourceSha256": "822de1f9e44977d5f04e5380db30af82e889455ef2d145726eb666aa5a057214",
+      "astSha256": "96754e6a27664574688bd699fbdb1a432bed38ed137ad7c57f8130a57f02a12d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transpose-matmul-b.mlir",
+      "sourceSha256": "225df5c2614baba09ca6c74a64e62d15612857514f803a9518589e3270738ee3",
+      "astSha256": "63d5da250b9890f4895db8cbafa5953d3b6d216bafe9dc075fd5e4d346d5b623",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/transpose-matmul.mlir",
+      "sourceSha256": "12755504ded87a23c20506c4d8d939d783efde0873110b15ded63b033c172db8",
+      "astSha256": "83ef78c0b13ae96c0d317c8b7fe79670d8bb57bd585ff00cf49ca5a45591bce9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "44fb65a46777d66b923ad75928867332b57a48ef949be457c057b4ceae66a0cd",
+      "astSha256": "61b0438edcae899fdd0a0d3ba6de38702d3414af4353a29015033a489e43aa31",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/winograd-conv2d-rewrite.mlir",
+      "sourceSha256": "0a4b3ef78fe82e970726d0d0aea96f2d66735d39a38dad4655c5eb3c71819b9d",
+      "astSha256": "d40a5de020a2980cd2965158240bba64ccbc0dda3bcd2c365aae511f8596403c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Linalg/winograd-conv2d.mlir",
+      "sourceSha256": "cb37eb2857cae53fabb63aaa665026df876db7ca41927a880fd90163cd7c5711",
+      "astSha256": "54f7cf094353f2f85b46665029ebad420e93d27e8c2d58a518fb964b23545da2",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVM/lower-to-llvm-e2e-with-target-tag.mlir",
+      "sourceSha256": "222e54440f6f5b3d8d276bf382e1e4071b16832d85b7ddf4ecddf6c181a8ea43",
+      "astSha256": "1b777428303b87db74ca4054c307965a22b177cc9c8f0e8b5e9df94070f45c41",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVM/lower-to-llvm-e2e-with-top-level-named-sequence.mlir",
+      "sourceSha256": "85e5b270e1eabdf5d204daa8f39330c67c85e322c118c32c82c78dcd7a484057",
+      "astSha256": "0e73e196bec772edee2ea0f2f439b2cf97a8c2ec446f957e11df0112ae876abe",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVM/lower-to-llvm-transform-symbol-def.mlir",
+      "sourceSha256": "606df08328f97def04c339a90382005bb8e60e66d683c499f0a5662115f91a36",
+      "astSha256": "db5b1bb3a5a713b146c1ab9f62ec240ec2ba904da8f20c2b2c9872ffb003c6b5",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVM/transform-e2e.mlir",
+      "sourceSha256": "3f9ff1b107e5f18f14c57d6323be01086994752467b332237e420650a635909a",
+      "astSha256": "c6039cabfdd149af4bd68b25e44023e92e4c09cd0367dfe889b5d66720560cfd",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/add-debuginfo-func-scope.mlir",
+      "sourceSha256": "400d97c82285d46f32d7a1ae96dd347c63187419cd3152e9c95c1d03b13be41e",
+      "astSha256": "469ecd1ae849852fe3bfb3a3d8bfc6503cfbe957f73fea4eba88b958006e424d",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/add-linkonce-comdat.mlir",
+      "sourceSha256": "b4e293cb1ad8610cb2e1506065d3f1456b68d62e74e5394d8b7d8de71a8dd122",
+      "astSha256": "164693059dd4f62c1c69466b69f5b74a39e654b688a41a360e4d85dcac8619bb",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/alias.mlir",
+      "sourceSha256": "3699aba91ceb71b5601b516f49808dc42a20609975d45dbd4ac8383792d6659c",
+      "astSha256": "0831436a1d489ae1dbb0337dc5b5ce955a886ad504fdd7bd52c8860e1baa807a",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/attach-targets.mlir",
+      "sourceSha256": "3240e38386babfdfef9f61dd005f9c576995e5c7d852ecf486fa0aa99c5f0de6",
+      "astSha256": "9a8650828b09a819a4d8e9bcbf90f977c0f666f5585622bae6c40c2939685946",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/blockaddress-canonicalize.mlir",
+      "sourceSha256": "06e39be9e3b1cf1af61fcdaeaed93b9ae623db0993789e8b97ea6b1774cd58d3",
+      "astSha256": "aef0d200f8f237d9b41d33d41f7522ef4bb6f2171fb9008eba30e01793bea731",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/bytecode.mlir",
+      "sourceSha256": "8edb6f5753399ff256e55ccbe459fd713cfa30ff676a27a7f320b22a0833f2bd",
+      "astSha256": "cfa708e39b5168d816e4ddad4e40be48a612ad400f23e878e2b7826b4e1220e8",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/call-intrin.mlir",
+      "sourceSha256": "a02a540867ed785d0cd145827d07ab661fd8ad1de58edce0c00bf5839eca4d1b",
+      "astSha256": "027df1b03e43b26d82b234f4dfaf6169f31010678eeea5a6ad6fdf44c7c7cf31",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/call-location.mlir",
+      "sourceSha256": "205888f8165d38166ce340fbd9b8da236e088ec880efcc388b345380af5d6291",
+      "astSha256": "96646267690189fbfe009d0752f2ae02a8170a7445084fa93259a4927f8f4a81",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/call-param.mlir",
+      "sourceSha256": "eb02bd0b108d8f61c73ef21758333d247c824f06b1b8b7d575be33795d0478c0",
+      "astSha256": "2b1b0ef9b005d97fede335ad352dded5e85493469eddbf15009864c9a3e3f146",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/callgraph.mlir",
+      "sourceSha256": "70ebf6abb5ef98a87c7ef07dfb36d5f3a34279ec87860a8a15f76ca2a1360eac",
+      "astSha256": "14cc739b353872c2f6be86e4af12da6dd1871469e7240e3093276b8c0798cd3a",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/calling-conventions.mlir",
+      "sourceSha256": "f0e2f9c1697970a927116caef12c436005e89cca0d34718a86afa05a5b567c73",
+      "astSha256": "edc086947d39d17af7043b4c225ab83d2deb9a5f0bfb8842694ce309e91b48f8",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/canonicalize.mlir",
+      "sourceSha256": "d148735a574d44a4c7d77f3dc83ae70e2f231a470d0db9db5f8defff326b971e",
+      "astSha256": "fe688028da75289e65ddd3e3f19e10f1bea2ad70489946d24a111237792f659a",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/comdat.mlir",
+      "sourceSha256": "2e868db8e307f193797ae5e12c0c28aacccf960b8e739205008d8a88e3d49ffc",
+      "astSha256": "07a050dde94f9c600f2b136964db9dd64833a315ec7ff97f5422aaeca0d05301",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/constant-folding.mlir",
+      "sourceSha256": "771cff0098f79a89f7563d7ee2bf3aaa2078557e4c1e4d910bfa3c5bcaff9410",
+      "astSha256": "71e5112b0059c601b7bb2f8159db0d02bf7389f421039f9b7199c922916b6a7e",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/cse-nvvm.mlir",
+      "sourceSha256": "0f913b0da87e7fca6030892cae251a802cddb1502e1ab2fa677db11b0cf8d0bc",
+      "astSha256": "fc2e3b7e683b648fafec273014aab10dfc71d9e0b74919f670fe9e01d747573b",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/debuginfo.mlir",
+      "sourceSha256": "139143dfb4950c7233975751f9fc373d1139ed91d04541b33069052a0b284370",
+      "astSha256": "6276d05395d4817f72fd3545b007f378239956536af7e56a6725eee6ab2bf270",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/di-expression-legalization.mlir",
+      "sourceSha256": "0dae72b9f2e65d9d52f0bb4aaefcee0c166a18f12011184443680b522a630d5c",
+      "astSha256": "fbdffbe43e3ffca9d45e083206a25e481761014a241922f620e01a154ee3d4dd",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/dynamic-gep-index.mlir",
+      "sourceSha256": "a6d7d984b5b6c1316b25071f33d2a543aca790ddcc4d0f60611f7ece62e859e8",
+      "astSha256": "225633b3d601c99cfd105659fbc5f4e35f300ec12cee44c4103e977529caad84",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/func.mlir",
+      "sourceSha256": "dac3ea83fddb65a26578c515ebecb1274599283920abec7bbc1e30eae41c4312",
+      "astSha256": "c192c0481b76bb594305db633228a8aedd978875dcac73ef1ef6c3123be22436",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/global.mlir",
+      "sourceSha256": "f114d6d59b84f0d4f5ac011a125aafb2d45e1b8068e34e9222c3c54bf70c058d",
+      "astSha256": "41cb6ae4aca2b37a465f2e2f40327aaa4d020e3a6f37a078d915255a81dabe16",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/ifunc.mlir",
+      "sourceSha256": "f22eb7377f948da6f5b6bb905cedf22ad37fbfb0f73f1d29bf4d238fdcdfb546",
+      "astSha256": "63d8cce8c18348deaf1f5dd3eb7fd237f8c095cdc233cec4829e2d179bbc5e65",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/indirectbr.mlir",
+      "sourceSha256": "04062ad4ce87e55de3564fa9ca1c2d56a15e050b2133353e4ff82ad35c97b73b",
+      "astSha256": "6ca2157f2026fa2eff0f428941b181c728a82592efa5908cd9ad7c6caba32d8c",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inline-byval-huge.mlir",
+      "sourceSha256": "1a072907449c1c65d80a9998072bb75d500a6604089c64fb6589c70f30691246",
+      "astSha256": "e3ebcdc70aeb58ac5bbed1f41dcd2a48aa0cc244df7515110a4d724f0fefad12",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining-alias-scopes.mlir",
+      "sourceSha256": "5e04a3a4758bc47f8f4be79b4e6bf5aea9696fcee7700c957b2391b66a5638d3",
+      "astSha256": "bb6e2fbb10bef927688727780122f2789ec5f56eab90fad229d09f83017e3a17",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining-debuginfo.mlir",
+      "sourceSha256": "9cf4f6564773a486ffa1220af156b3a018a362915b2ebc5f51018db6499b8442",
+      "astSha256": "6b8e3f71de4de460002822ea123a321f0d0bf2615b9a67f722a666c5eb438ce7",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining-loop-annotation.mlir",
+      "sourceSha256": "da7d27bbbb44aaa30f79edf264aad1fcd7f07d0364b8147a5c22cddee7c597aa",
+      "astSha256": "b331fafe54e31db9058dc1e20d79c501b1913d27704af34a8c933930c03b4cb8",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining-nvvm.mlir",
+      "sourceSha256": "4d5cae7491c06652eef8176f608890eb2b9bef08791ee92f73d8b55d19bddce6",
+      "astSha256": "9df2c2c18938b423955783550f8ef3f82eec7e97274ee8f4ee4c44034eb75834",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining-rocdl.mlir",
+      "sourceSha256": "802552c510b8a2cf7ac69c3ca48596082a6e0dacac028e21e29358997b093379",
+      "astSha256": "66cb6bc037f7380e586d407fd8b9df5d7ad45fe5751004f94781a82db4677cca",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/inlining.mlir",
+      "sourceSha256": "5101a346957e46cddb3951e5db025b07d01115adbc263311ed46376ad0022881",
+      "astSha256": "766762fff7552df9f60bc84722292374d2b16d0f23d6ef39637df09de1bf5a62",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/layout.mlir",
+      "sourceSha256": "dbf94a82b2fe19ac34e02bd9b6694e1b244f9140953269b82500d15515d176b1",
+      "astSha256": "b040ccac39ce6e830d65b164e791ec531d63cc03e7da95b54fe64a701c415cc8",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/legalize-for-export.mlir",
+      "sourceSha256": "97f810f8048e398efb90738b5ff9955781bad8317c100159a0ac22532699baee",
+      "astSha256": "b8ca3a3eb62ccf3928fde1a861507537ffe3be7ae7ad2d976372a1b264c96f5d",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/loop-metadata.mlir",
+      "sourceSha256": "873bae19895a18e6fccc2058787b65596346f0029df0414c3456268c2b1dc341",
+      "astSha256": "0635a11d6097d4623a01a6a0ccd4baf8b4fc579f4f3e81cb2c4000d04b3bd3a9",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/mem2reg-dbginfo.mlir",
+      "sourceSha256": "991447a5646e3d66902b825de8c549daa45938957a3afd2199d175d3c8a295da",
+      "astSha256": "a0787ed7902eccba71bb6f3e926b0fb6ad6926b58286aea65d6d23541f0fd70a",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/mem2reg-intrinsics.mlir",
+      "sourceSha256": "14488affc5e177d95fe030aa1a29b322d1f886c7ce6c7c04adb5388024785af8",
+      "astSha256": "9362056a26387961cdb77a30e5f68ae209c7077ae218d11a290bac4c9ddcb485",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/mem2reg.mlir",
+      "sourceSha256": "59a25a4e18b1d0eca129b142d0241f34b11308475832cffee7efa678a2441c49",
+      "astSha256": "724d506dad2d9a395bea6343474c814831b7b7f8677f6f9354a4104746575398",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/mmra.mlir",
+      "sourceSha256": "7fb8990ef44153a5c2176308ba0ab57f27b37b635a48b74b6984ecea402f7a31",
+      "astSha256": "bd13b6fe9bd6c7b307341f4901fedf5eb12ec98d69d9bf1e602b92d175a7adb7",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/module-roundtrip.mlir",
+      "sourceSha256": "a6cae1955fbc1981bb11a0c95ffb66186480c1df67050649d133492064d5cb06",
+      "astSha256": "d45447f369327076129aa925bb40b99713be86d04dfef7f87344943ee947401e",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm_check_target_sm_trait.mlir",
+      "sourceSha256": "421174568d9f6717df584a1e242b6be19fc3d6306b09116f0921b70e5bdebe4b",
+      "astSha256": "468c40e0124c6ec2ab6cd3c666a90325b74bd7fe5a39814ee35bb4f1b72c6b2c",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm_check_target_sm.mlir",
+      "sourceSha256": "766b7c703784896f6fa449463e1ce1f199cccf74a4723f79c8b45448f3aa54e9",
+      "astSha256": "b37d502d8192894dd0b07fa4a4176ac67a6fe62665dc58968bbfaea92c85ef47",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-canonicalize.mlir",
+      "sourceSha256": "619e6c175d3bdd0dee23e7e9ced3d7c31796e443054b38333d2a68f40dd6a721",
+      "astSha256": "1769c27c8d8f7221646a1ee4dfedf5b323c09006f28d91c1b90ab71fee55bcae",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-mma-blockscale.mlir",
+      "sourceSha256": "511324df7fa7646fef57f2ce8491ecde8ac6a000b24441cd05745d8250184ec2",
+      "astSha256": "5484cea17faf168b59d39ecbfd37406589126f45a1db4e7d2f92fa57f9b8a6c4",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-mma-sp-kind.mlir",
+      "sourceSha256": "82d889b41b327612fb4082fb65fdef6a037db3b95273abfaf851ddeff4a654bd",
+      "astSha256": "4bb74657e8330d5f8a6349cd339a9c1afc7526bb624ebfe8a259bc8338932d52",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-mma-sp-ordered.mlir",
+      "sourceSha256": "3505fe40c2bc6c64ba61d9174316f8253de392c80a53fbcc6f4df2b3a1a3642e",
+      "astSha256": "fb7ead9a577d2d0dfd3bc128ce19999c7f57fc0ba61aedb51df61aae27dea65c",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-mma-sp.mlir",
+      "sourceSha256": "8bcaef4ae7e6919971bcabd76738c219d9a711b7ed9f3ded4b9402bd0caf14e4",
+      "astSha256": "3b6e578663635d89780177ab773bb2901b62755f78231a4b2d1d5dcf00733547",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-mma-sparse-blockscale.mlir",
+      "sourceSha256": "10dcc4ae7f73d8f108b9f02078d44c656224060845a2f215ac4fa212eb02ea52",
+      "astSha256": "120ef0fda1131fd5eb89c7cd7a066581121fccbe8dbd9ac15cbe931377dff98e",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-test-range.mlir",
+      "sourceSha256": "95832976afca3701f31d7f8f69b4ed3c738e544fb68cb7219a53d98e2606e302",
+      "astSha256": "0708a9dcc9beb9c329fed49f2484d6a7bce69ace7bd4a701e2c76722de14182f",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm-transcendentals.mlir",
+      "sourceSha256": "4129a604a475aa4a977bded713c1e333030ac51f8581b1e8499e170baeabff45",
+      "astSha256": "48929acd2f2c6b640093151226b976630c19d47586163a6843ebadd5638700c3",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/nvvm.mlir",
+      "sourceSha256": "be78e40ba4c320ccc5818d46218a2c235656c1f5d4288ca28845f6b324d91eb2",
+      "astSha256": "9c42d7d56dfd98d88a581b0b791d8b952a54f725a292a5f6e2c65654eedb2dcd",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/opaque-ptr.mlir",
+      "sourceSha256": "4fa2c057a756eea4964a479b69d221c896467e9b64f3b3f84b314d993a355852",
+      "astSha256": "3d3e21dc8c9523cd9b9e5fc101542e5ac331ea68c1b250110f9330e5616b6751",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/optimize-for-nvvm.mlir",
+      "sourceSha256": "1ef19d4faff0d6d0614775b6c8a3c238503b12b674062d5f0d10c660f1991258",
+      "astSha256": "f12092098c64661837546944da8ba3aea751800a8a91ec820ac9c20da9041397",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/ptr.mlir",
+      "sourceSha256": "fce2730419d3d0858f49070b64277311c78b5e2a73632ac598ce3e54bba4fb7b",
+      "astSha256": "5226cb66df8643487988b0cc17c7d2a842aa32f3bf5e946b491e2748b7ad9142",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/range-attr.mlir",
+      "sourceSha256": "09f7dd85e5936ff4b4f71eeeb743cea68a23ecb39c69b0f7af40be8f6d279b83",
+      "astSha256": "9c3100cac8947dbed5254611f0904403e4e5da150a82148a3b14ed0b82dfc51a",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/request-c-wrappers.mlir",
+      "sourceSha256": "7909ff1721e38cc898f9f7ee5e30d7bca51198c373920cb8b489ea7b1c92a0a3",
+      "astSha256": "e1eb483ca2125b05e34a8d7743e7f9b54f2ce10b0b69d9308691164f85cc248d",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/rocdl.mlir",
+      "sourceSha256": "6f626be7a9450715bbb24e366bd0e2b827cc353a81bb2c208e68ef872867cb20",
+      "astSha256": "0cfc9e2148311811c7a74043d98620074d4985d74fcddd691b73fb4595fda207",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/roundtrip.mlir",
+      "sourceSha256": "1c4d4916e75709b99d2681e728d7a0b45b7f4ee02a855cf140aa7cc6f37d839a",
+      "astSha256": "858afd28d991c633675fc59dc8034c1a262a95689de36e90e8eec7dfe13c8466",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/sroa-intrinsics.mlir",
+      "sourceSha256": "4dc88fd162c4c51e02081ddfd20d4b2421b5ef5959a1bee11f0dbd03ef3fe65d",
+      "astSha256": "f60de54c127bad260cef6587e73f9196f365984ba901b110642c4e3a15fe6fdb",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/sroa-statistics.mlir",
+      "sourceSha256": "cfe21e6d9aecab2cbc99a10636a34af6e5b2b4c14d7b9203e5d3c556e4e0ddea",
+      "astSha256": "9f8bce3d5afb6f6ed64da64739ea04894b8270c0a7e044118828918cf77b16f4",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/sroa.mlir",
+      "sourceSha256": "b8409036a03d45dbd8be2ad5e7c0426f3a111d03cc95ce3f5c87d9fc798629a6",
+      "astSha256": "716db81c2a1b48a8e78cab337ffd79d8c2a29eff36ad0a3fa873e937730a49f4",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/tail-call-kinds.mlir",
+      "sourceSha256": "4a2081cedc735e5bbfcc5aae7133c0f47a8d1ea775e0057fab983cabcda0d8b4",
+      "astSha256": "8a450c404ca2112f7cbf733d9f94c29a329d9867c96fea19e6addb619a137066",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/tbaa-roundtrip.mlir",
+      "sourceSha256": "cf4d641b41f4023ba1d54313e596c8f436b4767dad7f780bc347af76f12616ad",
+      "astSha256": "cb8d520dbc96c68bd80f07db1f508ab6009f7cfe0bab55c5317a1248742259e0",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/terminator.mlir",
+      "sourceSha256": "d742782458a00d0868dd0abb9337c7a0c3b4554b45b3bcafb56e1e13ddfb4420",
+      "astSha256": "97db4566ad1488ef4a05533c1a3557b453a6aa79fdc53bb5a57f85b98ea4524f",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/types.mlir",
+      "sourceSha256": "5295679188fc1d44cd9c3374bbd824fe1d660224c67cb396949f32bb6b96d004",
+      "astSha256": "fe62c07dc4c7441febd48b0b759b6d315102a1d2e5e8299df496472ca1d03700",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/use-default-visibility.mlir",
+      "sourceSha256": "82d1995c5c7d660c551ee06e3f662cbf1b1932aeec1055b035acf9e20b369b00",
+      "astSha256": "a01d4823b9fd4625079d63382bac3900afa0fdb46a710603fa3abca0f4825d69",
+      "hasError": false
+    },
+    {
+      "file": "examples/LLVMIR/xevm.mlir",
+      "sourceSha256": "2c63fbe4918efbaddf53ed72773f26b6a3b7a4826ade81628b4ffcb4c49e78d7",
+      "astSha256": "c13d3b9da8836451bc7037517239ef48a8f24b1b50f7caaf8401199e1b7fcb72",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/alloc-to-alloca.mlir",
+      "sourceSha256": "df1c0798b246d50149a56ed4e5a82f56fde3ded47bf43758f0679371a254e3da",
+      "astSha256": "f834d613a8df8d34bf6d4c128e765a1f56f6b852125a16d4d8065ad5ae5d2c13",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/canonicalize.mlir",
+      "sourceSha256": "b6a47984b696ad8c47d3d3c2bb58dbcccf11b14bdedc6916dabc72a97cdb489b",
+      "astSha256": "6ee43415ec04ce4b1c3d1ff656480e19deafd40108f7e253ebf5bfb0eb3ca1d6",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/elide-reinterpret-cast.mlir",
+      "sourceSha256": "e95c994833dfc99596ab7b838e99df6b383c007de04c93cac2ecbfdc89049dd9",
+      "astSha256": "e2750a63ae2c8c2aa94f1c0b5a2005f8a55bb8fe76010310f48e568be3002f72",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-narrow-type-cf-types.mlir",
+      "sourceSha256": "c6cf75d7c6d9e71c81773589809e1e4189f13bdb24f95b9b03b0d6474b87eb81",
+      "astSha256": "dd8256af4ef535f6e6579f982b50ecd73dc898196d37fe9c796de7d178ca40de",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-narrow-type-cf.mlir",
+      "sourceSha256": "bc110057f89972118474f5417f554ca422ab3d031b7b70e7d80a84f1d7ea32d2",
+      "astSha256": "ef51f4cd156fa1a5a8b4380a92dc00168a68c97ca4c1cca621f80a9f5021ab83",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-narrow-type-no-assume-aligned.mlir",
+      "sourceSha256": "2dc1c6a02f6f8dc14d9399c9aec418ea4afe47434bd3d096cb71a5a705f5498c",
+      "astSha256": "2c6e635994fa455b8163fe3aa498a1ade953543880b61475016087a8b27dfd90",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-narrow-type-non-atomic.mlir",
+      "sourceSha256": "4a76e8248da9d88f2ef42a4777b057cc8e4fc3928e165a9528e0268190794f7e",
+      "astSha256": "bdcf41353e0a1c3b77ec8cb29f574ebca106aa25db56a27d9f723c31f3185010",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-narrow-type.mlir",
+      "sourceSha256": "d6bcb928e2c3f02f1088d7fb62554ff558849aba2d8c132c3974021a6b917fd7",
+      "astSha256": "aea9a0dbae0359ac0cdd6fa25bb89338e7b6351d562df6f03d7d51715e5bbea1",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/emulate-wide-int.mlir",
+      "sourceSha256": "ed3ea09e4c9149ccfa753e51bd64be0b4aebc943bda9ab3e091539163f747c52",
+      "astSha256": "483415996860a2e52b5b2ff7f62e492ff16b780965e51cc247a7520c314dc507",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/expand-ops.mlir",
+      "sourceSha256": "5b0b32dd5b18451fc2fe45c6e7d8028b386dde5841e52357ab0d06fad77ac1a2",
+      "astSha256": "0f9e7279b53fc535a75b9550c0a501f50d3fb9a9521da0a5afc5cb37ebc8aedd",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/expand-realloc.mlir",
+      "sourceSha256": "72901e77162a6fabfb2d960d8095e178bc6176a8aa0d1558025a03ffe5297a90",
+      "astSha256": "ed1b3ef6cb3a36edcfcd9467cc110ea0f9340c2f87d4b173e2d3e6691217fb0c",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/expand-strided-metadata.mlir",
+      "sourceSha256": "496658f0b7ebe5a3be43a85db36eba1acd3c45f20479868339e48c4079535c31",
+      "astSha256": "aba3468aeea7b79ba86c83ac3c270203b48ae3db5a377fa6873105a3f055d171",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/extract-address-computations.mlir",
+      "sourceSha256": "4d0086564a4a3cb35b60cfe54de32a85a78c7a4c8ad3756a2dbf4f58c871e624",
+      "astSha256": "9938592e0ae1b645655cfe8147dcebb14d4d3385e63e1320f018a3f20dfedfa4",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/flatten_memref.mlir",
+      "sourceSha256": "35d572988e19072a66cb0808b1419687089ac8b6744bf70efde79c1ed8f70d5d",
+      "astSha256": "14e8008227f5f91b374f74b854769463b7ad8d9cae58ef188b01cd42b44a310e",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/fold-memref-alias-ops.mlir",
+      "sourceSha256": "36c16cb842fdd09879d4056d6bdbdb97e7bd22b31dd9dfa71650d90bd1787966",
+      "astSha256": "c73d1a5f242f69df9376e5ccb228cb7faa74043e58e79a882325d3a46057249b",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/high-rank-overflow.mlir",
+      "sourceSha256": "c3ac66405b424d1535f42db15dfea592e70cbc8aa6f9be6d5ef5e8aefc44071f",
+      "astSha256": "fa77b30e32338581ca15705c1045ca6bc77fb3bfff909da2e9e2955cb59d769a",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/int-range-inference.mlir",
+      "sourceSha256": "2decb69d617a95da381e04c358b6b9b279702d97ee72c4ba8ca088a070a06141",
+      "astSha256": "40c6b9943658831d824b23dd721891d5f975bd0b285fccdf768f2f2b290e06d3",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/make-loop-independent.mlir",
+      "sourceSha256": "afd79b97bdbcea4280499e8b48b413eae876f5075a72f56a84b2895fe64d4ce0",
+      "astSha256": "f90e52b2dfbe138ec8108105a32948a54323dd5cc205e24199b3988f7d596198",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/mem2reg-statistics.mlir",
+      "sourceSha256": "359886afe9f7bb32c531fdd1451fc6a91c99ffa22b3dfb7982b4c70804f09a4e",
+      "astSha256": "4636e1c7f24c31ad8392ceda267b4530a3cc59ec2472bc3e554a4fa1d57cfe0e",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/mem2reg.mlir",
+      "sourceSha256": "2150a7b25d356b3181d95cf629323f979921a3b7a34bbfd257fb7e8af10b197a",
+      "astSha256": "dd6a8c0dd6d095cb9ea67f021ce7f1d2d06f36e741fbbf098ddd82317686b2ad",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/multibuffer.mlir",
+      "sourceSha256": "ae2057c92984170d6448774e6d7c44e7aaca692fe59f16a984593265a4590fbb",
+      "astSha256": "d1975c2d3f33892a8211b1de11999000d347f1ba2dea81f5b172e62dca96a658",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/normalize-memrefs-ops-dynamic.mlir",
+      "sourceSha256": "29876361245c4797df4b7dedf4a0d573bec2f225a3847521c639f85231c36e13",
+      "astSha256": "f0b7c7ed4c54bb0f20ab3a966c867ca0362f4ee99a8c59c537e8a17c9d95ef5c",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/normalize-memrefs-ops.mlir",
+      "sourceSha256": "b24696bb3fba979c8ff339bab7dabf46bd26695c960ec31a05d5d43d184dfa40",
+      "astSha256": "3ad1e2979bca740620835ae6a0c59d8c5e85fd0bf993bc04a14f02740a3334eb",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/normalize-memrefs.mlir",
+      "sourceSha256": "80c0e7fea80cce1e4cc5b9f61ca85cc0f3175dde7f7ad1d2a09c1707ecb6d9ec",
+      "astSha256": "7f0300be99e72422066033d3dedfbf9f570caf8eed214a8dad174d6cced6a124",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/ops.mlir",
+      "sourceSha256": "670ffb897d05e921256625c85c9f4d3d4ceb98d5e26bdf207c8de68ad5bcd281",
+      "astSha256": "ead1a84071b02283f83d3e536091682d71882201ed1d04c7d2c4f0f78896e528",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/resolve-dim-ops.mlir",
+      "sourceSha256": "c302b75db4bdb5185aacfda3524cbfa49172ba964c3e4119bd1fac01559ef9e6",
+      "astSha256": "b170b752cc5810b5a176b70716be45eaa1a8e8589e53ea392dfe24464c0b3da5",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/runtime-verification.mlir",
+      "sourceSha256": "e3ec6fd3bc336e3dac3bff14849307462b9eedc24870647fe2ae235edc8e20d6",
+      "astSha256": "a83124ae21c7adfb1ffeff22018184a12e3652c98bfc35f2e445ceb0adaa02f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/sroa.mlir",
+      "sourceSha256": "7cf582ace25c6b12f782cf0e2f8b797d73bb0dc4326afc9a19c4509dc521c9e6",
+      "astSha256": "d428336680cf4c703f0d969f998198532a7084b7d1be65920bbc3e86d8197e84",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/subview.mlir",
+      "sourceSha256": "f71d6a92513fce80fc73a071741fe0f99be7d6cd65ec4142fe304e2121932110",
+      "astSha256": "8b2288274077a33e2a1d9a62db3239aa51bc93955b3f67eaed9eb4ffa09c5044",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/transform-ops.mlir",
+      "sourceSha256": "12a310807b671d5b6aa55e1c84437eb6cb96f6d354be040a7ca1ef7d96ae8260",
+      "astSha256": "bfa1103e50d70415969b63447b1807515486b414ce285c80e9de34f9b501b2e6",
+      "hasError": false
+    },
+    {
+      "file": "examples/MemRef/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "ea874c9577316ef4c5703bf4b1026613118330844b5151df22b0e59b33ec839c",
+      "astSha256": "5e2da760f4518b404b98765a4f6f87a5947023d6517dc9a63ebcc4cab7cf1c05",
+      "hasError": false
+    },
+    {
+      "file": "examples/NVGPU/canonicalization.mlir",
+      "sourceSha256": "0262bfb031912663e64120f9cebeb9c9a4ac006f6b92991e375f238dd5fbd6c0",
+      "astSha256": "28fa14607df3f7d741aaa0bc1e4106d159ec923b766494c252d490216b7549b2",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-bind-routine.mlir",
+      "sourceSha256": "bd0aa491315e0d0e84bc763e59ab21c5ed9590cf3f82c0140bbdc4964b3901a5",
+      "astSha256": "7bc614922e297fa811aa30b7c6340d397871c2d44de2ceecbd87c1f8acd8f353",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-compute-lowering-compute.mlir",
+      "sourceSha256": "a5f2dc01663ffb074a17bfac80331cb62f6c41e429925048cd525f38664c4b5b",
+      "astSha256": "0a82dd05565119cfbd4efd3e07dda0c269b04cfc5b5f7e33b3587773e44bef71",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-compute-lowering-loop.mlir",
+      "sourceSha256": "0289e62026ba7b3ae440ca663168f0adee524a3bbd05569bf07f42ce222b99da",
+      "astSha256": "ed699a6ebb5032e2f9184d886d12aac35c25ef3cb474b5f69fbce78094025ca2",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-compute-lowering-unstructured.mlir",
+      "sourceSha256": "7e59badfa9021ca9221af839601610e9891281c82223ae34ebbbb0956e438009",
+      "astSha256": "16efb900910a260206c9339925fb97eff9088d20a8afd929b3ecc4f657144b3f",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-declare-gpu-module-insertion.mlir",
+      "sourceSha256": "b36441bb3528591241ecc60b6fff4db67b64500758f3de9a1c5ddd1a33086a94",
+      "astSha256": "ea970e68176aab9c34037b28446b9bd267ed99b7a80bb1e60c7f0271face263a",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-if-clause-lowering.mlir",
+      "sourceSha256": "6a7497a1b231b492ccc5c1e7ea040e3687ea7c6a834c7f84633e3f4cbbf91157",
+      "astSha256": "d1386de8bb5d303769157269728c452dbb1acab23ff483989397cfdba54e1af9",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-implicit-data-reduction.mlir",
+      "sourceSha256": "907c17d53e0b15ae74f88a22e6544d2b0c611cc389d8bc4264e8f7a54554df3a",
+      "astSha256": "ffd3deba0ec02720e1ce38177f751a7747e780f55586baee341c94ebcf0ba157",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-implicit-data.mlir",
+      "sourceSha256": "1aa34e53b6e3956cbdb2aec24d7d8fabbdaa1fe758c27ea044219673341bc49a",
+      "astSha256": "5c8facf08295cdedf101f8123ddadc62633b9d1dfee91358cbc339ba4474e4c4",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-implicit-declare.mlir",
+      "sourceSha256": "6f6d269cfdafc34df388eede85bc3a1a3f3c877f9f3a57324249eba0381b34c7",
+      "astSha256": "4b7a26c3b7ec929c28ee59b2745f8167f970fc81aa57e04b21d42747f60e9574",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-implicit-routine.mlir",
+      "sourceSha256": "4bae00c7dc0903e0e3661f50844b8db36a8f3434ffd6c63d2510f993201fc827",
+      "astSha256": "41ad37be650689c497026b1cdd023dc13c2a651b091415799badbf4c95285aaf",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-loop-tiling-remarks.mlir",
+      "sourceSha256": "faf89070a151ae1d00bc023e53151729529c7b41572bd547be652ad4c71ea992",
+      "astSha256": "fb1ead842b867f3391b5dfde89bce18f4bd1e48326c52023e014fb322249beea",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-loop-tiling.mlir",
+      "sourceSha256": "244759a05de2e8541edca1378c09fc657dcda7a0f60f6f41228f51e54637405b",
+      "astSha256": "491b35a863b14844dd034eb32cedb842eed1315831fde9b98678c96f20dbb94a",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-recipe-materialization-firstprivate.mlir",
+      "sourceSha256": "975c3875ae7439241a0b13c22bf598ca3d2e8663bbf8cb7563fab9d73b915779",
+      "astSha256": "dd1801a7665185eace9bf0d0a848d7a94dd6ea560dbfd969918127b4ac6c14a6",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-recipe-materialization-kernel-private.mlir",
+      "sourceSha256": "0c0c5de03080a4a2b9cab21ba131bd3feab52f387dfbf0d7d3265fa4a9cb2dee",
+      "astSha256": "95b79d4b101e69fcb8e43dc11976f5fb354ff40c99ee8e4f82401af1ff4af3c7",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-recipe-materialization-parallel.mlir",
+      "sourceSha256": "69677fbd877d168db85a51ad9031a02da2314a8b14ab393214186ba143957f5c",
+      "astSha256": "d072f065ba83954384fc5401c772ea85ac8b4c37f27b1fda0055705555daf8d1",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-recipe-materialization-private.mlir",
+      "sourceSha256": "1f03c463b7efa95c7482cc083b6bbf12060acd7c4e7147b0e1278fee4f7acbc1",
+      "astSha256": "2d5acbbd5031998b62936c26391b3ad07d52bc41ea7e8a3d125db6e90312294d",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-recipe-materialization-reduction.mlir",
+      "sourceSha256": "1947fe96a0b7c59af0ac29641c9c46b70c276e1c97ffa5e5cf2cb156332a51ee",
+      "astSha256": "9b6bd1a9ee7b47747c7f06cb21398feb83b4169119e86aed7cd57b24c69c8ebe",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-routine-lowering.mlir",
+      "sourceSha256": "7b983818fe65c63dc7022e037b8e96be89f24f8eb5c77066f5e87c346db419c8",
+      "astSha256": "b0b9ab73c47c252a1b9d83f5e68d998e5a0f58bf6ca28cad416127ac15359b09",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-routine-to-gpu-func.mlir",
+      "sourceSha256": "0821fe898b64dc2e875fa6bf5775af0a64ac3fdc50925b1838ee4effee767943",
+      "astSha256": "10bba8215b9730765d0f9609b2564e9246ff7d9358cf9791a2eac3519b7cad40",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-specialize-for-device.mlir",
+      "sourceSha256": "aff7986de9fdd98e792c54afb737275fe6aa6e124c10f418ef1ce6c8002a9a7e",
+      "astSha256": "edfc4c62b1624d07c50672e2ae66d80d94aae7cbd455d02cf8dea3e33d4bf4b4",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-specialize-for-host-fallback.mlir",
+      "sourceSha256": "aef691b1702a385bf42d88ce343eb846ae7b9257d7460f8a65bc5ae0472131a4",
+      "astSha256": "559167eb935672ea071047006029bf1070e73a5c0243953d68b08a4b138d0d6b",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/acc-specialize-for-host.mlir",
+      "sourceSha256": "5ab583a16d1cc618bf6dcb24d45220f1236318c653d01b4ae8900c35ca283c9a",
+      "astSha256": "36f0a863735cc47826c7415a2278e4e47586185bdc716322ad7efea7bfa4089c",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/canonicalize.mlir",
+      "sourceSha256": "9f76f0e710792d905e9e9ee214ac37fa6e303206d44ca46e2446080d509ffe50",
+      "astSha256": "2e4dd037a187a228fd5aca97fc65d52e4d8a4f998ebf90fc04e1934b3934ee9c",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/compute-region-canonicalize.mlir",
+      "sourceSha256": "9854887432f89ed69600804dccd2aa0b08232cbf3cc1e85e901ce828c85aa4ef",
+      "astSha256": "8be8ca3de5de9c8b332153ad64bd044d26361400afa749e195f215b6edf9c3d8",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/cse.mlir",
+      "sourceSha256": "352b7e708772a430a57a9891630cbe90d5f65323b4ecf0860e9b16069a7c42e4",
+      "astSha256": "77334eb4511eebfc85112f3c95a610a51324262bab02eda0b3d2b027badc8ed6",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/legalize-data.mlir",
+      "sourceSha256": "ac2513a942493f5dc898a3f559107afd359d189f2ac33da89a039519ab113c3c",
+      "astSha256": "eef267b93aac0a0c0af9d1620bb1b22b201674730328845a7dc3ecb8cc895241",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/legalize-serial.mlir",
+      "sourceSha256": "8658f340139b460196659f12962c7f11529ef1bbb7f6fde9ecfd212710317a96",
+      "astSha256": "8e2d91dcc540619a2b8e110532beb77c00047086080a35f15dc2054b0971f0db",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/offload-livein-value-canonicalization.mlir",
+      "sourceSha256": "9db9c44c88105b9e421df687bc9a1efd138ea89d151dc0e238ea6090ec2c7c7f",
+      "astSha256": "ab054821ea984418b820f17849d3dce949242def1922aef7709a562b70bda4f6",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/offload-target-verifier.mlir",
+      "sourceSha256": "00011ffe0c7537fca454959caf2bdd3287cbcd93b602c6c6ff552aef74fdfcef",
+      "astSha256": "9c48ba200218f499cca027c1d22520508f122d8a84e585b6a2540ce288b91e15",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/ops-cg-privatization.mlir",
+      "sourceSha256": "967c90a1dab2d59097fa3d620ae16c6297464d050e9f5576b604f10a05cac9df",
+      "astSha256": "d0b71d80bbee54e21d44f81bdb05f23c034da19124ec695e895f3ace3bfefbc2",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/ops-cg.mlir",
+      "sourceSha256": "cf46f6143ba98275396e42e29bfbe2accf7501603341721a1dab014218c54f83",
+      "astSha256": "fc4b33a36285e43516e80d148d7403df824d9c379fa86676172ac0bc2dc9bb30",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/ops.mlir",
+      "sourceSha256": "3a31f05d154b90a35dd92e5b9d639f1698336867202b6b45adf295a67e2def3c",
+      "astSha256": "45d142a7fe117002561d028a9c28484a3264e1d9149a7f42aa03a1a82e544e08",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-alloc.mlir",
+      "sourceSha256": "07227d2f0385b10f4ce55859182ef0768329f4f5d4dc67343b434f35b2365cf0",
+      "astSha256": "128f5d64667ded83e3939ece3f904726407e009c48577a7590ac5112c52a67dc",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-cast.mlir",
+      "sourceSha256": "68023baa45de2a27549a67ee0b59adf2afea73a817a5e570cf00f68723c1985b",
+      "astSha256": "76d584d9f433e57db554246821b256f69c6f671d728a29c07a3d27517110c539",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-copy.mlir",
+      "sourceSha256": "370a087543d59def98f64db08faca6e59691ee132d1a80d9d67e11da2e0420bc",
+      "astSha256": "20e3f94777b06fa74335df2a849522f6b443a71a58f921ce0840672e58342f9b",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-free.mlir",
+      "sourceSha256": "6bc3f244d5ccbb3bc401d4014abc3410054ca470fe5e0a2d15689917f02f231d",
+      "astSha256": "5f10164c8660691fc4d97a2477990048c4ceeaee938b25cb6cd30a4715f3ac85",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-load.mlir",
+      "sourceSha256": "44d2fa75a435222d4cab9102155eecd9efe0640689a881ec5e559d3416debe17",
+      "astSha256": "3794ba4199a2af3d8a69a8795a11a7c2694e1c6e0903fb5bf81bc25df2dc0e9f",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/pointer-like-interface-store.mlir",
+      "sourceSha256": "028c505228c963f44d126f5509ba3926bfb354c6a036ff37cd655ff9a78194e0",
+      "astSha256": "f2e0c9114eafe9aa49f72f10f37b1e7932c35cf1164ffd7794db74d2dc9c8747",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/recipe-populate-firstprivate.mlir",
+      "sourceSha256": "5ad5e9e27d9c967a1c42d22a51601ad6a73fb6839ffaf606ca9ce32d66e01f87",
+      "astSha256": "4149cae5883a561f68519a356e4789a506181e974aafe361f7df8f6943056e3c",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/recipe-populate-private-from-firstprivate.mlir",
+      "sourceSha256": "5d1c55198daf6fe83e46638a331d6cae7588519f0dee20d417db3775bef525e7",
+      "astSha256": "fd73c8a7933711c6ceb21d5d15e49395c667ac2dd6cf65faa3ee26c8e6b13949",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/recipe-populate-private.mlir",
+      "sourceSha256": "133a320402d77428404fdcd57c4b357c5a8fc53256b7e1905c0cc30414969597",
+      "astSha256": "4ea8dc38b01019e78963773c00e1a006c68299fdf839843d58c392e430e1be9b",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/region-branchop-interface.mlir",
+      "sourceSha256": "c3daeb7936a737b659b4b10da7e06c65c3f7fbd60f672554a2b82cae1be4fb71",
+      "astSha256": "c1e805be0cfe99b7e23e96609f8156c916ec9d85955ddc9bcceae11b8c58d537",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/support-analysis-recipename.mlir",
+      "sourceSha256": "a3b8dbf6603b6b85226ea050403c358b597bbfb6a1b2e7f0805266ceb94f493c",
+      "astSha256": "7ba2d6c3edcee14efc5281ebbad472b5439a9aaa2f3e58d8f1f35b0ee9feec92",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/support-analysis-unsupported.mlir",
+      "sourceSha256": "be65bdeddee1ca7cf2bdfbc89acbc813c2ed658062070a6cde6053263cb2b5ab",
+      "astSha256": "de52013233eb43858b02b1a8a9a78c7a8076ccc7d72491be7788f25abfdb7086",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenACC/support-analysis-varname.mlir",
+      "sourceSha256": "c26fed8761efbd38f083d221e632a857872bbf7f61270f79fc389c1ce45db15e",
+      "astSha256": "00b69eba9e2cb38b4344dc45610cc805fec3f062583de6134933acda1798b7fc",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenMP/cli-fuse.mlir",
+      "sourceSha256": "7f30e3467705b0f3f8712f9b0a9beb587235579247a1f62c5e4995a1618d6b38",
+      "astSha256": "b82dcb9549afa8fce90f82b8d34a847776c5a3853a7c02624ff53b59e792aa9a",
+      "hasError": false
+    },
+    {
+      "file": "examples/OpenMP/cli-tile.mlir",
+      "sourceSha256": "19e335a65d8de1cd94f13287a680d89158c056b604b2a4c43105559bc7bd73ea",
+      "astSha256": "300af1a24e949a487d0d6f53eeeb0b4bc5e28685efdc68589b4564d547fdc879",
+      "hasError": false
+    },
+    {
+      "file": "examples/PDL/canonicalize.mlir",
+      "sourceSha256": "c882ddff510af05aa99d7ab928921da30327da63485ca8b9a1245ab4bdc4fc24",
+      "astSha256": "b13195e9736cc4548d0b526505ad702314ef2c56b6a25c716f418714d0ddf22c",
+      "hasError": false
+    },
+    {
+      "file": "examples/PDL/ops.mlir",
+      "sourceSha256": "a27d03ff32ae581d6b52583cbcdafb7c3a0991752c889c2f66687e15b9907334",
+      "astSha256": "83713521c7adf1c63afae279bc774d29aeb64c2d6e3a5504d5a4d9a85956ee63",
+      "hasError": false
+    },
+    {
+      "file": "examples/PDLInterp/ops.mlir",
+      "sourceSha256": "d1b7b3c8f1dcb4b4b7b0584bfa788440581686043f9fbf226fd713a5320fbfa6",
+      "astSha256": "5eed4fd9be8bef981898565911af6737f7a6d770c4592f706ec35d633720b0d2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Rewrite/pdl-bytecode.mlir",
+      "sourceSha256": "fc2ffa7c2d4bf7836859c8a5926508c4076d53064d1e67488e9f7c1c9ee51b2e",
+      "astSha256": "2265df51a8c082902d9a3195da5dbcb2dba9024f198fe5ea605609703c9546cd",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/buffer-deallocation.mlir",
+      "sourceSha256": "8c289c6748b8df3a28c7c4450fd9646507a1cc1269841ce37352559c05ef401a",
+      "astSha256": "18149ff051fd1979bf1a4cf94f4615fb84c61cdb8c91abbd41351f1c891033d7",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/bufferize.mlir",
+      "sourceSha256": "a8c96b86330ed22ce530521264a1c4c3341095abe7ec42ba86b8f74c9c3ee620",
+      "astSha256": "6048dab6c250f7cfbc1b868c5255a85742087c279c348d972709e4ae5a55f257",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/canonicalize.mlir",
+      "sourceSha256": "9db49a41f778a583006c0d2f1e31f2ce40b252779d0ee7eb6ef43cf96a13b5df",
+      "astSha256": "51d116a7d8de949c959be62094e4a43e46a41c8fe7fae4006f73322f9d1af749",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/control-flow-sink.mlir",
+      "sourceSha256": "3f470c5b6113a7c5129e313670211876e6028be96bba40cae7009db37f35c180",
+      "astSha256": "60514afe57776a70faffa82eb356f85485efd518164409a7d0a924dac39aed26",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/for-loop-canonicalization.mlir",
+      "sourceSha256": "38deeac3fc1736183e7fee0fc34b6b93b4730076cf63898f3b44d45023887f7a",
+      "astSha256": "4a98d7b31df7478abe4e99c7fe852498be8c6000ddd334c8fbc74bcba8c203e1",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/for-loop-peeling-front.mlir",
+      "sourceSha256": "d2c0260bf0902e06463ea5ffd1b8c13d59747de1716dbc29336835b4b7548d82",
+      "astSha256": "9e53f7b8e980f550b0a4b2750fb405fefb9d80756149f0b70da8310dfa14f598",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/for-loop-peeling.mlir",
+      "sourceSha256": "7d928f5373059495f07a12164aed9fa08f01c3ce955faafacbd42a88c7691218",
+      "astSha256": "8150c730fcc5bda20f7cddbcb91e72e4dedd0ebc2dde864982c5bcc6d01c1590",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/for-loop-specialization.mlir",
+      "sourceSha256": "8bdde390994e458dab0cd8d0e53e656b25f2b307c4489da5e2194bc432a4244c",
+      "astSha256": "ba43c5716b544b8533b38cb7f1319206c9c8faea9f78c10185a3b73ab23864a7",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/for-loop-to-while-loop.mlir",
+      "sourceSha256": "4dd8afdeca2237c995264b228e40ddc89e8d4fe745e2bb713c3c336bcdee1f92",
+      "astSha256": "a5b6be90165199d89b79c07af78a8cf48e894cad8b2aaa87e1f7f1e8f6988688",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/forall-to-for.mlir",
+      "sourceSha256": "123501a83d21ddac899a43071769137953aff6f4b4879567f00bf0e21acdb8f8",
+      "astSha256": "d4e824f7c71dd2a939c7a4cff2743330303e67e0a499af760344026ba06cc430",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/forall-to-parallel.mlir",
+      "sourceSha256": "ec627eefd58b19bf1eabc357ab4aa5280791bebda8ec862b33cf4b01b4ddf8c1",
+      "astSha256": "9d63055b3320bc088d841aa105fef0b76bcea1a8282f72a32fe9fa346f4d8efc",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/foreach-thread-canonicalization.mlir",
+      "sourceSha256": "52bd31c4791cd0d938516859ee732ca85e93870fa2520d6248854da0cc4eb40f",
+      "astSha256": "e5e7b69f8ec6a4744c69ff3f2d85f2cb06196779549a79f2a0137c94dd325570",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/loop-pipelining.mlir",
+      "sourceSha256": "99ce2c32d6a9ee348abcafad35cd11cd60aafa4fccc610e5719c6d8074f87c01",
+      "astSha256": "08c511e3f2772c9bde5c9159242aa1c43cff79ac9b3b83ec5cfaaff04f82d569",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/loop-range.mlir",
+      "sourceSha256": "1444e4c0fd87d15469b05a3c65552b2bafe68c3a05c75850505751799f13a26c",
+      "astSha256": "083b15730b4ae71978649c2340f6164d6d56742291b614be6b7e6e28d1c83df7",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/loop-unroll.mlir",
+      "sourceSha256": "cb07b583f95ad723669fe6acb6eba219e2851179c836140c05d38a42bc0c77d9",
+      "astSha256": "fa45e009fcfdd8829fe56957382a87e348f899cce96917a3f616b0d1181a5289",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/mem2reg-reject.mlir",
+      "sourceSha256": "2d3a6d1c87f14885974c5c807a5b02e271b79c6c8afb4658af14ddac6a7bdd28",
+      "astSha256": "ab2de1571e2fe71f1ec026198fdea3d88505f505eaf4c74f16e0353bdc8c2c70",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/mem2reg.mlir",
+      "sourceSha256": "536b164dde1a302ed2bc7ce644916a2ada2992dcbb0b2ac4fb6618fa7383d560",
+      "astSha256": "04b675514db92554cd3f2e2d87cda7276c75e29bcfdbd80c81deb0ae453d8db8",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/one-shot-bufferize-allow-return-allocs-no-deallocs.mlir",
+      "sourceSha256": "eb414bf801198a4c874d5011d50c62e86ba1aee9c0f99fad3e0134f0fa14cf72",
+      "astSha256": "cf45622ed83e48fc7021dd1375d2037ebaad0c21cc468bf03613af6b8cda8cca",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/one-shot-bufferize-analysis.mlir",
+      "sourceSha256": "e312764f696ce85b91e95950cb86e8d64cdb9593ad7a50fce64ee49c7dc52615",
+      "astSha256": "f9e7874241efe2536d17473a71da09c245e7d1f829d6e7679eed0573a5bc8f88",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/one-shot-bufferize-encodings.mlir",
+      "sourceSha256": "d3edb352de57e4ccf67afa091a7389b8609f8b952bb22613bb4d73749b70e5d4",
+      "astSha256": "8d3f3416eed812d11ef7d42a1cc921b4dd4151e1c7595503b992704ac5a3d57d",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/one-shot-bufferize-tensor-copy-insertion.mlir",
+      "sourceSha256": "e9be8f137834e5ef05b511c3f3ab0defd8c8f78046852d8194f94d645baa24af",
+      "astSha256": "6847e901682d9ae4982dc1a346342556f0693d06395d4b0906aecda34d7a5566",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/one-shot-bufferize.mlir",
+      "sourceSha256": "91278d7b224a0dd3daffef02febb17810145afb6a94c5ca98c34dd0f60d75cff",
+      "astSha256": "5f8135bd20e1857ca89007cd92f90602e9c0ff3fb0fdf93fe793c5519113e2f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/ops.mlir",
+      "sourceSha256": "8232dbab154be69efe0215b723b1ef7186e56130d3032565f985ba24350dbdc9",
+      "astSha256": "eb0520d1169844b3cffe102eec0c6f8ddc4adfdd97e5175d70b5e3be96658437",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-loop-fusion.mlir",
+      "sourceSha256": "b3228e1665605c0c75a800e2ca7994228b57bfec54654e16ec6681e1cc5f1d9c",
+      "astSha256": "ca039fac6c3fee37532ee54cb0fc2ba073c3d9cf9a6df858a407587a631fdc94",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-loop-specialization.mlir",
+      "sourceSha256": "1b4e2cdceb434f32f5c7105d19a8d559b3525a92887b7ab92cc74317a8a54f6e",
+      "astSha256": "c25c3a72039b15dafd09ef34f3008061243cd68efc50f713b3c658aab942ef6c",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-loop-tiling-inbound-check.mlir",
+      "sourceSha256": "5bad7950a34089fd765372e8b384bb3a9b52e6467da4ec0f3c85a8dbd78f40d9",
+      "astSha256": "d87743b11c4ea0253f4acf189c89b85217f40b0b6ecfa64eed952f127e0a0c6d",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-loop-tiling.mlir",
+      "sourceSha256": "c797f0f6be85ebc20505cfce5c37e55ac57d762c3b4c71da0ecec90305619b63",
+      "astSha256": "0fba7745a240811128aaca59135a3ad9023e85310aea4e59c2a3ed620663c411",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-loop-unroll.mlir",
+      "sourceSha256": "e581834412db0da5b7b08941cb1cd69849522f7f66af6548486f48b25b5da273",
+      "astSha256": "63dbd2b4c26d27f815c8396274ec49ede21a4e56d2d7106758491a2eebaa4222",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/parallel-to-nested-fors.mlir",
+      "sourceSha256": "2707275e94b945463743eeeb4e200d8796a14f20eb8527669d0e616d208d4510",
+      "astSha256": "7129ab0a7d12b720099b0c60d2f5f98c72f47925c4cc91890fff48b842e1ddc3",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-loop-fuse-sibling.mlir",
+      "sourceSha256": "86907b59f5766ad5a15336c593f3045b10caa70607945556c6463986634ee0e5",
+      "astSha256": "063f20076dc40f7b3d7f5285d44314e3ca8849247c99fe39ada922711ab31f9b",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-op-coalesce.mlir",
+      "sourceSha256": "f9cd98f7354cf1a89b4af30d4db1c9abd70fbbe4f819b46515e8fb892fe771ee",
+      "astSha256": "c85c1a41061fed2b4c0736439bba3506376ee147d4c9bc58d8bfa3ef94dafed5",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-op-forall-to-for.mlir",
+      "sourceSha256": "1e98126e98cdfe0a218ef173ec4949840af64a25aae243fb4945055e3f653487",
+      "astSha256": "e0e96b43abdc3b85754a873b23cc0ffdbd3b0f1ce0c54df0831e1fc17475ac56",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-op-forall-to-parallel.mlir",
+      "sourceSha256": "34589becbaa4ffb9934aa6ebdf3a5c20d77185cc4624c4a64b6287dbc881876f",
+      "astSha256": "7bba35e98113819147c85d92959237540760614306c40d9c6ea058cd1d0277f1",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-op-parallel-to-nested-fors.mlir",
+      "sourceSha256": "a75146cf6321f37f7e6a1b7b4e706785883dfaad7399b535eebbe50be590e530",
+      "astSha256": "aff21c47affb5c09afa310b3caad2cce7aaa5c701b31d91141a7029be633f3ca",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-op-take-assumed-branch.mlir",
+      "sourceSha256": "24979f33d0292ba5475fd32ed09524cb3f1dda296c2733b4eebd1b2dc831fd8f",
+      "astSha256": "1fe3c4c0eda3f900cef1cd50a12740e3e83fa20f32a1e5853bcd246896c9829c",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/transform-ops.mlir",
+      "sourceSha256": "6874e45c3b915cc6bd48785a9b127ff19572e15ea19122a15309202ee0615464",
+      "astSha256": "d38c204fd7f8e14bdb0bba5a2e98f2ef99e7536e534deaed06fd7808dd5b361a",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/trip_count.mlir",
+      "sourceSha256": "5bd2e77a692782cd5ebced5a8c9beeb4c3fc40ff990182f16f37d4a8ab6e0718",
+      "astSha256": "a61d912dfac743f78105594fa33f975c3a363de8f906a7af7984f7d3409f372e",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/uplift-while.mlir",
+      "sourceSha256": "dd92dd74fdf1fa09d13839193e21d0380dca59989bd9f79b300df67e20770861",
+      "astSha256": "74a840962f4a67611eebfea7d59e260ecc9f2cb2a6745cf7a4d4b303f759957e",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "e74fdf12fa636b764bc76c0689052ec8111d260493ce8473e124d3e32810dba4",
+      "astSha256": "ad0ac0af588b791502d166159dc679df6d9beb10474d5f89ba81c93437e9bff0",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/while-op-builder.mlir",
+      "sourceSha256": "67df29b596f5d676ca79718fc8420d33d3bea1d98fa19aa71c6c26804a7feaf4",
+      "astSha256": "e3d29283e93c3e276f05e6489ad900f3a97a0850dd7a1595867b66cb1cae9cdf",
+      "hasError": false
+    },
+    {
+      "file": "examples/SCF/wrap-while-loop-in-zero-trip-check.mlir",
+      "sourceSha256": "c11b522afbb46c65e7c5b90baf9da8d03932902f2b85d783d093584f5909546a",
+      "astSha256": "6b7ce2efa48c38e5f47c40158d4bed6539eab943f24c1682fa464e2a2b3a9258",
+      "hasError": false
+    },
+    {
+      "file": "examples/Target/LLVMIR/llvmir-le-specific.mlir",
+      "sourceSha256": "63e4defdd623176ca9e2661f77c6020bd8456c5afe594aa9634c21894be97e31",
+      "astSha256": "1b3cae495f0ebb5facd6e33911b86007a07f5634a8444610b7af54610c721fb2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/bubble-reshapes.mlir",
+      "sourceSha256": "0c5be1aa30dacf5561d712e26ba9c27d340755c59c73b28495f1633ec6b50457",
+      "astSha256": "c75fcfb458bb7957fabed97c17c8b3e51950dc8756b704c35501345ab6d89f99",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/bubble-up-extract-slice-op.mlir",
+      "sourceSha256": "a1878e8b02c9c4f7652c119ed21b2794236556d5e50f96e8bb3ce01e95cb3451",
+      "astSha256": "4275115bd214819244b85f8721d3750222177020673ec673904c06d478a18b3f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/bufferize.mlir",
+      "sourceSha256": "77116add811ff508a2dfbd66445ef11931a65767cc8dad37832864a0b162f016",
+      "astSha256": "74a89ba862374c7f083ef285a23c9549903946c5e7979a67127db39f4bba13c8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/canonicalize.mlir",
+      "sourceSha256": "7bc4c3325122e63b33aca6d4b38d34e708952bcf8d4d3295c19cfc5f413587c4",
+      "astSha256": "3a1bdc2db4664a6af4885a81112a70193cfb5d761a93d6f0490ff18e3ecf93b5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/decompose-concat.mlir",
+      "sourceSha256": "2a1034b18164d50f0390359295fefe7a5b732d95431e84c51cae61d47536b091",
+      "astSha256": "19a9b439d3652b7eecfb52bd3cb8acc5ed12544ab04d22b88b07bfba7035fb57",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/drop-redundant-insert-slice-rank-expansion.mlir",
+      "sourceSha256": "fcd8d53b5d81d059b2017aaec3758d0455bf4f08b0d3bab9d593637953d0e85c",
+      "astSha256": "cfca17a959a4c040efa22dd9a27d4a9152535ccddf53d7e5e9160a2b6f9061e8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/extract-from-collapse-shape.mlir",
+      "sourceSha256": "1c24d1c9fac8537b6d379ee69f5f005d9c62ef0bbbe30273b4b30e56acc1cef1",
+      "astSha256": "15c77e3f23f43761562b6e23fd6f0582954081b33c4cc694406e4532116a19dd",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/extract-slice-from-collapse-shape.mlir",
+      "sourceSha256": "1b69a49de00cab4911e9dd43d8b4ddef1a0e1bb8dd67dab394a4f842a3468229",
+      "astSha256": "72bad2bb2051475397f7d2bea6ea54904b071512f8f597e9abd601212e34e0b3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-consecutive-insert-extract-slice.mlir",
+      "sourceSha256": "aadd8ab8f181be7ed9b0c9bdc02d061f8fc830815f1a6fdddb365f758c1e78ae",
+      "astSha256": "aff796c611456814586fffd7d2550911b0844c072a07db25c270ced953b2dad1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-constant-extract-slice.mlir",
+      "sourceSha256": "bc72dfebc4bf6188971def2373e2e567573ff8f32a5144557114a4e16cb26bb3",
+      "astSha256": "e532061a2065f1508f9b1d76a0e8c5d5b87142651dc520cc87bb337326e84dbf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-empty-op.mlir",
+      "sourceSha256": "ff53d97469a1659488677ba2717e593f778fffd09b78633369d95c1d2443d472",
+      "astSha256": "506cc0eef926476eabbcb02d78449943b732ebc200e7409bccd5308ce2afbc3e",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-into-pack-and-unpack.mlir",
+      "sourceSha256": "979a1a1ea2b801957692d79947d207d157111074706af38336fd57e02cc5588b",
+      "astSha256": "3c8e2def5fb6498b20d21a866e87dbb599d12a36d0642787b22a502a5b1945a9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-reassociative-reshapes.mlir",
+      "sourceSha256": "776753010db4401f32be5bcd64115911bb5eca0edb5438f961b52f15960624ed",
+      "astSha256": "c0897e38379480cebd3adc055bd43e058ffe31b3ff6a6fcc94746e6067be6374",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-tensor-subset-ops-into-vector-transfers.mlir",
+      "sourceSha256": "23d6a51d7d95eee2bee1b77cd8b6b64f2bc8dc89705b73dceafdb91c69be6bfd",
+      "astSha256": "60fc5d212287bcb596ad97b4dcdad3f2c7f952a4b9d610f7ec3d9a33ff16997d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/fold-tensor-subset-ops.mlir",
+      "sourceSha256": "47bffc1f2204edeb1bd1a93bb85dc69530fcf83304e45a6220abc0449eb9e32d",
+      "astSha256": "ba9ca45fbddd65f64ac4cd47b29ffd7fccfc82e10d5834bd860b87ea1105323a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/int-range-inference.mlir",
+      "sourceSha256": "029035015130964d2759035003a75d513ba02eb6ded530cbb68cba4cf13b732c",
+      "astSha256": "95ea60db8bb6879bd22cf4a1bf28c7da895f5cb658fb5abdfb8f8c87b6a6ec9a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/one-shot-bufferize-encodings.mlir",
+      "sourceSha256": "08f45304bd45d7f9d84067581ba48fccd282625cbe1764730ea37b7c147d4325",
+      "astSha256": "4bd5be1d965edc292e2f744211a2f2e62616ceca3fb9439f599b70a623878ba2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/one-shot-bufferize-tensor-copy-insertion.mlir",
+      "sourceSha256": "60e91482a5a07d8af5c5e10e116af8cb3b43166a70f9c743b925b80fc9b8465b",
+      "astSha256": "8545e91846d3250656762c1c435d26ef1966a0ab8164c33a93450f9357f91464",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/one-shot-bufferize.mlir",
+      "sourceSha256": "3baa065df4831745ed12a45d30db3cbc6cdc58d0c980710450e52d952f1ae103",
+      "astSha256": "1e3a093db5ec059aa389417db7f39d514599b98f0e033660b815d9f0c6af950c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/ops.mlir",
+      "sourceSha256": "51582049d82d4255dbe208c9394050708516d8058957d0775bc5327e6e64e84b",
+      "astSha256": "b581100f463f32da21164e9b29f0e209f03dc8a2dfbeecb928a69b3d97c288fb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/reify-shapes.mlir",
+      "sourceSha256": "d11a9a886d9652fbf743a8f78e4af7e098dbe5db44a377ec79bf95db25d83b21",
+      "astSha256": "9c2a8c51d03de23917a8d81b977ca2fa091be260c433daa1e874795f0c7b6f57",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/resolve-shaped-type-result-dims.mlir",
+      "sourceSha256": "0320c351e52bab58bc7adf7122c18e4a831b6825b19360e23f9ee75f013b1465",
+      "astSha256": "e4b3e05da87d2e0e3e6047bc8157ad29d83433191fd2866444992954fec82a5a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/rewrite-as-constant.mlir",
+      "sourceSha256": "ab53003ccc7b28785cb49d72e6cd449e61e213ade9c7fed868a379fd29c42974",
+      "astSha256": "f3874d25ff8f0f4121b595af2843adf5cb643f85103bd2828bf4b1dd8b466d81",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/shard-partition.mlir",
+      "sourceSha256": "a0d6f574fcd9899e4891fd13be1d44f7dd4a557cc1b4a1db6d6e105861649b00",
+      "astSha256": "14fb63f288a39f1406cf51497fa39b58f8c33e96063bf153fbb6cb9856bc2c74",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/tiling.mlir",
+      "sourceSha256": "1ed1d6c38b22e950bf7c8626b8d01763bce045133c2f2520a767fa3f52dd275f",
+      "astSha256": "ea3dcdb56f8c4a7c8f223657d142b95754daecb138bf358127da405a926714b3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/tracking-listener.mlir",
+      "sourceSha256": "614aaecbeb7c6fc3aba4a34337b160cb09869618c2266374637523dc3f123557",
+      "astSha256": "034af24cfcda5d58fdd7decc27be9dfed942b6acbd402914c0ebb3e2ce630609",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/transform-op-casting.mlir",
+      "sourceSha256": "572d5a47409abfe038a0309a08ed21b98d55100d9c859589fa4dca1a8982b81f",
+      "astSha256": "292c06616579a5d1099a0811780522524640e9a587ddbd9cfde871402214e57a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/transform-op-make-loop-independent.mlir",
+      "sourceSha256": "87264921ab9673462fd9190ab51658416ba489575fc473e0798d9f91af718652",
+      "astSha256": "8c45c994756154d8c96379de208d15a0b749110003b80fe4530f891ff2a4f2d5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Tensor/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "077607d04e03445b0cf69163255d851360a6bff6b0f1c293e85cbc2075f76edf",
+      "astSha256": "daf2ed2e6f3f3ec5a09f2b1d8723b818eb424d25273ae01d94e859127f404e0a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/break-down-vector-reduction.mlir",
+      "sourceSha256": "33672bc29b0f6f13148343fecf2d02d46a0b67663fc7a0c8295ac40b8100bc46",
+      "astSha256": "45ec0bacc475c533d33e195a68b97ad1e72150ccc9d7502e959c2eb76c7456e1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/bufferize.mlir",
+      "sourceSha256": "4d1ed712d5bb7efb0055b4048cc3b3d2609ba7a353b6f41c7a4e6d8da1521617",
+      "astSha256": "542e72716893b6c50f1575f2b7198f7b1075657ec335d14d6c28eb5861d1d50b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/canonicalize.mlir",
+      "sourceSha256": "9a82f9aa19eb6709e1559660e1cb7f5d4e9538ef79b77b5171943ff4c43c4def",
+      "astSha256": "d40c1ebf416305689e8c2532fb9af24e51fcd1c10096c1c7a9d408347a08ad7c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/chained-vector-reduction-folding.mlir",
+      "sourceSha256": "22445662caf61a49e5eb9f4e23abec8646d1fdfddd64a71b197731419610f2b4",
+      "astSha256": "8cef878b1e065b5cadf5f604404a35844c456922e400199dcfcb735748bd00db",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/constant-fold.mlir",
+      "sourceSha256": "443bbfe4e28433957d484aeaba7347c55f1c735f548429fa49cd3a9fac6309d7",
+      "astSha256": "f3c89dba738c83c01a60f8f753a1e77c08c116e9c0528ef080100b098694bd12",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/drop-unit-dims-with-shape-cast.mlir",
+      "sourceSha256": "6a5907d1466017c9e848155f8fb70f00de69db94b5cdd46b401692b1ded83adc",
+      "astSha256": "87e894dc9f59c62d2014552cfb0c1e8c6578e52ddfd02c468eb0d4a35758e1f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/eliminate-masks.mlir",
+      "sourceSha256": "e59761f29bebc1183d425ba799a1a004ee4fffe1a7b7a20391db96505de6c789",
+      "astSha256": "df24e2304bfb3ba7391500ab3636a1a4271e70b643735e9aada043895b5ed909",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/emulate-narrow-type-unsupported.mlir",
+      "sourceSha256": "812fd48afcc5469bc13a8fa31a17c071b4b9bcc4eefe70ec3194c3edf536d7c2",
+      "astSha256": "c7309408959716a6607a7aed238726d6b573cac5027845f2bd1a62d4b20b5707",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/flatten-memref-and-emulate-narrow-types.mlir",
+      "sourceSha256": "08a138c5c1b4ea8cf53e0cf6afc502e8c8c1dd8f1949fd21874c1bfa5db163fc",
+      "astSha256": "3831df518fb11298b9a71ae884f6f5829e7be70ec282c324421b788d7d092002",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/fold-arith-extf-into-vector-contract.mlir",
+      "sourceSha256": "557693e2044661e04d6baa880ffc2cd5b26c055ad4fbfef1c15ce7c49866807b",
+      "astSha256": "3d89a48efebef19653da9d82d231d9cfd0bde92611e47fcfd8fe622216cf80a7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/inlining.mlir",
+      "sourceSha256": "1cea26eae9e756c2fdcb745619f563394ca0af19342c24937860d1896c5948ab",
+      "astSha256": "9a6159826b5254084ec980c1bc16e43bd111f95713e794df9e3dddaefe286686",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/int-range-interface.mlir",
+      "sourceSha256": "8c08fae5febe43436348c5f1d6dc26e32f61d9f8ae9acb37b2856574ad2b5896",
+      "astSha256": "0306ac5197c2719ff7b5255aeeade0add635ef8ae169e6dbf6c44e3c6ca4c7f2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/linearize-subject-to-bitwidth.mlir",
+      "sourceSha256": "8e6855cd7bae88e272d9a25cedec3ad06f2c01edc1a01a66176913d40ce97683",
+      "astSha256": "5e84d7379d2beb186401d2800503ab7cb5b789c98ca87a28ffafecbd602b7810",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/linearize.mlir",
+      "sourceSha256": "15b7b1df94b7a6c56bd0a1edff5f5207d4797d8898acff5af35405af81dc92ba",
+      "astSha256": "084ff41a128808ade76fe252d3e7559b1b174577545288723a820bb8c418ccfd",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/lower-vector-mask.mlir",
+      "sourceSha256": "e44a6b841ffe061da98772c5b3243f8522174cf47a470df2e086505d09f7cf1e",
+      "astSha256": "e1ce55667f02f9c1f63a65361bcf82269f9ddd542df2699e7845004dfbce9e3c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/one-shot-bufferize.mlir",
+      "sourceSha256": "9a3e823d1b85b4c8499c59bd0fc72846e82a8d21b9a262a280f4749158babcff",
+      "astSha256": "5b3d3300512db0a258922479fc3ed3a767f836bdbc80590eb1b68e90e2257b28",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/ops.mlir",
+      "sourceSha256": "5989473cdbd2c2e0917777cba913793a3e2142f9a811a33845424abc2f300e57",
+      "astSha256": "ad7e597eb0f0451bf40da97c36ca897f624260a1e46ac0106bac096df6ba91cb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/scalar-vector-transfer-to-memref.mlir",
+      "sourceSha256": "5449f59d9a1778ade2591ec259a2f0f36cab5e58bfc6056fee16ea907382b731",
+      "astSha256": "903aba954933ccf89ca44f1318865ed950233f3f563010e67f1dc9a21a32f99f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/shape-cast-folder.mlir",
+      "sourceSha256": "35a4793a06b5fa22c297f123eec2964182e8fc211f660fc1548c7849358ab722",
+      "astSha256": "b265faeea5335eef847edb2fda96afc18f43fb45d1d299285c66e7c4900a1f4f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/side-effects.mlir",
+      "sourceSha256": "f9600516457802cac38dc7264c1bcae7273cb0a32b872dfa3bdf988ad15e9855",
+      "astSha256": "eba9259bdf880cee93466b4e79e1213f491cf8a3b729eb06282b6e4b91a52160",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/single-fold.mlir",
+      "sourceSha256": "82da86f494da48e93155802cd83f41ed6463cd9fde8b33793c7637fcb168c972",
+      "astSha256": "4479d1c39c1dcf91776a36dda809da18a4fd41c26321a1b6d9a03e3a22405f18",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/test-create-broadcast.mlir",
+      "sourceSha256": "8b176863f201950a8864603ec8501fb86327be4ae0bb9ca100b57a6dc875f44c",
+      "astSha256": "9e38f6c3690a992fd6d14da27dd35accff3b243607b4a328c7bc7f1fccff523c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/test-scalable-bounds.mlir",
+      "sourceSha256": "e7a1c4aff19f52ef8f68a9cdfaa7a5055c7b5dd90f827ee10cadbbed2d974baa",
+      "astSha256": "029e5f7ecfe3615b4f8f9eaafe3429ab60ae5be8ff55fba8184adc413fdc5f6b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/transform-op-vector-to-llvm.mlir",
+      "sourceSha256": "59f66b999d1a28b075d4511dd43eec30722df3d26181eab5f6f099cc1e709ea5",
+      "astSha256": "c48936fff3b5413d0b53da5c7e708c2ee1cf0c50cfc949bf08d706e1703f9377",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/transform-vector.mlir",
+      "sourceSha256": "c2b080bb2cb2e38480fe198675e7aed0b5808ba6b811636e3cf5c7c35a108f9c",
+      "astSha256": "27611182a695c096fc4bfa58824a16154645fb9f47258caf80fade38736ec96c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/value-bounds-op-interface-impl.mlir",
+      "sourceSha256": "19efbc14e66d7f56a6d6e76c362edac463ba80fe89b9ae1fbb57193e96f05db8",
+      "astSha256": "30e27fda5d09fc90f802d3c720871463c6c6581a2bc2e4b9b853c8b502a8c34d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-bitcast-lowering-transforms.mlir",
+      "sourceSha256": "7b5132ff3b40fe8449a606ef94bd89cb53323d38ff4807ac8c6d97b77fa4fc86",
+      "astSha256": "0e1c9c61eeaeb5c6871bca6310f08fe0d53ae5e3f4b0b34227331b7c4e57b358",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-break-down-bitcast.mlir",
+      "sourceSha256": "c78d61518b02c2479f9dd1abfb91c40f94fea5c71597d65388ea4348a4d2d706",
+      "astSha256": "344546ffeb5d2a8bb3c9d1b1bd945d61d958f6a747f4eef8f3e33c0ce0788909",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-broadcast-lowering-transforms.mlir",
+      "sourceSha256": "6f344d8dd527e407a67e97e885733229bedd371936c758fbcf0e7a02b518d175",
+      "astSha256": "25764433b4914b32c7f4da87ba1a9ba0dcae24c9d4ae883c551999573bc96345",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-matmul-transforms.mlir",
+      "sourceSha256": "f8f6c391fdb403f851619ab78f3b1a6d3d5f8618b7d770a523e8fcba6f2a1e2e",
+      "astSha256": "7e9413be9b8854761c5dca739e7bf10efe654a95ba22dbb8fc8475bc8f04e8ef",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-to-dot-transforms.mlir",
+      "sourceSha256": "1d4266f627610bd4fd3d89fcfa39de56a043c41f13dd516b9e0dde42f02386bb",
+      "astSha256": "2df2730dd0a4a9d30d14c6b657ca9983893696a05753a5a426379c11b10c2dac",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-to-matrix-intrinsics-transforms.mlir",
+      "sourceSha256": "cd3dba3a44951023afa8d91edee525a8875cfbdc548264aed7400514767e1426",
+      "astSha256": "c0f38630936ca865101d14c13cdbf4044592c637dd6dfc0ded7b96d941507ed8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-to-outerproduct-matmul-transforms.mlir",
+      "sourceSha256": "010399fcc032cc7d07c9b512b7adac9db76d6c4502b77ab6477afc076f534573",
+      "astSha256": "c9f1b0ea85ca629ce6626e5d0ce456ebd90c97b898e5601fa8bfc8320b41bae2",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-to-outerproduct-matvec-transforms.mlir",
+      "sourceSha256": "35209b8f9661f21295c0571c8c086198097f518186d698d14f6780f9e0da4ceb",
+      "astSha256": "b773d25a3148b64146c735345d01b05f6b7d4696b9b77cd3fddf2446dc5c3fac",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-contract-to-parallel-arith-transforms.mlir",
+      "sourceSha256": "a3e213dd6a849e8e3811599d9cddc2df764593d0d056ba711725b8928883807b",
+      "astSha256": "28210e5f612500cb0cfa17f96f2468de94fe0c44e7a11016730dc2b325266927",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-deinterleave-lowering-transforms.mlir",
+      "sourceSha256": "5cdbb74d765830fcce1f2d26602c9e48e5c2a3091a4a3fc55055a8f764b05212",
+      "astSha256": "701d57f4ddca3a84b3d530e1f5a5469eb878d546cd33cb94f5aa299a64ac019a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-dropleadunitdim-transforms.mlir",
+      "sourceSha256": "fe09b0f8619b71a2db5d1f57976473dfb6386cfd03a1f48a5b22e960a0d69dee",
+      "astSha256": "72e7315390475a359eade50465ffc733f9e743fa2a1d9ca1626f3065f399ca4f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-masked-load-store.mlir",
+      "sourceSha256": "0f2daab238f5858deeb43b1115308791d8371f0dc7983b11314813f85e3f3aed",
+      "astSha256": "6c6708ce6ee3e97e280fcef23c107bbb3961fd8a71607967ecd109f75778f04a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-narrow-type-aligned-store-only.mlir",
+      "sourceSha256": "e97df84f4f05a98eadc397fef5903a62a875487c12e821e57a3c06eb04e890ac",
+      "astSha256": "9090a75c1e3a888ba81b748e4898f4b375cad58adbeb68705d1b1702c3e630b4",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-narrow-type-unaligned-dynamic-store.mlir",
+      "sourceSha256": "114026b6a4d8780aad6528259ecdf0facf07df19682d2e5cf3743b456279cea6",
+      "astSha256": "3474ac8a8c99e683e92cf42fb9e4ca0db77134e5e00148a9c9ed05397880e570",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-narrow-type-unaligned-non-atomic.mlir",
+      "sourceSha256": "69d762b7e6005f0c208e1ae2a7f2ad0664656296566239f63d1970e90d780eff",
+      "astSha256": "57f2616071979b1658b7e16e33931f5278c736618bf055c90889d8e2db751ada",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-narrow-type-unaligned.mlir",
+      "sourceSha256": "daadb01b87806f8a612e6b7b8b1f4ca787358b9b631d9e549cf353bbd594dc31",
+      "astSha256": "c4cf4602444d8affe690a78aac5f7b62b3033f41cf2a1ea28183568f5eadf1bb",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-emulate-narrow-type.mlir",
+      "sourceSha256": "588484ff6482bf115be7401fc05e38a34fa5d287bb5c4440d84268c0dfb77bd7",
+      "astSha256": "56be6e8d7f423a06ab1cb60e9b733e3237c554abd6f672d645c7caa2508054a9",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-extract-strided-slice-lowering.mlir",
+      "sourceSha256": "6ff9feb5d398bee7feed5fedc2d2cb6333c25809b7b9035fbedf4a9f6a1d01e2",
+      "astSha256": "0aa49de5a204a26e7499847d03ae9825364feaca8aa082f0ad7724fa8b32b9ca",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-from-elements-lowering.mlir",
+      "sourceSha256": "baf179d0db8ce64baa06b7bcecac765b223f5dc2c6287c5b6d8840381d2adcd0",
+      "astSha256": "357b5ad740490958b701d3c0061d797117cc75dc935b9f9b1b9a6be50b3333b8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-gather-lowering.mlir",
+      "sourceSha256": "aa6a69e0d9d8b85d242bf534592afcb1b1714961b17012b5f6f4d2bcd0f1d67c",
+      "astSha256": "c3146f6a6793478742a109be6fcd2c9fb685eaad862cd46bae156bd0ea4c0f26",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-interleave-deinterleave-to-shuffle.mlir",
+      "sourceSha256": "a57ee00784b00391c74efbb7b30eb09b3505045057f9e1a73c9c9f4b2c8d0590",
+      "astSha256": "774d9d0853cc637af5d1d30ba5ca3b1fec7803f4f7e0b9223aaf2aaf2329756b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-interleave-lowering-transforms.mlir",
+      "sourceSha256": "9305c8784c7caf20809d8103beee1ea9e532c14a2129a2bc78a6b072cbe3bf9f",
+      "astSha256": "6d0607f432f5cbad6cccdcbfb004c66f1c980aa626ec703b6091bb0b5b72e65d",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-mask-lowering-transforms.mlir",
+      "sourceSha256": "992ac03776c1c8888a1a689e895a129c4989b58f609ee38ac98fa7b0c422dad9",
+      "astSha256": "6585a95430ed8b0db9c7228e06df2b128b37af4e8a6628cc11e5aab7675fd0f5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-materialize-mask.mlir",
+      "sourceSha256": "556b67f8267b1a34dca1c3be86f7e6ff8265a4dc066738e5954e85f76ac79c7f",
+      "astSha256": "6c610724cd82fa05ebc80bc933286a2fd16f3013d5077ee572ef7edfc97da5a0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-mem-transforms.mlir",
+      "sourceSha256": "31065e5d4a90d4acff1fe97725a3d94110d499a7e80db344599843c81a0228f6",
+      "astSha256": "8ec2c4147a64202a7c4d7f5098947324bff86748ae6557e1a1d1020d846556c7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-multi-reduction-flattening.mlir",
+      "sourceSha256": "3d1863b26b265e7fa1617231499fa570dd0cef3e5990109b7c4423c4759c0933",
+      "astSha256": "5d3f3d15817eb23ad38227ef344e3ccefd7b9b690b8d64951f61855cdde1fdf0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-multi-reduction-pass-lowering.mlir",
+      "sourceSha256": "8feee7354b537a3e7378474dd58340030f73a6aefee5299b1271548e0adb0a07",
+      "astSha256": "371f2e3ed5a5c382299f8065935c957217ad877bb7bc48ff2fdb4c7609880188",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-multi-reduction-reorder.mlir",
+      "sourceSha256": "c92d5a606633654f71552b934acc813901ee83afd2d88138af0b0b73010e99cb",
+      "astSha256": "6c4d6b8e5da353d91e4658cb02aa7a0689817eaea2bf00d4282c707cdb2592c3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-multi-reduction-to-fma.mlir",
+      "sourceSha256": "f0c21f4b7f2fbfaea06d2acbdd30ca7b73e3ca8594dc83c4e5fc149f5e0481ba",
+      "astSha256": "0aeb78e285cc4b42992d1c19974a37e38579ad3eb515d728c946eb9b2fdea70a",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-multi-reduction-unrolling.mlir",
+      "sourceSha256": "90457de8b61bf2a94d9f6cfdf69859a8c0a8834e0b22f776f22c5ea9ec2a3b53",
+      "astSha256": "94c3b091fcb3c11547e1022fe3a8da13de672776c874ac28b4e37660193733b1",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-outerproduct-lowering-transforms.mlir",
+      "sourceSha256": "43484fa366eda2c37fab9edc55355143891cb2bf860372e3956902e4b3573087",
+      "astSha256": "a0be615f818b85207d5ce6fe395236d677b4c4f6433e471f30785b7a5f75b99b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-reduce-to-contract.mlir",
+      "sourceSha256": "90a28c85e743fbb5343500dba2b7e29190a56977c62f54d8e34e38266dcf9e75",
+      "astSha256": "8b31bcfbdd3695982502d7b67d690f8b0ee3d53a8927ef5803c0096d37818aa7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-rewrite-narrow-types.mlir",
+      "sourceSha256": "4bb8a56a4b3d785e6b55c6fb35ab7acf4cd28c3cb19158cc8d6b454c3f1ae3dc",
+      "astSha256": "94a439988877c71fc4a9bdf228f6cab68cb202ea651b2ae9450d9217c03d7122",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-rewrite-subbyte-ext-and-trunci.mlir",
+      "sourceSha256": "b2024bb39e38c4f5f92952da1db50055af8f5aabd7ebced4c0dfd779cb71f498",
+      "astSha256": "036a369a27eea66423b79322c5b6bb7a42b00236d6d183f48e39a48df0a9d9d7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-scalable-create-mask-lowering.mlir",
+      "sourceSha256": "ab049d924a29f8cfe0b3edb795f6d0a4b19d9d22b40554b857d5a6eb2b4a755e",
+      "astSha256": "432eba19c3d5a515a2957fbb04663f1aaf85ee7b2e2b77651f0a70cf8f16f1b6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-scan-transforms.mlir",
+      "sourceSha256": "bd42a7e8e18739befb3ea77dd2ba1e58165166a8b967893c5aefd38c6f6c74c1",
+      "astSha256": "39c60b317284ce754247a3fdb1f6b53a41372c9641007414b49214631324cf1f",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-shape-cast-lowering-scalable-vectors.mlir",
+      "sourceSha256": "17aa03b73005c357e9495c9da06ca2d31e32eec5b92699bd712b32e3db31712c",
+      "astSha256": "e8953749f6a5e3e084f3f0a87bc9c6c250d2e2ca34a712e11d3e37860556a7d0",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-shape-cast-lowering-transforms.mlir",
+      "sourceSha256": "73f0094b597e91413aa793fd8c6e274f0494512ec0c9c0a167f9c1cc741f5a5b",
+      "astSha256": "0d9add1055a626cf10fb2bd917f95ae6f8e48f07ce0a3584c8b564346166da86",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-shuffle-lowering.mlir",
+      "sourceSha256": "5a485663261b07faab034d540fff162c55e81fedfebfd66d878811362dd583cf",
+      "astSha256": "a82e3bad327cefe0985fc4bb338df59a19c4983ca66a49653cec7f8603db0b2c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-sink-transform.mlir",
+      "sourceSha256": "7b8de34958a241aaa9721ffec8c32b002be8f15b46b39da16922fe9f276a548f",
+      "astSha256": "12b26b2e5857ceaf7661147433a7bc88512e1a87581c95ebab7f57754617c874",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-sink.mlir",
+      "sourceSha256": "2f20fbdc89737d87a402c6982957d15dd822e6350f5639fa31e7b403a51b7406",
+      "astSha256": "1ce415b0831e7d759c02ff2101c1926626e53034533d327232aef527ce0c25d5",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-to-elements-lowering.mlir",
+      "sourceSha256": "9810bfbb12921cf2d484f69d60bfcfd25e932b367cb172eb55badd2421b4cd56",
+      "astSha256": "87b59647a68df4061340844288f47cc79f547e98458cba359cea785915ca83d8",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-tofrom-elements-to-shuffle-tree-transforms.mlir",
+      "sourceSha256": "f525b1908ea93bbb72b1f0f7c45ff93ecec6a113624e657a5a0bd236f7eb340b",
+      "astSha256": "85f7acbd5b80efff46509239b95b878375d2a83934339dd83b95d8b4152eaf00",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-collapse-inner-most-dims.mlir",
+      "sourceSha256": "b11bcbdb6e4407491dc8771bbb50d64128660f5b77cf3b967f2416fbd2565bc3",
+      "astSha256": "8c7b69bcbc83c32de462b5cbdc60de172e806e4a0ae8a6838930be01c25375e6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-drop-unit-dims-patterns.mlir",
+      "sourceSha256": "2cfadef57d6807d0713fd760dbb741fac2fa91b90be233e5bb056fdc59e694e5",
+      "astSha256": "01746e7260e86cad51f08239a8c83ee42eb92da6d0e4c76e1fd19a74ec8b9192",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-flatten.mlir",
+      "sourceSha256": "b7b7da23fcfefabef4f0590eab52551692ed2f14741c6f2faadfc850ce8feced",
+      "astSha256": "a69ba0e490e5f35cb0ee57cf0ac3c5d1e1106ac8ad1b195f3cbb291bd6e5c12c",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-full-partial-split-copy-transform.mlir",
+      "sourceSha256": "0e4e80651832f7474bae0121b3db857726dce6e18388a88a4785504b87e07441",
+      "astSha256": "ddbe72f2ca30b9e04cf36af929da65ba54bf5879c7ce94fa16875a3b7a75b37b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-full-partial-split.mlir",
+      "sourceSha256": "b424e772b4348af2d12ea743c4333b56217346b7992ca679dd0fdcef2bbe019b",
+      "astSha256": "7dd08b59bc2d10d3bfb71556db55d3f3ed578720dd0db7aaf2c00c56b955ea0b",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-permutation-lowering.mlir",
+      "sourceSha256": "388b99ba2ae84bb6fe6a5cd26fba0c23b50d1d7997028673e67c39b1fd46338e",
+      "astSha256": "9d6b0d11c241d8d297065c832ab59f54ed4590c764bd7abaaf686b76a0b5a586",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-to-vector-load-store.mlir",
+      "sourceSha256": "678fca85ced6b94bd8c47221421f63daaf781fedc465d7825c59d2bfa29ecdd4",
+      "astSha256": "b11f9e3831eea4c939ce46d981e90f052fa1d279874e7519488e1b9b253651dc",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transfer-unroll.mlir",
+      "sourceSha256": "8432b0ebc1ba6da08646ddf537abe619e6e08f53c47a20efaa281b67e3366333",
+      "astSha256": "9e9ab7d135bb16af287f734eb4816236ffde221ced66474f162ea0f2b34d19a7",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transferop-opt.mlir",
+      "sourceSha256": "f072fce790f1eeaa1eaefe41280aae69627fda271bb689cd9156acca397c8fb2",
+      "astSha256": "7461ce3b86ed2e941229a50247d4263f7bccdd94271466e53989f2ee2922aaaf",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transforms.mlir",
+      "sourceSha256": "a3c413581238b5459d33b8642dab2a573a218014c829980974d608043fa4b0a3",
+      "astSha256": "84380b3f8bd485b0b3d161d5c422c4e12b59bf480bcbe81ac1bb4c2a768a8751",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transpose-lowering.mlir",
+      "sourceSha256": "4c1b879be766daa2bc582b62176c8fb13ef36fe756e92b2b77877c4bfbbb85cc",
+      "astSha256": "2f32b7b5716650b631ff72a8e74e5df2f90d7ed1ed31577fadba2b559ae7cfc3",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-transpose-to-matrix-intrinsics-transform.mlir",
+      "sourceSha256": "16be61c5304cb641cada23e8f27f38a72b421d9ec3802b402596b0a59683aec2",
+      "astSha256": "4c618efe089f626e04b93a3550530efc01de5bdb6c60ee7af26a4623d1200179",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-unroll-options.mlir",
+      "sourceSha256": "2fb701e35c9f9621317f182877d79307bc5520595bea7d30c70d3a17ae05e60d",
+      "astSha256": "2925c649f1306873248fe4998296f6458ac4faca9850f2594988156fb78fa0c6",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/vector-warp-distribute.mlir",
+      "sourceSha256": "753543b6536c33a20f2465ee1e21b2ac40985c75334d3a685e23d40625a99103",
+      "astSha256": "bf21e9df9693647ae804c4d6225dadd3f42bc4f4b1a54fc66c0e42a5d7d59d45",
+      "hasError": false
+    },
+    {
+      "file": "examples/Vector/warp-distribute-scf-for-block-args.mlir",
+      "sourceSha256": "c0bb284a67fadff8f453d8f925ec40adb5808d5e861cd9ea7483dc9bda966eae",
+      "astSha256": "670b2a3abc67c8c5df9d6788d9462dd43bb0d09fc20f95f15ff1df4d899bf7ad",
+      "hasError": false
+    },
+    {
+      "file": "examples/WasmSSA/if.mlir",
+      "sourceSha256": "bb10dcdb6a2cab33d796f7fb9d82a8b792c4be2ae77ea8e1a250212dcbe0fa9e",
+      "astSha256": "270fe0d525fed14d8c10bf13a0b1e5f885648d916577912ce8ba35383952148b",
+      "hasError": false
+    }
+  ]
+}
