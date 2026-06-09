@@ -56,7 +56,7 @@
     "update-tests": "tree-sitter test --update",
     "test": "tree-sitter test",
     "test:bindings": "node --test bindings/node/*_test.js",
-    "test:examples": "find examples -name '*.mlir' -print0 | xargs -0 tree-sitter parse --quiet --stat",
+    "test:examples": "tree-sitter parse --quiet --stat \"examples/**/*.mlir\"",
     "test:all": "npm run test && npm run test:examples",
     "bench": "node bench.mjs",
     "prebuildify": "prebuildify --napi --strip"
