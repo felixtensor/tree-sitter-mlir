@@ -11,9 +11,9 @@ export default grammar({
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
-    [$.array_literal, $._custom_body_element_base],
-    [$._custom_body_element_base, $.tensor_type],
-    [$._custom_body_element_base, $._custom_body_arrow],
+    [$.array_literal, $._custom_body_literal_or_keyword],
+    [$._custom_body_literal_or_keyword, $.tensor_type],
+    [$._custom_body_punctuation, $._custom_body_arrow],
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
     [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
@@ -454,21 +454,55 @@ export default grammar({
 
     _custom_body_element_base: ($) =>
       choice(
+        $._custom_body_reference_element,
+        $._custom_body_type_or_attribute,
+        $._custom_body_braced_element,
+        $._custom_body_dialect_marker,
+        $._custom_body_group,
+        $._custom_body_literal_or_keyword,
+        $._custom_body_arrow, // <- (mapped-from, e.g. omp.fuse <- (...))
+        $._custom_body_punctuation,
+      ),
+
+    _custom_body_reference_element: ($) =>
+      choice(
         $.value_use, // %foo, %0
         $.symbol_ref_id, // @sym, @"string"
         $.successor, // ^bb0, ^bb0(%arg : type)
         $._custom_body_complex_label, // complex: %value (IRDL operand label)
+      ),
+
+    _custom_body_type_or_attribute: ($) =>
+      choice(
         prec(2, $.type), // !type, i32, memref<...>, etc.
         $.attribute, // #attr, {dict}, affine_map<...>
+      ),
+
+    // Braced custom-body forms are grouped for readability only. Their
+    // dictionary/region/value ambiguity remains the 1.6.3 decision point.
+    _custom_body_braced_element: ($) =>
+      choice(
         $._custom_body_tuple_group, // {(%v), (%w)}
         $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
+      ),
+
+    _custom_body_dialect_marker: ($) =>
+      choice(
         $._custom_body_module_symbol_arg, // module(@sym) kernel attr
         $._custom_body_sparse_operand, // sparse(%idx : type)
+      ),
+
+    _custom_body_group: ($) =>
+      choice(
         $._custom_body_paren, // ( ... )
         $._custom_body_bracket, // [ ... ]
         $._custom_body_angle_group, // < ... >
+      ),
+
+    _custom_body_literal_or_keyword: ($) =>
+      choice(
         $.variadic, // custom assembly ellipsis marker
         $._literal, // 42, 3.14, "string", true, dense<...>
         "array", // property names may collide with array<...>
@@ -478,7 +512,10 @@ export default grammar({
         "floordiv",
         "mod", // inline affine keywords
         $.bare_id, // keywords: to, from, step, ins, outs, etc.
-        $._custom_body_arrow, // <- (mapped-from, e.g. omp.fuse <- (...))
+      ),
+
+    _custom_body_punctuation: ($) =>
+      choice(
         ",",
         "=",
         ":",
