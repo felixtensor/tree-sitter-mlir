@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-mlir
-        VERSION "0.1.3"
+        VERSION "0.1.4"
         DESCRIPTION "MLIR grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/felixtensor/tree-sitter-mlir"
         LANGUAGES C)
