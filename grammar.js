@@ -20,6 +20,11 @@ export default grammar({
     [$._type_list_no_parens, $._type_or_func_type],
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
   ],
+  inline: ($) => [
+    $._tier1_custom_operation,
+    $._tier2_custom_operation,
+    $._location_sensitive_custom_operation,
+  ],
 
   // Token-level precedence constants (higher wins the token race):
   //   20 — Tier-1 structural op keywords (func.func, llvm.func, module, builtin.module)
@@ -284,13 +289,27 @@ export default grammar({
     // Tier 2: _generic_custom_operation — all other dialect.op_name patterns
     // =========================================================================
     custom_operation: ($) =>
+      choice($._tier1_custom_operation, $._tier2_custom_operation),
+
+    _tier1_custom_operation: ($) =>
       choice(
         prec(2, $.func_operation),
         prec(2, $.module_operation),
         prec(2, $._affine_for_operation),
+      ),
+
+    _tier2_custom_operation: ($) =>
+      choice(
+        $._location_sensitive_custom_operation,
+        $._generic_custom_operation,
+      ),
+
+    // These stay as specialized operation forms because `loc(...)` can be
+    // either custom body syntax or the operation-level trailing location.
+    _location_sensitive_custom_operation: ($) =>
+      choice(
         $._pdl_interp_record_match_operation,
         $._generic_custom_operation_with_location_attr_dict,
-        $._generic_custom_operation,
       ),
 
     // Tier 1: Function operations (func.func, llvm.func)
@@ -449,6 +468,8 @@ export default grammar({
     _custom_body_element: ($) =>
       choice(
         $._custom_body_element_base,
+        // Kept out of _custom_body_element_base because nested delimiter bodies
+        // should still treat `>` as an angle-group boundary, not a loose marker.
         $._custom_body_successor_marker, // >^bb1 (WasmSSA if continuation)
       ),
 
