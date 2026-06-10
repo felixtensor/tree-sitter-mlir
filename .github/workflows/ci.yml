@@ -91,3 +91,27 @@ jobs:
           echo ""
           git --no-pager diff --no-ext-diff
           exit 1
+
+  # Bench tooling tests + AST surface gate. Errors-only: fails on a new parse
+  # error or an AST-shape change in examples/; no speed data is recorded or gated.
+  bench:
+    name: Bench gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run bench tooling tests
+        run: npm run test:bench
+
+      - name: Verify examples AST surface manifest
+        run: node bench.mjs --verify
