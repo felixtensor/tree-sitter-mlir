@@ -2232,6 +2232,15 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_custom_body_brace_payload"
+        }
+      ]
+    },
+    "_custom_body_brace_payload": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "_custom_body_tuple_group"
         },
         {
@@ -5912,6 +5921,7 @@
     "_custom_body_literal_element",
     "_custom_body_reserved_keyword",
     "_custom_body_affine_keyword",
+    "_custom_body_brace_payload",
     "_custom_body_separator_punctuation",
     "_custom_body_operator_punctuation"
   ],
