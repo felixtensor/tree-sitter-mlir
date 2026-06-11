@@ -480,8 +480,8 @@ export default grammar({
     _custom_body_element_base: ($) =>
       choice(
         $._custom_body_reference_element,
-        $._custom_body_type_or_attribute,
-        $._custom_body_braced_element,
+        $._custom_body_type_element,
+        $._custom_body_attribute_or_braced_element,
         $._custom_body_dialect_marker,
         $._custom_body_group,
         $._custom_body_atom,
@@ -497,16 +497,14 @@ export default grammar({
         $._custom_body_complex_label, // complex: %value (IRDL operand label)
       ),
 
-    _custom_body_type_or_attribute: ($) =>
-      choice(
-        prec(2, $.type), // !type, i32, memref<...>, etc.
-        $.attribute, // #attr, {dict}, affine_map<...>
-      ),
+    _custom_body_type_element: ($) =>
+      prec(2, $.type), // !type, i32, memref<...>, etc.
 
-    // Braced custom-body forms are grouped for readability only. Their
-    // dictionary/region/value ambiguity remains the 1.6.3 decision point.
-    _custom_body_braced_element: ($) =>
+    // Attribute includes dictionary_attribute, so keep it with the other
+    // custom-body `{...}` forms while preserving the public `attribute` wrapper.
+    _custom_body_attribute_or_braced_element: ($) =>
       choice(
+        $.attribute, // #attr, {dict}, affine_map<...>
         $._custom_body_tuple_group, // {(%v), (%w)}
         $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}

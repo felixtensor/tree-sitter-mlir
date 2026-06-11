@@ -2174,11 +2174,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_custom_body_type_or_attribute"
+          "name": "_custom_body_type_element"
         },
         {
           "type": "SYMBOL",
-          "name": "_custom_body_braced_element"
+          "name": "_custom_body_attribute_or_braced_element"
         },
         {
           "type": "SYMBOL",
@@ -2223,26 +2223,21 @@
         }
       ]
     },
-    "_custom_body_type_or_attribute": {
+    "_custom_body_type_element": {
+      "type": "PREC",
+      "value": 2,
+      "content": {
+        "type": "SYMBOL",
+        "name": "type"
+      }
+    },
+    "_custom_body_attribute_or_braced_element": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "PREC",
-          "value": 2,
-          "content": {
-            "type": "SYMBOL",
-            "name": "type"
-          }
-        },
         {
           "type": "SYMBOL",
           "name": "attribute"
-        }
-      ]
-    },
-    "_custom_body_braced_element": {
-      "type": "CHOICE",
-      "members": [
+        },
         {
           "type": "SYMBOL",
           "name": "_custom_body_tuple_group"
