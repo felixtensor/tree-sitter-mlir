@@ -5895,10 +5895,6 @@
       "_static_dim_list"
     ],
     [
-      "custom_op_name",
-      "attribute_entry"
-    ],
-    [
       "type_alias",
       "dialect_namespace"
     ],
@@ -5908,6 +5904,22 @@
     ],
     [
       "pretty_dialect_item"
+    ],
+    [
+      "_value_use_list",
+      "_value_use_and_type"
+    ],
+    [
+      "_type_list_no_parens",
+      "_type_or_func_type"
+    ],
+    [
+      "_type_list_parens",
+      "_multi_dim_affine_expr_parens"
+    ],
+    [
+      "custom_op_name",
+      "attribute_entry"
     ],
     [
       "array_literal",
@@ -5924,18 +5936,6 @@
     [
       "_custom_body_dict_key",
       "attribute_entry"
-    ],
-    [
-      "_value_use_list",
-      "_value_use_and_type"
-    ],
-    [
-      "_type_list_no_parens",
-      "_type_or_func_type"
-    ],
-    [
-      "_type_list_parens",
-      "_multi_dim_affine_expr_parens"
     ]
   ],
   "precedences": [],
