@@ -485,7 +485,6 @@ export default grammar({
         $._custom_body_dialect_marker,
         $._custom_body_group,
         $._custom_body_atom,
-        $._custom_body_arrow, // <- (mapped-from, e.g. omp.fuse <- (...))
         $._custom_body_punctuation,
       ),
 
@@ -494,7 +493,6 @@ export default grammar({
         $.value_use, // %foo, %0
         $.symbol_ref_id, // @sym, @"string"
         $.successor, // ^bb0, ^bb0(%arg : type)
-        $._custom_body_complex_label, // complex: %value (IRDL operand label)
       ),
 
     _custom_body_type_element: ($) =>
@@ -513,6 +511,8 @@ export default grammar({
 
     _custom_body_dialect_marker: ($) =>
       choice(
+        $._custom_body_arrow, // <- (OpenMP loop transform mapped-from marker)
+        $._custom_body_complex_label, // complex: %value (IRDL operand label)
         $._custom_body_module_symbol_arg, // module(@sym) kernel attr
         $._custom_body_sparse_operand, // sparse(%idx : type)
       ),
