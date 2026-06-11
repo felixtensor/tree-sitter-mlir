@@ -2889,17 +2889,21 @@
       ]
     },
     "_custom_body_arrow": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
-          "type": "STRING",
-          "value": "-"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "<"
+          },
+          {
+            "type": "STRING",
+            "value": "-"
+          }
+        ]
+      }
     },
     "_nested_custom_body_element": {
       "type": "CHOICE",
@@ -5885,10 +5889,6 @@
     [
       "_custom_body_tensor_keyword",
       "tensor_type"
-    ],
-    [
-      "_custom_body_minus_punctuation",
-      "_custom_body_arrow"
     ],
     [
       "_generic_custom_operation_with_location_attr_dict",

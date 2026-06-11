@@ -12,7 +12,6 @@ export default grammar({
     [$.pretty_dialect_item],
     [$.array_literal, $._custom_body_array_keyword],
     [$._custom_body_tensor_keyword, $.tensor_type],
-    [$._custom_body_minus_punctuation, $._custom_body_arrow],
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
     [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
@@ -659,7 +658,7 @@ export default grammar({
     // mis-lex negative payloads like `#smt.bv<-1>` as `<-` `1`. Keeping the
     // tokens separate leaves the lexer unchanged; GLR distinguishes the arrow
     // from `_custom_body_angle_group` (which requires a closing '>').
-    _custom_body_arrow: ($) => seq("<", "-"),
+    _custom_body_arrow: ($) => prec(1, seq("<", "-")),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule
     // captures a trailing `loc(...)` as the operation's location instead of
