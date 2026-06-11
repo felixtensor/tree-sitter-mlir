@@ -11,9 +11,9 @@ export default grammar({
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
-    [$.array_literal, $._custom_body_literal_or_keyword],
-    [$._custom_body_literal_or_keyword, $.tensor_type],
-    [$._custom_body_punctuation, $._custom_body_arrow],
+    [$.array_literal, $._custom_body_array_keyword],
+    [$._custom_body_tensor_keyword, $.tensor_type],
+    [$._custom_body_minus_punctuation, $._custom_body_arrow],
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
     [$._custom_body_dict_key, $.attribute_entry],
     [$._value_use_list, $._value_use_and_type],
@@ -24,6 +24,10 @@ export default grammar({
     $._tier1_custom_operation,
     $._tier2_custom_operation,
     $._location_sensitive_custom_operation,
+    $._custom_body_atom,
+    $._custom_body_literal_element,
+    $._custom_body_reserved_keyword,
+    $._custom_body_affine_keyword,
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -480,7 +484,7 @@ export default grammar({
         $._custom_body_braced_element,
         $._custom_body_dialect_marker,
         $._custom_body_group,
-        $._custom_body_literal_or_keyword,
+        $._custom_body_atom,
         $._custom_body_arrow, // <- (mapped-from, e.g. omp.fuse <- (...))
         $._custom_body_punctuation,
       ),
@@ -522,18 +526,31 @@ export default grammar({
         $._custom_body_angle_group, // < ... >
       ),
 
-    _custom_body_literal_or_keyword: ($) =>
+    _custom_body_atom: ($) =>
+      choice(
+        $._custom_body_literal_element,
+        $._custom_body_reserved_keyword,
+        $.bare_id, // keywords: to, from, step, ins, outs, etc.
+      ),
+
+    _custom_body_literal_element: ($) =>
       choice(
         $.variadic, // custom assembly ellipsis marker
         $._literal, // 42, 3.14, "string", true, dense<...>
-        "array", // property names may collide with array<...>
-        "vector", // OpenACC keyword may collide with vector<...>
-        "tensor", // AMDGPU/NVGPU keyword may collide with tensor<...>
-        "ceildiv",
-        "floordiv",
-        "mod", // inline affine keywords
-        $.bare_id, // keywords: to, from, step, ins, outs, etc.
       ),
+
+    _custom_body_reserved_keyword: ($) =>
+      choice(
+        $._custom_body_array_keyword, // property names may collide with array<...>
+        "vector", // OpenACC keyword may collide with vector<...>
+        $._custom_body_tensor_keyword, // AMDGPU/NVGPU keyword may collide with tensor<...>
+        $._custom_body_affine_keyword, // inline affine keywords
+      ),
+
+    _custom_body_array_keyword: ($) => "array",
+    _custom_body_tensor_keyword: ($) => "tensor",
+    _custom_body_affine_keyword: ($) =>
+      choice("ceildiv", "floordiv", "mod"),
 
     _custom_body_punctuation: ($) =>
       choice(
@@ -545,12 +562,13 @@ export default grammar({
         "?",
         $.dimension_separator,
         "+",
-        "-",
+        $._custom_body_minus_punctuation,
         "/",
         "&",
         "|",
         "~",
       ),
+    _custom_body_minus_punctuation: ($) => "-",
 
     _custom_body_paren: ($) =>
       seq("(", repeat($._nested_custom_body_element), ")"),

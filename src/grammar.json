@@ -2190,7 +2190,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_custom_body_literal_or_keyword"
+          "name": "_custom_body_atom"
         },
         {
           "type": "SYMBOL",
@@ -2291,7 +2291,24 @@
         }
       ]
     },
-    "_custom_body_literal_or_keyword": {
+    "_custom_body_atom": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_literal_element"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_reserved_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bare_id"
+        }
+      ]
+    },
+    "_custom_body_literal_element": {
       "type": "CHOICE",
       "members": [
         {
@@ -2301,19 +2318,41 @@
         {
           "type": "SYMBOL",
           "name": "_literal"
-        },
+        }
+      ]
+    },
+    "_custom_body_reserved_keyword": {
+      "type": "CHOICE",
+      "members": [
         {
-          "type": "STRING",
-          "value": "array"
+          "type": "SYMBOL",
+          "name": "_custom_body_array_keyword"
         },
         {
           "type": "STRING",
           "value": "vector"
         },
         {
-          "type": "STRING",
-          "value": "tensor"
+          "type": "SYMBOL",
+          "name": "_custom_body_tensor_keyword"
         },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_affine_keyword"
+        }
+      ]
+    },
+    "_custom_body_array_keyword": {
+      "type": "STRING",
+      "value": "array"
+    },
+    "_custom_body_tensor_keyword": {
+      "type": "STRING",
+      "value": "tensor"
+    },
+    "_custom_body_affine_keyword": {
+      "type": "CHOICE",
+      "members": [
         {
           "type": "STRING",
           "value": "ceildiv"
@@ -2325,10 +2364,6 @@
         {
           "type": "STRING",
           "value": "mod"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "bare_id"
         }
       ]
     },
@@ -2368,8 +2403,8 @@
           "value": "+"
         },
         {
-          "type": "STRING",
-          "value": "-"
+          "type": "SYMBOL",
+          "name": "_custom_body_minus_punctuation"
         },
         {
           "type": "STRING",
@@ -2388,6 +2423,10 @@
           "value": "~"
         }
       ]
+    },
+    "_custom_body_minus_punctuation": {
+      "type": "STRING",
+      "value": "-"
     },
     "_custom_body_paren": {
       "type": "SEQ",
@@ -5819,14 +5858,14 @@
     ],
     [
       "array_literal",
-      "_custom_body_literal_or_keyword"
+      "_custom_body_array_keyword"
     ],
     [
-      "_custom_body_literal_or_keyword",
+      "_custom_body_tensor_keyword",
       "tensor_type"
     ],
     [
-      "_custom_body_punctuation",
+      "_custom_body_minus_punctuation",
       "_custom_body_arrow"
     ],
     [
@@ -5855,7 +5894,11 @@
   "inline": [
     "_tier1_custom_operation",
     "_tier2_custom_operation",
-    "_location_sensitive_custom_operation"
+    "_location_sensitive_custom_operation",
+    "_custom_body_atom",
+    "_custom_body_literal_element",
+    "_custom_body_reserved_keyword",
+    "_custom_body_affine_keyword"
   ],
   "supertypes": [],
   "reserved": {}
