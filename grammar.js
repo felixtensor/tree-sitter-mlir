@@ -21,7 +21,6 @@ export default grammar({
   inline: ($) => [
     $._tier1_custom_operation,
     $._tier2_custom_operation,
-    $._location_sensitive_custom_operation,
     $._custom_body_reference_element,
     $._custom_body_type_element,
     $._custom_body_attribute_or_braced_element,
@@ -35,6 +34,10 @@ export default grammar({
     $._custom_body_punctuation,
     $._custom_body_separator_punctuation,
     $._custom_body_operator_punctuation,
+    $._pretty_dialect_structural_content,
+    $._pretty_dialect_value_content,
+    $._pretty_dialect_keyword_content,
+    $._pretty_dialect_punctuation_content,
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -311,16 +314,9 @@ export default grammar({
 
     _tier2_custom_operation: ($) =>
       choice(
-        $._location_sensitive_custom_operation,
-        $._generic_custom_operation,
-      ),
-
-    // These stay as specialized operation forms because `loc(...)` can be
-    // either custom body syntax or the operation-level trailing location.
-    _location_sensitive_custom_operation: ($) =>
-      choice(
         $._pdl_interp_record_match_operation,
         $._generic_custom_operation_with_location_attr_dict,
+        $._generic_custom_operation,
       ),
 
     // Tier 1: Function operations (func.func, llvm.func)
@@ -391,6 +387,8 @@ export default grammar({
         ),
       ),
 
+    // These stay as specialized operation forms because `loc(...)` can be
+    // either custom body syntax or the operation-level trailing location.
     _pdl_interp_record_match_operation: ($) =>
       prec.dynamic(
         -1,
@@ -763,36 +761,47 @@ export default grammar({
     _pretty_dialect_item_contents: ($) =>
       prec.left(
         choice(
-          $.pretty_dialect_item_body,
-          $._pretty_dialect_bang_body_token,
-          $._pretty_dialect_body_attribute,
-          $.dialect_dim_list,
-          $.type,
-          prec(2, $.attribute),
-          $._literal,
-          $._dense_keyword,
-          $._sparse_keyword,
-          "array",
-          "vector",
-          "tensor",
-          "opaque",
-          $.bare_id,
-          ",",
-          ":",
-          "=",
-          "->",
-          "(",
-          ")",
-          "[",
-          "]",
-          "{",
-          "}",
-          "*",
-          "?",
-          "@",
-          "#",
+          $._pretty_dialect_structural_content,
+          $._pretty_dialect_value_content,
+          $._pretty_dialect_keyword_content,
+          $._pretty_dialect_punctuation_content,
           token(prec(-1, /[^<>]/)),
         ),
+      ),
+    _pretty_dialect_structural_content: ($) =>
+      choice(
+        $.pretty_dialect_item_body,
+        $._pretty_dialect_bang_body_token,
+        $._pretty_dialect_body_attribute,
+      ),
+    _pretty_dialect_value_content: ($) =>
+      choice($.dialect_dim_list, $.type, prec(2, $.attribute), $._literal),
+    _pretty_dialect_keyword_content: ($) =>
+      choice(
+        $._dense_keyword,
+        $._sparse_keyword,
+        "array",
+        "vector",
+        "tensor",
+        "opaque",
+        $.bare_id,
+      ),
+    _pretty_dialect_punctuation_content: ($) =>
+      choice(
+        ",",
+        ":",
+        "=",
+        "->",
+        "(",
+        ")",
+        "[",
+        "]",
+        "{",
+        "}",
+        "*",
+        "?",
+        "@",
+        "#",
       ),
     _pretty_dialect_bang_body_token: ($) =>
       token(prec(1, seq("!", /[^a-zA-Z_<>]/))),

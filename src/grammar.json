@@ -1599,24 +1599,15 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_location_sensitive_custom_operation"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_generic_custom_operation"
-        }
-      ]
-    },
-    "_location_sensitive_custom_operation": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
           "name": "_pdl_interp_record_match_operation"
         },
         {
           "type": "SYMBOL",
           "name": "_generic_custom_operation_with_location_attr_dict"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_generic_custom_operation"
         }
       ]
     },
@@ -3523,119 +3514,19 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "pretty_dialect_item_body"
+            "name": "_pretty_dialect_structural_content"
           },
           {
             "type": "SYMBOL",
-            "name": "_pretty_dialect_bang_body_token"
+            "name": "_pretty_dialect_value_content"
           },
           {
             "type": "SYMBOL",
-            "name": "_pretty_dialect_body_attribute"
+            "name": "_pretty_dialect_keyword_content"
           },
           {
             "type": "SYMBOL",
-            "name": "dialect_dim_list"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "type"
-          },
-          {
-            "type": "PREC",
-            "value": 2,
-            "content": {
-              "type": "SYMBOL",
-              "name": "attribute"
-            }
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_literal"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_dense_keyword"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_sparse_keyword"
-          },
-          {
-            "type": "STRING",
-            "value": "array"
-          },
-          {
-            "type": "STRING",
-            "value": "vector"
-          },
-          {
-            "type": "STRING",
-            "value": "tensor"
-          },
-          {
-            "type": "STRING",
-            "value": "opaque"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "bare_id"
-          },
-          {
-            "type": "STRING",
-            "value": ","
-          },
-          {
-            "type": "STRING",
-            "value": ":"
-          },
-          {
-            "type": "STRING",
-            "value": "="
-          },
-          {
-            "type": "STRING",
-            "value": "->"
-          },
-          {
-            "type": "STRING",
-            "value": "("
-          },
-          {
-            "type": "STRING",
-            "value": ")"
-          },
-          {
-            "type": "STRING",
-            "value": "["
-          },
-          {
-            "type": "STRING",
-            "value": "]"
-          },
-          {
-            "type": "STRING",
-            "value": "{"
-          },
-          {
-            "type": "STRING",
-            "value": "}"
-          },
-          {
-            "type": "STRING",
-            "value": "*"
-          },
-          {
-            "type": "STRING",
-            "value": "?"
-          },
-          {
-            "type": "STRING",
-            "value": "@"
-          },
-          {
-            "type": "STRING",
-            "value": "#"
+            "name": "_pretty_dialect_punctuation_content"
           },
           {
             "type": "TOKEN",
@@ -3650,6 +3541,142 @@
           }
         ]
       }
+    },
+    "_pretty_dialect_structural_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pretty_dialect_item_body"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_pretty_dialect_bang_body_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_pretty_dialect_body_attribute"
+        }
+      ]
+    },
+    "_pretty_dialect_value_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "dialect_dim_list"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type"
+        },
+        {
+          "type": "PREC",
+          "value": 2,
+          "content": {
+            "type": "SYMBOL",
+            "name": "attribute"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_literal"
+        }
+      ]
+    },
+    "_pretty_dialect_keyword_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_dense_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_sparse_keyword"
+        },
+        {
+          "type": "STRING",
+          "value": "array"
+        },
+        {
+          "type": "STRING",
+          "value": "vector"
+        },
+        {
+          "type": "STRING",
+          "value": "tensor"
+        },
+        {
+          "type": "STRING",
+          "value": "opaque"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "bare_id"
+        }
+      ]
+    },
+    "_pretty_dialect_punctuation_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "STRING",
+          "value": "->"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        },
+        {
+          "type": "STRING",
+          "value": "*"
+        },
+        {
+          "type": "STRING",
+          "value": "?"
+        },
+        {
+          "type": "STRING",
+          "value": "@"
+        },
+        {
+          "type": "STRING",
+          "value": "#"
+        }
+      ]
     },
     "_pretty_dialect_bang_body_token": {
       "type": "TOKEN",
@@ -5916,7 +5943,6 @@
   "inline": [
     "_tier1_custom_operation",
     "_tier2_custom_operation",
-    "_location_sensitive_custom_operation",
     "_custom_body_reference_element",
     "_custom_body_type_element",
     "_custom_body_attribute_or_braced_element",
@@ -5929,7 +5955,11 @@
     "_custom_body_brace_payload",
     "_custom_body_punctuation",
     "_custom_body_separator_punctuation",
-    "_custom_body_operator_punctuation"
+    "_custom_body_operator_punctuation",
+    "_pretty_dialect_structural_content",
+    "_pretty_dialect_value_content",
+    "_pretty_dialect_keyword_content",
+    "_pretty_dialect_punctuation_content"
   ],
   "supertypes": [],
   "reserved": {}
