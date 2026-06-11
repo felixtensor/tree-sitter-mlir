@@ -28,6 +28,8 @@ export default grammar({
     $._custom_body_literal_element,
     $._custom_body_reserved_keyword,
     $._custom_body_affine_keyword,
+    $._custom_body_separator_punctuation,
+    $._custom_body_operator_punctuation,
   ],
 
   // Token-level precedence constants (higher wins the token race):
@@ -552,10 +554,20 @@ export default grammar({
 
     _custom_body_punctuation: ($) =>
       choice(
+        $._custom_body_separator_punctuation,
+        $._custom_body_operator_punctuation,
+      ),
+
+    _custom_body_separator_punctuation: ($) =>
+      choice(
         ",",
         "=",
         ":",
         "->",
+      ),
+
+    _custom_body_operator_punctuation: ($) =>
+      choice(
         "*",
         "?",
         $.dimension_separator,

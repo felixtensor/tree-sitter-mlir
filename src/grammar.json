@@ -2366,6 +2366,19 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "SYMBOL",
+          "name": "_custom_body_separator_punctuation"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_operator_punctuation"
+        }
+      ]
+    },
+    "_custom_body_separator_punctuation": {
+      "type": "CHOICE",
+      "members": [
+        {
           "type": "STRING",
           "value": ","
         },
@@ -2380,7 +2393,12 @@
         {
           "type": "STRING",
           "value": "->"
-        },
+        }
+      ]
+    },
+    "_custom_body_operator_punctuation": {
+      "type": "CHOICE",
+      "members": [
         {
           "type": "STRING",
           "value": "*"
@@ -5893,7 +5911,9 @@
     "_custom_body_atom",
     "_custom_body_literal_element",
     "_custom_body_reserved_keyword",
-    "_custom_body_affine_keyword"
+    "_custom_body_affine_keyword",
+    "_custom_body_separator_punctuation",
+    "_custom_body_operator_punctuation"
   ],
   "supertypes": [],
   "reserved": {}
