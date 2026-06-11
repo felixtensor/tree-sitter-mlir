@@ -28,6 +28,7 @@ export default grammar({
     $._custom_body_literal_element,
     $._custom_body_reserved_keyword,
     $._custom_body_affine_keyword,
+    $._custom_body_brace_payload,
     $._custom_body_separator_punctuation,
     $._custom_body_operator_punctuation,
   ],
@@ -500,11 +501,16 @@ export default grammar({
     _custom_body_type_element: ($) =>
       prec(2, $.type), // !type, i32, memref<...>, etc.
 
-    // Attribute includes dictionary_attribute, so keep it with the other
-    // custom-body `{...}` forms while preserving the public `attribute` wrapper.
+    // Attribute includes dictionary_attribute, so keep it adjacent to the
+    // custom-body `{...}` payloads while preserving the public wrapper.
     _custom_body_attribute_or_braced_element: ($) =>
       choice(
         $.attribute, // #attr, {dict}, affine_map<...>
+        $._custom_body_brace_payload,
+      ),
+
+    _custom_body_brace_payload: ($) =>
+      choice(
         $._custom_body_tuple_group, // {(%v), (%w)}
         $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}
