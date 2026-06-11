@@ -1,6 +1,6 @@
 {
   "name": "@felixtensor/tree-sitter-mlir",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MLIR grammar for tree-sitter",
   "type": "module",
   "repository": {
