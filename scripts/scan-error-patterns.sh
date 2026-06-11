@@ -16,6 +16,8 @@ Usage:
 Options:
   --limit N     Show at most N detailed failures per category (default: 80).
                 Use --limit 0 to show all detailed failures.
+  --fail-on-valid-like
+                Exit non-zero if any valid-like files fail to parse.
   -h, --help    Show this help.
 
 The scan covers:
@@ -32,84 +34,105 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 LLVM_ARG=""
 DETAIL_LIMIT="${SCAN_ERROR_LIMIT:-80}"
+FAIL_ON_VALID_LIKE=0
+IS_MSYS=0
 
-while [ "$#" -gt 0 ]; do
-  case "$1" in
-    --limit)
-      if [ "$#" -lt 2 ]; then
-        echo "Error: --limit requires a number" >&2
-        exit 2
-      fi
-      DETAIL_LIMIT="$2"
-      shift 2
-      ;;
-    --limit=*)
-      DETAIL_LIMIT="${1#--limit=}"
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -*)
-      echo "Error: unknown option: $1" >&2
-      usage >&2
-      exit 2
-      ;;
-    *)
-      if [ -n "$LLVM_ARG" ]; then
-        echo "Error: multiple llvm-project directories provided" >&2
-        usage >&2
-        exit 2
-      fi
-      LLVM_ARG="$1"
-      shift
-      ;;
-  esac
-done
-
-case "$DETAIL_LIMIT" in
-  ''|*[!0-9]*)
-    echo "Error: --limit must be a non-negative integer" >&2
-    exit 2
-    ;;
-esac
-
-LLVM_DIR="${LLVM_ARG:-${LLVM_PROJECT_DIR:-$PROJECT_DIR/../llvm-project}}"
-LLVM_DIR="$(cd "$LLVM_DIR" 2>/dev/null && pwd)" || {
-  echo "Error: llvm-project directory not found at: ${LLVM_ARG:-${LLVM_PROJECT_DIR:-../llvm-project}}" >&2
+die() {
+  echo "Error: $*" >&2
   exit 1
 }
 
-MLIR_TEST_DIR="$LLVM_DIR/mlir/test"
-if [ ! -d "$MLIR_TEST_DIR/IR" ] || [ ! -d "$MLIR_TEST_DIR/Dialect" ]; then
-  echo "Error: $MLIR_TEST_DIR does not contain mlir/test/IR and mlir/test/Dialect" >&2
-  exit 1
-fi
+usage_error() {
+  echo "Error: $*" >&2
+  usage >&2
+  exit 2
+}
 
-if ! command -v npx >/dev/null 2>&1; then
-  echo "Error: npx is required to run tree-sitter parse" >&2
-  exit 1
-fi
+parse_args() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --limit)
+        if [ "$#" -lt 2 ]; then
+          usage_error "--limit requires a number"
+        fi
+        DETAIL_LIMIT="$2"
+        shift 2
+        ;;
+      --limit=*)
+        DETAIL_LIMIT="${1#--limit=}"
+        shift
+        ;;
+      --fail-on-valid-like)
+        FAIL_ON_VALID_LIKE=1
+        shift
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      -*)
+        usage_error "unknown option: $1"
+        ;;
+      *)
+        if [ -n "$LLVM_ARG" ]; then
+          usage_error "multiple llvm-project directories provided"
+        fi
+        LLVM_ARG="$1"
+        shift
+        ;;
+    esac
+  done
 
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/tree-sitter-mlir-scan.XXXXXX")"
-trap 'rm -rf "$TMP_DIR"' EXIT
+  case "$DETAIL_LIMIT" in
+    ''|*[!0-9]*)
+      usage_error "--limit must be a non-negative integer"
+      ;;
+  esac
+}
 
-PATHS_FILE="$TMP_DIR/paths.txt"
-PATHS_SHELL_FILE="$TMP_DIR/paths-shell.txt"
-PARSER_LIB="$TMP_DIR/mlir.dylib"
-STAT_FILE="$TMP_DIR/parse-stat.txt"
-RECORDS_FILE="$TMP_DIR/records.tsv"
-: > "$RECORDS_FILE"
+line_count() {
+  wc -l < "$1" | tr -d ' '
+}
 
-IS_MSYS=0
-case "$(uname -s 2>/dev/null || true)" in
-  MINGW*|MSYS*|CYGWIN*)
-    if command -v cygpath >/dev/null 2>&1; then
-      IS_MSYS=1
-    fi
-    ;;
-esac
+resolve_llvm_project() {
+  local requested
+  local hint
+
+  requested="${LLVM_ARG:-${LLVM_PROJECT_DIR:-$PROJECT_DIR/../llvm-project}}"
+  hint="${LLVM_ARG:-${LLVM_PROJECT_DIR:-../llvm-project}}"
+
+  LLVM_DIR="$(cd "$requested" 2>/dev/null && pwd)" || \
+    die "llvm-project directory not found at: $hint"
+
+  MLIR_TEST_DIR="$LLVM_DIR/mlir/test"
+  if [ ! -d "$MLIR_TEST_DIR/IR" ] || [ ! -d "$MLIR_TEST_DIR/Dialect" ]; then
+    die "$MLIR_TEST_DIR does not contain mlir/test/IR and mlir/test/Dialect"
+  fi
+}
+
+require_tools() {
+  command -v npx >/dev/null 2>&1 || die "npx is required to run tree-sitter parse"
+}
+
+init_temp_files() {
+  TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/tree-sitter-mlir-scan.XXXXXX")"
+  trap 'rm -rf "$TMP_DIR"' EXIT
+
+  PATHS_FILE="$TMP_DIR/paths.txt"
+  PATHS_SHELL_FILE="$TMP_DIR/paths-shell.txt"
+  PARSER_LIB="$TMP_DIR/mlir.dylib"
+  STAT_FILE="$TMP_DIR/parse-stat.txt"
+  RECORDS_FILE="$TMP_DIR/records.tsv"
+  : > "$RECORDS_FILE"
+}
+
+detect_path_mode() {
+  case "$(uname -s 2>/dev/null || true)" in
+    MINGW*|MSYS*|CYGWIN*)
+      command -v cygpath >/dev/null 2>&1 && IS_MSYS=1
+      ;;
+  esac
+}
 
 to_shell_path() {
   if [ "$IS_MSYS" -eq 1 ]; then
@@ -119,48 +142,55 @@ to_shell_path() {
   fi
 }
 
-find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
-  | LC_ALL=C sort > "$PATHS_SHELL_FILE"
+prepare_paths() {
+  find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
+    | LC_ALL=C sort > "$PATHS_SHELL_FILE"
 
-if [ "$IS_MSYS" -eq 1 ]; then
-  cygpath -w -f "$PATHS_SHELL_FILE" > "$PATHS_FILE"
-else
-  cp "$PATHS_SHELL_FILE" "$PATHS_FILE"
-fi
+  if [ "$IS_MSYS" -eq 1 ]; then
+    cygpath -w -f "$PATHS_SHELL_FILE" > "$PATHS_FILE"
+  else
+    cp "$PATHS_SHELL_FILE" "$PATHS_FILE"
+  fi
 
-TOTAL_FILES="$(wc -l < "$PATHS_SHELL_FILE" | tr -d ' ')"
+  TOTAL_FILES="$(line_count "$PATHS_SHELL_FILE")"
 
-if [ "$TOTAL_FILES" -eq 0 ]; then
-  echo "No .mlir files found under $MLIR_TEST_DIR/IR or $MLIR_TEST_DIR/Dialect"
-  exit 0
-fi
+  if [ "$TOTAL_FILES" -eq 0 ]; then
+    echo "No .mlir files found under $MLIR_TEST_DIR/IR or $MLIR_TEST_DIR/Dialect"
+    exit 0
+  fi
+}
 
-if git -C "$LLVM_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-  COMMIT_SHA="$(git -C "$LLVM_DIR" rev-parse --short HEAD)"
-else
-  COMMIT_SHA="unknown"
-fi
+source_commit() {
+  if git -C "$LLVM_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+    git -C "$LLVM_DIR" rev-parse --short HEAD
+  else
+    echo "unknown"
+  fi
+}
 
-echo "Scanning MLIR parse errors"
-echo "  llvm-project: $LLVM_DIR"
-echo "  source commit: $COMMIT_SHA"
-echo "  files: $TOTAL_FILES"
-echo "  scanned_at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-echo ""
+print_header() {
+  printf 'Scanning MLIR parse errors\n'
+  printf '  llvm-project: %s\n' "$LLVM_DIR"
+  printf '  source commit: %s\n' "$(source_commit)"
+  printf '  files: %s\n' "$TOTAL_FILES"
+  printf '  scanned_at: %s\n\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+}
 
-npx tree-sitter build -o "$PARSER_LIB" "$PROJECT_DIR" >/dev/null
+run_tree_sitter_parse() {
+  npx tree-sitter build -o "$PARSER_LIB" "$PROJECT_DIR" >/dev/null
 
-set +e
-npx tree-sitter parse --quiet --stat --lib-path "$PARSER_LIB" --lang-name mlir \
-  --paths "$PATHS_FILE" > "$STAT_FILE" 2>&1
-PARSE_STATUS="$?"
-set -e
+  if npx tree-sitter parse --quiet --stat --lib-path "$PARSER_LIB" \
+    --lang-name mlir --paths "$PATHS_FILE" > "$STAT_FILE" 2>&1; then
+    PARSE_STATUS=0
+  else
+    PARSE_STATUS="$?"
+  fi
+}
 
 is_invalid_like() {
   local rel="$1"
-  local base lower
-  base="$(basename "$rel")"
-  lower="$(printf '%s' "$base" | tr '[:upper:]' '[:lower:]')"
+  local lower
+  lower="$(basename "$rel" | tr '[:upper:]' '[:lower:]')"
 
   case "$lower" in
     *invalid*|*error*|*unsupported*|*reject*|*crash*|*fail*)
@@ -219,65 +249,77 @@ normalize_line() {
   sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//'
 }
 
-while IFS= read -r parse_line; do
-  case "$parse_line" in
-    *$'\t'Parse:*$'\t'*\(ERROR*|*$'\t'Parse:*$'\t'*\(MISSING*)
-      ;;
-    *)
-      continue
-      ;;
-  esac
+record_parse_failures() {
+  local parse_line
+  local file
+  local diag
+  local missing_token
+  local row
+  local col
+  local line_no
+  local rel
+  local category
+  local raw_snippet
+  local snippet
+  local anchor
 
-  file="${parse_line%%$'\t'*}"
-  file="$(printf '%s' "$file" | sed -E 's/[[:space:]]+$//')"
-  file="$(to_shell_path "$file")"
-  diag="${parse_line##*$'\t'}"
+  while IFS= read -r parse_line; do
+    case "$parse_line" in
+      *$'\t'Parse:*$'\t'*\(ERROR*|*$'\t'Parse:*$'\t'*\(MISSING*)
+        ;;
+      *)
+        continue
+        ;;
+    esac
 
-  kind="ERROR"
-  missing_token=""
-  if [[ "$diag" == \(MISSING* ]]; then
-    kind="MISSING"
-    if [[ "$diag" =~ ^\(MISSING[[:space:]]+\"([^\"]*)\" ]]; then
-      missing_token="${BASH_REMATCH[1]}"
+    file="${parse_line%%$'\t'*}"
+    file="$(printf '%s' "$file" | sed -E 's/[[:space:]]+$//')"
+    file="$(to_shell_path "$file")"
+    diag="${parse_line##*$'\t'}"
+
+    missing_token=""
+    if [[ "$diag" == \(MISSING* ]]; then
+      if [[ "$diag" =~ ^\(MISSING[[:space:]]+\"([^\"]*)\" ]]; then
+        missing_token="${BASH_REMATCH[1]}"
+      fi
     fi
-  fi
 
-  row="0"
-  col="0"
-  if [[ "$diag" =~ \[([0-9]+),[[:space:]]*([0-9]+)\] ]]; then
-    row="${BASH_REMATCH[1]}"
-    col="${BASH_REMATCH[2]}"
-  fi
-  line_no=$((row + 1))
+    row="0"
+    col="0"
+    if [[ "$diag" =~ \[([0-9]+),[[:space:]]*([0-9]+)\] ]]; then
+      row="${BASH_REMATCH[1]}"
+      col="${BASH_REMATCH[2]}"
+    fi
+    line_no=$((row + 1))
 
-  rel="${file#"$MLIR_TEST_DIR/"}"
-  if is_invalid_like "$rel" || has_expected_diagnostic_near "$file" "$line_no"; then
-    category="invalid-like"
-  else
+    rel="${file#"$MLIR_TEST_DIR/"}"
     category="valid-like"
+    if is_invalid_like "$rel" || has_expected_diagnostic_near "$file" "$line_no"; then
+      category="invalid-like"
+    fi
+
+    raw_snippet="$(sed -n "${line_no}p" "$file" | tr '\000\t' '  ')"
+    snippet="$(printf '%s' "$raw_snippet" | normalize_line)"
+
+    if [ -n "$missing_token" ]; then
+      anchor="missing:$missing_token"
+    else
+      anchor="$(anchor_at "$raw_snippet" "$col")"
+    fi
+
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+      "$category" "$rel" "$diag" "$line_no" "$col" "$anchor" "$snippet" \
+      >> "$RECORDS_FILE"
+  done < "$STAT_FILE"
+
+  FAILED_FILES="$(line_count "$RECORDS_FILE")"
+
+  if [ "$PARSE_STATUS" -ne 0 ] && [ "$FAILED_FILES" -eq 0 ]; then
+    echo "tree-sitter parse failed, but no parse diagnostics were recognized:" >&2
+    sed -n '1,80p' "$STAT_FILE" >&2
+    exit "$PARSE_STATUS"
   fi
-
-  raw_snippet="$(sed -n "${line_no}p" "$file" | tr '\000\t' '  ')"
-  snippet="$(printf '%s' "$raw_snippet" | normalize_line)"
-
-  if [ "$kind" = "MISSING" ] && [ -n "$missing_token" ]; then
-    anchor="missing:$missing_token"
-  else
-    anchor="$(anchor_at "$raw_snippet" "$col")"
-  fi
-
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$category" "$rel" "$diag" "$line_no" "$col" "$anchor" "$snippet" \
-    >> "$RECORDS_FILE"
-done < "$STAT_FILE"
-
-FAILED_FILES="$(wc -l < "$RECORDS_FILE" | tr -d ' ')"
-
-if [ "$PARSE_STATUS" -ne 0 ] && [ "$FAILED_FILES" -eq 0 ]; then
-  echo "tree-sitter parse failed, but no parse diagnostics were recognized:" >&2
-  sed -n '1,80p' "$STAT_FILE" >&2
-  exit "$PARSE_STATUS"
-fi
+}
 
 count_category() {
   awk -F '\t' -v category="$1" '$1 == category { count++ } END { print count + 0 }' "$RECORDS_FILE"
@@ -341,22 +383,52 @@ print_details() {
   ' "$RECORDS_FILE"
 }
 
-VALID_LIKE_FAILED="$(count_category valid-like)"
-INVALID_LIKE_FAILED="$(count_category invalid-like)"
-SUCCESSFUL_FILES=$((TOTAL_FILES - FAILED_FILES))
+summarize_records() {
+  VALID_LIKE_FAILED="$(count_category valid-like)"
+  INVALID_LIKE_FAILED="$(count_category invalid-like)"
+  SUCCESSFUL_FILES=$((TOTAL_FILES - FAILED_FILES))
+}
 
-echo "Summary"
-echo "  total files: $TOTAL_FILES"
-echo "  successful files: $SUCCESSFUL_FILES"
-echo "  failed files: $FAILED_FILES"
-echo "  valid-like failed files: $VALID_LIKE_FAILED"
-echo "  invalid-like failed files: $INVALID_LIKE_FAILED"
-echo ""
+print_report() {
+  echo "Summary"
+  echo "  total files: $TOTAL_FILES"
+  echo "  successful files: $SUCCESSFUL_FILES"
+  echo "  failed files: $FAILED_FILES"
+  echo "  valid-like failed files: $VALID_LIKE_FAILED"
+  echo "  invalid-like failed files: $INVALID_LIKE_FAILED"
+  echo ""
 
-print_patterns valid-like
-echo ""
-print_patterns invalid-like
-echo ""
-print_details valid-like
-echo ""
-print_details invalid-like
+  print_patterns valid-like
+  echo ""
+  print_patterns invalid-like
+  echo ""
+  print_details valid-like
+  echo ""
+  print_details invalid-like
+}
+
+enforce_valid_like_gate() {
+  [ "$FAIL_ON_VALID_LIKE" -eq 1 ] || return
+  [ "$VALID_LIKE_FAILED" -eq 0 ] && return
+
+  echo ""
+  echo "valid-like parse gate failed: $VALID_LIKE_FAILED file(s)"
+  exit 1
+}
+
+main() {
+  parse_args "$@"
+  resolve_llvm_project
+  require_tools
+  init_temp_files
+  detect_path_mode
+  prepare_paths
+  print_header
+  run_tree_sitter_parse
+  record_parse_failures
+  summarize_records
+  print_report
+  enforce_valid_like_gate
+}
+
+main "$@"

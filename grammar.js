@@ -5,18 +5,24 @@ export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
   conflicts: ($) => [
+    // Core MLIR overlaps: shaped dimensions, aliases, pretty dialect payloads,
+    // value/type lists, and affine syntax share prefixes by design.
     [$._static_dim_list, $._static_dim_list],
-    [$.custom_op_name, $.attribute_entry],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
     [$.pretty_dialect_item],
+    [$._value_use_list, $._value_use_and_type],
+    [$._type_list_no_parens, $._type_or_func_type],
+    [$._type_list_parens, $._multi_dim_affine_expr_parens],
+
+    // Custom operation fallback overlaps: loose body syntax must preserve
+    // dialect keywords, dictionary-looking payloads, and loc-sensitive forms
+    // without enumerating every upstream dialect operation.
+    [$.custom_op_name, $.attribute_entry],
     [$.array_literal, $._custom_body_array_keyword],
     [$._custom_body_tensor_keyword, $.tensor_type],
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
     [$._custom_body_dict_key, $.attribute_entry],
-    [$._value_use_list, $._value_use_and_type],
-    [$._type_list_no_parens, $._type_or_func_type],
-    [$._type_list_parens, $._multi_dim_affine_expr_parens],
   ],
   inline: ($) => [
     $._tier1_custom_operation,
@@ -84,7 +90,7 @@ export default grammar({
     //  decimal-literal ::= digit+
     //  hexadecimal-literal ::= `0x` hex_digit+
     //  float-literal ::= [-+]?[0-9]+[.][0-9]*([eE][-+]?[0-9]+)?
-    //  string-literal  ::= `"` [^"\n\f\v\r]* `"`
+    //  string-literal  ::= `"` (char | escape-sequence | invalid-escape)* `"`
     // =========================================================================
     _digit: ($) => /[0-9]/,
     integer_literal: ($) => choice($._decimal_literal, $._hexadecimal_literal),
