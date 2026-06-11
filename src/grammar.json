@@ -2194,10 +2194,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_custom_body_arrow"
-        },
-        {
-          "type": "SYMBOL",
           "name": "_custom_body_punctuation"
         }
       ]
@@ -2216,10 +2212,6 @@
         {
           "type": "SYMBOL",
           "name": "successor"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_custom_body_complex_label"
         }
       ]
     },
@@ -2259,6 +2251,14 @@
     "_custom_body_dialect_marker": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_arrow"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_complex_label"
+        },
         {
           "type": "SYMBOL",
           "name": "_custom_body_module_symbol_arg"
