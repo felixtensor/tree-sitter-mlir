@@ -6,7 +6,6 @@ export default grammar({
   extras: ($) => [/[\s\x00]/, $.comment],
   conflicts: ($) => [
     [$._static_dim_list, $._static_dim_list],
-    [$.dictionary_attribute, $.region],
     [$.custom_op_name, $.attribute_entry],
     [$.type_alias, $.dialect_namespace],
     [$.dialect_namespace, $.attribute_alias],
@@ -706,7 +705,8 @@ export default grammar({
     //   region      ::= `{` entry-block? block* `}`
     //   entry-block ::= operation+
     // =========================================================================
-    region: ($) => seq("{", optional($.entry_block), repeat($.block), "}"),
+    region: ($) =>
+      prec(1, seq("{", optional($.entry_block), repeat($.block), "}")),
     entry_block: ($) => repeat1($.operation),
 
     // =========================================================================
