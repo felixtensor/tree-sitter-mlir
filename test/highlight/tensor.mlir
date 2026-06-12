@@ -31,7 +31,7 @@ func.func @tensor_highlights(%t: tensor<8x16x4xf32>, %idx : index)
 //                         ^ keyword
 //                                              ^ keyword
   ^bb0(%i: index, %j: index, %k: index):
-//   ^ label
+//   ^ tag
     %zero = arith.constant 0.0 : f32
 //  ^ variable
 //          ^ function.builtin

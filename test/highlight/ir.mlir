@@ -11,10 +11,10 @@ func.func @ir_highlights() {
   "cf.br"(%c0)[^bb1] : (i32) -> ()
 //^ string
 //        ^ variable
-//             ^ label
+//             ^ tag
 //                       ^ type.builtin
 ^bb1(%arg0: i32):
-// <- label
+// <- tag
 //   ^ variable.parameter
 //          ^ type.builtin
   "func.return"() : () -> ()

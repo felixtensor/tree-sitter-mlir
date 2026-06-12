@@ -8,7 +8,10 @@
       "scope": "source.mlir",
       "file-types": ["mlir"],
       "injection-regex": "^mlir$",
-      "class-name": "TreeSitterMlir"
+      "class-name": "TreeSitterMlir",
+      "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm",
+      "injections": "queries/injections.scm"
     }
   ],
   "metadata": {
