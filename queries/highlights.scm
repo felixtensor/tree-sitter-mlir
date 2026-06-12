@@ -56,12 +56,13 @@
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
 (distinct_attribute "distinct" @keyword)
+(dense_resource_literal "dense_resource" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
-[(tensor_literal) (dense_resource_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
+[(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
 (string_literal) @string
 
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
@@ -94,6 +95,9 @@
 
 ;; Catch-all for bare keywords in Op bodies (ins, outs, etc.)
 (bare_id) @keyword
+
+;; Dense resource handles override the bare_id catch-all above.
+(dense_resource_literal (bare_id) @constant.builtin)
 
 ;; Dictionary attribute keys override the bare_id catch-all above
 (attribute_entry (bare_id) @attribute)
