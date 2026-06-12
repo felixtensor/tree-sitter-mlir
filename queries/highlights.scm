@@ -74,6 +74,10 @@
 ;; ── Control Flow ────────────────────────────────────────────────────────────
 (caret_id) @tag
 (trailing_location "loc" @keyword)
+(callsite_location ["callsite" "at"] @keyword)
+(fused_location "fused" @keyword)
+(location "to" @keyword)
+(unknown_location) @constant.builtin
 (variadic) @punctuation.special
 
 ;; ── Punctuation ─────────────────────────────────────────────────────────────
