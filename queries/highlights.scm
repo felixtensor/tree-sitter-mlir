@@ -57,6 +57,11 @@
 [(tensor_literal) (dense_resource_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
 (string_literal) @string
 
+;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
+;; malformed escapes are flagged distinctly rather than silently colored.
+(escape_sequence) @string.escape
+(invalid_escape) @warning
+
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────
 ;; General uses and results (catch-all, overridden by more specific rules below)
 (op_result) @variable
