@@ -11,6 +11,7 @@
 (func_operation name: _ @function.builtin)
 (module_operation name: _ @function.builtin)
 (func_operation ["private" "public" "attributes"] @keyword)
+(function_specifier) @keyword
 (module_operation "attributes" @keyword)
 
 ;; Dialect operations (e.g., arith.addi)
