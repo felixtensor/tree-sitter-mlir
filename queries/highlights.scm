@@ -42,6 +42,8 @@
 (dim_list "x" @punctuation.delimiter)
 (dimension_separator) @punctuation.delimiter
 (vector_dim_list "x" @punctuation.delimiter)
+(dim_list ["?" "*"] @punctuation.special)
+(dialect_dim_list ["?" "*"] @punctuation.special)
 
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
@@ -52,6 +54,7 @@
 (affine_set ["max" "min" "symbol"] @keyword)
 (strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
+(strided_layout ["?" "*"] @punctuation.special)
 (distinct_attribute "distinct" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
 
