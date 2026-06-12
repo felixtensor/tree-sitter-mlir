@@ -46,9 +46,13 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
+(affine_map "affine_map" @keyword)
+(affine_set "affine_set" @keyword)
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
+(strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
+(distinct_attribute "distinct" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
