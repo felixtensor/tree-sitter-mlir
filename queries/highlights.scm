@@ -49,7 +49,7 @@
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
 (strided_layout "offset" @keyword)
-["ceildiv" "floordiv" "mod"] @keyword.operator
+["ceildiv" "floordiv" "mod"] @operator
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
@@ -60,7 +60,7 @@
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
 ;; malformed escapes are flagged distinctly rather than silently colored.
 (escape_sequence) @string.escape
-(invalid_escape) @warning
+(invalid_escape) @error
 
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────
 ;; General uses and results (catch-all, overridden by more specific rules below)
@@ -72,7 +72,7 @@
 (block_arg_list (value_use) @variable.parameter)
 
 ;; ── Control Flow ────────────────────────────────────────────────────────────
-(caret_id) @label
+(caret_id) @tag
 (trailing_location "loc" @keyword)
 (variadic) @punctuation.special
 

@@ -10,7 +10,7 @@ func.func @simple(i64, i64) -> i64 {
 //                             ^ type.builtin
 //                                 ^ punctuation.bracket
 ^bb1(%d : i64, %e : i64):
-// <- label
+// <- tag
 //   ^ variable.parameter
 //        ^ type.builtin
 //             ^ variable.parameter
