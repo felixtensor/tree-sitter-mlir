@@ -52,6 +52,7 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
+(properties ["<{" "}>"] @punctuation.bracket)
 (affine_map "affine_map" @keyword)
 (affine_set "affine_set" @keyword)
 (affine_map ["max" "min" "symbol"] @keyword)
@@ -92,6 +93,9 @@
 (location "to" @keyword)
 (unknown_location) @constant.builtin
 (variadic) @punctuation.special
+
+;; ── External Resource Blocks ───────────────────────────────────────────────
+(external_resources ["{-#" "#-}"] @punctuation.bracket)
 
 ;; ── Punctuation ─────────────────────────────────────────────────────────────
 ["(" ")" "{" "}" "[" "]" "<" ">"] @punctuation.bracket
