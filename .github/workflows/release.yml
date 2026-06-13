@@ -153,7 +153,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --omit peer --omit optional
+        run: npm ci --omit peer --omit optional --ignore-scripts
 
       - name: Build binary
         run: npm x -- prebuildify -t 20.19.5
