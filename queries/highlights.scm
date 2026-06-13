@@ -58,6 +58,8 @@
 (affine_set "affine_set" @keyword)
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
+(affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
+(affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
 (strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
