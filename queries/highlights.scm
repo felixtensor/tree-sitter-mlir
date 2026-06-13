@@ -16,7 +16,6 @@
 
 ;; Dialect operations (e.g., arith.addi)
 (custom_op_name) @function.builtin
-(generic_operation (string_literal) @function.builtin)
 (custom_operation ["array" "sparse" "tensor" "vector"] @keyword)
 (custom_operation ["+" "-" "*" "/" "&" "|" "~"] @operator)
 (custom_operation "?" @punctuation.special)
@@ -85,6 +84,7 @@
 (tensor_literal ["dense" "sparse"] @keyword)
 (array_literal "array" @keyword)
 (string_literal) @string
+(generic_operation (string_literal) @function.builtin)
 
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
 ;; malformed escapes are flagged distinctly rather than silently colored.
