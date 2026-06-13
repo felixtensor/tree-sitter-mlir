@@ -18,4 +18,12 @@ func.func @pretty_dialect_keywords() {
 //                          ^ attribute
 //                                       ^ keyword
 //                                                      ^ number
+
+  "test.op"() : () -> !foo.tensor_keyword<tensor>
+//                       ^ type
+//                                           ^ keyword
+
+  "test.op"() : () -> !foo.vector_keyword<vector>
+//                       ^ type
+//                                           ^ keyword
 }

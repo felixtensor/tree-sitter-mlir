@@ -64,7 +64,8 @@
 (distinct_attribute "distinct" @keyword)
 (dense_resource_literal "dense_resource" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
-(pretty_dialect_item_body ["array" "dense" "opaque" "sparse"] @keyword)
+(pretty_dialect_item_body
+  ["array" "dense" "opaque" "sparse" "tensor" "vector"] @keyword)
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
