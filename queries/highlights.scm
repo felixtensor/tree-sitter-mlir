@@ -60,6 +60,12 @@
 (affine_set "affine_set" @keyword)
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
+(affine_map
+  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+  @keyword)
+(affine_set
+  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+  @keyword)
 (affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
 (affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
 (strided_layout "strided" @keyword)
