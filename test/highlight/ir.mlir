@@ -3,13 +3,13 @@ func.func @ir_highlights() {
 //        ^ function
   %c0 = "arith.constant"() {value = 1 : i32} : () -> i32 loc("source.mlir":12:3)
 // ^ variable
-//      ^ string
+//      ^ function.builtin
 //                          ^ attribute
 //                                                     ^ type.builtin
 //                                                       ^ keyword
 //                                                               ^ string
   "cf.br"(%c0)[^bb1] : (i32) -> ()
-//^ string
+//^ function.builtin
 //        ^ variable
 //             ^ tag
 //                       ^ type.builtin
@@ -18,5 +18,5 @@ func.func @ir_highlights() {
 //   ^ variable.parameter
 //          ^ type.builtin
   "func.return"() : () -> ()
-//^ string
+//^ function.builtin
 }
