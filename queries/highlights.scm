@@ -125,3 +125,4 @@
 
 ;; Dictionary attribute keys override the bare_id catch-all above
 (attribute_entry (bare_id) @attribute)
+(attribute_entry (string_literal) @attribute)
