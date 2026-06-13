@@ -71,6 +71,8 @@
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
 [(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
+(tensor_literal ["dense" "sparse"] @keyword)
+(array_literal "array" @keyword)
 (string_literal) @string
 
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
