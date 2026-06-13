@@ -28,9 +28,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 // ^ variable
 //     ^ function.builtin
 //                                       ^ attribute
-//                                                   ^ constant.builtin
+//                                                   ^ keyword
     strides = dense<1> : tensor<1xi64>}
-//            ^ constant.builtin
+//            ^ keyword
     ins(%input, %filter : tensor<1x12x8xf32>, tensor<3x8x8xf32>)
 //      ^ variable.parameter
 //              ^ variable.parameter
