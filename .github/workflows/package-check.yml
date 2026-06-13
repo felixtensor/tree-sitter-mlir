@@ -142,6 +142,15 @@ jobs:
       - name: Build local prebuild
         run: npm x -- prebuildify -t 20.19.5
 
+      - name: Install Node binding peer
+        run: |
+          npm install \
+            --no-save \
+            --package-lock=false \
+            --no-audit \
+            --no-fund \
+            tree-sitter@0.25.0
+
       - name: Run Node binding test
         run: npm run test:bindings
 
