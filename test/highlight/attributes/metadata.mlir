@@ -6,14 +6,23 @@
 //                                                 ^ attribute
 //                                                               ^ attribute
 
-module attributes {"test.name" = "Normal function call"} {
+module attributes {test.blob_ref = #test.e1di64_elements<blob1> : tensor<*xi1>} {}
 //                ^ punctuation.bracket
 //                 ^ attribute
-//                               ^ string
-}
-// <- punctuation.bracket
+//                                      ^ attribute
 
-{-# dense_resource_test_2xi32: "0x400000000100000002000000" #-}
+{-#
+  dialect_resources: {
+    test: {
+      blob1: "0x08000000010000000000000002000000000000000300000000000000"
+    }
+  },
+  external_resources: {
+    external: {
+      blob: "0x08000000010000000000000002000000000000000300000000000000",
+      bool: true,
+      string: "string"
+    }
+  }
+#-}
 // <- punctuation.bracket
-//                              ^ string
-//                                                           ^ punctuation.bracket

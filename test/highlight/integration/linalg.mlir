@@ -41,7 +41,6 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 //       ^ variable
 }
 
-
 #map0 = affine_map<(d0, d1) -> (d0, d1)>
 // <- attribute
 //      ^ keyword

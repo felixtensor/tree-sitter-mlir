@@ -10,19 +10,6 @@
 //                                         ^ operator
 //                                              ^ operator
 //                                                    ^ operator
-#levels0 = affine_map<(d0 : dense, d1 : compressed, d2 : singleton) -> (d0, d1, d2)>
-// <- attribute
-//         ^ keyword
-//                           ^ keyword
-//                                      ^ keyword
-//                                                       ^ keyword
-#levels1 = affine_map<(d0 : loose_compressed, d1 : n_out_of_m, d2 : sparse) -> (d0, d1, d2)>
-// <- attribute
-//         ^ keyword
-//                           ^ keyword
-//                                                 ^ keyword
-//                                                                  ^ keyword
-
 func.func @affine_highlights(%n : index, %A : memref<?xf32>) {
 // <- function.builtin
 //        ^ function
