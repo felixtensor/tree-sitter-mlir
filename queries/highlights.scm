@@ -117,8 +117,11 @@
 ["," ":"] @punctuation.delimiter
 ["=" "->" "::"] @operator
 
-;; Catch-all for bare keywords in Op bodies (ins, outs, etc.)
-(bare_id) @keyword
+;; Catch-all for bare keywords in custom operation bodies (ins, outs, etc.).
+;; Keep this scoped to direct custom_operation children so attribute keys,
+;; affine dimensions, and pretty dialect payload identifiers do not all become
+;; keywords.
+(custom_operation (bare_id) @keyword)
 
 ;; Dense resource handles override the bare_id catch-all above.
 (dense_resource_literal (bare_id) @constant.builtin)
