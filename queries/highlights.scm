@@ -19,6 +19,7 @@
 (generic_operation (string_literal) @function.builtin)
 (custom_operation ["array" "sparse" "tensor" "vector"] @keyword)
 (custom_operation ["+" "-" "*" "/" "&" "|" "~"] @operator)
+(custom_operation "module(" @keyword)
 
 ;; Symbols (@name)
 (symbol_ref_id) @string.special.symbol
