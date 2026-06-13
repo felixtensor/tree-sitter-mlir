@@ -19,6 +19,7 @@
 (generic_operation (string_literal) @function.builtin)
 (custom_operation ["array" "sparse" "tensor" "vector"] @keyword)
 (custom_operation ["+" "-" "*" "/" "&" "|" "~"] @operator)
+(custom_operation "loc" @keyword)
 (custom_operation "module(" @keyword)
 (custom_operation ">" @punctuation.bracket)
 
