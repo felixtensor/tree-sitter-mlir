@@ -17,6 +17,7 @@
 ;; Dialect operations (e.g., arith.addi)
 (custom_op_name) @function.builtin
 (generic_operation (string_literal) @function.builtin)
+(custom_operation ["array" "sparse" "tensor" "vector"] @keyword)
 
 ;; Symbols (@name)
 (symbol_ref_id) @string.special.symbol
