@@ -19,6 +19,7 @@
 (generic_operation (string_literal) @function.builtin)
 (custom_operation ["array" "sparse" "tensor" "vector"] @keyword)
 (custom_operation ["+" "-" "*" "/" "&" "|" "~"] @operator)
+(custom_operation "?" @punctuation.special)
 (custom_operation "loc" @keyword)
 (custom_operation "module(" @keyword)
 (custom_operation ">" @punctuation.bracket)
@@ -69,6 +70,7 @@
 ["ceildiv" "floordiv" "mod"] @operator
 (pretty_dialect_item_body
   ["array" "dense" "opaque" "sparse" "tensor" "vector"] @keyword)
+(pretty_dialect_item_body ["?" "*"] @punctuation.special)
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
