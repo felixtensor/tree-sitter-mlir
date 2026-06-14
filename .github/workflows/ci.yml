@@ -31,7 +31,7 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
         with:
-          # Sync with package.json and release.yml.
+          # Keep in sync with package.json's tree-sitter-cli and release.yml.
           tree-sitter-ref: v0.26.9
 
       - name: Run parser tests
@@ -60,7 +60,9 @@ jobs:
           path: ${{steps.parse-files.outputs.failures}}
           retention-days: 7
 
-  # Regenerate parser artifacts and fail if committed files are stale.
+  # Root-cause gate for the 0.1.2 incident: a stale src/parser.c (including the
+  # version metadata stamped from tree-sitter.json) must never reach main. We
+  # regenerate from grammar.js and require the result to be already committed.
   generated:
     name: Check generated files
     runs-on: ubuntu-latest
@@ -71,7 +73,7 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
         with:
-          # Sync with package.json and release.yml.
+          # Keep in sync with package.json's tree-sitter-cli and release.yml.
           tree-sitter-ref: v0.26.9
 
       - name: Verify committed parser is up to date
@@ -90,7 +92,6 @@ jobs:
           echo ""
           git --no-pager diff --no-ext-diff
           exit 1
-
   # Bench tooling tests + AST surface gate. Errors-only: fails on a new parse
   # error or an AST-shape change in examples/; no speed data is recorded or gated.
   bench:
