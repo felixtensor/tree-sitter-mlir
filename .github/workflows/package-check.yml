@@ -126,7 +126,10 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Setup tree-sitter CLI
+        run: npm rebuild tree-sitter-cli
 
       - name: Check package-lock is up to date
         run: |
@@ -150,6 +153,7 @@ jobs:
             --no-audit \
             --no-fund \
             tree-sitter@0.25.0
+          npm rebuild tree-sitter
 
       - name: Run Node binding test
         run: npm run test:bindings
