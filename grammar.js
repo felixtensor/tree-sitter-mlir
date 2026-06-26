@@ -4,24 +4,47 @@
 export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
+  // All 12 declared conflicts are load-bearing: removing any one fails parser
+  // generation. Full rationale in ARCHITECTURE.md.
   conflicts: ($) => [
-    // Core MLIR overlaps: shaped dimensions, aliases, pretty dialect payloads,
-    // value/type lists, and affine syntax share prefixes by design.
+    // ── Core MLIR overlaps (7) ────────────────────────────────────────────
+
+    // Dimensionality: 2x?x3xf32 needs single-item vs repeated parses before x.
     [$._static_dim_list, $._static_dim_list],
+
+    // Type alias !foo<...> vs dialect namespace !foo.<ident>: prefix ambiguity.
     [$.type_alias, $.dialect_namespace],
+
+    // Attribute alias #foo<...> vs dialect namespace #foo.<ident>: same shape.
     [$.dialect_namespace, $.attribute_alias],
+
+    // Pretty dialect item: complete at ns.ident or continue into <...> body.
     [$.pretty_dialect_item],
+
+    // Value in paren: list element or start of value-with-type.
     [$._value_use_list, $._value_use_and_type],
+
+    // Function results: type list vs individual type-or-function-type entries.
     [$._type_list_no_parens, $._type_or_func_type],
+
+    // Empty/comma-sep paren forms overlap between type lists and affine exprs.
     [$._type_list_parens, $._multi_dim_affine_expr_parens],
 
-    // Custom operation fallback overlaps: loose body syntax must preserve
-    // dialect keywords, dictionary-looking payloads, and loc-sensitive forms
-    // without enumerating every upstream dialect operation.
+    // ── Custom-body fallback overlaps (5) ─────────────────────────────────
+
+    // Bare id: next operation name or its attribute entry key.
     [$.custom_op_name, $.attribute_entry],
+
+    // array: literal introducer array<...> or custom body keyword.
     [$.array_literal, $._custom_body_array_keyword],
+
+    // tensor: type introducer tensor<...> or custom body keyword.
     [$._custom_body_tensor_keyword, $.tensor_type],
+
+    // Dotted name loc(...) {dict}: specialized or generic op boundary.
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name],
+
+    // String = ...: custom SSA dict key or normal attribute entry.
     [$._custom_body_dict_key, $.attribute_entry],
   ],
   inline: ($) => [
