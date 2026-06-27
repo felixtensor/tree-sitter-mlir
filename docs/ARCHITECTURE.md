@@ -30,8 +30,10 @@ are implementation detail and are **not** part of this surface.
 | `toplevel` | contains `operation`, `attribute_alias_def`, `type_alias_def`, `external_resources` |
 | `operation` | `lhs`, `rhs`, `location` |
 | `custom_operation` | `name`; for `affine.for`, also `induction_location` |
+| `custom_op_name` | bare identifier or dotted name that selects the dialect operation |
 | `generic_operation` | quoted generic MLIR form (`"dialect.op"`) |
 | `func_operation` | `name`, `visibility`, `specifier`, `sym_name`, `arguments`, `return`, `attributes`, `body` |
+| `function_specifier` | linkage / calling-convention / visibility keyword inside `func_operation` |
 | `module_operation` | `name`, `sym_name`, `attributes`, `body` |
 
 ### Structural
@@ -39,16 +41,17 @@ are implementation detail and are **not** part of this surface.
 `region`, `entry_block`, `block`, `block_label`, `block_arg_list`,
 `op_result`, `value_use`, `symbol_ref_id`, `successor`, `caret_id`,
 `func_arg_list`, `func_return`, `function_type`, `type_list_attr_parens`,
-`variadic`
+`variadic`, `bare_id`
 
 ### Types
 
-`type`, `builtin_type`, `dialect_type`, `type_alias`,
+`type`, `builtin_type`, `dialect_type`, `type_alias`, `type_alias_def`,
 `integer_type`, `float_type`, `index_type`, `none_type`, `complex_type`,
 `memref_type`, `tensor_type`, `vector_type`, `tuple_type`, `opaque_type`,
 `dialect_namespace`, `dialect_ident`, `opaque_dialect_item`,
 `pretty_dialect_item`, `parametric_dialect_item`,
-`pretty_dialect_item_body`
+`pretty_dialect_item_body`,
+`dimension_separator`, `dimension_size`
 
 ### Attributes
 
@@ -68,6 +71,10 @@ are implementation detail and are **not** part of this surface.
 
 `trailing_location`, `location`, `unknown_location`, `callsite_location`,
 `fused_location`, `external_resources`
+
+### Miscellaneous
+
+`comment`
 
 ## Key Design Decisions
 

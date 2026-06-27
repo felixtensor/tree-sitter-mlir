@@ -5,7 +5,7 @@ export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
   // All 12 declared conflicts are load-bearing: removing any one fails parser
-  // generation. Full rationale in ARCHITECTURE.md.
+  // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
     // ── Core MLIR overlaps (7) ────────────────────────────────────────────
 
