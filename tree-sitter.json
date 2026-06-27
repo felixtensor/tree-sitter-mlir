@@ -12,9 +12,7 @@
       "highlights": "queries/highlights.scm",
       "locals": "queries/locals.scm",
       "injections": "queries/injections.scm",
-      "tags": "queries/tags.scm",
-      "folds": "queries/folds.scm",
-      "indents": "queries/indents.scm"
+      "tags": "queries/tags.scm"
     }
   ],
   "metadata": {
