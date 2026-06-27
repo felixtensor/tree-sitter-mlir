@@ -1,8 +1,8 @@
 # MLIR tree-sitter queries
 
 These queries target the **standard tree-sitter capture vocabulary** so that
-Neovim (nvim-treesitter), Helix, Emacs, Zed, and other consumers can all map
-them through their own theme. Captures express a *semantic category*, never a
+Neovim (nvim-treesitter), Helix, Emacs, and other consumers can all map them
+through their own theme. Captures express a *semantic category*, never a
 specific theme color.
 
 | File | Purpose | Status |
@@ -24,23 +24,19 @@ specific theme color.
 `@constant.builtin` `@tag` `@error`
 `@punctuation.bracket` `@punctuation.delimiter` `@punctuation.special`
 
-## Zed calibration record (one-way reference, no back-port)
+## Highlight capture policy
 
-`zed-mlir-suite` is treated as a *coloring-intent* reference, **not** a golden
-source. Zed exposes some capture channels that differ from the names the
-tree-sitter CLI and the broader editor ecosystem recognize. Where they differ,
-this grammar uses the standard name and records the mapping here. Aligning
-`zed-mlir-suite` back to this grammar is out of scope for v0.1.x (a separate
-repo's concern).
+Capture choices are made from MLIR semantics and the standard tree-sitter
+vocabulary. They do not mirror any editor-specific theme or downstream package.
 
-| MLIR construct | Zed-style channel | Standard capture used here |
+| MLIR construct | Capture decision |
 | --- | --- | --- |
-| Symbol-body operators (`+ - * / & \| ~`) | `keyword.operator` | `operator` |
-| Malformed string escape (`invalid_escape`) | `warning` | `error` |
-| Block label (`caret_id`, `^bb0`) | `label` | `tag` |
+| Operation names (`func.func`, `arith.addi`, generic string ops) | `function.builtin` |
+| SSA values (`%arg0`, `%0`) | `variable` / `variable.parameter` |
+| Symbol-body operators (`+ - * / & \| ~`) | `operator` |
+| Block label (`caret_id`, `^bb0`) | `tag` |
 
-The remaining capture choices follow common tree-sitter conventions directly and
-needed no Zed-specific remapping.
+The remaining capture choices follow common tree-sitter conventions directly.
 
 ## Language injections
 
@@ -49,10 +45,10 @@ not carry a stable child language inside `.mlir` files, so this grammar does not
 inject C++, shell, or any dialect-specific DSL from MLIR string literals.
 
 The inverse case is the useful one: host languages can inject MLIR. For example,
-Zed's bundled C++ grammar has been verified to highlight `R"mlir(...)mlir"` raw
-strings by using the raw-string delimiter as the injected language name. That
-behavior belongs to the C++ grammar, while this grammar only needs to register
-the `mlir` language and keep its own injection query inert.
+C++ grammars can inject MLIR from raw-string delimiters such as
+`R"mlir(...)mlir"`. That behavior belongs to the host grammar, while this
+grammar only needs to register the `mlir` language and keep its own injection
+query inert.
 
 ## Verifying
 
@@ -62,6 +58,10 @@ tree-sitter test
 
 # Visual check of one file
 tree-sitter highlight path/to/file.mlir
+
+# Verify highlight captures against tree-sitter's standard capture vocabulary.
+# Keep --query-paths explicit so local/editor query paths do not affect results.
+tree-sitter highlight --check --query-paths queries/highlights.scm path/to/file.mlir
 
 # Verify query captures (adjust query and file path as needed)
 tree-sitter query queries/tags.scm path/to/file.mlir
