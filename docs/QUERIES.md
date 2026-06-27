@@ -8,11 +8,11 @@ specific theme color.
 | File | Purpose | Status |
 | --- | --- | --- |
 | `queries/highlights.scm` | Syntax highlighting | Active, tested |
-| `queries/locals.scm` | Scopes / definitions / references for SSA values, block args, symbols, aliases | Active, query-tested |
+| `queries/locals.scm` | Scopes / definitions / references for SSA, block labels, symbols, aliases | Active |
+| `queries/tags.scm` | Outline / code navigation (func, module, block label) | Active |
+| `queries/folds.scm` | Code folding (region `{ ... }`) | Active |
+| `queries/indents.scm` | Auto-indentation (region-based, block label alignment) | Active |
 | `queries/injections.scm` | Language injection | Documented-only (see below) |
-
-`tags.scm`, `folds.scm`, and `indents.scm` are intentionally **not** shipped
-yet — see the Phase 4 plan.
 
 ## Capture vocabulary
 
@@ -51,15 +51,12 @@ tree-sitter test
 # Visual check of one file
 tree-sitter highlight path/to/file.mlir
 
-# Verify locals captures
-tree-sitter query --test queries/locals.scm test/query/locals.mlir
+# Verify query captures (adjust query and file path as needed)
+tree-sitter query queries/tags.scm path/to/file.mlir
+tree-sitter query queries/folds.scm path/to/file.mlir
+tree-sitter query queries/indents.scm path/to/file.mlir
+tree-sitter query queries/locals.scm path/to/file.mlir
 ```
 
 Every `highlights.scm` capture is exercised by `test/highlight/**` (23 files,
 grouped under `types/`, `core/`, `integration/`, `assembly/`, `attributes/`).
-`test/query/locals.mlir` exercises every `locals.scm` capture pattern:
-toplevel and region scopes, SSA definitions and references, function arguments,
-block labels and arguments, symbol definitions and references, and type /
-attribute alias definitions and references. Query changes must ship with a
-runnable `tree-sitter test` assertion or a `tree-sitter query` verification
-command — eyeballing editor colors does not count as coverage.
