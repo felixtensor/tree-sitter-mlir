@@ -30,7 +30,7 @@ Capture choices are made from MLIR semantics and the standard tree-sitter
 vocabulary. They do not mirror any editor-specific theme or downstream package.
 
 | MLIR construct | Capture decision |
-| --- | --- | --- |
+| --- | --- |
 | Operation names (`func.func`, `arith.addi`, generic string ops) | `function.builtin` |
 | SSA values (`%arg0`, `%0`) | `variable` / `variable.parameter` |
 | Symbol-body operators (`+ - * / & \| ~`) | `operator` |
