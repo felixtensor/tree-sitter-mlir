@@ -13,7 +13,8 @@
       "locals": "queries/locals.scm",
       "injections": "queries/injections.scm",
       "tags": "queries/tags.scm",
-      "folds": "queries/folds.scm"
+      "folds": "queries/folds.scm",
+      "indents": "queries/indents.scm"
     }
   ],
   "metadata": {
