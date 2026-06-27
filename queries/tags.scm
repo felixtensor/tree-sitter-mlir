@@ -15,12 +15,10 @@
   sym_name: (symbol_ref_id) @name) @definition.function
 
 ;; Named modules: module @my_module { ... }
+;; Unnamed modules (module attributes { ... }) are intentionally not tagged:
+;; with no @name there is no symbol for an outline / navigation to point at.
 (module_operation
   sym_name: (symbol_ref_id) @name) @definition.module
-
-;; Unnamed modules: module attributes { ... }  (no @name field)
-(module_operation
-  !sym_name) @definition.module
 
 ;; Block labels: ^bb0(%arg0: i64):
 (block_label
