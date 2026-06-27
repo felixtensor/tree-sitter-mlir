@@ -11,8 +11,8 @@
 ;; Regions introduce a new indent level.
 (region) @indent.begin
 
-;; Closing brace returns to the parent indent level.
-"}" @indent.branch
+;; Region closing braces return to the parent indent level.
+(region "}" @indent.branch)
 
 ;; Block labels (^bb0, ^bb1) sit at the region's brace level, not
 ;; indented as body content inside it.

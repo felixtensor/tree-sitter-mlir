@@ -6,13 +6,15 @@
       "camelcase": "MLIR",
       "title": "MLIR",
       "scope": "source.mlir",
-      "file-types": ["mlir"],
-      "injection-regex": "^mlir$",
-      "class-name": "TreeSitterMlir",
+      "file-types": [
+        "mlir"
+      ],
       "highlights": "queries/highlights.scm",
-      "locals": "queries/locals.scm",
       "injections": "queries/injections.scm",
-      "tags": "queries/tags.scm"
+      "locals": "queries/locals.scm",
+      "tags": "queries/tags.scm",
+      "injection-regex": "^mlir$",
+      "class-name": "TreeSitterMlir"
     }
   ],
   "metadata": {
@@ -33,6 +35,7 @@
   "bindings": {
     "c": true,
     "go": true,
+    "java": false,
     "node": true,
     "python": true,
     "rust": true,
