@@ -12,7 +12,7 @@ specific theme color.
 | `queries/tags.scm` | Outline / code navigation (func, module, block label) | Active |
 | `queries/folds.scm` | Code folding (region `{ ... }`) | Active |
 | `queries/indents.scm` | Auto-indentation (region-based, block label alignment) | Active |
-| `queries/injections.scm` | Language injection | Documented-only (see below) |
+| `queries/injections.scm` | Language injection | Empty by design |
 
 ## Capture vocabulary
 
@@ -42,6 +42,18 @@ repo's concern).
 The remaining capture choices follow common tree-sitter conventions directly and
 needed no Zed-specific remapping.
 
+## Language injections
+
+`queries/injections.scm` intentionally contains no active patterns. MLIR IR does
+not carry a stable child language inside `.mlir` files, so this grammar does not
+inject C++, shell, or any dialect-specific DSL from MLIR string literals.
+
+The inverse case is the useful one: host languages can inject MLIR. For example,
+Zed's bundled C++ grammar has been verified to highlight `R"mlir(...)mlir"` raw
+strings by using the raw-string delimiter as the injected language name. That
+behavior belongs to the C++ grammar, while this grammar only needs to register
+the `mlir` language and keep its own injection query inert.
+
 ## Verifying
 
 ```sh
@@ -56,6 +68,7 @@ tree-sitter query queries/tags.scm path/to/file.mlir
 tree-sitter query queries/folds.scm path/to/file.mlir
 tree-sitter query queries/indents.scm path/to/file.mlir
 tree-sitter query queries/locals.scm path/to/file.mlir
+tree-sitter query queries/injections.scm path/to/file.mlir
 ```
 
 Every `highlights.scm` capture is exercised by `test/highlight/**` (23 files,

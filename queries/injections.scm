@@ -1,11 +1,7 @@
-; MLIR typically doesn't contain standard language injections inside its own files.
-; However, if you are working with C++ code that embeds MLIR via raw string literals,
-; you can add the following snippet to your editor's `cpp` injections
-; (e.g., `languages/cpp/injections.scm` in Zed, or equivalent Neovim config)
-; to automatically highlight MLIR inside `R"mlir(...)mlir"`:
-
-; (raw_string_literal
-;   delimiter: (raw_string_delimiter) @delim
-;   (#eq? @delim "mlir")
-;   content: (raw_string_content) @injection.content
-;   (#set! injection.language "mlir"))
+; Intentionally empty.
+;
+; MLIR IR does not contain a stable child language that should be injected from
+; inside .mlir files. Embedding MLIR inside another language, such as C++ raw
+; strings using R"mlir(...)mlir", is handled by that host language's own
+; injection query. This file exists so bindings can expose a valid injection
+; query path without activating any MLIR-side injection patterns.
