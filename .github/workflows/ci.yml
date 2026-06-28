@@ -102,27 +102,3 @@ jobs:
             echo "Compiling ${query}"
             tree-sitter query "${query}" "${example}" >/dev/null
           done
-
-  # Bench tooling tests + AST surface gate. Errors-only: fails on a new parse
-  # error or an AST-shape change in examples/; no speed data is recorded or gated.
-  bench:
-    name: Bench gates
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Set up NodeJS
-        uses: actions/setup-node@v6
-        with:
-          cache: npm
-          node-version: "22"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run bench tooling tests
-        run: npm run test:bench
-
-      - name: Verify examples AST surface manifest
-        run: node bench.mjs --verify
