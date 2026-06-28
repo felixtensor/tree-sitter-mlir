@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=62.4.0", "wheel"]
+requires = ["setuptools>=77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -15,7 +15,7 @@ classifiers = [
 ]
 authors = [{ name = "Buyun Xu", email = "xubuyun@outlook.com" }]
 requires-python = ">=3.10"
-license.text = "Apache-2.0 WITH LLVM-exception"
+license = "Apache-2.0 WITH LLVM-exception"
 readme = "README.md"
 
 [project.urls]
