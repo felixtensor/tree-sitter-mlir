@@ -4,10 +4,6 @@ This document describes the parser's design decisions that a contributor
 needs to understand before changing the grammar, queries, or bindings.
 It is **not** a changelog or a project status report.
 
-The executable correctness gate is `bench/ast-manifest.json` (run with
-`node bench.mjs --verify`). This document explains what that gate is
-protecting and why.
-
 ## Public AST Surface
 
 These named nodes and fields are the stable contract consumed by queries,
@@ -15,10 +11,9 @@ editor integrations, and language bindings. **Do not rename or remove any
 of them without an explicit review.**
 
 When a node appears here, it is expected to keep the same name, parent
-relationship, and field structure across grammar changes. The AST manifest
-(`bench/ast-manifest.json`) will flag accidental shape changes, but the
-review decision still belongs in the grammar or query commit that needs
-the change.
+relationship, and field structure across grammar changes. Changes to this
+surface should be made deliberately, covered by focused corpus examples,
+and called out in the grammar or query commit that needs the change.
 
 Helper rules prefixed with `_` (e.g. `_custom_body_*`, `_pretty_dialect_*`)
 are implementation detail and are **not** part of this surface.
@@ -150,28 +145,24 @@ An external scanner should be reconsidered only when one of these is true:
 - A specific, reproducible performance regression is traced to GLR
   branching that a scanner prototype can measurably improve.
 
-**Before adding a scanner**, prototype it and compare: AST hashes (via
-`node bench.mjs --verify`), `STATE_COUNT`, parser size, and the slow-tail
-report (`node bench.mjs --slow 15 --runs 3`). Document the ABI and
-build-chain impact (7 language bindings, 3 OS CI) in the commit that
+**Before adding a scanner**, prototype it and compare: corpus output,
+examples parse coverage, `STATE_COUNT`, and parser size. Document the ABI
+and build-chain impact (7 language bindings, 3 OS CI) in the commit that
 introduces the scanner.
 
 ## Correctness Gates
 
-Three layers must pass before any grammar change is merged:
+The standard tree-sitter gates must pass before any grammar change is
+merged:
 
 1. **`tree-sitter test`** — hand-written corpus (158 assertions) and
    highlight queries.
 2. **`npm run test:examples`** — parses the 549 checked-in upstream MLIR
    examples in `examples/`. Must remain at 100%.
-3. **`node bench.mjs --verify`** — checks that every file in
-   `bench/ast-manifest.json` still parses successfully **and** produces
-   the same AST structure (hashed, platform-independent). This catches
-   silent AST shape changes that pass `test:examples` without errors.
-
-`node bench.mjs --slow 15 --runs 3` is a diagnostic tool for review,
-not a merge gate. Use it to check whether a grammar change degrades
-the slowest files.
+3. **Generated-file check in CI** — reruns `tree-sitter generate` and
+   fails if committed parser artifacts are stale.
+4. **Query compile check in CI** — compiles every shipped query against
+   an example file to catch node-name drift outside highlights.
 
 ## Adding Grammar for New MLIR Syntax
 
@@ -185,8 +176,7 @@ construct, etc.), follow this checklist:
    - No new **unresolved** conflicts (the `generate` command exits 0).
    - Declared conflict count does not increase (or the increase is
      justified in the commit message).
-4. Run `tree-sitter test`, `npm run test:examples`, and
-   `node bench.mjs --verify`. All must pass.
+4. Run `tree-sitter test` and `npm run test:examples`. All must pass.
 5. If the change touches a node listed in the Public AST Surface above,
    call it out in the commit message and update this document if the
    surface contract changes.
