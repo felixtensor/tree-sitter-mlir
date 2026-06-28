@@ -91,6 +91,18 @@ jobs:
           git --no-pager diff --no-ext-diff
           exit 1
 
+      # Errors-only: every shipped query must compile against the grammar.
+      # tree-sitter test exercises highlights.scm only, so this is the sole
+      # guard for locals/tags/folds/indents/injections node-name drift.
+      - name: Check queries compile against grammar
+        run: |
+          set -euo pipefail
+          example="$(find examples -name '*.mlir' -print -quit)"
+          for query in queries/*.scm; do
+            echo "Compiling ${query}"
+            tree-sitter query "${query}" "${example}" >/dev/null
+          done
+
   # Bench tooling tests + AST surface gate. Errors-only: fails on a new parse
   # error or an AST-shape change in examples/; no speed data is recorded or gated.
   bench:
