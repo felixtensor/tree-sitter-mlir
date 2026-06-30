@@ -59,7 +59,8 @@
     "test:bindings": "node --test bindings/node/*_test.js",
     "test:examples": "tree-sitter parse --quiet --stat \"examples/**/*.mlir\"",
     "test:all": "npm run test && npm run test:examples",
-    "prebuildify": "prebuildify --napi --strip"
+    "prebuildify": "prebuildify --napi --strip",
+    "prebuildify:release": "prebuildify -t 20.19.5"
   },
   "publishConfig": {
     "access": "public"

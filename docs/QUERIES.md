@@ -71,5 +71,5 @@ tree-sitter query queries/locals.scm path/to/file.mlir
 tree-sitter query queries/injections.scm path/to/file.mlir
 ```
 
-Every `highlights.scm` capture is exercised by `test/highlight/**` (23 files,
+Every `highlights.scm` capture is exercised by `test/highlight/**` (24 files,
 grouped under `types/`, `core/`, `integration/`, `assembly/`, `attributes/`).
