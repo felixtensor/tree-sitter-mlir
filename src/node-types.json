@@ -430,6 +430,10 @@
           "named": true
         },
         {
+          "type": "token_type",
+          "named": true
+        },
+        {
           "type": "tuple_type",
           "named": true
         },
@@ -525,6 +529,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "token_type",
           "named": true
         },
         {
@@ -1751,6 +1759,10 @@
           "named": true
         },
         {
+          "type": "token_type",
+          "named": true
+        },
+        {
           "type": "tuple_type",
           "named": true
         },
@@ -1908,6 +1920,10 @@
         },
         {
           "type": "tensor_type",
+          "named": true
+        },
+        {
+          "type": "token_type",
           "named": true
         },
         {
@@ -2237,6 +2253,10 @@
   {
     "type": "to",
     "named": false
+  },
+  {
+    "type": "token_type",
+    "named": true
   },
   {
     "type": "tuple",

@@ -34,7 +34,8 @@
 ;; reached through the hidden _prim_type rule, not through builtin_type.
 [(builtin_type)
  (memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
- (opaque_type) (integer_type) (float_type) (index_type) (none_type)] @type.builtin
+ (opaque_type) (integer_type) (float_type) (index_type) (none_type)
+ (token_type)] @type.builtin
 [(type_alias) (type_alias_def) (dialect_type)] @type
 
 ;; Dimension sizes inside type dimension lists (256, 8, etc.)

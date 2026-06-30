@@ -1955,6 +1955,65 @@ func.func @none_type() {
                 (custom_op_name)))))))))
 
 ================================================================================
+token type
+================================================================================
+func.func @token_type(%arg0: token) {
+  %t = "test.token.produce"() : () -> token
+  "test.token.region"() ({
+  ^bb0(%arg1: token):
+    "test.token.consume"(%arg1) : (token) -> ()
+  }) : () -> ()
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (token_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (token_type))))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (region
+                  (block
+                    (block_label
+                      (caret_id)
+                      (block_arg_list
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (token_type)))))
+                    (operation
+                      (generic_operation
+                        (string_literal)
+                        (value_use)
+                        (function_type
+                          (type
+                            (builtin_type
+                              (token_type))))))))
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 tuple type
 ================================================================================
 func.func @tuple_types() {
