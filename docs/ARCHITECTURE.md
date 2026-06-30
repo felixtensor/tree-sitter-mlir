@@ -155,9 +155,9 @@ introduces the scanner.
 The standard tree-sitter gates must pass before any grammar change is
 merged:
 
-1. **`tree-sitter test`** — hand-written corpus (158 assertions) and
+1. **`tree-sitter test`** — hand-written corpus (159 assertions) and
    highlight queries.
-2. **`npm run test:examples`** — parses the 549 checked-in upstream MLIR
+2. **`npm run test:examples`** — parses the 552 checked-in upstream MLIR
    examples in `examples/`. Must remain at 100%.
 3. **Generated-file check in CI** — reruns `tree-sitter generate` and
    fails if committed parser artifacts are stale.
