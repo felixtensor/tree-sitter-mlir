@@ -884,6 +884,7 @@ export default grammar({
         $.index_type,
         $.memref_type,
         $.none_type,
+        $.token_type,
         $.tensor_type,
         $.vector_type,
         $.tuple_type,
@@ -920,6 +921,7 @@ export default grammar({
       ),
     index_type: ($) => token(prec(5, "index")),
     none_type: ($) => token(prec(5, "none")),
+    token_type: ($) => token(prec(5, "token")),
     complex_type: ($) => seq($._complex_type_start, $._prim_type, ">"),
     _prim_type: ($) =>
       choice(
@@ -928,6 +930,7 @@ export default grammar({
         $.index_type,
         $.complex_type,
         $.none_type,
+        $.token_type,
         $.memref_type,
         $.vector_type,
         $.tensor_type,

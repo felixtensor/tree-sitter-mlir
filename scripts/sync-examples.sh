@@ -112,7 +112,7 @@ sync_selected_files() {
 echo "IR (selected files):"
 mkdir -p "$EXAMPLES_DIR/IR"
 ir_count=0
-for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties.mlir properties-bytecode-roundtrip.mlir custom-print-parse.mlir distinct-attr.mlir check-help-output.mlir locations.mlir test-fold-adaptor.mlir zero_whitespace.mlir; do
+for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties.mlir properties-bytecode-roundtrip.mlir custom-print-parse.mlir distinct-attr.mlir check-help-output.mlir locations.mlir test-fold-adaptor.mlir zero_whitespace.mlir token-type.mlir; do
   if [ -f "$MLIR_TEST_DIR/IR/$f" ]; then
     cp "$MLIR_TEST_DIR/IR/$f" "$EXAMPLES_DIR/IR/"
     ir_count=$((ir_count + 1))
@@ -123,6 +123,11 @@ done
 echo "  $ir_count files synced"
 
 # ── Sync selected dialect tests ──────────────────────────────────────────────
+sync_selected_files "Builtin/Bytecode" \
+  "$MLIR_TEST_DIR/Dialect/Builtin/Bytecode" \
+  "$EXAMPLES_DIR/Builtin/Bytecode" \
+  builtin_fixed.mlir \
+  types.mlir
 sync_selected_files "AMDGPU" "$MLIR_TEST_DIR/Dialect/AMDGPU" "$EXAMPLES_DIR/AMDGPU" \
   canonicalize.mlir \
   ops.mlir
