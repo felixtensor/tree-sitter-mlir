@@ -1,6 +1,6 @@
 func.func @simple(i64, i64) -> i64 {
 // <- function.builtin
-//        ^ function
+//        ^ string.special.symbol
 //               ^ punctuation.bracket
 //                ^ type.builtin
 //                   ^ punctuation.delimiter
@@ -10,21 +10,21 @@ func.func @simple(i64, i64) -> i64 {
 //                             ^ type.builtin
 //                                 ^ punctuation.bracket
 ^bb1(%d : i64, %e : i64):
-// <- tag
-//   ^ variable.parameter
+// <- label
+//   ^ variable.special
 //        ^ type.builtin
-//             ^ variable.parameter
+//             ^ variable.special
 //                  ^ type.builtin
   %0 = arith.addi %d, %e : i64
-// ^ variable
+// ^ variable.special
 //   ^ operator
 //     ^ function.builtin
-//                ^ variable.parameter
-//                    ^ variable.parameter
+//                ^ variable.special
+//                    ^ variable.special
 //                          ^ type.builtin
   return %0 : i64   // Return is also a terminator.
 // ^ function.builtin
-//       ^ variable
+//       ^ variable.special
 //            ^ type.builtin
 //                  ^ comment
 }

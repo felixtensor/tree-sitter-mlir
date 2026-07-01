@@ -9,10 +9,11 @@
 ;; ── Operations (Tiered) ─────────────────────────────────────────────────────
 ;; Builtin/Standard operations
 (func_operation name: _ @function.builtin)
+(func_operation visibility: _ @attribute)
+(func_operation specifier: (function_specifier) @keyword)
+(func_operation "attributes" @attribute)
 (module_operation name: _ @function.builtin)
-(func_operation ["private" "public" "attributes"] @keyword)
-(function_specifier) @keyword
-(module_operation "attributes" @keyword)
+(module_operation "attributes" @attribute)
 
 ;; Dialect operations (e.g., arith.addi)
 (custom_op_name) @function.builtin
@@ -25,8 +26,6 @@
 
 ;; Symbols (@name)
 (symbol_ref_id) @string.special.symbol
-(func_operation sym_name: (symbol_ref_id) @function)
-(module_operation sym_name: (symbol_ref_id) @function)
 
 ;; ── Types & Attributes ──────────────────────────────────────────────────────
 ;; Individual builtin type nodes — captures nested types inside dim_list
@@ -93,16 +92,13 @@
 (invalid_escape) @error
 
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────
-;; General uses and results (catch-all, overridden by more specific rules below)
-(op_result) @variable
-(value_use) @variable
-
-;; Formal Parameters override the general variable rule above
-(func_arg_list (value_use) @variable.parameter)
-(block_arg_list (value_use) @variable.parameter)
+;; All SSA values share one channel so a func/block argument and the values
+;; derived from it read as the same colour. (value_use) already covers
+;; arguments, so no parameter-specific rule is needed.
+[(op_result) (value_use)] @variable.special
 
 ;; ── Control Flow ────────────────────────────────────────────────────────────
-(caret_id) @tag
+(caret_id) @label
 (trailing_location "loc" @keyword)
 (callsite_location ["callsite" "at"] @keyword)
 (fused_location "fused" @keyword)
@@ -124,9 +120,11 @@
 ;; keywords.
 (custom_operation (bare_id) @keyword)
 
-;; Dense resource handles override the bare_id catch-all above.
+;; Dense resource handle: this bare_id is nested inside dense_resource_literal,
+;; not a direct custom_operation child, so the catch-all above never matches it.
 (dense_resource_literal (bare_id) @constant.builtin)
 
-;; Dictionary attribute keys override the bare_id catch-all above
+;; Dictionary attribute keys: bare_id/string live inside attribute_entry,
+;; disjoint from the direct-child catch-all above (so order does not matter).
 (attribute_entry (bare_id) @attribute)
 (attribute_entry (string_literal) @attribute)

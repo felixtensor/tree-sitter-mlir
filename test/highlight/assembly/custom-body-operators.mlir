@@ -5,7 +5,7 @@ func.func @custom_body_operators(%a: vector<4xf16>, %b: vector<8xf16>,
 //                                    ^ operator
 //                                         ^ operator
 //                                                ^ keyword
-//                                                       ^ variable.parameter
+//                                                       ^ variable.special
     {abid = 0 : i32, cbsz = 0 : i32}
 //   ^ attribute
     : vector<4xf16>, vector<8xf16>, vector<4xf32>

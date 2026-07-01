@@ -1,12 +1,12 @@
 wasmssa.func @func_0(%arg0 : !wasmssa<local ref to i32>) -> i32 {
 // <- function.builtin
 //           ^ string.special.symbol
-//                    ^ variable
+//                    ^ variable.special
 //                            ^ type
   %cond = wasmssa.local_get %arg0 : ref to i32
-//^ variable
+//^ variable.special
 //        ^ function.builtin
-//                           ^ variable
+//                           ^ variable.special
   wasmssa.if %cond : {
     %c0 = wasmssa.const 0.5 : f32
     wasmssa.block_return %c0 : f32
@@ -15,9 +15,9 @@ wasmssa.func @func_0(%arg0 : !wasmssa<local ref to i32>) -> i32 {
     wasmssa.block_return %c1 : f32
   } >^bb1
 //  ^ punctuation.bracket
-//   ^ tag
+//   ^ label
 ^bb1(%retVal: f32):
-// <- tag
+// <- label
   wasmssa.return %retVal : f32
 //^ function.builtin
 }
