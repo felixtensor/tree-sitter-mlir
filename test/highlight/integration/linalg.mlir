@@ -1,44 +1,44 @@
 func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
 // <- function.builtin
-//        ^ function
-//                                   ^ variable.parameter
+//        ^ string.special.symbol
+//                                   ^ variable.special
 //                                           ^ type.builtin
-//                                                               ^ variable.parameter
+//                                                               ^ variable.special
 //                                                                        ^ type.builtin
   -> tensor<1x10x8x8xf32> {
 // ^ operator
 //   ^ type.builtin
   %zero = arith.constant 0.000000e+00 : f32
-// ^ variable
+// ^ variable.special
 //        ^ function.builtin
 //                       ^ number
 //                                      ^ type.builtin
   %init = tensor.empty() : tensor<1x10x8x8xf32>
-// ^ variable
+// ^ variable.special
 //        ^ function.builtin
 //                         ^ type.builtin
   %fill = linalg.fill ins(%zero : f32) outs(%init : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
-// ^ variable
+// ^ variable.special
 //        ^ function.builtin
 //                    ^ keyword
-//                        ^ variable
+//                        ^ variable.special
 //                                ^ type.builtin
 //                                     ^ keyword
   %0 = linalg.depthwise_conv_1d_nwc_wcm {dilations = dense<1> : tensor<1xi64>,
-// ^ variable
+// ^ variable.special
 //     ^ function.builtin
 //                                       ^ attribute
 //                                                   ^ keyword
     strides = dense<1> : tensor<1xi64>}
 //            ^ keyword
     ins(%input, %filter : tensor<1x12x8xf32>, tensor<3x8x8xf32>)
-//      ^ variable.parameter
-//              ^ variable.parameter
+//      ^ variable.special
+//              ^ variable.special
     outs(%fill : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
-//       ^ variable
+//       ^ variable.special
   return %0 : tensor<1x10x8x8xf32>
 // ^ function.builtin
-//       ^ variable
+//       ^ variable.special
 }
 
 #map0 = affine_map<(d0, d1) -> (d0, d1)>

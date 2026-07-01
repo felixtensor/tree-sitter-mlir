@@ -1,10 +1,10 @@
 module @registered_dialects {
 // <- function.builtin
-//     ^ function
+//     ^ string.special.symbol
   func.func @ok0(%in: !llvm.ptr) {
 //^ function.builtin
-//          ^ function
-//               ^ variable.parameter
+//          ^ string.special.symbol
+//               ^ variable.special
 //                    ^ type
     return
 //  ^ function.builtin
@@ -12,27 +12,27 @@ module @registered_dialects {
 
   func.func @ok2(%in: !llvm.ptr) -> !llvm.ptr {
 //^ function.builtin
-//          ^ function
-//               ^ variable.parameter
+//          ^ string.special.symbol
+//               ^ variable.special
 //                    ^ type
 //                                   ^ type
     return %in : !llvm.ptr
 //  ^ function.builtin
-//         ^ variable.parameter
+//         ^ variable.special
 //               ^ type
   }
 
   func.func @ok4() -> !llvm.ptr {
 //^ function.builtin
-//          ^ function
+//          ^ string.special.symbol
 //                     ^ type
     %out = llvm.mlir.zero : !llvm.ptr
-//  ^ variable
+//  ^ variable.special
 //         ^ function.builtin
 //                          ^ type
     return %out : !llvm.ptr
 //  ^ function.builtin
-//         ^ variable
+//         ^ variable.special
 //                ^ type
   }
 }

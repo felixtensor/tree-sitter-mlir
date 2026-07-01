@@ -9,9 +9,9 @@
 //     ^ type
 llvm.func @aliases() {
 // <- function.builtin
-//        ^ function
+//        ^ string.special.symbol
   %0 = llvm.mlir.zero : !ptr
-// ^ variable
+// ^ variable.special
 //     ^ function.builtin
 //                      ^ type
   llvm.return

@@ -1,27 +1,27 @@
 func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
 // <- function.builtin
-//        ^ function
+//        ^ string.special.symbol
 //                  ^ punctuation.bracket
-//                   ^ variable.parameter
+//                   ^ variable.special
 //                         ^ punctuation.delimiter
 //                           ^ type.builtin
 //                              ^ punctuation.delimiter
-//                                ^ variable.parameter
+//                                ^ variable.special
 //                                        ^ type.builtin
 //                                           ^ punctuation.bracket
 //                                             ^ operator
 //                                                ^ type.builtin
 //                                                    ^ punctuation.bracket
   %0 = arith.addi %arg0, %arg1 : i64
-// ^ variable
+// ^ variable.special
 //   ^ operator
 //     ^ function.builtin
-//                ^ variable.parameter
-//                       ^ variable.parameter
+//                ^ variable.special
+//                       ^ variable.special
 //                               ^ type.builtin
   return %0 : i64
 // ^ function.builtin
-//       ^ variable
+//       ^ variable.special
 //            ^ type.builtin
 }
 // <- punctuation.bracket

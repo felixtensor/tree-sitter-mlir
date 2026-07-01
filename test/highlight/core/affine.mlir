@@ -12,33 +12,33 @@
 //                                                    ^ operator
 func.func @affine_highlights(%n : index, %A : memref<?xf32>) {
 // <- function.builtin
-//        ^ function
-//                           ^ variable.parameter
+//        ^ string.special.symbol
+//                           ^ variable.special
 //                                ^ type.builtin
-//                                        ^ variable.parameter
+//                                        ^ variable.special
 //                                             ^ type.builtin
   affine.for %i = 0 to %n step 4 {
 // ^ function.builtin
-//            ^ variable
-//                      ^ variable.parameter
+//            ^ variable.special
+//                      ^ variable.special
     %bound = affine.min #map0(%i, %i)[%n]
-//  ^ variable
+//  ^ variable.special
 //           ^ function.builtin
 //                      ^ attribute
-//                            ^ variable
+//                            ^ variable.special
     affine.if #set0(%i)[%n] {
 //   ^ function.builtin
 //             ^ attribute
       %v = affine.load %A[%i] : memref<?xf32>
-//    ^ variable
+//    ^ variable.special
 //         ^ function.builtin
-//                     ^ variable.parameter
-//                        ^ variable
+//                     ^ variable.special
+//                        ^ variable.special
 //                              ^ type.builtin
       affine.store %v, %A[%i] : memref<?xf32>
 //    ^ function.builtin
-//                 ^ variable
-//                     ^ variable.parameter
+//                 ^ variable.special
+//                     ^ variable.special
     }
   }
   return
