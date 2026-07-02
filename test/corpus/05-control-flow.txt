@@ -60,13 +60,82 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (value_use)
                   (type
                     (builtin_type
-                      (integer_type))))
+                      (integer_type)))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Branch successors followed by labels
+================================================================================
+func.func @branch_targets(%c : i1, %v : i32) {
+  cf.cond_br %c, ^bb1, ^bb2
+^bb1:
+  cf.br ^bb3(%v : i32)
+^bb2:
+  cf.br ^bb3(%v : i32)
+^bb3(%arg : i32):
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
                 (successor
-                  (caret_id)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                  (caret_id))
+                (successor
+                  (caret_id)))))
+          (block
+            (block_label
+              (caret_id))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -75,7 +144,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (value_use)
                   (type
                     (builtin_type
-                      (integer_type))))))
+                      (integer_type)))))))
+          (block
+            (block_label
+              (caret_id))
             (operation
               (custom_operation
                 (custom_op_name)
@@ -84,7 +156,105 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (value_use)
                   (type
                     (builtin_type
-                      (integer_type))))))
+                      (integer_type)))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Block label with spaced multiline arguments
+================================================================================
+func.func @spaced_multiline_label_args(%v : i32) {
+^bb1 (%arg0: i32,
+      %arg1: i32):
+  cf.br ^bb2
+^bb2:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (successor
+                  (caret_id)))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Invoke successors before function type
+================================================================================
+func.func @invoke_successor_type_separator() {
+  llvm.invoke @callee() to ^bb1 unwind ^bb2 : () -> ()
+^bb1:
+  return
+^bb2:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (symbol_ref_id)
+                (bare_id)
+                (successor
+                  (caret_id))
+                (bare_id)
+                (successor
+                  (caret_id)))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name))))
+          (block
+            (block_label
+              (caret_id))
             (operation
               (custom_operation
                 (custom_op_name)))))))))

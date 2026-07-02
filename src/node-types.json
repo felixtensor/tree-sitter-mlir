@@ -2058,10 +2058,6 @@
     "named": false
   },
   {
-    "type": "^",
-    "named": false
-  },
-  {
     "type": "affine_map",
     "named": false
   },
