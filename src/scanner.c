@@ -96,6 +96,20 @@ static bool at_block_label_tail(TSLexer *lexer) {
       switch (lexer->lookahead) {
         case '\0':
           return false;
+        case '"':
+          // Consume a string literal opaquely so brackets or `//` inside it
+          // are not counted as nesting delimiters or comments.
+          lexer->advance(lexer, false);
+          while (lexer->lookahead != '"' && lexer->lookahead != '\0') {
+            if (lexer->lookahead == '\\') {
+              lexer->advance(lexer, false);
+            }
+            lexer->advance(lexer, false);
+          }
+          if (lexer->lookahead == '\0') {
+            return false;
+          }
+          break;
         case '(':
         case '<':
         case '[':

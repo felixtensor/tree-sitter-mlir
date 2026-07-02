@@ -2006,3 +2006,37 @@ func.func @normalized_forall_elide_terminator() -> () {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+Block label arg type with bracket inside a string literal
+================================================================================
+func.func @string_bracket_label() {
+^bb0(%x: !foo.bar<")">):
+  cf.br ^bb0
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (string_literal)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (successor
+                  (caret_id))))))))))
