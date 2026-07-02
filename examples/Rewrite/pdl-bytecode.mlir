@@ -177,7 +177,7 @@ module @ir attributes { test.apply_constraint_multi_result_failure } {
 module @patterns {
   pdl_interp.func @matcher(%root : !pdl.operation) {
     pdl_interp.check_operation_name of %root is "test.success_op" -> ^pat, ^end
-
+  
   ^pat:
     %num_results = pdl_interp.create_attribute 2 : i32
     %types = pdl_interp.apply_constraint "op_constr_return_type_range"(%root, %num_results : !pdl.operation, !pdl.attribute) : !pdl.range<type> -> ^pat1, ^end
@@ -960,7 +960,7 @@ module @ir attributes { test.foreach } {
 module @patterns {
   pdl_interp.func @matcher(%root : !pdl.operation) {
     pdl_interp.check_operation_name of %root is "test.success_op" -> ^pat, ^end
-
+  
   ^pat:
     %results = pdl_interp.get_results of %root : !pdl.range<value>
     %types = pdl_interp.get_value_type of %results : !pdl.range<type>
@@ -1000,7 +1000,7 @@ module @ir attributes { test.foreach_type } {
 module @patterns {
   pdl_interp.func @matcher(%root : !pdl.operation) {
     pdl_interp.check_operation_name of %root is "test.success_op" -> ^pat, ^end
-
+  
   ^pat:
     %values = pdl_interp.apply_constraint "op_constr_return_value_range"(%root : !pdl.operation) : !pdl.range<value> -> ^loop, ^end
 

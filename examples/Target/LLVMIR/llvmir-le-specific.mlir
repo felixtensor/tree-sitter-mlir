@@ -11,7 +11,7 @@ llvm.mlir.global internal constant @dense_resource_tensor_constant(dense_resourc
 llvm.mlir.global internal constant @dense_resource_vector_constant(dense_resource<dense_resource_test_5xf32> : vector<5xf32>) : vector<5xf32>
 
 
-// CHECK{LITERAL}: @dense_resource_multidim_tensor_constant = internal constant [1 x [2 x [2 x float]]] [[2 x [2 x float]] [[2 x float] [float f0x3EB5A354, float f0x3EB3C0D6], [2 x float] [float f0xBDA2D155, float f0x3EBBD2E5]]]
+// CHECK{LITERAL}: @dense_resource_multidim_tensor_constant = internal constant [1 x [2 x [2 x float]]] [[2 x [2 x float]] [[2 x float] [float f0x3EB5A354, float f0x3EB3C0D6], [2 x float] [float f0xBDA2D155, float f0x3EBBD2E5]]] 
 llvm.mlir.global internal constant @dense_resource_multidim_tensor_constant(dense_resource<dense_resource_test_2x2xf32> : tensor<1x2x2xf32>) : !llvm.array<1 x !llvm.array<2 x !llvm.array<2 x f32>>>
 
 // CHECK{LITERAL}: @dense_resource_multidim_vector_constant = internal constant [1 x [2 x <2 x float>]] [[2 x <2 x float>] [<2 x float> <float f0x3EB5A354, float f0x3EB3C0D6>, <2 x float> <float f0xBDA2D155, float f0x3EBBD2E5>]]
