@@ -35,6 +35,9 @@ Highlights channel sync and a significant block-label correctness fix.
 
 ### Changed
 - **highlights:** refine capture channel hierarchy.
+- **examples:** sync upstream to `llvm-project@6f9ac38b` (2026-07-02).
+  566 files, 176k lines; 0 parse failures. +14 files from the previous
+  snapshot, including new SCF, Linalg, and OpenACC test cases.
 
 ### Breaking AST changes
 - A `^bb` label at the start of a block is no longer captured inside the
