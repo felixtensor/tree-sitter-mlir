@@ -26,6 +26,9 @@ Highlights channel sync and a significant block-label correctness fix.
   following block label as a phantom successor, flattening whole regions
   while still parsing without any `ERROR`. 120 of 552 committed examples now
   parse to their correct tree (concentrated in LLVMIR, OpenACC, IR).
+- **scanner:** skip string literals when matching a block-label argument
+  list, so a bracket inside a string (e.g. `!llvm.struct<")">`) no longer
+  misclassifies the block label as a successor.
 - **python:** include `src/scanner.c` in the sdist so the wheel and
   from-source builds link the external scanner (previously failed to import
   with `undefined symbol: tree_sitter_mlir_external_scanner_create`).
