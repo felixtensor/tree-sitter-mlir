@@ -129,26 +129,26 @@ conflicts.
 | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | A dotted name followed by `loc(...)` can be a specialized loc+attribute form or a generic operation name. |
 | `_custom_body_dict_key × attribute_entry` | A string followed by `=` can be a custom SSA dictionary key or a normal dictionary attribute key. |
 
-### No External Scanner
+### External Scanner
 
-The parser uses no external scanner — it is a pure `grammar.js` with GLR
-conflict resolution. The remaining hard problems are parser-structure
-decisions (which branch to prefer at a given point), not lexical-state
-decisions (which token to emit for a given character).
+The parser uses a small external scanner for caret identifiers. MLIR reuses
+`^suffix` for both successor references and block labels, and the loose
+custom-operation fallback can otherwise parse a following block label such as
+`^bb1(%arg : i32):` as another successor plus punctuation. The scanner emits
+two token kinds:
 
-An external scanner should be reconsidered only when one of these is true:
+- `_caret_id` for ordinary successor/reference uses.
+- `_block_label_id` when the same-line tail has block-label shape:
+  `^suffix block-arg-list? :`.
 
-- A new lexical feature (e.g. raw strings with custom delimiters) cannot
-  be expressed safely in pure grammar.
-- Pretty or opaque dialect payloads need lexical state to split reliably
-  and the pure-grammar approach causes AST instability.
-- A specific, reproducible performance regression is traced to GLR
-  branching that a scanner prototype can measurably improve.
+Both tokens are exposed as named `caret_id` nodes in the syntax tree, so query
+consumers do not need separate handling. The scanner has no persistent state,
+serializes nothing, and mirrors the existing `_suffix_id` spelling including
+optional `:digits` and `#digits` suffixes.
 
-**Before adding a scanner**, prototype it and compare: corpus output,
-examples parse coverage, `STATE_COUNT`, and parser size. Document the ABI
-and build-chain impact (7 language bindings, 3 OS CI) in the commit that
-introduces the scanner.
+Do not add more scanner responsibilities unless the syntax cannot be expressed
+safely in pure grammar or a measured parser-stability problem needs lexical
+state.
 
 ## Correctness Gates
 

@@ -1063,20 +1063,23 @@ func.func @main() -> (tensor<i32>) attributes {} {
                         (dim_list
                           (type
                             (builtin_type
-                              (integer_type))))))))
-                (successor
-                  (caret_id)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (type
-                            (builtin_type
-                              (integer_type))))))))
-                (comment)
-                (value_use)))
+                              (integer_type)))))))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (type
@@ -1195,20 +1198,23 @@ func.func @main() -> (tensor<i32>) attributes {} {
                         (dim_list
                           (type
                             (builtin_type
-                              (integer_type))))))))
-                (successor
-                  (caret_id)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (type
-                            (builtin_type
-                              (integer_type))))))))
-                (comment)
-                (value_use)))
+                              (integer_type)))))))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (type
@@ -1303,17 +1309,19 @@ func.func @main() -> (tensor<i32>) attributes {} {
                         (dim_list
                           (type
                             (builtin_type
-                              (integer_type))))))))
-                (successor
-                  (caret_id)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (type
-                            (builtin_type
-                              (integer_type))))))))))
+                              (integer_type)))))))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
             (comment)
             (operation
               (custom_operation

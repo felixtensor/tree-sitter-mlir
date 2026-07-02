@@ -2951,21 +2951,17 @@
       ]
     },
     "_block_id": {
-      "type": "SYMBOL",
-      "name": "caret_id"
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_block_label_id"
+      },
+      "named": true,
+      "value": "caret_id"
     },
     "caret_id": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "^"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_suffix_id"
-        }
-      ]
+      "type": "SYMBOL",
+      "name": "_caret_id"
     },
     "_value_use_and_type": {
       "type": "SEQ",
@@ -5958,7 +5954,16 @@
     ]
   ],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_caret_id"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_block_label_id"
+    }
+  ],
   "inline": [
     "_tier1_custom_operation",
     "_tier2_custom_operation",

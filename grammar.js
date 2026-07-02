@@ -4,6 +4,7 @@
 export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
+  externals: ($) => [$._caret_id, $._block_label_id],
   // All 12 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
@@ -701,8 +702,8 @@ export default grammar({
     // =========================================================================
     block: ($) => seq($.block_label, repeat($.operation)),
     block_label: ($) => seq($._block_id, optional($.block_arg_list), ":"),
-    _block_id: ($) => $.caret_id,
-    caret_id: ($) => seq("^", $._suffix_id),
+    _block_id: ($) => alias($._block_label_id, $.caret_id),
+    caret_id: ($) => $._caret_id,
     _value_use_and_type: ($) =>
       seq(
         $.value_use,
