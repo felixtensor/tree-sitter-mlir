@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tree-sitter-mlir"
 description = "MLIR grammar for tree-sitter"
-version = "0.1.8"
+version = "0.1.9"
 keywords = ["incremental", "parsing", "tree-sitter", "mlir"]
 classifiers = [
   "Intended Audience :: Developers",
