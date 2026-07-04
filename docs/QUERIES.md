@@ -60,8 +60,9 @@ tree-sitter test
 tree-sitter highlight path/to/file.mlir
 
 # Verify highlight captures against tree-sitter's standard capture vocabulary.
-# Keep --query-paths explicit so local/editor query paths do not affect results.
-tree-sitter highlight --check --query-paths queries/highlights.scm path/to/file.mlir
+# Pin the query with --query-paths for reproducible results, but keep it *after*
+# the source paths: --query-paths is variadic and would otherwise swallow them.
+tree-sitter highlight --check path/to/file.mlir --query-paths queries/highlights.scm
 
 # Verify query captures (adjust query and file path as needed)
 tree-sitter query queries/tags.scm path/to/file.mlir

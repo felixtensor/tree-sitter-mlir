@@ -140,7 +140,7 @@ jobs:
         run: npm run test -- --wasm
 
       - name: Check highlight captures
-        run: npm x -- tree-sitter highlight --quiet --check --query-paths queries/highlights.scm test/highlight/*/*.mlir
+        run: npm x -- tree-sitter highlight --quiet --check test/highlight/*/*.mlir --query-paths queries/highlights.scm
 
       - name: Build local prebuild
         run: npm run prebuildify:release
