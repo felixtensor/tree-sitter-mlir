@@ -2148,6 +2148,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "custom_body_dim_list"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_custom_body_element_base"
         },
         {
@@ -2302,6 +2306,49 @@
           "name": "bare_id"
         }
       ]
+    },
+    "custom_body_dim_list": {
+      "type": "PREC_DYNAMIC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_custom_body_dimension_size"
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_custom_body_dimension_separator"
+                  },
+                  "named": true,
+                  "value": "dimension_separator"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_custom_body_dimension_size"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "_custom_body_dimension_size": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "integer_literal"
+      },
+      "named": true,
+      "value": "dimension_size"
     },
     "_custom_body_literal_element": {
       "type": "CHOICE",
@@ -5962,6 +6009,10 @@
     {
       "type": "SYMBOL",
       "name": "_block_label_id"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_custom_body_dimension_separator"
     }
   ],
   "inline": [

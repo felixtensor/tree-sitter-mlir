@@ -4,7 +4,11 @@
 export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
-  externals: ($) => [$._caret_id, $._block_label_id],
+  externals: ($) => [
+    $._caret_id,
+    $._block_label_id,
+    $._custom_body_dimension_separator,
+  ],
   // All 12 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
@@ -506,6 +510,7 @@ export default grammar({
     // These are recognized by sigils (%,^,@,!,#) or by structural delimiters.
     _custom_body_element: ($) =>
       choice(
+        $.custom_body_dim_list,
         $._custom_body_element_base,
         // Kept out of _custom_body_element_base because nested delimiter bodies
         // should still treat `>` as an angle-group boundary, not a loose marker.
@@ -570,6 +575,21 @@ export default grammar({
         $._custom_body_reserved_keyword,
         $.bare_id, // keywords: to, from, step, ins, outs, etc.
       ),
+
+    custom_body_dim_list: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          $._custom_body_dimension_size,
+          repeat1(seq(
+            alias($._custom_body_dimension_separator, $.dimension_separator),
+            $._custom_body_dimension_size,
+          )),
+        ),
+      ),
+
+    _custom_body_dimension_size: ($) =>
+      alias($.integer_literal, $.dimension_size),
 
     _custom_body_literal_element: ($) =>
       choice(
