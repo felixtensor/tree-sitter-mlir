@@ -7,6 +7,7 @@
 enum TokenType {
   CARET_ID,
   BLOCK_LABEL_ID,
+  CUSTOM_BODY_DIMENSION_SEPARATOR,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -32,6 +33,10 @@ void tree_sitter_mlir_external_scanner_deserialize(void *payload,
 
 static bool is_digit(int32_t c) { return c >= '0' && c <= '9'; }
 
+static bool is_inline_space(int32_t c) {
+  return c == ' ' || c == '\t' || c == '\f' || c == '\v';
+}
+
 static bool is_identifier_start(int32_t c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' ||
          c == '$' || c == '.' || c == '-';
@@ -54,6 +59,47 @@ static bool skip_space(TSLexer *lexer, bool skip) {
   }
 
   return saw_newline;
+}
+
+static void skip_inline_space(TSLexer *lexer, bool skip) {
+  while (is_inline_space(lexer->lookahead)) {
+    lexer->advance(lexer, skip);
+  }
+}
+
+static bool scan_digits(TSLexer *lexer) {
+  if (!is_digit(lexer->lookahead)) {
+    return false;
+  }
+
+  do {
+    lexer->advance(lexer, false);
+  } while (is_digit(lexer->lookahead));
+
+  return true;
+}
+
+static bool scan_custom_body_dimension_separator(TSLexer *lexer) {
+  skip_inline_space(lexer, true);
+
+  if (lexer->lookahead != 'x') {
+    return false;
+  }
+
+  lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+
+  skip_inline_space(lexer, false);
+
+  // Confirm at least one digit follows `x`, which distinguishes
+  // dimension separators (16x16) from a bare identifier `x` in
+  // custom assembly (the grammar's valid_symbols gate ensures this
+  // scanner is only called where a separator is expected).
+  if (!scan_digits(lexer)) {
+    return false;
+  }
+
+  return true;
 }
 
 static bool skip_comment(TSLexer *lexer) {
@@ -135,6 +181,12 @@ static bool at_block_label_tail(TSLexer *lexer) {
 bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
   (void)payload;
+
+  if (valid_symbols[CUSTOM_BODY_DIMENSION_SEPARATOR] &&
+      scan_custom_body_dimension_separator(lexer)) {
+    lexer->result_symbol = CUSTOM_BODY_DIMENSION_SEPARATOR;
+    return true;
+  }
 
   bool at_line_start = lexer->get_column(lexer) == 0;
   bool skipped_newline = skip_space(lexer, true);

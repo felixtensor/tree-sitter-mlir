@@ -551,6 +551,25 @@
     }
   },
   {
+    "type": "custom_body_dim_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dimension_separator",
+          "named": true
+        },
+        {
+          "type": "dimension_size",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "custom_op_name",
     "named": true,
     "fields": {},
@@ -612,6 +631,10 @@
         },
         {
           "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "custom_body_dim_list",
           "named": true
         },
         {

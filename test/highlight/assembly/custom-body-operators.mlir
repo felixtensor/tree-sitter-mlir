@@ -2,6 +2,9 @@ func.func @custom_body_operators(%a: vector<4xf16>, %b: vector<8xf16>,
                                  %c: vector<4xf32>, %idx: vector<4xi8>) {
   %0 = amdgpu.sparse_mfma 16x16x32 %a * %b + %c sparse(%idx : vector<4xi8>)
 //     ^ function.builtin
+//                        ^ number
+//                           ^ number
+//                              ^ number
 //                                    ^ operator
 //                                         ^ operator
 //                                                ^ keyword

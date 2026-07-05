@@ -388,8 +388,12 @@ foo.op sparse<[[0]], [1.0]>
   (operation
     (custom_operation
       (custom_op_name)
-      (integer_literal)
-      (bare_id)
+      (custom_body_dim_list
+        (dimension_size)
+        (dimension_separator)
+        (dimension_size)
+        (dimension_separator)
+        (dimension_size))
       (value_use)
       (value_use)
       (value_use)
