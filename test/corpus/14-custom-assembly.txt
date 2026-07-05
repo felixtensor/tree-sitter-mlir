@@ -175,3 +175,394 @@ func.func @amdgpu_wmma_shape_operand(%arg0 : vector<16xf16>, %arg1 : vector<8xf1
                       (vector_dim_list
                         (dimension_size))
                       (float_type))))))))))))
+
+================================================================================
+Custom operation dimension lists with dynamic markers
+================================================================================
+shard.grid @grid0(shape = 4x?x2)
+test.custom_dimension_list_attr dimension_list = ?x?
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (integer_literal)
+      (dimension_separator)
+      (dimension_separator)
+      (integer_literal)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (dimension_separator))))
+
+================================================================================
+Custom operation body keyword named vector
+================================================================================
+acc.routine @routine_vec func(@host_bar) vector
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (symbol_ref_id))))
+
+================================================================================
+Custom operation body keyword named tensor
+================================================================================
+amdgpu.memory_counter_wait load(1) store(2) ds(3) exp(4) tensor(5)
+nvgpu.tma.async.store %view -> <tensor = memref<128x32xf32, 3>, swizzle = none>
+foo.op tensor<5xf32>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (integer_literal)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type))))
+            (attribute_value
+              (integer_literal)))))
+      (bare_id)
+      (type
+        (builtin_type
+          (none_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (type
+        (builtin_type
+          (tensor_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type))))))))))
+
+================================================================================
+Custom operation body sparse operand marker
+================================================================================
+amdgpu.sparse_mfma 16x16x32 %a * %b + %c sparse(%idx : vector<4xi8>) : vector<4xf16>, vector<8xf16>, vector<4xf32>
+foo.op sparse<[[0]], [1.0]>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (custom_body_dim_list
+        (dimension_size)
+        (dimension_separator)
+        (dimension_size)
+        (dimension_separator)
+        (dimension_size))
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (integer_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))
+      (type
+        (builtin_type
+          (vector_type
+            (vector_dim_list
+              (dimension_size))
+            (float_type))))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (tensor_literal
+        (nested_idx_list
+          (nested_idx_list
+            (integer_literal)))
+        (nested_idx_list
+          (float_literal))))))
+
+================================================================================
+Custom operation body braced value group
+================================================================================
+acc.loop tile({%c4 : index})
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (index_type))))))
+
+================================================================================
+Custom operation body braced SSA tuple group
+================================================================================
+%res = test.fold_with_fold_adaptor %c5, [ %c1, %c2], { (%c3), (%c3) } {
+  %c0 = "test.constant"() {value = 0 : i32} : () -> i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (value_use)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (generic_operation
+              (string_literal)
+              (attribute
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (integer_literal)
+                      (type
+                        (builtin_type
+                          (integer_type)))))))
+              (function_type
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Custom operation body SSA value dictionary
+================================================================================
+%op0 = operation {"attr" = %attribute} -> (%type : !pdl.type)
+%op1 = pdl_interp.create_operation "foo.op" {"attr" = %attribute, "attr1" = %attribute}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name
+        (bare_id))
+      (string_literal)
+      (value_use)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (string_literal)
+      (value_use)
+      (string_literal)
+      (value_use))))
+
+================================================================================
+Custom operation body mapped-from arrow
+================================================================================
+omp.fuse(%fused) <- (%canonloop_s0, %canonloop_s1)
+omp.tile(%grid, %intratile) <- (%canonloop) sizes(%ts : i32)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type))))))
+
+================================================================================
+Custom operation body complex label
+================================================================================
+irdl.operands(complex: %0)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use))))
+
+================================================================================
+Custom operation body mixed string-key SSA dictionary
+================================================================================
+transform.apply_registered_pass "canonicalize" with options = { "top-down" = false, "max-iterations" = %max_iter, "test-convergence" = true, "max-num-rewrites" = %max_rewrites } to %1 : (!transform.any_op, !transform.any_param, !transform.any_param) -> !transform.any_op
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (bare_id)
+      (bare_id)
+      (string_literal)
+      (attribute_value
+        (bool_literal))
+      (string_literal)
+      (value_use)
+      (string_literal)
+      (attribute_value
+        (bool_literal))
+      (string_literal)
+      (value_use)
+      (bare_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)))))))
+
+================================================================================
+Custom operation body successor marker
+================================================================================
+wasmssa.func @f() {
+  wasmssa.if %cond : {
+    wasmssa.block_return
+  } else {
+    wasmssa.block_return
+  } >^bb1
+^bb1:
+  wasmssa.return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (region
+        (entry_block
+          (operation
+            (custom_operation
+              (custom_op_name)
+              (value_use)
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name)))))
+              (bare_id)
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name)))))
+              (successor
+                (caret_id)))))
+        (block
+          (block_label
+            (caret_id))
+          (operation
+            (custom_operation
+              (custom_op_name))))))))
+
+================================================================================
+Custom operation body ellipsis marker
+================================================================================
+func.func @f(%a: i32) {
+  test.ellipsis(%a ...) : i32 ...
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (variadic)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (variadic)))))))))
