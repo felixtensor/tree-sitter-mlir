@@ -182,13 +182,19 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
   (void)payload;
 
+  // Snapshot line-start before the dimension-separator probe, which can
+  // advance past leading inline space and shift the column.
+  bool at_line_start = lexer->get_column(lexer) == 0;
+
+  // A failed probe may leave the lexer past `x`; the caret/block-label
+  // fall-through stays safe because neither CARET_ID nor BLOCK_LABEL_ID is
+  // ever valid at a position starting with `x`.
   if (valid_symbols[CUSTOM_BODY_DIMENSION_SEPARATOR] &&
       scan_custom_body_dimension_separator(lexer)) {
     lexer->result_symbol = CUSTOM_BODY_DIMENSION_SEPARATOR;
     return true;
   }
 
-  bool at_line_start = lexer->get_column(lexer) == 0;
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
 
