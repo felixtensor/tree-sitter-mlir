@@ -357,31 +357,44 @@ export default grammar({
     // Token prec 20 ensures these keywords win over _dotted_op_name (prec 10)
     func_operation: ($) =>
       prec.right(
-        seq(
-          field(
-            "name",
-            choice(token(prec(20, "func.func")), token(prec(20, "llvm.func"))),
-          ),
-          field("visibility", optional(choice("private", "public"))),
-          // Optional leading specifier keywords between the function name and its
-          // symbol. Covers MLIR symbol visibility (`nested`) and the LLVM dialect's
-          // llvm.func linkage / calling-convention / unnamed_addr / visibility
-          // keywords (internal, external, linkonce, fastcc, amdgpu_kernelcc,
-          // local_unnamed_addr, hidden, ...). MLIR's CConv enum alone has ~50
-          // keywords, so rather than enumerate a brittle list we accept bare_id-
-          // shaped specifiers here; the trailing `@symbol` (symbol_ref_id) is an
-          // unambiguous terminator.
-          repeat(field("specifier", alias($.bare_id, $.function_specifier))),
-          field("sym_name", $.symbol_ref_id),
-          field("arguments", $.func_arg_list),
-          field("return", optional($.func_return)),
-          field(
-            "attributes",
-            optional(
-              seq(optional(token("attributes")), $.dictionary_attribute),
+        choice(
+          seq(
+            field("name", token(prec(20, "func.func"))),
+            // MLIR function syntax parses public/private/nested before the
+            // symbol as sym_visibility.
+            field(
+              "visibility",
+              optional(choice("public", "private", "nested")),
             ),
+            field("sym_name", $.symbol_ref_id),
+            field("arguments", $.func_arg_list),
+            field("return", optional($.func_return)),
+            field(
+              "attributes",
+              optional(
+                seq(optional(token("attributes")), $.dictionary_attribute),
+              ),
+            ),
+            field("body", optional($.region)),
           ),
-          field("body", optional($.region)),
+          seq(
+            field("name", token(prec(20, "llvm.func"))),
+            // LLVM function syntax parses linkage, LLVM visibility,
+            // unnamed_addr, and calling-convention keywords before the symbol.
+            // Keep this broad: MLIR's CConv enum alone has ~50 keywords, and
+            // the trailing @symbol is an unambiguous terminator.
+            repeat(field("specifier", alias($.bare_id, $.function_specifier))),
+            field("sym_name", $.symbol_ref_id),
+            field("arguments", $.func_arg_list),
+            field("return", optional($.func_return)),
+            field(
+              "attributes",
+              optional(
+                seq(optional(token("attributes")), $.dictionary_attribute),
+              ),
+            ),
+            field("body", optional($.region)),
+          ),
         ),
       ),
 
@@ -535,8 +548,7 @@ export default grammar({
         $.successor, // ^bb0, ^bb0(%arg : type)
       ),
 
-    _custom_body_type_element: ($) =>
-      prec(2, $.type), // !type, i32, memref<...>, etc.
+    _custom_body_type_element: ($) => prec(2, $.type), // !type, i32, memref<...>, etc.
 
     // Attribute includes dictionary_attribute, so keep it adjacent to the
     // custom-body `{...}` payloads while preserving the public wrapper.
@@ -581,10 +593,12 @@ export default grammar({
         1,
         seq(
           $._custom_body_dimension_size,
-          repeat1(seq(
-            alias($._custom_body_dimension_separator, $.dimension_separator),
-            $._custom_body_dimension_size,
-          )),
+          repeat1(
+            seq(
+              alias($._custom_body_dimension_separator, $.dimension_separator),
+              $._custom_body_dimension_size,
+            ),
+          ),
         ),
       ),
 
@@ -607,8 +621,7 @@ export default grammar({
 
     _custom_body_array_keyword: ($) => "array",
     _custom_body_tensor_keyword: ($) => "tensor",
-    _custom_body_affine_keyword: ($) =>
-      choice("ceildiv", "floordiv", "mod"),
+    _custom_body_affine_keyword: ($) => choice("ceildiv", "floordiv", "mod"),
 
     _custom_body_punctuation: ($) =>
       choice(
@@ -616,13 +629,7 @@ export default grammar({
         $._custom_body_operator_punctuation,
       ),
 
-    _custom_body_separator_punctuation: ($) =>
-      choice(
-        ",",
-        "=",
-        ":",
-        "->",
-      ),
+    _custom_body_separator_punctuation: ($) => choice(",", "=", ":", "->"),
 
     _custom_body_operator_punctuation: ($) =>
       choice(

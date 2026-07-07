@@ -405,6 +405,21 @@ llvm.func internal fastcc @callee() -> i32
                 (integer_type)))))))))
 
 ================================================================================
+LLVM function with linkage and LLVM visibility
+================================================================================
+llvm.func private hidden @callee()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (function_specifier)
+        (function_specifier)
+        (symbol_ref_id)
+        (func_arg_list)))))
+
+================================================================================
 LLVM function with unnamed_addr specifier
 ================================================================================
 llvm.func local_unnamed_addr @testfn(i32)
@@ -431,7 +446,6 @@ func.func nested @fold() -> i32
   (operation
     (custom_operation
       (func_operation
-        (function_specifier)
         (symbol_ref_id)
         (func_arg_list)
         (func_return
