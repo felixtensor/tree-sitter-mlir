@@ -73,8 +73,12 @@
 (distinct_attribute "distinct" @keyword)
 (dense_resource_literal "dense_resource" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
+
+;; Pretty dialect bodies are dialect-defined payloads. Bare identifiers such as
+;; sparse tensor map fields and address-space mnemonics render as keywords.
 (pretty_dialect_item_body
   ["array" "dense" "opaque" "sparse" "tensor" "vector"] @keyword)
+(pretty_dialect_item_body (bare_id) @keyword)
 (pretty_dialect_item_body ["?" "*"] @punctuation.special)
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
@@ -115,9 +119,8 @@
 ["=" "->" "::"] @operator
 
 ;; Catch-all for bare keywords in custom operation bodies (ins, outs, etc.).
-;; Keep this scoped to direct custom_operation children so attribute keys,
-;; affine dimensions, and pretty dialect payload identifiers do not all become
-;; keywords.
+;; Keep this scoped to direct custom_operation children so attribute keys and
+;; affine dimensions do not inherit keyword coloring from this fallback.
 (custom_operation (bare_id) @keyword)
 
 ;; Dense resource handle: this bare_id is nested inside dense_resource_literal,
