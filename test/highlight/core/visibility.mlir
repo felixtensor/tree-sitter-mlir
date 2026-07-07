@@ -1,6 +1,6 @@
 func.func private @foo() attributes {test.a} {
 // <- function.builtin
-//        ^ attribute
+//        ^ keyword
 //                ^ string.special.symbol
 //                       ^ attribute
   func.return
