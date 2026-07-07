@@ -27,8 +27,9 @@ are implementation detail and are **not** part of this surface.
 | `custom_operation` | `name`; for `affine.for`, also `induction_location` |
 | `custom_op_name` | bare identifier or dotted name that selects the dialect operation |
 | `generic_operation` | quoted generic MLIR form (`"dialect.op"`) |
-| `func_operation` | `name`, `visibility`, `specifier`, `sym_name`, `arguments`, `return`, `attributes`, `body` |
+| `func_operation` | `name`, `visibility`, `specifier`, `sym_name`, `arguments`, `return`, `vscale_range`, `comdat`, `attributes`, `body` |
 | `function_specifier` | LLVM linkage / visibility / unnamed_addr / calling-convention keyword inside `llvm.func` |
+| `vscale_range`, `comdat` | `llvm.func` post-signature clauses: `vscale_range(min, max)` and `comdat(@selector)` |
 | `module_operation` | `name`, `sym_name`, `attributes`, `body` |
 
 ### Structural

@@ -1818,6 +1818,38 @@
               },
               {
                 "type": "FIELD",
+                "name": "vscale_range",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "vscale_range"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "comdat",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "comdat"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
                 "name": "attributes",
                 "content": {
                   "type": "CHOICE",
@@ -1872,6 +1904,56 @@
           }
         ]
       }
+    },
+    "vscale_range": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "vscale_range"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "integer_literal"
+        },
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "SYMBOL",
+          "name": "integer_literal"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "comdat": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "comdat"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "symbol_ref_id"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
     },
     "module_operation": {
       "type": "PREC_RIGHT",
@@ -2442,7 +2524,7 @@
       "type": "ALIAS",
       "content": {
         "type": "SYMBOL",
-        "name": "_unsigned_decimal_literal"
+        "name": "integer_literal"
       },
       "named": true,
       "value": "dimension_size"
