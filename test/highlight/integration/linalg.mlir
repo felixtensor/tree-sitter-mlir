@@ -28,9 +28,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 // ^ variable.special
 //     ^ function.builtin
 //                                       ^ attribute
-//                                                   ^ keyword
+//                                                   ^ constructor.builtin
     strides = dense<1> : tensor<1xi64>}
-//            ^ keyword
+//            ^ constructor.builtin
     ins(%input, %filter : tensor<1x12x8xf32>, tensor<3x8x8xf32>)
 //      ^ variable.special
 //              ^ variable.special
@@ -43,13 +43,13 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 
 #map0 = affine_map<(d0, d1) -> (d0, d1)>
 // <- attribute
-//      ^ keyword
+//      ^ constructor.builtin
 #map1 = affine_map<(d0, d1) -> (d0)>
 // <- attribute
-//      ^ keyword
+//      ^ constructor.builtin
 #map2 = affine_map<(d0) -> (d0)>
 // <- attribute
-//      ^ keyword
+//      ^ constructor.builtin
 
 func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
   %arg2 : tensor<?x?xf32>) -> tensor<?x?xf32>
