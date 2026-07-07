@@ -29,7 +29,7 @@ func.func @vector_highlights(%arg0: memref<?x?xf32>, %mask: vector<4xi1>)
 //                                               ^ variable.special
       {permutation_map = affine_map<(d0, d1) -> (d0)>}
 //     ^ attribute
-//                       ^ keyword
+//                       ^ constructor.builtin
       : memref<?x?xf32>, vector<4xf32>
 //      ^ type.builtin
 //                       ^ type.builtin

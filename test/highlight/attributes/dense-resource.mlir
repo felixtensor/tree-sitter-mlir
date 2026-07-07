@@ -1,12 +1,12 @@
 "test.user_op"() {attr = dense_resource<blob1> : tensor<3xi64>} : () -> ()
 //                ^ attribute
-//                       ^ keyword
+//                       ^ constructor.builtin
 //                                      ^ constant.builtin
 //                                                ^ type.builtin
 
 "test.user_op"() {attr = dense_resource<"blob\\-\22one\22"> : tensor<2xi16>} : () -> ()
 //                ^ attribute
-//                       ^ keyword
+//                       ^ constructor.builtin
 //                                      ^ string
 //                                                               ^ type.builtin
 

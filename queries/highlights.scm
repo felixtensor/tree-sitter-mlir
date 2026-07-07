@@ -55,8 +55,13 @@
 
 ;; Specific attribute content
 (properties ["<{" "}>"] @punctuation.bracket)
-(affine_map "affine_map" @keyword)
-(affine_set "affine_set" @keyword)
+;; Builtin introducers that take a <payload> (affine_map, dense, array, ...)
+;; are @constructor.builtin: they name a builtin form that constructs a value,
+;; and the channel stays distinct from the numeric payloads and the enclosing
+;; literal's @constant.builtin. Bare literals with no payload (unit, bools)
+;; remain @constant.builtin/@boolean.
+(affine_map "affine_map" @constructor.builtin)
+(affine_set "affine_set" @constructor.builtin)
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
 (affine_map
@@ -71,7 +76,7 @@
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
 (distinct_attribute "distinct" @keyword)
-(dense_resource_literal "dense_resource" @keyword)
+(dense_resource_literal "dense_resource" @constructor.builtin)
 ["ceildiv" "floordiv" "mod"] @operator
 
 ;; Pretty dialect bodies are dialect-defined payloads. Bare identifiers such as
@@ -85,8 +90,8 @@
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
 [(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
-(tensor_literal ["dense" "sparse"] @keyword)
-(array_literal "array" @keyword)
+(tensor_literal ["dense" "sparse"] @constructor.builtin)
+(array_literal "array" @constructor.builtin)
 (string_literal) @string
 (generic_operation (string_literal) @function.builtin)
 

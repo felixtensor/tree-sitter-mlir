@@ -1,11 +1,11 @@
 #map0 = affine_map<(d0, d1)[s0] -> (d0 + s0, d1 floordiv 4)>
 // <- attribute
-//      ^ keyword
+//      ^ constructor.builtin
 //                                     ^ operator
 //                                                 ^ operator
 #set0 = affine_set<(d0)[s0] : (d0 >= 0, d0 - s0 mod 4 == 0)>
 // <- attribute
-//      ^ keyword
+//      ^ constructor.builtin
 //                                ^ operator
 //                                         ^ operator
 //                                              ^ operator
