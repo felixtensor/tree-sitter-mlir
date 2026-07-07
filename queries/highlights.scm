@@ -1,7 +1,8 @@
 ;; ---------------------------------------------------------------------------
 ;; MLIR Syntax Highlighting
 ;; For Neovim (nvim-treesitter), Helix, and other tree-sitter-compatible
-;; editors. Uses standard tree-sitter capture names.
+;; editors. Uses standard tree-sitter capture names where they fit, plus a
+;; few editor-common extensions such as @variable.special and @label.
 ;; ---------------------------------------------------------------------------
 
 (comment) @comment
@@ -62,6 +63,8 @@
 ;; remain @constant.builtin/@boolean.
 (affine_map "affine_map" @constructor.builtin)
 (affine_set "affine_set" @constructor.builtin)
+(affine_map (bare_id) @variable.parameter)
+(affine_set (bare_id) @variable.parameter)
 (affine_map ["max" "min" "symbol"] @keyword)
 (affine_set ["max" "min" "symbol"] @keyword)
 (affine_map

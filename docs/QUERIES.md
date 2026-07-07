@@ -1,9 +1,8 @@
 # MLIR tree-sitter queries
 
-These queries target the **standard tree-sitter capture vocabulary** so that
-Neovim (nvim-treesitter), Helix, Emacs, and other consumers can all map them
-through their own theme. Captures express a *semantic category*, never a
-specific theme color.
+These queries use the **standard tree-sitter capture vocabulary** where it fits,
+plus a few editor-common extensions where they better describe MLIR semantics.
+Captures express a *semantic category*, never a specific theme color.
 
 | File | Purpose | Status |
 | --- | --- | --- |
@@ -16,25 +15,29 @@ specific theme color.
 
 ## Capture vocabulary
 
-`highlights.scm` uses only these standard captures:
+`highlights.scm` mostly uses standard tree-sitter highlight captures:
 
 `@comment` `@keyword` `@operator` `@function` `@function.builtin`
-`@type` `@type.builtin` `@attribute` `@variable` `@variable.parameter`
+`@type` `@type.builtin` `@attribute` `@variable.parameter`
 `@number` `@boolean` `@string` `@string.escape` `@string.special.symbol`
-`@constant.builtin` `@tag` `@error`
+`@constant.builtin` `@constructor.builtin` `@error`
 `@punctuation.bracket` `@punctuation.delimiter` `@punctuation.special`
+
+It also intentionally uses these non-standard style captures:
+
+`@variable.special` for SSA values and `@label` for block labels.
 
 ## Highlight capture policy
 
-Capture choices are made from MLIR semantics and the standard tree-sitter
-vocabulary. They do not mirror any editor-specific theme or downstream package.
+Capture choices are made from MLIR semantics and tree-sitter-compatible editor
+conventions. They do not mirror any specific theme or downstream package.
 
 | MLIR construct | Capture decision |
 | --- | --- |
 | Operation names (`func.func`, `arith.addi`, generic string ops) | `function.builtin` |
-| SSA values (`%arg0`, `%0`) | `variable` / `variable.parameter` |
+| SSA values (`%arg0`, `%0`) | `variable.special` |
 | Symbol-body operators (`+ - * / & \| ~`) | `operator` |
-| Block label (`caret_id`, `^bb0`) | `tag` |
+| Block label (`caret_id`, `^bb0`) | `label` |
 
 The remaining capture choices follow common tree-sitter conventions directly.
 
@@ -59,9 +62,11 @@ tree-sitter test
 # Visual check of one file
 tree-sitter highlight path/to/file.mlir
 
-# Verify highlight captures against tree-sitter's standard capture vocabulary.
-# Pin the query with --query-paths for reproducible results, but keep it *after*
-# the source paths: --query-paths is variadic and would otherwise swallow them.
+# Verify query validity and surface any non-standard captures. The current
+# @variable.special and @label warnings are intentional.
+# Pin the query with --query-paths for reproducible results, but keep it
+# *after* the source paths: --query-paths is variadic and would otherwise
+# swallow them.
 tree-sitter highlight --check path/to/file.mlir --query-paths queries/highlights.scm
 
 # Verify query captures (adjust query and file path as needed)
