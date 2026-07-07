@@ -1019,6 +1019,10 @@
         "required": false,
         "types": [
           {
+            "type": "nested",
+            "named": false
+          },
+          {
             "type": "private",
             "named": false
           },
@@ -2227,6 +2231,10 @@
   },
   {
     "type": "n_out_of_m",
+    "named": false
+  },
+  {
+    "type": "nested",
     "named": false
   },
   {

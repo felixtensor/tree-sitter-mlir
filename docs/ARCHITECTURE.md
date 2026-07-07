@@ -28,7 +28,7 @@ are implementation detail and are **not** part of this surface.
 | `custom_op_name` | bare identifier or dotted name that selects the dialect operation |
 | `generic_operation` | quoted generic MLIR form (`"dialect.op"`) |
 | `func_operation` | `name`, `visibility`, `specifier`, `sym_name`, `arguments`, `return`, `attributes`, `body` |
-| `function_specifier` | linkage / calling-convention / visibility keyword inside `func_operation` |
+| `function_specifier` | LLVM linkage / visibility / unnamed_addr / calling-convention keyword inside `llvm.func` |
 | `module_operation` | `name`, `sym_name`, `attributes`, `body` |
 
 ### Structural
