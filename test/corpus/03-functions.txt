@@ -437,6 +437,57 @@ llvm.func local_unnamed_addr @testfn(i32)
               (integer_type))))))))
 
 ================================================================================
+LLVM function with vscale_range clause
+================================================================================
+llvm.func @vscale_roundtrip() vscale_range(1, 2)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (vscale_range
+          (integer_literal)
+          (integer_literal))))))
+
+================================================================================
+LLVM function with comdat selector
+================================================================================
+llvm.func @any() comdat(@__llvm_comdat::@any)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (comdat
+          (symbol_ref_id
+            (symbol_ref_id)))))))
+
+================================================================================
+LLVM function with vscale_range and comdat clauses
+================================================================================
+llvm.func @both() vscale_range(1, 2) comdat(@c::@k)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (vscale_range
+          (integer_literal)
+          (integer_literal))
+        (comdat
+          (symbol_ref_id
+            (symbol_ref_id)))))))
+
+================================================================================
 Function with nested symbol visibility
 ================================================================================
 func.func nested @fold() -> i32

@@ -465,6 +465,21 @@
     "fields": {}
   },
   {
+    "type": "comdat",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "symbol_ref_id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "complex_literal",
     "named": true,
     "fields": {},
@@ -970,6 +985,16 @@
           }
         ]
       },
+      "comdat": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "comdat",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -1029,6 +1054,16 @@
           {
             "type": "public",
             "named": false
+          }
+        ]
+      },
+      "vscale_range": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "vscale_range",
+            "named": true
           }
         ]
       }
@@ -1973,6 +2008,21 @@
     }
   },
   {
+    "type": "vscale_range",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "integer_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "!",
     "named": false
   },
@@ -2122,6 +2172,10 @@
   },
   {
     "type": "ceildiv",
+    "named": false
+  },
+  {
+    "type": "comdat",
     "named": false
   },
   {
@@ -2307,6 +2361,10 @@
   },
   {
     "type": "vector",
+    "named": false
+  },
+  {
+    "type": "vscale_range",
     "named": false
   },
   {

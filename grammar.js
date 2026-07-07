@@ -387,6 +387,10 @@ export default grammar({
             field("sym_name", $.symbol_ref_id),
             field("arguments", $.func_arg_list),
             field("return", optional($.func_return)),
+            // Post-signature clauses parsed by LLVMFuncOp::parse, in source
+            // order: vscale_range(min, max) then comdat(@selector).
+            field("vscale_range", optional($.vscale_range)),
+            field("comdat", optional($.comdat)),
             field(
               "attributes",
               optional(
@@ -397,6 +401,12 @@ export default grammar({
           ),
         ),
       ),
+
+    // LLVM function post-signature clauses (LLVMFuncOp::parse). vscale_range
+    // takes two i32 bounds; comdat takes a (possibly nested) symbol selector.
+    vscale_range: ($) =>
+      seq("vscale_range", "(", $.integer_literal, ",", $.integer_literal, ")"),
+    comdat: ($) => seq("comdat", "(", $.symbol_ref_id, ")"),
 
     // Tier 1: Module operations (module, builtin.module)
     module_operation: ($) =>
