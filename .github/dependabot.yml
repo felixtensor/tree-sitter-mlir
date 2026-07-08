@@ -9,7 +9,7 @@ updates:
     commit-message:
       prefix: ci
     labels: [dependencies]
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 2
 
   - package-ecosystem: npm
     versioning-strategy: increase
