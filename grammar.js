@@ -612,8 +612,12 @@ export default grammar({
         ),
       ),
 
+    // A static size (16) or a dynamic dimension (`?`). `?` stays a raw token,
+    // matching dialect_dim_list, and is highlighted via the dim_list parent.
+    // `*` is intentionally excluded: it collides with the custom-body multiply
+    // operator, and unranked `*` only appears inside real `<...>` types.
     _custom_body_dimension_size: ($) =>
-      alias($.integer_literal, $.dimension_size),
+      choice(alias($.integer_literal, $.dimension_size), "?"),
 
     _custom_body_literal_element: ($) =>
       choice(

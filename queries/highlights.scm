@@ -51,6 +51,7 @@
 (vector_dim_list "x" @punctuation.delimiter)
 (dim_list ["?" "*"] @punctuation.special)
 (dialect_dim_list ["?" "*"] @punctuation.special)
+(custom_body_dim_list "?" @punctuation.special)
 
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 

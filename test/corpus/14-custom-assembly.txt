@@ -197,7 +197,46 @@ test.custom_dimension_list_attr dimension_list = ?x?
     (custom_operation
       (custom_op_name)
       (bare_id)
-      (dimension_separator))))
+      (custom_body_dim_list
+        (dimension_separator)))))
+
+================================================================================
+Custom operation body dimension list with dynamic sizes
+================================================================================
+func.func @dyn() {
+  test.op 16x?x32 : i32
+  test.op ?x16 : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (dimension_separator)
+                  (dimension_size))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_separator)
+                  (dimension_size))
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
 
 ================================================================================
 Custom operation body keyword named vector
