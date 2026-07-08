@@ -13,6 +13,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-07-08
+
+Custom assembly dimension-list parsing, LLVM function clause support, and
+highlight capture refinements.
+
+### Added
+- **grammar:** parse custom-operation body dimension lists as structured
+  `custom_body_dim_list` nodes, covering AMDGPU-style static shapes such as
+  `16x16x16` and dynamic markers such as `8x?x4`.
+- **grammar:** support `llvm.func` post-signature `vscale_range(min, max)`
+  and `comdat(@selector)` clauses.
+
+### Fixed
+- **scanner:** keep dimension-separator probing from shifting line-start state
+  or swallowing a failed `x` probe into a following caret identifier.
+- **highlights:** color `llvm.func` `vscale_range` and `comdat` clause
+  introducers as keywords.
+- **highlights:** color pretty-dialect bare identifiers, builtin introducers,
+  affine dimensions, and `func.func` visibility with more specific captures.
+
+### Changed
+- **grammar:** split `func_operation` handling for `func.func` and `llvm.func`
+  so `func.func` only accepts MLIR symbol visibility before the symbol while
+  `llvm.func` keeps LLVM linkage / visibility / calling-convention specifiers.
+- **docs:** document the intentional non-standard highlight captures
+  `@variable.special` and `@label`.
+- **tests:** move custom-assembly corpus coverage into
+  `test/corpus/14-custom-assembly.txt`.
+
+### Breaking AST changes
+- Custom-operation body dimension-list payloads such as `16x16x16` and
+  `8x?x4`, including spaced forms, now emit `custom_body_dim_list` with
+  `dimension_size` / `dimension_separator` children instead of flattening as
+  loose custom-body tokens.
+- `llvm.func` post-signature `vscale_range` and `comdat` clauses now emit named
+  `vscale_range` / `comdat` nodes under `func_operation` instead of being
+  parsed as separate trailing custom operations.
+- `func_operation` now exposes `nested` as a valid `visibility` token for
+  `func.func`; LLVM-specific pre-symbol specifiers remain scoped to
+  `llvm.func`.
+
 ## [0.1.9] - 2026-07-02
 
 Highlights channel sync and a significant block-label correctness fix.
@@ -147,7 +188,8 @@ Initial public release.
 - `string_literal` made structural: escape sequences are now visible
   `escape_sequence` / `invalid_escape` nodes rather than opaque token text.
 
-[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.6...v0.1.7
