@@ -16,3 +16,8 @@ func.func nested @fold() -> i32
 //        ^ keyword
 //               ^ string.special.symbol
 //                          ^ type.builtin
+
+llvm.func @clauses() vscale_range(1, 2) comdat(@c::@k)
+// <- function.builtin
+//                   ^ keyword
+//                                       ^ keyword
