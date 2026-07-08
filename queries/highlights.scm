@@ -13,6 +13,9 @@
 (func_operation visibility: _ @keyword)
 (func_operation specifier: (function_specifier) @keyword)
 (func_operation "attributes" @attribute)
+;; llvm.func post-signature clause introducers, same channel as strided/distinct.
+(vscale_range "vscale_range" @keyword)
+(comdat "comdat" @keyword)
 (module_operation name: _ @function.builtin)
 (module_operation "attributes" @attribute)
 
