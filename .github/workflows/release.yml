@@ -290,7 +290,7 @@ jobs:
   # The upstream GitHub release workflow still builds its own release artifacts.
   github-release:
     needs: release-approval
-    uses: tree-sitter/workflows/.github/workflows/release.yml@c0a88aa8100f1d9165d7bb1ea44a36935079d8dc
+    uses: tree-sitter/workflows/.github/workflows/release.yml@cc03699ad21049475b5762cd1c38a35146691e85
 
   # crates.io OIDC trusted publishing; no long-lived token is needed.
   crates-publish:
