@@ -16,6 +16,13 @@ func.func @custom_body_operators(%a: vector<4xf16>, %b: vector<8xf16>,
   amdgpu.memory_counter_wait tensor(3)
 //^ function.builtin
 //                           ^ keyword
+  test.op 8x?x4 : i32
+//^ function.builtin
+//        ^ number
+//         ^ punctuation.delimiter
+//          ^ punctuation.special
+//           ^ punctuation.delimiter
+//            ^ number
   return
 //^ function.builtin
 }

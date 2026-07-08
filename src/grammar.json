@@ -2521,13 +2521,22 @@
       }
     },
     "_custom_body_dimension_size": {
-      "type": "ALIAS",
-      "content": {
-        "type": "SYMBOL",
-        "name": "integer_literal"
-      },
-      "named": true,
-      "value": "dimension_size"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "integer_literal"
+          },
+          "named": true,
+          "value": "dimension_size"
+        },
+        {
+          "type": "STRING",
+          "value": "?"
+        }
+      ]
     },
     "_custom_body_literal_element": {
       "type": "CHOICE",

@@ -67,29 +67,18 @@ static void skip_inline_space(TSLexer *lexer, bool skip) {
   }
 }
 
-static bool scan_digits(TSLexer *lexer) {
-  if (!is_digit(lexer->lookahead)) {
-    return false;
-  }
-
-  do {
-    lexer->advance(lexer, false);
-  } while (is_digit(lexer->lookahead));
-
-  return true;
-}
-
-// Precondition: the lexer is positioned at `x`. Consumes `x` and requires at
-// least one digit to follow, which distinguishes a dimension separator (16x16)
-// from a bare identifier `x` in custom assembly (the grammar's valid_symbols
-// gate ensures this scanner is only called where a separator is expected).
+// Precondition: the lexer is positioned at `x`. Consumes `x` and requires a
+// dimension to follow -- a digit (static size, 16x16) or `?` (dynamic size,
+// 16x?). This distinguishes a dimension separator from a bare identifier `x`
+// in custom assembly (the grammar's valid_symbols gate ensures this scanner
+// is only called where a separator is expected).
 static bool scan_dimension_separator_from_x(TSLexer *lexer) {
   lexer->advance(lexer, false);
   lexer->mark_end(lexer);
 
   skip_inline_space(lexer, false);
 
-  return scan_digits(lexer);
+  return is_digit(lexer->lookahead) || lexer->lookahead == '?';
 }
 
 static bool skip_comment(TSLexer *lexer) {
