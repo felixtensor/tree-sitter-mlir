@@ -79,27 +79,17 @@ static bool scan_digits(TSLexer *lexer) {
   return true;
 }
 
-static bool scan_custom_body_dimension_separator(TSLexer *lexer) {
-  skip_inline_space(lexer, true);
-
-  if (lexer->lookahead != 'x') {
-    return false;
-  }
-
+// Precondition: the lexer is positioned at `x`. Consumes `x` and requires at
+// least one digit to follow, which distinguishes a dimension separator (16x16)
+// from a bare identifier `x` in custom assembly (the grammar's valid_symbols
+// gate ensures this scanner is only called where a separator is expected).
+static bool scan_dimension_separator_from_x(TSLexer *lexer) {
   lexer->advance(lexer, false);
   lexer->mark_end(lexer);
 
   skip_inline_space(lexer, false);
 
-  // Confirm at least one digit follows `x`, which distinguishes
-  // dimension separators (16x16) from a bare identifier `x` in
-  // custom assembly (the grammar's valid_symbols gate ensures this
-  // scanner is only called where a separator is expected).
-  if (!scan_digits(lexer)) {
-    return false;
-  }
-
-  return true;
+  return scan_digits(lexer);
 }
 
 static bool skip_comment(TSLexer *lexer) {
@@ -186,13 +176,22 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // advance past leading inline space and shift the column.
   bool at_line_start = lexer->get_column(lexer) == 0;
 
-  // A failed probe may leave the lexer past `x`; the caret/block-label
-  // fall-through stays safe because neither CARET_ID nor BLOCK_LABEL_ID is
-  // ever valid at a position starting with `x`.
-  if (valid_symbols[CUSTOM_BODY_DIMENSION_SEPARATOR] &&
-      scan_custom_body_dimension_separator(lexer)) {
-    lexer->result_symbol = CUSTOM_BODY_DIMENSION_SEPARATOR;
-    return true;
+  // A dimension separator is the only external token that can begin with `x`.
+  // When one is expected, skip leading inline space and decide on `x`
+  // definitively. Committing to consume `x` means we must NOT fall through to
+  // the caret/block-label scan below: it would resume past the consumed `x`
+  // and swallow it into the emitted token (e.g. turning `16x^bb0` into a
+  // caret_id spanning `x^bb0`). If the `x` is not a separator, return false so
+  // tree-sitter resets to the original position and re-lexes `x` internally.
+  if (valid_symbols[CUSTOM_BODY_DIMENSION_SEPARATOR]) {
+    skip_inline_space(lexer, true);
+    if (lexer->lookahead == 'x') {
+      if (scan_dimension_separator_from_x(lexer)) {
+        lexer->result_symbol = CUSTOM_BODY_DIMENSION_SEPARATOR;
+        return true;
+      }
+      return false;
+    }
   }
 
   bool skipped_newline = skip_space(lexer, true);
