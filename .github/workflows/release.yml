@@ -30,7 +30,7 @@ jobs:
         uses: tree-sitter/setup-action/cli@v2
         with:
           # Sync with package.json and ci.yml for reproducible generated files.
-          tree-sitter-ref: v0.26.9
+          tree-sitter-ref: v0.26.11
 
       - name: Set up NodeJS
         uses: actions/setup-node@v6
