@@ -32,7 +32,7 @@ jobs:
         uses: tree-sitter/setup-action/cli@v2
         with:
           # Sync with package.json and release.yml.
-          tree-sitter-ref: v0.26.9
+          tree-sitter-ref: v0.26.11
 
       - name: Run parser tests
         uses: tree-sitter/parser-test-action@v3
@@ -72,7 +72,7 @@ jobs:
         uses: tree-sitter/setup-action/cli@v2
         with:
           # Sync with package.json and release.yml.
-          tree-sitter-ref: v0.26.9
+          tree-sitter-ref: v0.26.11
 
       - name: Verify committed parser is up to date
         run: |
