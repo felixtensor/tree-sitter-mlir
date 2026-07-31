@@ -1322,7 +1322,19 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                 (type
                   (builtin_type
                     (complex_type
-                      (float_type))))))))))))
+                    (float_type))))))))))))
+
+================================================================================
+f8E5M3FNU builtin float type
+================================================================================
+!fp8 = f8E5M3FNU
+--------------------------------------------------------------------------------
+
+(toplevel
+  (type_alias_def
+    (type
+      (builtin_type
+        (float_type)))))
 
 ================================================================================
 Empty dense literal
@@ -1740,7 +1752,7 @@ func.func @test(%arg0: f32) -> vector<2x2xf32> {
                       (float_type))))))))))))
 
 ================================================================================
-All builtin float type variants (17 total)
+Builtin float type variants
 ================================================================================
 func.func @builtin_float_types() {
   %f16 = arith.constant 1.0 : f16

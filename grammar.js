@@ -957,6 +957,7 @@ export default grammar({
             "f8E4M3B11FNUZ",
             "f8E5M2",
             "f8E5M2FNUZ",
+            "f8E5M3FNU",
             "f8E8M0FNU",
           ),
         ),
