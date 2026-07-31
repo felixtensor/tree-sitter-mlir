@@ -24,19 +24,19 @@ official tree-sitter grammars.
 ## Directory Structure
 
 ```
-examples/          (566 files, 176k lines, 24 dialects)
+examples/          (600 files, 182k lines, 24 dialects)
 ├── IR/            ← Core parser tests from mlir/test/IR/            (15)
 ├── Builtin/       ← mlir/test/Dialect/Builtin/                      (5)
 ├── Func/          ← mlir/test/Dialect/Func/                         (2)
-├── Arith/         ← mlir/test/Dialect/Arith/                       (26)
+├── Arith/         ← mlir/test/Dialect/Arith/                       (27)
 ├── SCF/           ← mlir/test/Dialect/SCF/                         (41)
 ├── ControlFlow/   ← mlir/test/Dialect/ControlFlow/                  (5)
 ├── MemRef/        ← mlir/test/Dialect/MemRef/                      (31)
 ├── Tensor/        ← mlir/test/Dialect/Tensor/                      (30)
 ├── Affine/        ← mlir/test/Dialect/Affine/                      (50)
 ├── Vector/        ← mlir/test/Dialect/Vector/                      (85)
-├── Linalg/        ← mlir/test/Dialect/Linalg/                     (139)
-├── OpenACC/       ← mlir/test/Dialect/OpenACC/                     (55)
+├── Linalg/        ← mlir/test/Dialect/Linalg/                     (146)
+├── OpenACC/       ← mlir/test/Dialect/OpenACC/                     (81)
 ├── LLVMIR/        ← mlir/test/Dialect/LLVMIR/                      (64)
 ├── LLVM/          ← mlir/test/Dialect/LLVM/                         (4)
 ├── GPU/           ← mlir/test/Dialect/GPU/                          (2)
