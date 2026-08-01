@@ -60,4 +60,5 @@ bench/*-report.json
 .zed/
 
 # temporary files
+.cache/
 tmp/
