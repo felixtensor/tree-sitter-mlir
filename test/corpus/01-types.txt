@@ -2237,3 +2237,17 @@ llvm.func @nested_llvm_types(
                 (pretty_dialect_item_body
                   (dialect_attribute)
                   (pretty_dialect_item_body))))))))))
+
+================================================================================
+Opaque unknown dialect type envelope
+================================================================================
+!unknown_opaque = !mystery<"payload<[]>{}//^bb0:">
+--------------------------------------------------------------------------------
+
+(toplevel
+  (type_alias_def
+    (type
+      (dialect_type
+        (opaque_dialect_item
+          (dialect_namespace)
+          (string_literal))))))

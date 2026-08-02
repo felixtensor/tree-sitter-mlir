@@ -605,3 +605,62 @@ func.func @f(%a: i32) {
                   (builtin_type
                     (integer_type)))
                 (variadic)))))))))
+
+================================================================================
+Unknown custom assembly preserves surrounding boundaries
+================================================================================
+func.func @unknown_custom_boundaries(%arg: i32) {
+  %0 = test.unknown(%arg, ["}", "fake // ^bb9:", "<)>"]) <mode = [fast]> {"value" = %arg, "flag" = true} : i32 loc("outer")
+  test.after %0 : i32
+^bb1:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (string_literal)
+                (string_literal)
+                (string_literal)
+                (bare_id)
+                (bare_id)
+                (string_literal)
+                (value_use)
+                (string_literal)
+                (attribute_value
+                  (bool_literal))
+                (type
+                  (builtin_type
+                    (integer_type))))
+              (trailing_location
+                (location
+                  (string_literal))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
