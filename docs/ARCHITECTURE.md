@@ -72,6 +72,56 @@ are implementation detail and are **not** part of this surface.
 
 `comment`
 
+## MLIR-Aware Parser Foundations
+
+This grammar is designed for MLIR's extensible textual IR, not for a closed
+list of dialects. Dialects can register operations, types, attributes, and
+custom assembly parsers at runtime; a static tree-sitter parser cannot and
+should not reproduce that registry, its verifiers, or its semantic callbacks.
+The parser instead exposes a stable syntactic foundation that remains useful
+when a dialect is unknown.
+
+The design follows six principles:
+
+1. **Operation-first.** Preserve `operation`, `region`, `block`, result,
+   operand, successor, symbol, type/attribute envelope, and trailing-location
+   boundaries before attempting to classify dialect-specific body syntax.
+2. **Generic-anchored.** Keep quoted generic operations strict and
+   dialect-independent. Generic form is MLIR's stable compatibility path and
+   must not acquire loose custom-assembly fallbacks.
+3. **Dialect-open.** Accept open dialect namespaces and structurally bounded
+   payloads without enumerating the dialect ecosystem. A dedicated operation
+   branch needs a demonstrated structural or consumer benefit.
+4. **Boundary-preserving.** Unknown content may be represented coarsely or
+   produce a local `ERROR`; it must not silently consume a following operation,
+   block label, region boundary, or operation-level `loc(...)`.
+5. **Consumer-driven.** Add public nodes and fields only when they provide a
+   stable benefit to queries, editor integrations, or downstream consumers.
+   Matching the runtime MLIR parser's semantic detail is not by itself a goal.
+6. **Evidence-bounded.** Every new conflict, recursive fallback, dedicated
+   dialect branch, or scanner responsibility needs a minimal reproducer and a
+   focused test proportional to its maintenance cost.
+
+These principles define a layered compatibility contract:
+
+| Layer | Parser commitment |
+| --- | --- |
+| Stable MLIR core | Precise CST for corpus-covered forms of generic operations and the shared operation/region/block, type, attribute, symbol, and location structures documented above |
+| Structurally unknown dialect syntax | Preserve paired delimiters, high-value sigil references, literals, and recoverable outer boundaries where the static grammar has enough evidence |
+| Runtime dialect semantics | No claim to reproduce registered assembly callbacks, verifier rules, traits, interfaces, macro-like expansion, or lowering behavior |
+
+For malformed or incomplete input, success is measured by the smallest useful
+error span and recovery of subsequent MLIR structure, not by eliminating every
+`ERROR` node. In particular, an `ERROR` inside one custom operation is preferable
+to an apparently successful parse that absorbs later sibling operations.
+
+Comparable extensible-language grammars are design references, not templates:
+recursive token trees motivate bounded delimiter handling; macro/notation
+systems motivate a precise core plus coarse extension points; complex external
+scanners motivate focused malformed-input tests and fuzzing. A borrowed method
+is accepted only when it strengthens an MLIR-specific CST invariant, corpus
+case, query contract, or scanner constraint.
+
 ## Key Design Decisions
 
 ### Custom Operations Are Parsed by Structured Fallback
@@ -132,20 +182,24 @@ conflicts.
 
 ### External Scanner
 
-The parser uses a small external scanner for caret identifiers. MLIR reuses
-`^suffix` for both successor references and block labels, and the loose
-custom-operation fallback can otherwise parse a following block label such as
-`^bb1(%arg : i32):` as another successor plus punctuation. The scanner emits
-two token kinds:
+The parser uses a small external scanner for two narrowly scoped lexical
+ambiguities. MLIR reuses `^suffix` for both successor references and block
+labels, and the loose custom-operation fallback can otherwise parse a following
+block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
+Custom operation bodies also need to distinguish a dimension-separating `x`
+from a bare identifier named `x`. The scanner emits three token kinds:
 
 - `_caret_id` for ordinary successor/reference uses.
-- `_block_label_id` when the same-line tail has block-label shape:
+- `_block_label_id` when a line-start caret identifier has block-label shape:
   `^suffix block-arg-list? :`.
+- `_custom_body_dimension_separator` for `x` when a supported custom-body
+  dimension follows, as in `16x16` or `16x?`.
 
-Both tokens are exposed as named `caret_id` nodes in the syntax tree, so query
-consumers do not need separate handling. The scanner has no persistent state,
-serializes nothing, and mirrors the existing `_suffix_id` spelling including
-optional `:digits` and `#digits` suffixes.
+The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
+so query consumers do not need separate handling. The dimension token is
+exposed as `dimension_separator`. The scanner has no persistent state,
+serializes nothing, and its caret handling mirrors the existing `_suffix_id`
+spelling including optional `:digits` and `#digits` suffixes.
 
 Do not add more scanner responsibilities unless the syntax cannot be expressed
 safely in pure grammar or a measured parser-stability problem needs lexical
@@ -156,10 +210,10 @@ state.
 The standard tree-sitter gates must pass before any grammar change is
 merged:
 
-1. **`tree-sitter test`** — hand-written corpus (159 assertions) and
-   highlight queries.
-2. **`npm run test:examples`** — parses the 552 checked-in upstream MLIR
-   examples in `examples/`. Must remain at 100%.
+1. **`tree-sitter test`** — hand-written corpus and highlight queries.
+2. **`npm run test:examples`** — parses the checked-in upstream MLIR examples
+   in `examples/`. All checked-in examples must pass; exact counts are not a
+   long-lived architecture invariant.
 3. **Generated-file check in CI** — reruns `tree-sitter generate` and
    fails if committed parser artifacts are stale.
 4. **Query compile check in CI** — compiles every shipped query against
@@ -171,8 +225,10 @@ When adding support for a syntax feature (a new builtin type, a dialect
 construct, etc.), follow this checklist:
 
 1. Add a minimal corpus case to `test/corpus/` that isolates the feature.
-2. Add at least one upstream example to `examples/` (via
-   `scripts/sync-examples.sh`) that exercises the feature in context.
+2. Preserve real-input evidence when it exists. If an upstream example exposed
+   the problem, retain it through the normal independent
+   `scripts/sync-examples.sh` snapshot; issue- or downstream-driven changes do
+   not need a manufactured upstream example.
 3. Run `tree-sitter generate` and confirm:
    - No new **unresolved** conflicts (the `generate` command exits 0).
    - Declared conflict count does not increase (or the increase is
@@ -183,3 +239,11 @@ construct, etc.), follow this checklist:
    surface contract changes.
 6. If the change introduces a new declared conflict, add an entry to
    the Declared Conflicts table above and annotate it in `grammar.js`.
+7. For custom assembly or recovery changes, include a sibling operation,
+   block label, region close, or trailing location after the affected syntax
+   and assert that the boundary remains intact.
+8. For a dedicated dialect branch, document what important MLIR structure or
+   real consumer the structured fallback cannot preserve. Dialect popularity
+   or nominal coverage alone is not sufficient.
+9. For scanner changes, include direct-hit and false-positive corpus cases;
+   after the fuzz workflow is available, run it as the scanner stability gate.

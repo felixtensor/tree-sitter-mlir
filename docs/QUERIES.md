@@ -77,5 +77,6 @@ tree-sitter query queries/locals.scm path/to/file.mlir
 tree-sitter query queries/injections.scm path/to/file.mlir
 ```
 
-Every `highlights.scm` capture is exercised by `test/highlight/**` (24 files,
-grouped under `types/`, `core/`, `integration/`, `assembly/`, `attributes/`).
+Every `highlights.scm` capture is exercised by fixtures under
+`test/highlight/**`, grouped by syntax area. Exact fixture counts are not a
+long-lived query contract.
