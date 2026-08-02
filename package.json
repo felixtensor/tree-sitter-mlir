@@ -54,6 +54,7 @@
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
     "compile": "tree-sitter generate",
+    "fuzz": "node scripts/fuzz.mjs",
     "update-tests": "tree-sitter test --update",
     "test": "tree-sitter test",
     "test:bindings": "node --test bindings/node/*_test.js",

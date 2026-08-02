@@ -1,0 +1,52 @@
+name: Fuzz
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - grammar.js
+      - tree-sitter.json
+      - package.json
+      - scripts/fuzz.mjs
+      - src/**
+      - test/corpus/**
+      - .github/workflows/fuzz.yml
+  push:
+    branches: [main]
+    paths:
+      - grammar.js
+      - tree-sitter.json
+      - package.json
+      - scripts/fuzz.mjs
+      - src/**
+      - test/corpus/**
+      - .github/workflows/fuzz.yml
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Hosted runners force JavaScript actions to Node 24 starting 2026-06-16.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  fuzz:
+    name: Fuzz parser
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v2
+        with:
+          # Sync with package.json, ci.yml, and release.yml.
+          tree-sitter-ref: v0.26.11
+
+      - name: Fuzz parser
+        run: npm run fuzz
