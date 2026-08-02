@@ -666,6 +666,49 @@ func.func @unknown_custom_boundaries(%arg: i32) {
                 (custom_op_name)))))))))
 
 ================================================================================
+Malformed custom payload recovers at surrounding boundaries
+================================================================================
+func.func @malformed_custom_payload(%arg: i32) {
+  test.broken(%arg; bogus)
+  test.after %arg : i32
+^bb1:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (ERROR
+                  (UNEXPECTED ';'))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 Custom body string starting with comment marker preserves boundaries
 ================================================================================
 func.func @leading_comment_marker_in_string() {
