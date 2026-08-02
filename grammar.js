@@ -9,13 +9,10 @@ export default grammar({
     $._block_label_id,
     $._custom_body_dimension_separator,
   ],
-  // All 12 declared conflicts are load-bearing: removing any one fails parser
+  // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
-    // ── Core MLIR overlaps (7) ────────────────────────────────────────────
-
-    // Dimensionality: 2x?x3xf32 needs single-item vs repeated parses before x.
-    [$._static_dim_list, $._static_dim_list],
+    // ── Core MLIR overlaps (6) ────────────────────────────────────────────
 
     // Type alias !foo<...> vs dialect namespace !foo.<ident>: prefix ambiguity.
     [$.type_alias, $.dialect_namespace],
@@ -1003,7 +1000,7 @@ export default grammar({
     dim_list: ($) => seq($._dim_primitive, repeat(seq("x", $._dim_primitive))),
     // '*' represents the unranked form for both memref and tensor types
     // (UnrankedMemRefType, UnrankedTensorType). Vector uses its own
-    // vector_dim_list / _static_dim_list and disallows '*' by construction.
+    // vector_dim_list and disallows '*' by construction.
     dimension_size: ($) => token(repeat1(/[0-9]/)),
     _dim_primitive: ($) => choice(prec(1, $.type), $.dimension_size, "?", "*"),
 
@@ -1020,21 +1017,22 @@ export default grammar({
     vector_type: ($) =>
       prec(
         1,
-        seq(token("vector"), "<", repeat($.vector_dim_list), $._prim_type, ">"),
-      ),
-    vector_dim_list: ($) =>
-      prec.left(
-        choice(
-          seq(
-            $._static_dim_list,
-            "x",
-            optional(seq("[", $._static_dim_list, "]", "x")),
-          ),
-          seq("[", $._static_dim_list, "]", "x"),
+        seq(
+          token("vector"),
+          "<",
+          optional($.vector_dim_list),
+          $._prim_type,
+          ">",
         ),
       ),
-    _static_dim_list: ($) =>
-      seq($.dimension_size, repeat(seq("x", $.dimension_size))),
+    vector_dim_list: ($) =>
+      seq(
+        $._vector_dimension,
+        repeat(seq("x", $._vector_dimension)),
+        "x",
+      ),
+    _vector_dimension: ($) =>
+      choice($.dimension_size, seq("[", $.dimension_size, "]")),
 
     tuple_type: ($) =>
       seq(

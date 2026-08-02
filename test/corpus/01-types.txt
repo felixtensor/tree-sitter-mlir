@@ -611,8 +611,7 @@ Scalable 2d vector with scalable dimensions
           (builtin_type
             (vector_type
               (vector_dim_list
-                (dimension_size))
-              (vector_dim_list
+                (dimension_size)
                 (dimension_size))
               (float_type))))))))
 
@@ -633,8 +632,7 @@ Scalable vector with bf16
           (builtin_type
             (vector_type
               (vector_dim_list
-                (dimension_size))
-              (vector_dim_list
+                (dimension_size)
                 (dimension_size))
               (float_type))))))))
 

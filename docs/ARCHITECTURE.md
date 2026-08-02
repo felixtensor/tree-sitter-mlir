@@ -151,18 +151,17 @@ fallback cannot resolve:
 
 ### All Declared Conflicts Are Intentional
 
-The 12 conflicts listed in `grammar.js` are load-bearing — removing any
+The 11 conflicts listed in `grammar.js` are load-bearing — removing any
 one causes `tree-sitter generate` to fail with an unresolved conflict.
 The `array` and `tensor` keyword conflicts were additionally tested
 with token precedence substitution, which increased state count and
 parser size without improving the AST, so they remain as declared
 conflicts.
 
-#### Core MLIR Overlaps (7)
+#### Core MLIR Overlaps (6)
 
 | Conflict | Cause |
 | --- | --- |
-| `_static_dim_list × _static_dim_list` | Dimensionality (`2x?x3xf32`) needs both single-item and repeated parses before seeing the next `x`. Inherent to MLIR shaped type syntax. |
 | `type_alias × dialect_namespace` | `!foo<...>` can be a type alias or a dialect namespace before the following body decides. |
 | `dialect_namespace × attribute_alias` | `#foo<...>` has the same prefix ambiguity for attribute aliases and dialect attributes. |
 | `pretty_dialect_item × pretty_dialect_item` | A pretty dialect item can be complete at `ns.ident` or continue into a `<...>` body. |

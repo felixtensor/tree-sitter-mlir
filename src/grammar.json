@@ -4609,11 +4609,16 @@
             "value": "<"
           },
           {
-            "type": "REPEAT",
-            "content": {
-              "type": "SYMBOL",
-              "name": "vector_dim_list"
-            }
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "vector_dim_list"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -4627,83 +4632,11 @@
       }
     },
     "vector_dim_list": {
-      "type": "PREC_LEFT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "_static_dim_list"
-              },
-              {
-                "type": "STRING",
-                "value": "x"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "["
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_static_dim_list"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "]"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "x"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "["
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_static_dim_list"
-              },
-              {
-                "type": "STRING",
-                "value": "]"
-              },
-              {
-                "type": "STRING",
-                "value": "x"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    "_static_dim_list": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "dimension_size"
+          "name": "_vector_dimension"
         },
         {
           "type": "REPEAT",
@@ -4716,10 +4649,40 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "dimension_size"
+                "name": "_vector_dimension"
               }
             ]
           }
+        },
+        {
+          "type": "STRING",
+          "value": "x"
+        }
+      ]
+    },
+    "_vector_dimension": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "dimension_size"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "dimension_size"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         }
       ]
     },
@@ -6151,10 +6114,6 @@
     }
   ],
   "conflicts": [
-    [
-      "_static_dim_list",
-      "_static_dim_list"
-    ],
     [
       "type_alias",
       "dialect_namespace"
