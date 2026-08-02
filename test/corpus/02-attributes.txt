@@ -1580,3 +1580,17 @@ dialect attribute body with dynamic-dimension question marks
             (bare_id)
             (bare_id)
             (integer_literal)))))))
+
+================================================================================
+Opaque unknown dialect attribute envelope
+================================================================================
+#unknown_opaque = #mystery<"payload<[]>{}//^bb0:">
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (dialect_attribute
+        (opaque_dialect_item
+          (dialect_namespace)
+          (string_literal))))))
