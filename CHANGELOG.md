@@ -13,6 +13,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-02
+
+Extensible MLIR parser foundations, bounded custom assembly recovery, and
+deterministic fuzzing.
+
+### Added
+- **grammar:** recognize the builtin `f8E5M3FNU` floating-point type.
+- **tests:** protect unknown operation, type, and attribute envelopes; nested
+  custom-assembly delimiters; strings containing false boundaries; trailing
+  locations; sibling operations; block labels; region closes; and localized
+  malformed-payload recovery.
+- **tests:** pin direct matches and high-value false positives for all three
+  external scanner tokens.
+- **tooling/CI:** add a shared `npm run fuzz` entry that rebuilds the parser,
+  directly replays a fixed incremental-regression seed, and fuzzes the complete
+  corpus with a fresh random seed when parser or fuzz-runner inputs change.
+
+### Fixed
+- **scanner:** recognize compact block labels immediately after a region open,
+  as in `{^bb0: ...}`, without adding scanner state or new external tokens.
+- **grammar:** keep a leading `//` inside a string literal from being tokenized
+  as a comment and consuming the following operation or region boundary.
+- **grammar:** parse a vector shape as one deterministic dimension list,
+  eliminating an incremental-parse inconsistency for mixed static and scalable
+  dimensions and removing the obsolete static-dimension self-conflict.
+
+### Changed
+- **architecture:** define the operation-first, generic-anchored,
+  dialect-open, boundary-preserving, consumer-driven, and evidence-bounded
+  parser foundations, including the public AST and scanner contracts.
+- **examples:** sync the checked-in MLIR smoke corpus to
+  `llvm-project@79537625e213b6a5f329da1d5a443de265346a5e` (2026-07-31).
+  The snapshot is a parse gate, not a dialect support matrix or exact AST
+  baseline.
+- **docs:** avoid treating drifting test or query counts as long-lived parser
+  guarantees.
+
+### Breaking AST changes
+- Multidimensional vector shapes containing bracketed scalable dimensions now
+  emit one `vector_dim_list` containing all `dimension_size` children. They
+  previously emitted separate sibling `vector_dim_list` nodes around scalable
+  dimension groups, for example in `vector<[2]x[2]xf64>` and
+  `vector<2x[4]xbf16>`.
+
 ## [0.1.10] - 2026-07-08
 
 Custom assembly dimension-list parsing, LLVM function clause support, and
@@ -188,7 +232,8 @@ Initial public release.
 - `string_literal` made structural: escape sequences are now visible
   `escape_sequence` / `invalid_escape` nodes rather than opaque token text.
 
-[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.10...HEAD
+[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.10...v0.2.0
 [0.1.10]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.7...v0.1.8
