@@ -164,6 +164,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // Snapshot line-start before the dimension-separator probe, which can
   // advance past leading inline space and shift the column.
   bool at_line_start = lexer->get_column(lexer) == 0;
+  bool caret_is_adjacent = lexer->lookahead == '^';
 
   // A dimension separator is the only external token that can begin with `x`.
   // When one is expected, skip leading inline space and decide on `x`
@@ -185,6 +186,15 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
+
+  // At a region opening such as `{^bb0: ...}`, the grammar can require a
+  // block label even though the caret is not at column zero or after a
+  // newline. Accept that compact form when no leading extra separates the
+  // caret from the previous token. Keep the line-start requirement for
+  // whitespace-separated successor/type syntax such as `^bb0 : i32`.
+  bool can_be_block_label =
+      valid_symbols[BLOCK_LABEL_ID] &&
+      (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
 
   if (lexer->lookahead != '^') {
     return false;
@@ -214,7 +224,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
       } while (is_digit(lexer->lookahead));
       lexer->mark_end(lexer);
     } else if (suffix_separator == ':') {
-      if (at_line_start && valid_symbols[BLOCK_LABEL_ID]) {
+      if (can_be_block_label) {
         lexer->result_symbol = BLOCK_LABEL_ID;
         return true;
       }
@@ -224,7 +234,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     }
   }
 
-  bool is_block_label = at_line_start && at_block_label_tail(lexer);
+  bool is_block_label = can_be_block_label && at_block_label_tail(lexer);
   if (is_block_label && valid_symbols[BLOCK_LABEL_ID]) {
     lexer->result_symbol = BLOCK_LABEL_ID;
     return true;
