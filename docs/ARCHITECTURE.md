@@ -219,6 +219,11 @@ merged:
    fails if committed parser artifacts are stale.
 4. **Query compile check in CI** — compiles every shipped query against
    an example file to catch node-name drift outside highlights.
+5. **Parser fuzzing** — `npm run fuzz` rebuilds the parser, directly replays
+   known incremental-parse regressions with their fixed seeds, then fuzzes the
+   complete corpus with a fresh seed. The same entry point runs locally and in
+   CI; grammar, configuration, scanner, generated-parser, corpus, and fuzz-runner
+   changes trigger the workflow.
 
 ## Adding Grammar for New MLIR Syntax
 
