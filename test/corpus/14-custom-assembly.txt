@@ -666,6 +666,45 @@ func.func @unknown_custom_boundaries(%arg: i32) {
                 (custom_op_name)))))))))
 
 ================================================================================
+External custom-body dimension token contracts
+================================================================================
+func.func @custom_body_dimension_tokens() {
+  test.not_dimension 16x^bb0
+  test.not_dimension_name 16xfoo
+  test.dimension 16x?x32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (dimension_separator)
+                (successor
+                  (caret_id))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (bare_id)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (dimension_separator)
+                  (dimension_size))))))))))
+
+================================================================================
 Malformed custom payload recovers at surrounding boundaries
 ================================================================================
 func.func @malformed_custom_payload(%arg: i32) {

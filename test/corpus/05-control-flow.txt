@@ -96,6 +96,51 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                 (custom_op_name)))))))))
 
 ================================================================================
+External caret and block-label token contracts
+================================================================================
+func.func @caret_and_block_label_tokens() {
+  test.targets ^12, ^bb:7, ^bb#8 : i32
+^label:7:
+  return
+^label#8:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (successor
+                  (caret_id))
+                (successor
+                  (caret_id))
+                (successor
+                  (caret_id))
+                (type
+                  (builtin_type
+                    (integer_type))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 Branch successors followed by labels
 ================================================================================
 func.func @branch_targets(%c : i1, %v : i32) {
@@ -2040,3 +2085,23 @@ func.func @string_bracket_label() {
                 (custom_op_name)
                 (successor
                   (caret_id))))))))))
+
+================================================================================
+Compact block label immediately after region open
+================================================================================
+func.func @compact_block_label() {^bb0: return}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))

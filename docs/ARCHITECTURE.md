@@ -190,8 +190,10 @@ Custom operation bodies also need to distinguish a dimension-separating `x`
 from a bare identifier named `x`. The scanner emits three token kinds:
 
 - `_caret_id` for ordinary successor/reference uses.
-- `_block_label_id` when a line-start caret identifier has block-label shape:
-  `^suffix block-arg-list? :`.
+- `_block_label_id` when the grammar permits a block label and the caret
+  identifier has block-label shape: `^suffix block-arg-list? :`. This includes
+  labels at line start, compact labels adjacent to the preceding token such as
+  `{^bb0: ...}`, and grammar states where `_caret_id` is not valid.
 - `_custom_body_dimension_separator` for `x` when a supported custom-body
   dimension follows, as in `16x16` or `16x?`.
 
