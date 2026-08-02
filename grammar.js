@@ -140,7 +140,15 @@ export default grammar({
     string_literal: ($) =>
       seq(
         '"',
-        repeat(choice(/[^\\"\n\f\v\r]+/, $.escape_sequence, $.invalid_escape)),
+        repeat(
+          choice(
+            // Keep a leading `//` inside the string instead of letting the
+            // comment extra win the lexical tie and consume outer syntax.
+            token(prec(1, /[^\\"\n\f\v\r]+/)),
+            $.escape_sequence,
+            $.invalid_escape,
+          ),
+        ),
         '"',
       ),
     escape_sequence: ($) =>
