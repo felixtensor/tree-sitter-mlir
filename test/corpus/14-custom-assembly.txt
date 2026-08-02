@@ -664,3 +664,36 @@ func.func @unknown_custom_boundaries(%arg: i32) {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+Custom body string starting with comment marker preserves boundaries
+================================================================================
+func.func @leading_comment_marker_in_string() {
+  test.unknown(["// ^bb9:"])
+  test.after
+^bb1:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)))
+            (operation
+              (custom_operation
+                (custom_op_name))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
