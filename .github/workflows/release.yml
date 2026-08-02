@@ -341,7 +341,7 @@ jobs:
         run: ls -l dist
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.14.0
+        uses: pypa/gh-action-pypi-publish@v1.14.2
 
   # npm uses OIDC trusted publishing; no long-lived token is needed.
   npm-publish:
