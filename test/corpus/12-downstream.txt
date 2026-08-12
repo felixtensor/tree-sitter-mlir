@@ -75,3 +75,91 @@ tt.func @triton_types(
           (operation
             rhs: (custom_operation
               name: (custom_op_name))))))))
+
+================================================================================
+CIRCT SSP repeated bare custom-assembly statements
+================================================================================
+ssp.instance @problem of "Problem" {
+  library {
+    operator_type @Add [latency<1>]
+    operator_type @Mul [latency<2>]
+  }
+  resource {
+    resource_type @ALU [limit<1>]
+    resource_type @DSP [limit<2>]
+  }
+  graph {
+    %0 = operation<@Add>()
+    operation<@Mul>(%0)
+  }
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (string_literal)
+      (region
+        (entry_block
+          (operation
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)
+                      (bare_id)
+                      (integer_literal)))
+                  (operation
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)
+                      (bare_id)
+                      (integer_literal)))))))
+          (operation
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (region
+                (entry_block
+                  (operation
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)
+                      (bare_id)
+                      (integer_literal)))
+                  (operation
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)
+                      (bare_id)
+                      (integer_literal)))))))
+          (operation
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (region
+                (entry_block
+                  (operation
+                    (op_result
+                      (value_use))
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)))
+                  (operation
+                    (custom_operation
+                      (custom_op_name
+                        (bare_id))
+                      (symbol_ref_id)
+                      (value_use))))))))))))

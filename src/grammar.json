@@ -2246,6 +2246,15 @@
           "name": "_bare_op_name"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_ssp_statement_name"
+          },
+          "named": true,
+          "value": "bare_id"
+        },
+        {
           "type": "SYMBOL",
           "name": "bare_id"
         }
@@ -2324,6 +2333,42 @@
             {
               "type": "STRING",
               "value": "unrealized_conversion_cast"
+            }
+          ]
+        }
+      }
+    },
+    "_ssp_statement_name": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 10,
+        "content": {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "library"
+            },
+            {
+              "type": "STRING",
+              "value": "resource"
+            },
+            {
+              "type": "STRING",
+              "value": "graph"
+            },
+            {
+              "type": "STRING",
+              "value": "operator_type"
+            },
+            {
+              "type": "STRING",
+              "value": "resource_type"
+            },
+            {
+              "type": "STRING",
+              "value": "operation"
             }
           ]
         }

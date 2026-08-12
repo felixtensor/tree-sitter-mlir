@@ -75,7 +75,7 @@ export default grammar({
   //   20 — Tier-1 structural op keywords (func.func, llvm.func, module, builtin.module)
   //        Must beat _dotted_op_name (10) so the parser treats these as Tier-1 ops,
   //        not as generic dialect.op names.
-  //   10 — Tier-2 _dotted_op_name / _bare_op_name
+  //   10 — Tier-2 _dotted_op_name / boundary-forming bare statement names
   //        Must beat bare_id so op names at the start of a body element close
   //        the previous operation rather than extending it.
   //    5 — Builtin type tokens (i32, f32, index, none, …)
@@ -502,11 +502,20 @@ export default grammar({
     // bare_id fallback: supports MLIR's "default dialect" mechanism where
     // operations inside a region may omit the dialect prefix (e.g.
     // `parse_integer_literal` instead of `test.parse_integer_literal`).
+    // SSP's custom assembly contains repeated bare statements whose names
+    // otherwise lose the token race to a preceding operation's loose body.
+    // Give those statement names the same boundary-forming precedence as the
+    // spec-sanctioned bare operation aliases below.
     // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
     // element when inside a custom op body; it only acts as an op name at
     // region/block boundaries where operation+ is required.
     custom_op_name: ($) =>
-      choice($._dotted_op_name, $._bare_op_name, $.bare_id),
+      choice(
+        $._dotted_op_name,
+        $._bare_op_name,
+        alias($._ssp_statement_name, $.bare_id),
+        $.bare_id,
+      ),
     _dotted_op_name: ($) =>
       token(
         prec(
@@ -530,6 +539,20 @@ export default grammar({
             "call_indirect",
             "constant",
             "unrealized_conversion_cast",
+          ),
+        ),
+      ),
+    _ssp_statement_name: ($) =>
+      token(
+        prec(
+          10,
+          choice(
+            "library",
+            "resource",
+            "graph",
+            "operator_type",
+            "resource_type",
+            "operation",
           ),
         ),
       ),

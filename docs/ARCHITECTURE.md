@@ -149,6 +149,14 @@ fallback cannot resolve:
 - Dotted custom operations followed by `loc(...) { ... }` — the first
   `loc(...)` is body syntax; only the final one is the operation location.
 
+CIRCT SSP's custom assembly uses repeated bare statement names such as
+`library`, `operator_type`, and `operation`. These do not need dedicated parse
+branches, but they do need the same token precedence as builtin bare operation
+aliases. Without it, the negative dynamic precedence of the generic fallback
+prefers one long operation and absorbs later sibling statements as body
+`bare_id` nodes. `_ssp_statement_name` supplies that boundary while aliasing
+the token back to `bare_id`, preserving the public `custom_op_name` subtree.
+
 ### All Declared Conflicts Are Intentional
 
 The 11 conflicts listed in `grammar.js` are load-bearing — removing any
