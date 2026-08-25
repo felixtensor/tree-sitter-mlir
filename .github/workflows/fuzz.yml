@@ -46,7 +46,7 @@ jobs:
         uses: tree-sitter/setup-action/cli@v2
         with:
           # Sync with package.json, ci.yml, and release.yml.
-          tree-sitter-ref: v0.26.11
+          tree-sitter-ref: v0.26.12
 
       - name: Fuzz parser
         run: npm run fuzz
