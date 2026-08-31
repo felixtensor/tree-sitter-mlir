@@ -46,3 +46,9 @@ func.func @emitc_attrs() {
   return
 //^ function.builtin
 }
+
+// Whitespace inside a pretty dialect body belongs to the enclosing attribute,
+// not to the token that follows it. The column below is the space before `map`.
+#WS = #sparse_tensor.encoding<{ map = (d0) -> (d0 : dense) }>
+//                             ^ attribute
+//                              ^ keyword

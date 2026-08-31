@@ -841,7 +841,11 @@ export default grammar({
           $._pretty_dialect_value_content,
           $._pretty_dialect_keyword_content,
           $._pretty_dialect_punctuation_content,
-          token(prec(-1, /[^<>]/)),
+          // Catch-all for characters no other alternative claims. Whitespace is
+          // excluded: it is already an extra, and letting this token match it
+          // makes whitespace lexable here, which stops it being skipped and
+          // folds it into the following token's node range.
+          token(prec(-1, /[^<>\s]/)),
         ),
       ),
     _pretty_dialect_structural_content: ($) =>
