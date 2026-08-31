@@ -1059,6 +1059,23 @@ export default grammar({
           choice($.bare_id, $.string_literal),
           optional(seq("=", $.attribute_value)),
         ),
+        // Dotted key (e.g. {allocation.offset = 0 : i32}). LangRef's bare-id
+        // already admits dots, but _dotted_op_name outranks bare_id at the
+        // token level, so right after `{` in a custom body the lexer hands the
+        // parser an op name and locks it into the region branch before the `=`
+        // is ever seen. Spelling the dotted key out as its own alternative lets
+        // the dictionary branch stay alive that far.
+        //
+        // A dotted key with a value is unambiguous: no operation's custom
+        // assembly starts with `=`, so this can only be a dictionary.
+        seq(alias($._dotted_op_name, $.bare_id), "=", $.attribute_value),
+        // A dotted unit attribute is not: `{transform.readonly}` and
+        // `{ scf.yield }` have the same shape. Ranking it below
+        // _generic_custom_operation's prec.dynamic(-1) keeps the region reading
+        // wherever a region is admissible, while still allowing the dictionary
+        // in positions that admit nothing else (argument and result attributes,
+        // `attributes` clauses, attribute arrays).
+        prec.dynamic(-2, alias($._dotted_op_name, $.bare_id)),
         // Array-valued entry (e.g. {["op.name"]} in transform dialect)
         $._attribute_array,
       ),

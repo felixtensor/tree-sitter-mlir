@@ -4818,6 +4818,41 @@
           ]
         },
         {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_dotted_op_name"
+              },
+              "named": true,
+              "value": "bare_id"
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "SYMBOL",
+              "name": "attribute_value"
+            }
+          ]
+        },
+        {
+          "type": "PREC_DYNAMIC",
+          "value": -2,
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_dotted_op_name"
+            },
+            "named": true,
+            "value": "bare_id"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "_attribute_array"
         }

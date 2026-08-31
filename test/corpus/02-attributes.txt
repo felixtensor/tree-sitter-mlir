@@ -1594,3 +1594,141 @@ Opaque unknown dialect attribute envelope
         (opaque_dialect_item
           (dialect_namespace)
           (string_literal))))))
+
+================================================================================
+Discardable attribute dictionary with a dotted key
+================================================================================
+%0 = tt.atomic_rmw add, %ptr {allocation.offset = 0 : i32} : i32
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (bare_id)
+      (value_use)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (type
+        (builtin_type
+          (integer_type))))))
+
+================================================================================
+Dotted key mixed with plain keys in one dictionary
+================================================================================
+%0 = tt.op %a {a.b = 0 : i32, c = 1 : i32, d.e.f = 2 : i32} : i32
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (type
+        (builtin_type
+          (integer_type))))))
+
+================================================================================
+Angle-wrapped dictionary with a dotted key in a custom body
+================================================================================
+%0 = tt.op %a <{ttg.mbar_offset = 8 : i32}> : i32
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (type
+        (builtin_type
+          (integer_type))))))
+
+================================================================================
+Payload-only region is not read as a dotted unit attribute
+================================================================================
+linalg.map {arith.addf} ins(%a, %b : memref<8xf32>, memref<8xf32>) outs(%c : memref<8xf32>)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            (custom_operation
+              (custom_op_name)))))
+      (bare_id)
+      (value_use)
+      (value_use)
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type)))))))
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type)))))))
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (memref_type
+            (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (float_type))))))))))
