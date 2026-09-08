@@ -140,6 +140,16 @@ static bool at_block_label_tail(TSLexer *lexer) {
         case '[':
           depth++;
           break;
+        case '-':
+          // An MLIR affine map arrow inside a block argument type (for
+          // example, `#sparse_tensor.encoding<{map = (d0) -> (d0)}>`)
+          // is not an angle-bracket terminator. Consume the arrow together so
+          // its `>` does not close the surrounding dialect or tensor body.
+          lexer->advance(lexer, false);
+          if (lexer->lookahead == '>') {
+            lexer->advance(lexer, false);
+          }
+          continue;
         case ')':
         case '>':
         case ']':

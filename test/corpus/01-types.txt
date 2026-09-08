@@ -1320,7 +1320,7 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                 (type
                   (builtin_type
                     (complex_type
-                    (float_type))))))))))))
+                      (float_type))))))))))))
 
 ================================================================================
 f8E5M3FNU builtin float type
@@ -2019,6 +2019,34 @@ func.func @token_type(%arg0: token) {
                             (builtin_type
                               (token_type))))))))
                 (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Tuple containing a function type
+================================================================================
+func.func @char_proc(%proc: tuple<() -> (), i64>) {
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tuple_type
+                (tuple_dim
+                  (function_type))
+                (tuple_dim
+                  (integer_type))))))
+        (region
+          (entry_block
             (operation
               (custom_operation
                 (custom_op_name)))))))))

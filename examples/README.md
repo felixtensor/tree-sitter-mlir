@@ -2,6 +2,7 @@
 
 This directory contains `.mlir` files sourced from the official
 [LLVM/MLIR test suite](https://github.com/llvm/llvm-project/tree/main/mlir/test)
+and selected [Flang tests](https://github.com/llvm/llvm-project/tree/main/flang/test)
 and is used as **Tier-2** testing for the tree-sitter-mlir grammar.
 
 ## Purpose
@@ -9,10 +10,10 @@ and is used as **Tier-2** testing for the tree-sitter-mlir grammar.
 While `test/corpus/` contains hand-written tests with exact AST snapshot
 verification (`tree-sitter test`), this directory holds **real-world MLIR files**
 that are validated using `tree-sitter parse` — the parser must produce a
-complete parse tree with **no ERROR nodes**.
+complete parse tree with **no ERROR or MISSING nodes**.
 
 **Important caveat:** `tree-sitter parse` checks only for the absence of
-`ERROR` nodes, not for the *correctness* of the parse tree. A tree can be
+`ERROR` or `MISSING` nodes, not for the *correctness* of the parse tree. A tree can be
 structurally wrong (misparsed block labels, flattened regions) yet still
 parse without error. Example-only "green" should be understood as "no
 syntax rejections," not "verified correct."
@@ -24,20 +25,20 @@ official tree-sitter grammars.
 ## Directory Structure
 
 ```
-examples/          (600 files, 182k lines, 24 dialects)
+examples/          (617 files, 191,508 lines, 27 source groups; September 2026)
 ├── IR/            ← Core parser tests from mlir/test/IR/            (15)
 ├── Builtin/       ← mlir/test/Dialect/Builtin/                      (5)
 ├── Func/          ← mlir/test/Dialect/Func/                         (2)
 ├── Arith/         ← mlir/test/Dialect/Arith/                       (27)
-├── SCF/           ← mlir/test/Dialect/SCF/                         (41)
+├── SCF/           ← mlir/test/Dialect/SCF/                         (43)
 ├── ControlFlow/   ← mlir/test/Dialect/ControlFlow/                  (5)
-├── MemRef/        ← mlir/test/Dialect/MemRef/                      (31)
+├── MemRef/        ← mlir/test/Dialect/MemRef/                      (32)
 ├── Tensor/        ← mlir/test/Dialect/Tensor/                      (30)
-├── Affine/        ← mlir/test/Dialect/Affine/                      (50)
-├── Vector/        ← mlir/test/Dialect/Vector/                      (85)
-├── Linalg/        ← mlir/test/Dialect/Linalg/                     (146)
-├── OpenACC/       ← mlir/test/Dialect/OpenACC/                     (81)
-├── LLVMIR/        ← mlir/test/Dialect/LLVMIR/                      (64)
+├── Affine/        ← mlir/test/Dialect/Affine/                      (51)
+├── Vector/        ← mlir/test/Dialect/Vector/                      (86)
+├── Linalg/        ← mlir/test/Dialect/Linalg/                     (149)
+├── OpenACC/       ← mlir/test/Dialect/OpenACC/                     (84)
+├── LLVMIR/        ← mlir/test/Dialect/LLVMIR/                      (67)
 ├── LLVM/          ← mlir/test/Dialect/LLVM/                         (4)
 ├── GPU/           ← mlir/test/Dialect/GPU/                          (2)
 ├── OpenMP/        ← mlir/test/Dialect/OpenMP/                       (2)
@@ -47,6 +48,9 @@ examples/          (600 files, 182k lines, 24 dialects)
 ├── PDLInterp/     ← mlir/test/Dialect/PDLInterp/                    (1)
 ├── IRDL/          ← mlir/test/Dialect/IRDL/                         (1)
 ├── WasmSSA/       ← mlir/test/Dialect/WasmSSA/custom_parser/        (1)
+├── Tosa/          ← mlir/test/Dialect/Tosa/                        (1)
+├── Conversion/    ← mlir/test/Conversion/FuncToLLVM/                (1)
+├── Flang/         ← flang/test/Fir/CUDA/                           (1)
 ├── Rewrite/       ← mlir/test/Rewrite/                              (1)
 └── Target/        ← mlir/test/Target/LLVMIR/                        (1)
 ```
@@ -78,8 +82,9 @@ variable. The script records the source commit and timestamp in
 
 ## File Selection Policy
 
-- **Included**: All `*.mlir` files from each dialect's test directory.
-  Select dialects with large/complex test trees use a curated file list
+- **Included**: Direct-child `*.mlir` files from the configured dialect test
+  directories. Other dialects, core IR, conversion, target, rewrite, and Flang
+  tests use curated file lists
   (see `scripts/sync-examples.sh` for the current selection).
 - **Excluded**: Files with `invalid` in the name (these contain intentionally
   broken syntax for MLIR diagnostic testing).

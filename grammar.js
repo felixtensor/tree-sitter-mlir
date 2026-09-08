@@ -753,7 +753,7 @@ export default grammar({
     _value_use_and_type: ($) =>
       seq(
         $.value_use,
-        optional(seq(":", $.type)),
+        optional(seq(":", choice($.type, $.function_type))),
         optional($.trailing_location),
       ),
     _value_use_and_type_list: ($) =>
@@ -1041,7 +1041,7 @@ export default grammar({
         optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
         ">",
       ),
-    tuple_dim: ($) => $._prim_type,
+    tuple_dim: ($) => choice($._prim_type, $.function_type),
 
     // opaque-type ::= `opaque` `<` string-literal `,` string-literal `>`
     // e.g. opaque<"llvm", "struct<(i32, float)>">

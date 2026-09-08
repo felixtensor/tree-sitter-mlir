@@ -325,6 +325,10 @@
       "required": false,
       "types": [
         {
+          "type": "function_type",
+          "named": true
+        },
+        {
           "type": "trailing_location",
           "named": true
         },
@@ -1794,6 +1798,10 @@
         },
         {
           "type": "float_type",
+          "named": true
+        },
+        {
+          "type": "function_type",
           "named": true
         },
         {

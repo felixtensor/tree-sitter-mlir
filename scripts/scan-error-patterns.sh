@@ -16,16 +16,23 @@ Usage:
 Options:
   --limit N     Show at most N detailed failures per category (default: 80).
                 Use --limit 0 to show all detailed failures.
+  --all         Scan every .mlir file under llvm-project/, including flang/,
+                not only the IR and Dialect test directories.
   --fail-on-valid-like
                 Exit non-zero if any valid-like files fail to parse.
   -h, --help    Show this help.
 
-The scan covers:
+By default the scan covers:
   mlir/test/IR/**/*.mlir
   mlir/test/Dialect/**/*.mlir
 
+With --all it covers:
+  llvm-project/**/*.mlir
+
 It clusters the first reported ERROR/MISSING per failed file. This keeps the
 report focused on root parse breakages instead of cascaded recovery errors.
+Comment-only generator/FileCheck fixtures are reported separately because
+their .mlir extension does not indicate parseable MLIR input.
 EOF
 }
 
@@ -35,6 +42,7 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 LLVM_ARG=""
 DETAIL_LIMIT="${SCAN_ERROR_LIMIT:-80}"
 FAIL_ON_VALID_LIKE=0
+SCAN_ALL=0
 IS_MSYS=0
 
 die() {
@@ -64,6 +72,10 @@ parse_args() {
         ;;
       --fail-on-valid-like)
         FAIL_ON_VALID_LIKE=1
+        shift
+        ;;
+      --all)
+        SCAN_ALL=1
         shift
         ;;
       -h|--help)
@@ -104,9 +116,20 @@ resolve_llvm_project() {
   LLVM_DIR="$(cd "$requested" 2>/dev/null && pwd)" || \
     die "llvm-project directory not found at: $hint"
 
-  MLIR_TEST_DIR="$LLVM_DIR/mlir/test"
+  MLIR_DIR="$LLVM_DIR/mlir"
+  MLIR_TEST_DIR="$MLIR_DIR/test"
   if [ ! -d "$MLIR_TEST_DIR/IR" ] || [ ! -d "$MLIR_TEST_DIR/Dialect" ]; then
     die "$MLIR_TEST_DIR does not contain mlir/test/IR and mlir/test/Dialect"
+  fi
+
+  if [ "$SCAN_ALL" -eq 1 ]; then
+    SCAN_BASE_DIR="$LLVM_DIR"
+    SCAN_LABEL="llvm-project/**/*.mlir"
+    SCAN_ROOTS=("$LLVM_DIR")
+  else
+    SCAN_BASE_DIR="$MLIR_TEST_DIR"
+    SCAN_LABEL="mlir/test/{IR,Dialect}/**/*.mlir"
+    SCAN_ROOTS=("$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect")
   fi
 }
 
@@ -143,7 +166,7 @@ to_shell_path() {
 }
 
 prepare_paths() {
-  find "$MLIR_TEST_DIR/IR" "$MLIR_TEST_DIR/Dialect" -type f -name '*.mlir' \
+  find "${SCAN_ROOTS[@]}" -type f -name '*.mlir' \
     | LC_ALL=C sort > "$PATHS_SHELL_FILE"
 
   if [ "$IS_MSYS" -eq 1 ]; then
@@ -155,7 +178,7 @@ prepare_paths() {
   TOTAL_FILES="$(line_count "$PATHS_SHELL_FILE")"
 
   if [ "$TOTAL_FILES" -eq 0 ]; then
-    echo "No .mlir files found under $MLIR_TEST_DIR/IR or $MLIR_TEST_DIR/Dialect"
+    echo "No .mlir files found for $SCAN_LABEL"
     exit 0
   fi
 }
@@ -172,6 +195,7 @@ print_header() {
   printf 'Scanning MLIR parse errors\n'
   printf '  llvm-project: %s\n' "$LLVM_DIR"
   printf '  source commit: %s\n' "$(source_commit)"
+  printf '  scope: %s\n' "$SCAN_LABEL"
   printf '  files: %s\n' "$TOTAL_FILES"
   printf '  scanned_at: %s\n\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 }
@@ -200,6 +224,44 @@ is_invalid_like() {
       return 1
       ;;
   esac
+}
+
+is_comment_only_fixture() {
+  awk '
+    BEGIN { in_block = 0; has_block = 0; has_code = 0 }
+    {
+      line = $0
+      while (1) {
+        sub(/^[[:space:]]+/, "", line)
+
+        if (in_block) {
+          end = index(line, "*/")
+          if (end == 0) {
+            break
+          }
+          line = substr(line, end + 2)
+          in_block = 0
+          continue
+        }
+
+        if (line == "" || substr(line, 1, 2) == "//") {
+          break
+        }
+        if (substr(line, 1, 2) == "/*") {
+          line = substr(line, 3)
+          in_block = 1
+          has_block = 1
+          continue
+        }
+
+        has_code = 1
+        exit
+      }
+    }
+    # MLIR supports // comments. Only closed C-style documentation blocks
+    # justify treating a failed parse as a non-MLIR fixture.
+    END { exit (has_code || in_block || !has_block) ? 1 : 0 }
+  ' "$1"
 }
 
 has_expected_diagnostic_near() {
@@ -292,9 +354,11 @@ record_parse_failures() {
     fi
     line_no=$((row + 1))
 
-    rel="${file#"$MLIR_TEST_DIR/"}"
+    rel="${file#"$SCAN_BASE_DIR/"}"
     category="valid-like"
-    if is_invalid_like "$rel" || has_expected_diagnostic_near "$file" "$line_no"; then
+    if is_comment_only_fixture "$file"; then
+      category="fixture-only"
+    elif is_invalid_like "$rel" || has_expected_diagnostic_near "$file" "$line_no"; then
       category="invalid-like"
     fi
 
@@ -386,6 +450,7 @@ print_details() {
 summarize_records() {
   VALID_LIKE_FAILED="$(count_category valid-like)"
   INVALID_LIKE_FAILED="$(count_category invalid-like)"
+  FIXTURE_ONLY_FAILED="$(count_category fixture-only)"
   SUCCESSFUL_FILES=$((TOTAL_FILES - FAILED_FILES))
 }
 
@@ -396,19 +461,24 @@ print_report() {
   echo "  failed files: $FAILED_FILES"
   echo "  valid-like failed files: $VALID_LIKE_FAILED"
   echo "  invalid-like failed files: $INVALID_LIKE_FAILED"
+  echo "  fixture-only failed files: $FIXTURE_ONLY_FAILED"
   echo ""
 
   print_patterns valid-like
   echo ""
   print_patterns invalid-like
   echo ""
+  print_patterns fixture-only
+  echo ""
   print_details valid-like
   echo ""
   print_details invalid-like
+  echo ""
+  print_details fixture-only
 }
 
 enforce_valid_like_gate() {
-  [ "$FAIL_ON_VALID_LIKE" -eq 1 ] || return
+  [ "$FAIL_ON_VALID_LIKE" -eq 1 ] || return 0
   [ "$VALID_LIKE_FAILED" -eq 0 ] && return
 
   echo ""
