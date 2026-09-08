@@ -154,6 +154,19 @@ sync_selected_files "Rewrite" \
   "$EXAMPLES_DIR/Rewrite" \
   pdl-bytecode.mlir
 
+# Full-scan regressions: sparse encoding arrows in block arguments,
+# higher-order block arguments, and function types inside FIR tuples.
+sync_selected_files "Tosa" "$MLIR_TEST_DIR/Dialect/Tosa" "$EXAMPLES_DIR/Tosa" \
+  tosa-infer-shapes.mlir
+sync_selected_files "Conversion/FuncToLLVM" \
+  "$MLIR_TEST_DIR/Conversion/FuncToLLVM" \
+  "$EXAMPLES_DIR/Conversion/FuncToLLVM" \
+  convert-funcs.mlir
+sync_selected_files "Flang/Fir/CUDA" \
+  "$LLVM_DIR/flang/test/Fir/CUDA" \
+  "$EXAMPLES_DIR/Flang/Fir/CUDA" \
+  cuda-target-rewrite.mlir
+
 # ── Sync dialect tests ───────────────────────────────────────────────────────
 DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM PDL PDLInterp"
 

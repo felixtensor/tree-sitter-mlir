@@ -3223,8 +3223,17 @@
                   "value": ":"
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "type"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "function_type"
+                    }
+                  ]
                 }
               ]
             },
@@ -4740,8 +4749,17 @@
       ]
     },
     "tuple_dim": {
-      "type": "SYMBOL",
-      "name": "_prim_type"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_prim_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_type"
+        }
+      ]
     },
     "opaque_type": {
       "type": "SEQ",

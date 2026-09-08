@@ -2087,6 +2087,96 @@ func.func @string_bracket_label() {
                   (caret_id))))))))))
 
 ================================================================================
+Block label arg type with affine map arrow
+================================================================================
+func.func @affine_map_arrow_label() {
+^bb0(%x: tensor<1xi32, #sparse_tensor.encoding<{ map = (d0) -> (d0 : compressed) }>>,
+     %negative: !test.signed<-1>):
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (integer_type))))
+                      (tensor_encoding
+                        (attribute_value
+                          (dialect_attribute
+                            (pretty_dialect_item
+                              (dialect_namespace)
+                              (dialect_ident)
+                              (pretty_dialect_item_body
+                                (bare_id)
+                                (bare_id)
+                                (bare_id)
+                                (bare_id)))))))))
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (integer_literal)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Block label argument with function type
+================================================================================
+func.func @function_type_label(%fn: () -> ()) {
+  cf.br ^bb1(%fn : () -> ())
+^bb1(%bbarg: () -> ()):
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (function_type))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (function_type)))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 Compact block label immediately after region open
 ================================================================================
 func.func @compact_block_label() {^bb0: return}

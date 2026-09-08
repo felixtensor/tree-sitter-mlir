@@ -39,6 +39,9 @@ are implementation detail and are **not** part of this surface.
 `func_arg_list`, `func_return`, `function_type`, `type_list_attr_parens`,
 `variadic`, `bare_id`
 
+`block_arg_list` accepts both `type` and `function_type` children, including
+higher-order values such as `%fn: () -> ()`.
+
 ### Types
 
 `type`, `builtin_type`, `dialect_type`, `type_alias`, `type_alias_def`,
@@ -201,6 +204,9 @@ so query consumers do not need separate handling. The dimension token is
 exposed as `dimension_separator`. The scanner has no persistent state,
 serializes nothing, and its caret handling mirrors the existing `_suffix_id`
 spelling including optional `:digits` and `#digits` suffixes.
+
+Block-argument lookahead skips strings and treats `->` as an arrow rather
+than an angle-bracket close, including in sparse tensor encoding maps.
 
 Do not add more scanner responsibilities unless the syntax cannot be expressed
 safely in pure grammar or a measured parser-stability problem needs lexical
