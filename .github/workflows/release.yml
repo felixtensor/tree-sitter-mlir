@@ -154,7 +154,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v2
 
       - name: Verify crate builds and packages
         run: cargo publish --dry-run
@@ -308,7 +308,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v2
 
       - name: Authenticate to crates.io
         id: auth
