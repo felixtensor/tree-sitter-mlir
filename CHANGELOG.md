@@ -13,6 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **scanner:** end a custom operation body before the next operation's result
+  binding. A line-start `%x = op` (also `%a, %b =`, `%x:2 =`, a binding wrapped
+  at its `=`, or one following a region close or a comment) was absorbed into
+  the preceding custom body as operands, leaving the next operation with no
+  `lhs`. A new external token, `_op_result_value`, decides the boundary
+  lexically, so incremental re-parse stays consistent with a full parse.
+
+### Breaking AST changes
+- A result binding that follows a custom operation now appears as
+  `operation.lhs` → `op_result` → `value_use` on its own operation. It
+  previously appeared as a trailing `value_use` child of the preceding
+  `custom_operation`. Where that binding introduced a generic operation or a
+  bare-named operation (for example `%op = operation ...` inside `pdl`), the
+  whole operation previously dissolved into the preceding body and is now
+  parsed as its own `operation`.
+
 ## [0.2.0] - 2026-08-02
 
 Extensible MLIR parser foundations, bounded custom assembly recovery, and

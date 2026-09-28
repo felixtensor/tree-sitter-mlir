@@ -436,9 +436,10 @@ Custom operation body SSA value dictionary
         (dialect_type
           (pretty_dialect_item
             (dialect_namespace)
-            (dialect_ident))))
-      (value_use)))
+            (dialect_ident))))))
   (operation
+    (op_result
+      (value_use))
     (custom_operation
       (custom_op_name)
       (string_literal)
@@ -776,6 +777,322 @@ func.func @leading_comment_marker_in_string() {
           (block
             (block_label
               (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at the next operation's result binding
+================================================================================
+func.func @f(%arg0 : i32) -> i32 {
+  %cst0 = arith.constant 0 : i32
+  %res = arith.addi %cst0, %arg0 : i32
+  return %res : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Unknown dialect body still stops at the next operation's result binding
+================================================================================
+func.func @g(%arg0 : i32) -> i32 {
+  %a = test.thing %arg0 blgp = none : i32
+  %b = test.other %a : i32
+  return %b : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (none_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Custom operation body stops at a result binding after its region closes
+================================================================================
+func.func @h(%c : i32) -> i32 {
+  %0 = scf.execute_region -> i32 {
+    scf.yield %c : i32
+  }
+  %1 = arith.addi %0, %0 : i32
+  return %1 : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Result binding after a comment, wrapped at its equals sign, or naming several results
+================================================================================
+func.func @k() {
+  %c0 = arith.constant 0 : index
+  // the next binding names two results and wraps before the operation name
+  %lo, %hi =
+    test.split %c0 : index
+  %p:2 = test.pair %lo : index
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (comment)
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Wrapped operands and in-body equals signs stay inside the custom body
+================================================================================
+func.func @m(%a : i32, %lb : index, %ub : index, %s : index) {
+  %v = test.gather
+    %a, %a,
+    %a : i32
+  scf.for %i = %lb to %ub step %s {
+    test.done
+  }
+  test.launch blocks(%bx) in (%gx = %a,
+                              %gz = %a) {
+    test.done
+  }
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))

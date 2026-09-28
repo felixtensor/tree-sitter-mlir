@@ -8,6 +8,7 @@ enum TokenType {
   CARET_ID,
   BLOCK_LABEL_ID,
   CUSTOM_BODY_DIMENSION_SEPARATOR,
+  OP_RESULT_VALUE,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -44,6 +45,13 @@ static bool is_identifier_start(int32_t c) {
 
 static bool is_identifier_char(int32_t c) {
   return is_identifier_start(c) || is_digit(c);
+}
+
+// A custom operation name (`_dotted_op_name`, `_bare_op_name`, `bare_id`) or
+// the string literal that names a generic operation.
+static bool is_operation_name_start(int32_t c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' ||
+         c == '"';
 }
 
 static bool skip_space(TSLexer *lexer, bool skip) {
@@ -167,6 +175,71 @@ static bool at_block_label_tail(TSLexer *lexer) {
   return lexer->lookahead == ':';
 }
 
+// Consumes a suffix-id with the same spelling as the grammar's `_suffix_id`
+// token: digits, or an identifier, then an optional `:digits` or `#digits`.
+// Returns false when the text after `%` is not a suffix-id.
+static bool scan_suffix_id(TSLexer *lexer) {
+  if (is_digit(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  } else if (is_identifier_start(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_identifier_char(lexer->lookahead));
+  } else {
+    return false;
+  }
+
+  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
+    lexer->advance(lexer, false);
+    if (!is_digit(lexer->lookahead)) {
+      return false;
+    }
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  }
+
+  return true;
+}
+
+// Precondition: the lexer is positioned at `%`. Consumes one value id as the
+// token, then looks ahead without consuming for the rest of an op-result-list:
+// (`,` value-id)* `=` and the start of an operation name (a bare or dotted
+// identifier, or the string of a generic operation). A custom body uses `%x =`
+// too (`scf.for %i = %lb`, `(%gx = %a)`), but never followed by an operation
+// name, and never at line start where the grammar also permits a new
+// operation.
+static bool scan_op_result_value(TSLexer *lexer) {
+  lexer->advance(lexer, false);
+  if (!scan_suffix_id(lexer)) {
+    return false;
+  }
+  lexer->mark_end(lexer);
+
+  for (;;) {
+    skip_label_extras(lexer);
+    if (lexer->lookahead == '=') {
+      lexer->advance(lexer, false);
+      skip_label_extras(lexer);
+      return is_operation_name_start(lexer->lookahead);
+    }
+    if (lexer->lookahead != ',') {
+      return false;
+    }
+    lexer->advance(lexer, false);
+    skip_label_extras(lexer);
+    if (lexer->lookahead != '%') {
+      return false;
+    }
+    lexer->advance(lexer, false);
+    if (!scan_suffix_id(lexer)) {
+      return false;
+    }
+  }
+}
+
 bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
   (void)payload;
@@ -205,6 +278,18 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   bool can_be_block_label =
       valid_symbols[BLOCK_LABEL_ID] &&
       (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
+
+  // Only an op-result-list that starts a line can end the preceding custom
+  // body: MLIR prints one operation per line, and a body's own `%x = ...`
+  // continuation is rejected by the lookahead in scan_op_result_value.
+  if (lexer->lookahead == '%') {
+    if (valid_symbols[OP_RESULT_VALUE] && at_line_start &&
+        scan_op_result_value(lexer)) {
+      lexer->result_symbol = OP_RESULT_VALUE;
+      return true;
+    }
+    return false;
+  }
 
   if (lexer->lookahead != '^') {
     return false;

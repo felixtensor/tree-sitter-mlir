@@ -113,9 +113,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (integer_literal)
                       (bare_id))))
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -130,9 +131,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (integer_literal))))
                 (value_use)
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -144,9 +146,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (bare_id)
                       (integer_literal))))
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -192,9 +195,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (integer_literal)
                       (bare_id))))
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -209,9 +213,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (integer_literal))))
                 (value_use)
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -223,9 +228,10 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                       (bare_id)
                       (integer_literal))))
                 (value_use)
-                (value_use)
                 (value_use)))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute

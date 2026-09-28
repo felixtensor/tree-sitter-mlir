@@ -347,9 +347,10 @@ func.func @gather_like(
                         (integer_literal)
                         (type
                           (builtin_type
-                            (index_type)))
-                        (value_use)))
+                            (index_type)))))
                     (operation
+                      (op_result
+                        (value_use))
                       (custom_operation
                         (custom_op_name)
                         (value_use)
@@ -359,9 +360,10 @@ func.func @gather_like(
                         (bare_id)
                         (type
                           (builtin_type
-                            (index_type)))
-                        (value_use)))
+                            (index_type)))))
                     (operation
+                      (op_result
+                        (value_use))
                       (custom_operation
                         (custom_op_name)
                         (value_use)

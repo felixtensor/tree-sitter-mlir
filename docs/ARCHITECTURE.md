@@ -184,12 +184,14 @@ conflicts.
 
 ### External Scanner
 
-The parser uses a small external scanner for two narrowly scoped lexical
+The parser uses a small external scanner for three narrowly scoped lexical
 ambiguities. MLIR reuses `^suffix` for both successor references and block
 labels, and the loose custom-operation fallback can otherwise parse a following
 block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
 Custom operation bodies also need to distinguish a dimension-separating `x`
-from a bare identifier named `x`. The scanner emits three token kinds:
+from a bare identifier named `x`. And a custom operation body accepts `%x`
+and `=`, so without a lexical decision it absorbs the next operation's result
+binding as body operands. The scanner emits four token kinds:
 
 - `_caret_id` for ordinary successor/reference uses.
 - `_block_label_id` when the grammar permits a block label and the caret
@@ -198,12 +200,24 @@ from a bare identifier named `x`. The scanner emits three token kinds:
   `{^bb0: ...}`, and grammar states where `_caret_id` is not valid.
 - `_custom_body_dimension_separator` for `x` when a supported custom-body
   dimension follows, as in `16x16` or `16x?`.
+- `_op_result_value` for the first `%value` of an op-result-list when the
+  grammar permits a new operation, the value starts a line, and the lookahead
+  reads `(, %value)* =` followed by an operation name (an identifier or the
+  string of a generic operation). A body's own `%i = %lb` or `(%x = %y)` never
+  has that shape. Other result positions keep the ordinary `value_use` token.
 
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
-exposed as `dimension_separator`. The scanner has no persistent state,
-serializes nothing, and its caret handling mirrors the existing `_suffix_id`
-spelling including optional `:digits` and `#digits` suffixes.
+exposed as `dimension_separator`, and the result token as `value_use` inside
+`op_result`. The scanner has no persistent state, serializes nothing, and its
+caret and result handling mirror the existing `_suffix_id` spelling including
+optional `:digits` and `#digits` suffixes.
+
+The result token exists because weighing the two readings in the grammar did
+not hold up: ending the body through dynamic precedence and a declared conflict
+produced the right tree on a full parse, but fuzzing found an incremental
+re-parse that reverted one boundary to the absorbed shape. Deciding the
+boundary lexically leaves no ambiguity for re-parse to resolve differently.
 
 Block-argument lookahead skips strings and treats `->` as an arrow rather
 than an angle-bracket close, including in sparse tensor encoding maps.

@@ -8,6 +8,7 @@ export default grammar({
     $._caret_id,
     $._block_label_id,
     $._custom_body_dimension_separator,
+    $._op_result_value,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -275,7 +276,14 @@ export default grammar({
 
     _op_result_list: ($) =>
       seq($.op_result, repeat(seq(",", $.op_result)), "="),
-    op_result: ($) => seq($.value_use, optional(seq(":", $.integer_literal))),
+    // The scanner emits _op_result_value for a line-start `%name` that begins
+    // an op-result-list, so a custom body before it cannot absorb the binding.
+    // Other positions (same line, later results) keep the ordinary value_use.
+    op_result: ($) =>
+      seq(
+        choice(alias($._op_result_value, $.value_use), $.value_use),
+        optional(seq(":", $.integer_literal)),
+      ),
     _successor_list: ($) =>
       seq("[", $.successor, repeat(seq(",", $.successor)), "]"),
     successor: ($) => prec.right(seq($.caret_id, optional($._value_arg_list))),

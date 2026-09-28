@@ -1083,8 +1083,22 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "value_use"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_op_result_value"
+              },
+              "named": true,
+              "value": "value_use"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "value_use"
+            }
+          ]
         },
         {
           "type": "CHOICE",
@@ -6189,6 +6203,10 @@
     {
       "type": "SYMBOL",
       "name": "_custom_body_dimension_separator"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_op_result_value"
     }
   ],
   "inline": [
