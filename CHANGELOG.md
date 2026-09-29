@@ -15,11 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **scanner:** stop a custom operation body at the next line-start result
-  binding instead of absorbing it as operands.
+  binding or generic operation instead of absorbing it.
 
 ### Breaking AST changes
-- A result binding after a custom operation now starts its own `operation`
-  with an `lhs`, instead of trailing `value_use` children of the previous
+- A result binding or generic operation after a custom operation now starts
+  its own `operation`, instead of trailing children of the previous
   `custom_operation`.
 
 ## [0.2.0] - 2026-08-02

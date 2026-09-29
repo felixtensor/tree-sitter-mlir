@@ -278,6 +278,51 @@
         }
       ]
     },
+    "_generic_op_name": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_generic_op_quote"
+          },
+          "named": false,
+          "value": "\""
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "TOKEN",
+                "content": {
+                  "type": "PREC",
+                  "value": 1,
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "[^\\\\\"\\n\\f\\v\\r]+"
+                  }
+                }
+              },
+              {
+                "type": "SYMBOL",
+                "name": "escape_sequence"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "invalid_escape"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "\""
+        }
+      ]
+    },
     "escape_sequence": {
       "type": "TOKEN",
       "content": {
@@ -985,8 +1030,22 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "string_literal"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_generic_op_name"
+              },
+              "named": true,
+              "value": "string_literal"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string_literal"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -1120,6 +1179,24 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "_op_result_value": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_op_result_sigil"
+          },
+          "named": false,
+          "value": "%"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_suffix_id"
         }
       ]
     },
@@ -6206,7 +6283,11 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_op_result_value"
+      "name": "_op_result_sigil"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_generic_op_quote"
     }
   ],
   "inline": [
