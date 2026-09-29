@@ -1616,3 +1616,392 @@ test.use %a : i32
 2:24 - 2:26           "->"
 2:27 - 2:28           "("
 2:28 - 2:29           ")"
+
+================================================================================
+Custom operation body dictionary with a dotted first key
+================================================================================
+func.func @dotted_first_key(%m : memref<4xi32>, %v : i32, %i : index) {
+  %0 = memref.atomic_rmw addi %v, %m[%i] {allocation.offset = 0 : i32} : (i32, memref<4xi32>) -> i32
+  %1 = arith.addi %v, %v {test.hint = "a", test.flag, plain = 1 : i32} : i32
+  scf.forall (%t) in (4) {
+  } {acc.par_dims = #acc<par_dims[thread_x]>}
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                dimension_list: (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (memref_type
+                      dimension_list: (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)))
+                    (attribute_entry
+                      (bare_id))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (integer_literal)
+                (region)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (dialect_attribute
+                          (parametric_dialect_item
+                            (dialect_namespace)
+                            (pretty_dialect_item_body
+                              (bare_id)
+                              (bare_id))))))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Dotted-key dictionaries in a parenthesised group and before a region
+================================================================================
+gpu.module @kernels {
+  gpu.func @k(%a : memref<4xf32> {test.arg = 1 : i32}) kernel attributes {test.block = array<i32: 1, 1, 1>} {
+    gpu.return
+  }
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (symbol_ref_id)
+              (value_use)
+              (type
+                (builtin_type
+                  (memref_type
+                    dimension_list: (dim_list
+                      (dimension_size)
+                      (type
+                        (builtin_type
+                          (float_type)))))))
+              (attribute
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (integer_literal)
+                      (type
+                        (builtin_type
+                          (integer_type)))))))
+              (bare_id)
+              (bare_id)
+              (attribute
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (array_literal
+                        (type
+                          (builtin_type
+                            (integer_type)))
+                        (integer_literal)
+                        (integer_literal)
+                        (integer_literal))))))
+              (region
+                (entry_block
+                  (operation
+                    rhs: (custom_operation
+                      name: (custom_op_name))))))))))))
+
+================================================================================
+Single-operation regions with a dotted operation name stay regions
+================================================================================
+func.func @region_guards(%a : memref<4xf32>, %b : memref<4xf32>, %c : memref<4xf32>) -> i32 {
+  linalg.map { arith.addf } ins(%a, %b : memref<4xf32>, memref<4xf32>) outs(%c : memref<4xf32>)
+  %r = scf.execute_region -> i32 {
+    %z = arith.constant 0 : i32
+    scf.yield %z : i32
+  }
+  return %r : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                dimension_list: (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                dimension_list: (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                dimension_list: (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type))))))))
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (region
+                  (entry_block
+                    (operation
+                      rhs: (custom_operation
+                        name: (custom_op_name)))))
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      dimension_list: (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (memref_type
+                      dimension_list: (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (memref_type
+                      dimension_list: (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      lhs: (op_result
+                        (value_use))
+                      rhs: (custom_operation
+                        name: (custom_op_name)
+                        (integer_literal)
+                        (type
+                          (builtin_type
+                            (integer_type)))))
+                    (operation
+                      rhs: (custom_operation
+                        name: (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Unknown dialect braces: a dotted operation opens a region, a dotted key with a value a dictionary
+================================================================================
+test.wrap { test.inner %v : i32 }
+test.wrap {test.key = 1 : i32}
+test.next
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))
+
+================================================================================
+Dotted-key dictionary in a custom body builds the same nodes as the ordinary path
+:cst
+================================================================================
+test.op {a.b = 1 : i32}
+"test.op"() {a.b = 1 : i32} : () -> ()
+--------------------------------------------------------------------------------
+
+0:0  - 1:38   toplevel
+0:0  - 0:23     operation
+0:0  - 0:23       rhs: custom_operation
+0:0  - 0:7          name: custom_op_name `test.op`
+0:8  - 0:23         attribute
+0:8  - 0:23           dictionary_attribute
+0:8  - 0:9              "{"
+0:9  - 0:22             attribute_entry
+0:9  - 0:12               bare_id `a.b`
+0:13 - 0:14               "="
+0:15 - 0:22               attribute_value
+0:15 - 0:16                 integer_literal `1`
+0:17 - 0:18                 ":"
+0:19 - 0:22                 type
+0:19 - 0:22                   builtin_type
+0:19 - 0:22                     integer_type `i32`
+0:22 - 0:23             "}"
+1:0  - 1:38     operation
+1:0  - 1:38       rhs: generic_operation
+1:0  - 1:9          string_literal
+1:0  - 1:1            "\""
+1:8  - 1:9            "\""
+1:9  - 1:10         "("
+1:10 - 1:11         ")"
+1:12 - 1:27         attribute
+1:12 - 1:27           dictionary_attribute
+1:12 - 1:13             "{"
+1:13 - 1:26             attribute_entry
+1:13 - 1:16               bare_id `a.b`
+1:17 - 1:18               "="
+1:19 - 1:26               attribute_value
+1:19 - 1:20                 integer_literal `1`
+1:21 - 1:22                 ":"
+1:23 - 1:26                 type
+1:23 - 1:26                   builtin_type
+1:23 - 1:26                     integer_type `i32`
+1:26 - 1:27             "}"
+1:28 - 1:29         ":"
+1:30 - 1:38         function_type
+1:30 - 1:31           "("
+1:31 - 1:32           ")"
+1:33 - 1:35           "->"
+1:36 - 1:37           "("
+1:37 - 1:38           ")"

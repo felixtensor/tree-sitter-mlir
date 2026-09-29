@@ -2503,10 +2503,92 @@
           "name": "attribute"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_custom_body_dotted_key_attribute"
+          },
+          "named": true,
+          "value": "attribute"
+        },
+        {
           "type": "SYMBOL",
           "name": "_custom_body_brace_payload"
         }
       ]
+    },
+    "_custom_body_dotted_key_attribute": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_custom_body_dotted_key_dictionary"
+      },
+      "named": true,
+      "value": "dictionary_attribute"
+    },
+    "_custom_body_dotted_key_dictionary": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_custom_body_dotted_key_entry"
+          },
+          "named": true,
+          "value": "attribute_entry"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "attribute_entry"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "_custom_body_dotted_key_entry": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_dotted_op_name"
+            },
+            "named": true,
+            "value": "bare_id"
+          },
+          {
+            "type": "STRING",
+            "value": "="
+          },
+          {
+            "type": "SYMBOL",
+            "name": "attribute_value"
+          }
+        ]
+      }
     },
     "_custom_body_brace_payload": {
       "type": "CHOICE",

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **scanner:** stop a custom operation body at the next line-start result
   binding or generic operation instead of absorbing it.
+- **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
+  attribute dictionary instead of a region.
 
 ### Changed
 - **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
@@ -25,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A result binding or generic operation after a custom operation now starts
   its own `operation`, instead of trailing children of the previous
   `custom_operation`.
+- A `{...}` whose first key is dotted and has a value, such as
+  `{allocation.offset = 0 : i32}`, is now `attribute` → `dictionary_attribute`
+  instead of a `region` holding an `operation`.
 
 ## [0.2.0] - 2026-08-02
 
