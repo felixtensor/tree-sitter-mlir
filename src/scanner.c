@@ -8,7 +8,7 @@ enum TokenType {
   CARET_ID,
   BLOCK_LABEL_ID,
   CUSTOM_BODY_DIMENSION_SEPARATOR,
-  OP_RESULT_VALUE,
+  OP_RESULT_SIGIL,
   GENERIC_OP_QUOTE,
 };
 
@@ -205,17 +205,18 @@ static bool scan_suffix_id(TSLexer *lexer) {
   return true;
 }
 
-// Precondition: the lexer is positioned at `%`. Consumes one value id as the
-// token, then looks ahead without consuming for the rest of an op-result-list:
-// (`,` value-id)* `=` and the start of an operation name (a bare or dotted
+// Precondition: the lexer is positioned at `%`. Consumes only the `%` as the
+// token, so the grammar parses the value id as it does any value_use. Then
+// looks ahead without consuming for the rest of an op-result-list: the value
+// id, (`,` value-id)* `=` and the start of an operation name (a bare or dotted
 // identifier, or the string of a generic operation). A custom body uses `%x =`
 // too (`scf.for %i = %lb`, `(%gx = %a)`), but with a value after the `=`.
-static bool scan_op_result_value(TSLexer *lexer) {
+static bool scan_op_result_sigil(TSLexer *lexer) {
   lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
   if (!scan_suffix_id(lexer)) {
     return false;
   }
-  lexer->mark_end(lexer);
 
   for (;;) {
     skip_label_extras(lexer);
@@ -361,9 +362,9 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // new one starts its own, while mid-line the same shapes are body syntax,
   // such as a loop bound `%i = max ...`.
   if (lexer->lookahead == '%') {
-    if (valid_symbols[OP_RESULT_VALUE] && at_line_start &&
-        scan_op_result_value(lexer)) {
-      lexer->result_symbol = OP_RESULT_VALUE;
+    if (valid_symbols[OP_RESULT_SIGIL] && at_line_start &&
+        scan_op_result_sigil(lexer)) {
+      lexer->result_symbol = OP_RESULT_SIGIL;
       return true;
     }
     return false;

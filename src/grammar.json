@@ -1182,6 +1182,24 @@
         }
       ]
     },
+    "_op_result_value": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_op_result_sigil"
+          },
+          "named": false,
+          "value": "%"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_suffix_id"
+        }
+      ]
+    },
     "_successor_list": {
       "type": "SEQ",
       "members": [
@@ -6265,7 +6283,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_op_result_value"
+      "name": "_op_result_sigil"
     },
     {
       "type": "SYMBOL",

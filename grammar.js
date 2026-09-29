@@ -19,7 +19,7 @@ export default grammar({
     $._caret_id,
     $._block_label_id,
     $._custom_body_dimension_separator,
-    $._op_result_value,
+    $._op_result_sigil,
     $._generic_op_quote,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
@@ -281,14 +281,17 @@ export default grammar({
 
     _op_result_list: ($) =>
       seq($.op_result, repeat(seq(",", $.op_result)), "="),
-    // The scanner emits _op_result_value for a line-start `%name` that begins
-    // an op-result-list, so a custom body before it cannot absorb the binding.
-    // Other positions (same line, later results) keep the ordinary value_use.
+    // The scanner emits _op_result_sigil for the `%` of a line-start value
+    // that begins an op-result-list, so a custom body before it cannot absorb
+    // the binding. The rest parses like any value_use, so both paths build the
+    // same node. Other positions (same line, later results) keep value_use.
     op_result: ($) =>
       seq(
         choice(alias($._op_result_value, $.value_use), $.value_use),
         optional(seq(":", $.integer_literal)),
       ),
+    _op_result_value: ($) =>
+      seq(alias($._op_result_sigil, "%"), $._suffix_id),
     _successor_list: ($) =>
       seq("[", $.successor, repeat(seq(",", $.successor)), "]"),
     successor: ($) => prec.right(seq($.caret_id, optional($._value_arg_list))),
@@ -485,7 +488,7 @@ export default grammar({
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
     // prec.right keeps extending the body; it ends only at a token no body
-    // element starts with (an op name beating bare_id, or _op_result_value).
+    // element starts with (an op name beating bare_id, or a scanner token).
     // Dynamic -1 settles custom_op_name × attribute_entry against inventing an
     // op, e.g. reading `linalg.generic {indexing_maps = ...}` as a region.
     _generic_custom_operation: ($) =>

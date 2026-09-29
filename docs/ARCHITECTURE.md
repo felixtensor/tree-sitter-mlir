@@ -159,7 +159,7 @@ token cannot continue it, whether or not the operation before binds results.
 
 | Next operation begins with | Body ends? |
 | --- | --- |
-| A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_value` |
+| A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_sigil` |
 | A line-start generic operation (`"x.y"(%a) : ...`) | Yes, via the scanner's `_generic_op_quote` |
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
@@ -217,11 +217,10 @@ an unbound generic operation. The scanner emits five token kinds:
   `{^bb0: ...}`, and grammar states where `_caret_id` is not valid.
 - `_custom_body_dimension_separator` for `x` when a supported custom-body
   dimension follows, as in `16x16` or `16x?`.
-- `_op_result_value` for the first `%value` of an op-result-list when the
-  grammar permits a new operation, the value starts a line, and the lookahead
-  reads `(, %value)* =` followed by an operation name (an identifier or the
-  string of a generic operation). Other result positions keep the ordinary
-  `value_use` token.
+- `_op_result_sigil` for the `%` of a line-start value when the grammar
+  permits a new operation and the lookahead reads `%value (, %value)* =`
+  followed by an operation name (an identifier or the string of a generic
+  operation). The value id parses like any `value_use`.
 - `_generic_op_quote` for the opening quote of a line-start name when the
   grammar permits a new operation and the lookahead reads a generic operand
   list, `(` values `)`, followed by `:`, `[`, `<{`, `(` or `{`. The rest of the
@@ -239,12 +238,13 @@ rare.
 
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
-exposed as `dimension_separator`, the result token as `value_use` inside
-`op_result`, and the generic quote token as the opening `"` of a
-`string_literal`, whose children match an ordinary one. The scanner has
-no persistent state, serializes nothing, and its caret and result handling
-mirror the existing `_suffix_id` spelling including optional `:digits` and
-`#digits` suffixes.
+exposed as `dimension_separator`. The two boundary tokens consume only the
+opening `%` of a `value_use` or `"` of a `string_literal` and the grammar
+parses the rest, so both nodes match the ordinary path, anonymous children
+included; a `:cst` corpus case pins this. The scanner has no persistent
+state, serializes nothing, and its caret and result handling mirror the
+existing `_suffix_id` spelling including optional `:digits` and `#digits`
+suffixes.
 
 The boundary tokens are lexical because weighing the two readings in the
 grammar did not hold up: ending the body through dynamic precedence and a
