@@ -479,13 +479,10 @@ export default grammar({
       ),
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
-    // prec.right keeps extending the body, a shift fixed at generation time;
-    // the body ends only at a token no body element starts with (an op name
-    // that wins over bare_id, or the scanner's _op_result_value).
-    // Negative dynamic precedence settles the custom_op_name × attribute_entry
-    // conflict against inventing an operation: without it,
-    // `linalg.generic {indexing_maps = ...}` reads its dictionary as a region
-    // holding an operation named `indexing_maps`.
+    // prec.right keeps extending the body; it ends only at a token no body
+    // element starts with (an op name beating bare_id, or _op_result_value).
+    // Dynamic -1 settles custom_op_name × attribute_entry against inventing an
+    // op, e.g. reading `linalg.generic {indexing_maps = ...}` as a region.
     _generic_custom_operation: ($) =>
       prec.dynamic(
         -1,

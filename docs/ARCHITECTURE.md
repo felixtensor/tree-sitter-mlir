@@ -154,22 +154,15 @@ fallback cannot resolve:
 
 #### Where a Custom Body Ends
 
-A custom body has no terminator. Its repeat is right-associative, so it keeps
-extending until the next token cannot continue it. Whether that happens
-depends only on how the next operation begins, not on whether the operation
-before it binds results:
+A custom body has no terminator: it ends only where the next operation's first
+token cannot continue it, whether or not the operation before binds results.
 
 | Next operation begins with | Body ends? |
 | --- | --- |
-| A result binding at line start: `%x =`, `%a, %b =`, `%x:2 =` | Yes. The scanner's `_op_result_value` (see [External Scanner](#external-scanner)). |
-| A dotted name (`memref.store`) or a listed bare name (`return`, `call`, `call_indirect`, `constant`, `unrealized_conversion_cast`) | Yes. `_dotted_op_name` and `_bare_op_name` win their token over `bare_id` (token precedence 10), and no body element starts with them. |
-| A generic operation that binds nothing: `"test.use"(%0) : (i32) -> ()` | No. Defect: the string and the parenthesised group are valid body elements, so the whole operation is absorbed and disappears from the tree. |
-| A default-dialect bare name that binds nothing: `rewrite %root with "r"` inside `pdl.pattern` | No. Known limit. Which bare identifiers name operations is decided at runtime by the enclosing operation's default dialect. Body continuation lines such as `iter_args(...)`, `ins(...)` or `step %c1` have the same shape, so no static rule can separate them. |
-
-The last row is runtime dialect semantics under the layer contract above, so
-it is an accepted limit. The third row is not: a quoted name followed by `(`
-at line start is enough static evidence, so its absorption violates principle
-4 rather than falling outside it.
+| A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_value` |
+| A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
+| A generic operation that binds nothing | No: absorbed whole, a principle 4 defect |
+| A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
 ### All Declared Conflicts Are Intentional
 
@@ -201,12 +194,9 @@ conflicts.
 | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | A dotted name followed by `loc(...)` can be a specialized loc+attribute form or a generic operation name. |
 | `_custom_body_dict_key × attribute_entry` | A string followed by `=` can be a custom SSA dictionary key or a normal dictionary attribute key. |
 
-`_generic_custom_operation` carries dynamic precedence -1, which settles the
-`custom_op_name × attribute_entry` conflict against the reading that invents
-an operation: without it, `linalg.generic {indexing_maps = ...}` parses its
-dictionary as a region holding an operation named `indexing_maps`. It does
-not decide where a body ends. Extending the body is a shift fixed when the
-parse table is generated, so no dynamic precedence reaches it.
+The dynamic precedence -1 on `_generic_custom_operation` settles
+`custom_op_name × attribute_entry` against inventing an operation, keeping
+`linalg.generic {indexing_maps = ...}` a dictionary. It cannot end a body.
 
 ### External Scanner
 
@@ -232,21 +222,13 @@ binding as body operands. The scanner emits four token kinds:
   string of a generic operation). Other result positions keep the ordinary
   `value_use` token.
 
-The result token requires the binding to start a line, not the operation to
-fit on one: hand-wrapped operands, attribute dictionaries, types and
-`ins(...)`/`outs(...)` clauses stay in their operation, because a
-continuation line is cut only when it begins with the binding shape itself.
-A body's own `%i = %lb` or `(%x = %y)` does not match, since a value follows
-its `=`. In the pinned examples the binding shape appears mid-line 44 times,
-all as `affine.for` bounds (`%i = max ...`, `%i = affine_map<...>(...)`) and
-none as a second operation on the line. `affine.for` has a dedicated rule that
-expects its induction value where a new operation cannot start, so the token
-is never offered there, even when the induction value is wrapped onto its own
-line. Two shapes remain: a binding that shares a line with the previous
-operation's body is still absorbed, and an unknown dialect's body continuation
-line that begins `%x = <identifier>` would be cut. Dropping the line-start
-requirement would fix the first by exposing the second on every line rather
-than only at line starts, and the first is the rarer of the two.
+The result token needs the binding to start a line, not the operation to fit
+on one: a continuation line is cut only if it begins with the binding shape
+itself. In the pinned examples that shape occurs elsewhere only as an
+`affine.for` bound (`%i = max ...`), where the dedicated rule never offers the
+token. Still unhandled: a binding sharing a line with the previous body
+(absorbed), and an unknown dialect's continuation line starting
+`%x = <identifier>` (cut). Requiring line start keeps the second rare.
 
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
