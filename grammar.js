@@ -479,9 +479,13 @@ export default grammar({
       ),
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
-    // Negative dynamic precedence makes the parser prefer ending the body
-    // and starting a new operation (with _op_result_list) over extending
-    // the body with more elements, when both paths are valid (GLR).
+    // prec.right keeps extending the body, a shift fixed at generation time;
+    // the body ends only at a token no body element starts with (an op name
+    // that wins over bare_id, or the scanner's _op_result_value).
+    // Negative dynamic precedence settles the custom_op_name × attribute_entry
+    // conflict against inventing an operation: without it,
+    // `linalg.generic {indexing_maps = ...}` reads its dictionary as a region
+    // holding an operation named `indexing_maps`.
     _generic_custom_operation: ($) =>
       prec.dynamic(
         -1,
@@ -510,9 +514,10 @@ export default grammar({
     // bare_id fallback: supports MLIR's "default dialect" mechanism where
     // operations inside a region may omit the dialect prefix (e.g.
     // `parse_integer_literal` instead of `test.parse_integer_literal`).
-    // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
-    // element when inside a custom op body; it only acts as an op name at
-    // region/block boundaries where operation+ is required.
+    // Where a custom body could continue, prec.right keeps a bare_id in the
+    // body, so a bare-named operation that binds nothing is absorbed by the
+    // operation before it; a bare_id names an operation only where no body can
+    // continue, such as the start of a region or block.
     custom_op_name: ($) =>
       choice($._dotted_op_name, $._bare_op_name, $.bare_id),
     _dotted_op_name: ($) =>
