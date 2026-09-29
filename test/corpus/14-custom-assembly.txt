@@ -1335,3 +1335,190 @@ func.func @q(%a : tensor<4xf32>, %n : index) -> tensor<4xf32> {
                         (type
                           (builtin_type
                             (float_type)))))))))))))))
+
+================================================================================
+Custom operation body stops at an unbound generic operation
+================================================================================
+func.func @u(%a : i32, %c : i1) {
+  test.use %a : i32
+  "test.sink"(%a) : (i32) -> ()
+  scf.if %c {
+    scf.yield
+  }
+  "test.sink" (%a, %a) {tag} : (i32, i32) -> ()
+  test.use %a : i32
+  "test.props"() <{v = 1}> : () -> ()
+  test.use %a : i32
+  "test.wrap"() ({
+    "test.done"() : () -> ()
+  }) : () -> ()
+  test.use %a : i32
+  "test.br"(%a)[^bb1] : (i32) -> ()
+^bb1:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id))))
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (properties
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (integer_literal))))
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (generic_operation
+                        (string_literal)
+                        (function_type)))))
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (successor
+                  (caret_id))
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Quoted name wrapped inside a custom body stays in the body
+================================================================================
+pdl.pattern @wrapped : benefit(1) {
+  %input = operand
+  %root = operation(%input : !pdl.value)
+  pdl.rewrite %root with
+      "rewriter"(%input : !pdl.value)
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (integer_literal)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))))
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))
+          (operation
+            (custom_operation
+              (custom_op_name)
+              (value_use)
+              (bare_id)
+              (string_literal)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)))))))))))

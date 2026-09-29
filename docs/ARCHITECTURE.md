@@ -160,8 +160,8 @@ token cannot continue it, whether or not the operation before binds results.
 | Next operation begins with | Body ends? |
 | --- | --- |
 | A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_value` |
+| A line-start generic operation (`"x.y"(%a) : ...`) | Yes, via the scanner's `_generic_op_name` |
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
-| A generic operation that binds nothing | No: absorbed whole, a principle 4 defect |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
 ### All Declared Conflicts Are Intentional
@@ -200,14 +200,15 @@ The dynamic precedence -1 on `_generic_custom_operation` settles
 
 ### External Scanner
 
-The parser uses a small external scanner for three narrowly scoped lexical
+The parser uses a small external scanner for four narrowly scoped lexical
 ambiguities. MLIR reuses `^suffix` for both successor references and block
 labels, and the loose custom-operation fallback can otherwise parse a following
 block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
 Custom operation bodies also need to distinguish a dimension-separating `x`
 from a bare identifier named `x`. And a custom operation body accepts `%x`
 and `=`, so without a lexical decision it absorbs the next operation's result
-binding as body operands. The scanner emits four token kinds:
+binding as body operands; its strings and parenthesised groups likewise absorb
+an unbound generic operation. The scanner emits five token kinds:
 
 - `_caret_id` for ordinary successor/reference uses.
 - `_block_label_id` when the grammar permits a block label and the caret
@@ -221,27 +222,34 @@ binding as body operands. The scanner emits four token kinds:
   reads `(, %value)* =` followed by an operation name (an identifier or the
   string of a generic operation). Other result positions keep the ordinary
   `value_use` token.
+- `_generic_op_name` for a line-start quoted name when the grammar permits a
+  new operation and the lookahead reads a generic operand list, `(` values
+  `)`, followed by `:`, `[`, `<{`, `(` or `{`. A name with an escape keeps the
+  ordinary `string_literal`.
 
-The result token needs the binding to start a line, not the operation to fit
-on one: a continuation line is cut only if it begins with the binding shape
-itself. In the pinned examples that shape occurs elsewhere only as an
+Both boundary tokens need the next operation to start a line, not to fit on
+one: a continuation line is cut only if it begins with a token's full shape.
+In the pinned examples the binding shape occurs elsewhere only as an
 `affine.for` bound (`%i = max ...`), where the dedicated rule never offers the
-token. Still unhandled: a binding sharing a line with the previous body
-(absorbed), and an unknown dialect's continuation line starting
-`%x = <identifier>` (cut). Requiring line start keeps the second rare.
+token. Still unhandled: an operation sharing a line with the previous body
+(absorbed), and an unknown dialect's continuation line that starts
+`%x = <identifier>` or has the generic shape, such as `emitc.call_opaque`
+wrapped before its callee string (cut). Requiring line start keeps the second
+rare.
 
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
-exposed as `dimension_separator`, and the result token as `value_use` inside
-`op_result`. The scanner has no persistent state, serializes nothing, and its
-caret and result handling mirror the existing `_suffix_id` spelling including
-optional `:digits` and `#digits` suffixes.
+exposed as `dimension_separator`, the result token as `value_use` inside
+`op_result`, and the generic name token as `string_literal`. The scanner has
+no persistent state, serializes nothing, and its caret and result handling
+mirror the existing `_suffix_id` spelling including optional `:digits` and
+`#digits` suffixes.
 
-The result token exists because weighing the two readings in the grammar did
-not hold up: ending the body through dynamic precedence and a declared conflict
-produced the right tree on a full parse, but fuzzing found an incremental
-re-parse that reverted one boundary to the absorbed shape. Deciding the
-boundary lexically leaves no ambiguity for re-parse to resolve differently.
+The boundary tokens are lexical because weighing the two readings in the
+grammar did not hold up: ending the body through dynamic precedence and a
+declared conflict produced the right tree on a full parse, but fuzzing found an
+incremental re-parse that reverted one boundary to the absorbed shape. Deciding
+the boundary lexically leaves no ambiguity for re-parse to resolve differently.
 
 Block-argument lookahead skips strings and treats `->` as an arrow rather
 than an angle-bracket close, including in sparse tensor encoding maps.

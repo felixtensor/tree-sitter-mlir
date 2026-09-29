@@ -9,6 +9,7 @@ export default grammar({
     $._block_label_id,
     $._custom_body_dimension_separator,
     $._op_result_value,
+    $._generic_op_name,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -262,9 +263,12 @@ export default grammar({
         field("location", optional($.trailing_location)),
       ),
 
+    // The scanner emits _generic_op_name for a line-start quoted name followed
+    // by a generic operand list, so a custom body before it cannot absorb the
+    // operation. Other positions keep the ordinary string_literal.
     generic_operation: ($) =>
       seq(
-        $.string_literal,
+        choice(alias($._generic_op_name, $.string_literal), $.string_literal),
         $._value_use_list_parens,
         optional($._successor_list),
         optional($.properties),

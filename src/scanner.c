@@ -9,6 +9,7 @@ enum TokenType {
   BLOCK_LABEL_ID,
   CUSTOM_BODY_DIMENSION_SEPARATOR,
   OP_RESULT_VALUE,
+  GENERIC_OP_NAME,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -208,9 +209,7 @@ static bool scan_suffix_id(TSLexer *lexer) {
 // token, then looks ahead without consuming for the rest of an op-result-list:
 // (`,` value-id)* `=` and the start of an operation name (a bare or dotted
 // identifier, or the string of a generic operation). A custom body uses `%x =`
-// too (`scf.for %i = %lb`, `(%gx = %a)`), but never followed by an operation
-// name, and never at line start where the grammar also permits a new
-// operation.
+// too (`scf.for %i = %lb`, `(%gx = %a)`), but with a value after the `=`.
 static bool scan_op_result_value(TSLexer *lexer) {
   lexer->advance(lexer, false);
   if (!scan_suffix_id(lexer)) {
@@ -237,6 +236,74 @@ static bool scan_op_result_value(TSLexer *lexer) {
     if (!scan_suffix_id(lexer)) {
       return false;
     }
+  }
+}
+
+// Precondition: the lexer is positioned at `"`. Consumes the quoted name as the
+// token, then looks ahead without consuming for a generic operand list,
+// `(` (value-id (`,` value-id)*)? `)`, followed by what a generic operation
+// allows next: `:`, `[`, `<{`, `(` or `{`. A custom body's quoted name before
+// `(` carries more than values, as in `with "rewriter"(%x : !pdl.value)`. A
+// name with an escape is left to the grammar's string_literal, which keeps
+// its escape_sequence children.
+static bool scan_generic_op_name(TSLexer *lexer) {
+  lexer->advance(lexer, false);
+  while (lexer->lookahead != '"') {
+    switch (lexer->lookahead) {
+      case '\0':
+      case '\\':
+      case '\n':
+      case '\r':
+      case '\f':
+      case '\v':
+        return false;
+      default:
+        lexer->advance(lexer, false);
+    }
+  }
+  lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+
+  skip_label_extras(lexer);
+  if (lexer->lookahead != '(') {
+    return false;
+  }
+  lexer->advance(lexer, false);
+  skip_label_extras(lexer);
+  if (lexer->lookahead == '%') {
+    for (;;) {
+      lexer->advance(lexer, false);
+      if (!scan_suffix_id(lexer)) {
+        return false;
+      }
+      skip_label_extras(lexer);
+      if (lexer->lookahead != ',') {
+        break;
+      }
+      lexer->advance(lexer, false);
+      skip_label_extras(lexer);
+      if (lexer->lookahead != '%') {
+        return false;
+      }
+    }
+  }
+  if (lexer->lookahead != ')') {
+    return false;
+  }
+  lexer->advance(lexer, false);
+  skip_label_extras(lexer);
+
+  switch (lexer->lookahead) {
+    case ':':
+    case '[':
+    case '(':
+    case '{':
+      return true;
+    case '<':
+      lexer->advance(lexer, false);
+      return lexer->lookahead == '{';
+    default:
+      return false;
   }
 }
 
@@ -279,13 +346,23 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
       valid_symbols[BLOCK_LABEL_ID] &&
       (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
 
-  // Only an op-result-list that starts a line can end the preceding custom
-  // body: MLIR prints one operation per line, and a body's own `%x = ...`
-  // continuation is rejected by the lookahead in scan_op_result_value.
+  // The next two tokens end a preceding custom body at the start of the next
+  // operation. Both require line start: an operation may span lines, but a
+  // new one starts its own, while mid-line the same shapes are body syntax,
+  // such as a loop bound `%i = max ...`.
   if (lexer->lookahead == '%') {
     if (valid_symbols[OP_RESULT_VALUE] && at_line_start &&
         scan_op_result_value(lexer)) {
       lexer->result_symbol = OP_RESULT_VALUE;
+      return true;
+    }
+    return false;
+  }
+
+  if (lexer->lookahead == '"') {
+    if (valid_symbols[GENERIC_OP_NAME] && at_line_start &&
+        scan_generic_op_name(lexer)) {
+      lexer->result_symbol = GENERIC_OP_NAME;
       return true;
     }
     return false;
