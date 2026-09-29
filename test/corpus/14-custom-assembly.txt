@@ -436,9 +436,10 @@ Custom operation body SSA value dictionary
         (dialect_type
           (pretty_dialect_item
             (dialect_namespace)
-            (dialect_ident))))
-      (value_use)))
+            (dialect_ident))))))
   (operation
+    (op_result
+      (value_use))
     (custom_operation
       (custom_op_name)
       (string_literal)
@@ -779,3 +780,558 @@ func.func @leading_comment_marker_in_string() {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at the next operation's result binding
+================================================================================
+func.func @f(%arg0 : i32) -> i32 {
+  %cst0 = arith.constant 0 : i32
+  %res = arith.addi %cst0, %arg0 : i32
+  return %res : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Unknown dialect body still stops at the next operation's result binding
+================================================================================
+func.func @g(%arg0 : i32) -> i32 {
+  %a = test.thing %arg0 blgp = none : i32
+  %b = test.other %a : i32
+  return %b : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (none_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Custom operation body stops at a result binding after its region closes
+================================================================================
+func.func @h(%c : i32) -> i32 {
+  %0 = scf.execute_region -> i32 {
+    scf.yield %c : i32
+  }
+  %1 = arith.addi %0, %0 : i32
+  return %1 : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)
+                        (value_use)
+                        (type
+                          (builtin_type
+                            (integer_type)))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+
+================================================================================
+Result binding after a comment, wrapped at its equals sign, or naming several results
+================================================================================
+func.func @k() {
+  %c0 = arith.constant 0 : index
+  // the next binding names two results and wraps before the operation name
+  %lo, %hi =
+    test.split %c0 : index
+  %p:2 = test.pair %lo : index
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (comment)
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (index_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Wrapped operands and in-body equals signs stay inside the custom body
+================================================================================
+func.func @m(%a : i32, %lb : index, %ub : index, %s : index) {
+  %v = test.gather
+    %a, %a,
+    %a : i32
+  scf.for %i = %lb to %ub step %s {
+    test.done
+  }
+  test.launch blocks(%bx) in (%gx = %a,
+                              %gz = %a) {
+    test.done
+  }
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at a bound generic operation
+================================================================================
+func.func @n(%a : i32) {
+  test.use %a : i32
+  %x = "test.make"(%a) : (i32) -> i32
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at a bound default-dialect operation
+================================================================================
+pdl.pattern @rewrite_with_args : benefit(1) {
+  %input = operand
+  %root = operation(%input : !pdl.value)
+  pdl.rewrite %root with "rewriter"(%input : !pdl.value)
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (integer_literal)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))))
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))
+          (operation
+            (custom_operation
+              (custom_op_name)
+              (value_use)
+              (bare_id)
+              (string_literal)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)))))))))))
+
+================================================================================
+Hand-wrapped operations keep their continuation lines
+================================================================================
+func.func @q(%a : tensor<4xf32>, %n : index) -> tensor<4xf32> {
+  %sum = linalg.add
+      ins(%a, %a : tensor<4xf32>, tensor<4xf32>)
+      outs(%a : tensor<4xf32>)
+      -> tensor<4xf32>
+  affine.for
+      %i = max affine_map<()[s0] -> (s0)>()[%n] to 10 {
+    test.done
+  }
+  %r = test.wrap %sum
+      {note = "kept"}
+      : tensor<4xf32>
+  return %r : tensor<4xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id))))
+                (value_use)
+                (bare_id)
+                (integer_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))

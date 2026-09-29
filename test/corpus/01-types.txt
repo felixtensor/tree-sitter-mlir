@@ -319,9 +319,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -333,9 +334,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -347,9 +349,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -361,9 +364,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -375,9 +379,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -389,9 +394,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -403,9 +409,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -417,9 +424,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -431,9 +439,10 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -773,17 +782,19 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -804,9 +815,10 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -827,9 +839,10 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -950,9 +963,10 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -972,9 +986,10 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -993,9 +1008,10 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1088,25 +1104,28 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -1118,9 +1137,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1132,10 +1152,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (comment)
-                (value_use)))
+                            (float_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -1160,9 +1181,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1178,10 +1200,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (comment)
-                (value_use)))
+                            (float_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -1201,9 +1224,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1219,10 +1243,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (comment)
-                (value_use)))
+                            (float_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -1248,9 +1273,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1266,10 +1292,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dimension_size)
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (comment)
-                (value_use)))
+                            (integer_type)))))))))
+            (comment)
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -1283,9 +1310,10 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (type
                           (builtin_type
                             (complex_type
-                              (float_type))))))))
-                (value_use)))
+                              (float_type))))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1527,9 +1555,10 @@ func.func @indexCastFold(%arg0: i8) -> index {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1584,17 +1613,19 @@ inf value_use
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1791,139 +1822,156 @@ func.func @builtin_float_types() {
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (bare_id)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (bare_id)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)

@@ -8,6 +8,7 @@ export default grammar({
     $._caret_id,
     $._block_label_id,
     $._custom_body_dimension_separator,
+    $._op_result_value,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -275,7 +276,14 @@ export default grammar({
 
     _op_result_list: ($) =>
       seq($.op_result, repeat(seq(",", $.op_result)), "="),
-    op_result: ($) => seq($.value_use, optional(seq(":", $.integer_literal))),
+    // The scanner emits _op_result_value for a line-start `%name` that begins
+    // an op-result-list, so a custom body before it cannot absorb the binding.
+    // Other positions (same line, later results) keep the ordinary value_use.
+    op_result: ($) =>
+      seq(
+        choice(alias($._op_result_value, $.value_use), $.value_use),
+        optional(seq(":", $.integer_literal)),
+      ),
     _successor_list: ($) =>
       seq("[", $.successor, repeat(seq(",", $.successor)), "]"),
     successor: ($) => prec.right(seq($.caret_id, optional($._value_arg_list))),
@@ -471,9 +479,10 @@ export default grammar({
       ),
 
     // Tier 2: Generic custom operation — dialect.op_name + structural body
-    // Negative dynamic precedence makes the parser prefer ending the body
-    // and starting a new operation (with _op_result_list) over extending
-    // the body with more elements, when both paths are valid (GLR).
+    // prec.right keeps extending the body; it ends only at a token no body
+    // element starts with (an op name beating bare_id, or _op_result_value).
+    // Dynamic -1 settles custom_op_name × attribute_entry against inventing an
+    // op, e.g. reading `linalg.generic {indexing_maps = ...}` as a region.
     _generic_custom_operation: ($) =>
       prec.dynamic(
         -1,
@@ -502,9 +511,10 @@ export default grammar({
     // bare_id fallback: supports MLIR's "default dialect" mechanism where
     // operations inside a region may omit the dialect prefix (e.g.
     // `parse_integer_literal` instead of `test.parse_integer_literal`).
-    // prec.dynamic(-1) on _generic_custom_operation keeps bare_id as a body
-    // element when inside a custom op body; it only acts as an op name at
-    // region/block boundaries where operation+ is required.
+    // Where a custom body could continue, prec.right keeps a bare_id in the
+    // body, so a bare-named operation that binds nothing is absorbed by the
+    // operation before it; a bare_id names an operation only where no body can
+    // continue, such as the start of a region or block.
     custom_op_name: ($) =>
       choice($._dotted_op_name, $._bare_op_name, $.bare_id),
     _dotted_op_name: ($) =>

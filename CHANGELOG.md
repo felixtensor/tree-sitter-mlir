@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **scanner:** stop a custom operation body at the next line-start result
+  binding instead of absorbing it as operands.
+
+### Breaking AST changes
+- A result binding after a custom operation now starts its own `operation`
+  with an `lhs`, instead of trailing `value_use` children of the previous
+  `custom_operation`.
+
 ## [0.2.0] - 2026-08-02
 
 Extensible MLIR parser foundations, bounded custom assembly recovery, and

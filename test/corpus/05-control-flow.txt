@@ -342,33 +342,37 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -401,9 +405,10 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                         (value_use)
                         (type
                           (builtin_type
-                            (index_type)))))))
-                (value_use)))
+                            (index_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -490,9 +495,10 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                 (value_use)
                                 (type
                                   (builtin_type
-                                    (index_type)))
-                                (value_use)))
+                                    (index_type)))))
                             (operation
+                              (op_result
+                                (value_use))
                               (custom_operation
                                 (custom_op_name)
                                 (value_use)
@@ -500,9 +506,10 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                 (value_use)
                                 (type
                                   (builtin_type
-                                    (index_type)))
-                                (value_use)))
+                                    (index_type)))))
                             (operation
+                              (op_result
+                                (value_use))
                               (custom_operation
                                 (custom_op_name)
                                 (bare_id)
@@ -510,9 +517,10 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                 (value_use)
                                 (type
                                   (builtin_type
-                                    (index_type)))
-                                (value_use)))
+                                    (index_type)))))
                             (operation
+                              (op_result
+                                (value_use))
                               (custom_operation
                                 (custom_op_name)
                                 (value_use)
@@ -594,9 +602,10 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                         (value_use)
                         (type
                           (builtin_type
-                            (float_type)))
-                        (value_use)))
+                            (float_type)))))
                     (operation
+                      (op_result
+                        (value_use))
                       (custom_operation
                         (custom_op_name)
                         (value_use)
@@ -627,9 +636,10 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                         (value_use)
                         (type
                           (builtin_type
-                            (float_type)))
-                        (value_use)))
+                            (float_type)))))
                     (operation
+                      (op_result
+                        (value_use))
                       (custom_operation
                         (custom_op_name)
                         (value_use)
@@ -856,41 +866,46 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1025,49 +1040,55 @@ func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
@@ -1564,9 +1585,10 @@ func.func @affine_if() -> f32 {
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -1657,9 +1679,10 @@ func.func @execute_region() -> i64 {
                         (value_use)
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (type
@@ -1774,17 +1797,19 @@ func.func @normalized_forall_elide_terminator() -> () {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1896,25 +1921,28 @@ func.func @normalized_forall_elide_terminator() -> () {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)

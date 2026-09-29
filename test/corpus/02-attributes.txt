@@ -208,9 +208,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (type
@@ -223,9 +224,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -256,9 +258,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dimension_size)
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -692,17 +695,19 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -713,9 +718,10 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -725,9 +731,10 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -808,9 +815,10 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -821,9 +829,10 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -834,9 +843,10 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (dim_list
                         (type
                           (builtin_type
-                            (float_type)))))))
-                (value_use)))
+                            (float_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -1018,9 +1028,10 @@ func.func @main() -> (tensor<i32>) attributes {} {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1030,17 +1041,19 @@ func.func @main() -> (tensor<i32>) attributes {} {
                       (dim_list
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1088,9 +1101,10 @@ func.func @main() -> (tensor<i32>) attributes {} {
                       (dim_list
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute
@@ -1162,9 +1176,10 @@ func.func @main() -> (tensor<i32>) attributes {} {
                       (dim_list
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1223,9 +1238,10 @@ func.func @main() -> (tensor<i32>) attributes {} {
                       (dim_list
                         (type
                           (builtin_type
-                            (integer_type)))))))
-                (value_use)))
+                            (integer_type)))))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (attribute

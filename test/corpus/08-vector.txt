@@ -33,9 +33,10 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -44,9 +45,10 @@ func.func @signExtendConstantSplat() -> vector<4xi16> {
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -185,49 +187,55 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (float_literal)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (index_type)))
-                (value_use)))
+                    (index_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (integer_literal)
                 (type
                   (builtin_type
-                    (integer_type)))
-                (value_use)))
+                    (integer_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -237,9 +245,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -249,9 +258,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -261,9 +271,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (index_type))))
-                (value_use)))
+                      (index_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (tensor_literal
@@ -278,9 +289,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -290,9 +302,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -321,9 +334,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -354,9 +368,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -385,9 +400,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -416,9 +432,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -455,9 +472,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                         (dimension_size)
                         (dimension_size)
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -490,9 +508,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                         (dimension_size)
                         (dimension_size)
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -516,9 +535,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -542,9 +562,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (integer_type))))
-                (value_use)))
+                      (integer_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -564,9 +585,10 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -865,9 +887,10 @@ func.func @extract_insert(%v: vector<4xf32>, %s: f32) -> vector<4xf32> {
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -947,9 +970,10 @@ func.func @broadcast(%s: f32, %row: vector<4xf32>) -> vector<8x4xf32> {
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1029,9 +1053,10 @@ func.func @reduction(%v: vector<8xf32>, %acc: f32) -> f32 {
                 (bare_id)
                 (type
                   (builtin_type
-                    (float_type)))
-                (value_use)))
+                    (float_type)))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (bare_id)
@@ -1139,9 +1164,10 @@ func.func @strided_slice(%src: vector<4x8xf32>, %dst: vector<8x16xf32>) -> vecto
                       (vector_dim_list
                         (dimension_size)
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
@@ -1438,9 +1464,10 @@ func.func @shape_cast(%v: vector<4x2xf32>) -> vector<8xf32> {
                     (vector_type
                       (vector_dim_list
                         (dimension_size))
-                      (float_type))))
-                (value_use)))
+                      (float_type))))))
             (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (custom_op_name)
                 (value_use)
