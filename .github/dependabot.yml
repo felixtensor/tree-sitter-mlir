@@ -2,7 +2,9 @@ version: 2
 updates:
   # Keep updates separate so auto-merge can enforce a single patch update type.
   - package-ecosystem: github-actions
-    directory: /
+    # `/` covers only .github/workflows and a root action.yml; the local
+    # composite action pins tree-sitter/setup-action separately.
+    directories: ["/", "/.github/actions/*"]
     schedule:
       interval: weekly
       day: sunday

@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **scanner:** stop a custom operation body at the next line-start result
   binding or generic operation instead of absorbing it.
 
+### Changed
+- **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
+  Dependabot's npm updates move CI with them.
+
 ### Breaking AST changes
 - A result binding or generic operation after a custom operation now starts
   its own `operation`, instead of trailing children of the previous
