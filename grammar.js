@@ -588,8 +588,25 @@ export default grammar({
     _custom_body_attribute_or_braced_element: ($) =>
       choice(
         $.attribute, // #attr, {dict}, affine_map<...>
+        alias($._custom_body_dotted_key_attribute, $.attribute),
         $._custom_body_brace_payload,
       ),
+
+    // {a.b = ...}: after `{` a dotted key lexes as an operation name, which
+    // only `region` accepts. No operation's name is followed by `=`, so prec 1
+    // settles it statically. Requiring `=` keeps `{ scf.yield }` a region; so
+    // is a unit key such as `{transform.readonly}`, a known limit.
+    _custom_body_dotted_key_attribute: ($) =>
+      alias($._custom_body_dotted_key_dictionary, $.dictionary_attribute),
+    _custom_body_dotted_key_dictionary: ($) =>
+      seq(
+        "{",
+        alias($._custom_body_dotted_key_entry, $.attribute_entry),
+        repeat(seq(",", $.attribute_entry)),
+        "}",
+      ),
+    _custom_body_dotted_key_entry: ($) =>
+      prec(1, seq(alias($._dotted_op_name, $.bare_id), "=", $.attribute_value)),
 
     _custom_body_brace_payload: ($) =>
       choice(
