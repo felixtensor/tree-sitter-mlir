@@ -1096,3 +1096,242 @@ func.func @m(%a : i32, %lb : index, %ub : index, %s : index) {
             (operation
               (custom_operation
                 (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at a bound generic operation
+================================================================================
+func.func @n(%a : i32) {
+  test.use %a : i32
+  %x = "test.make"(%a) : (i32) -> i32
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Custom operation body stops at a bound default-dialect operation
+================================================================================
+pdl.pattern @rewrite_with_args : benefit(1) {
+  %input = operand
+  %root = operation(%input : !pdl.value)
+  pdl.rewrite %root with "rewriter"(%input : !pdl.value)
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (integer_literal)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))))
+          (operation
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name
+                (bare_id))
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))
+          (operation
+            (custom_operation
+              (custom_op_name)
+              (value_use)
+              (bare_id)
+              (string_literal)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)))))))))))
+
+================================================================================
+Hand-wrapped operations keep their continuation lines
+================================================================================
+func.func @q(%a : tensor<4xf32>, %n : index) -> tensor<4xf32> {
+  %sum = linalg.add
+      ins(%a, %a : tensor<4xf32>, tensor<4xf32>)
+      outs(%a : tensor<4xf32>)
+      -> tensor<4xf32>
+  affine.for
+      %i = max affine_map<()[s0] -> (s0)>()[%n] to 10 {
+    test.done
+  }
+  %r = test.wrap %sum
+      {note = "kept"}
+      : tensor<4xf32>
+  return %r : tensor<4xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (dimension_size)
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (dimension_size)
+                    (type
+                      (builtin_type
+                        (float_type)))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (bare_id)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (bare_id)
+                (attribute
+                  (builtin_attribute
+                    (affine_map
+                      (bare_id)
+                      (bare_id))))
+                (value_use)
+                (bare_id)
+                (integer_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (custom_operation
+                        (custom_op_name)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)))))
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (tensor_type
+                      (dim_list
+                        (dimension_size)
+                        (type
+                          (builtin_type
+                            (float_type)))))))))))))))
