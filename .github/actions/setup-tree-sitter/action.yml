@@ -1,0 +1,27 @@
+name: Set up tree-sitter
+description: >-
+  Install the tree-sitter CLI at the version package-lock.json resolves, so CI
+  runs the same CLI as `npm run` and moves with every Dependabot npm update.
+
+runs:
+  using: composite
+  steps:
+    - name: Read the CLI version from package-lock.json
+      id: cli
+      shell: bash
+      run: |
+        version=$(node -p '
+          const lock = require("./package-lock.json");
+          const cli = lock.packages && lock.packages["node_modules/tree-sitter-cli"];
+          if (!cli || !cli.version) {
+            throw new Error("package-lock.json does not resolve tree-sitter-cli");
+          }
+          cli.version
+        ')
+        echo "tree-sitter CLI v${version} (from package-lock.json)"
+        echo "ref=v${version}" >> "$GITHUB_OUTPUT"
+
+    - name: Install the tree-sitter CLI
+      uses: tree-sitter/setup-action/cli@v2
+      with:
+        tree-sitter-ref: ${{ steps.cli.outputs.ref }}

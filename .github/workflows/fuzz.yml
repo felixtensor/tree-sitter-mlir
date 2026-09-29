@@ -7,9 +7,11 @@ on:
       - grammar.js
       - tree-sitter.json
       - package.json
+      - package-lock.json
       - scripts/fuzz.mjs
       - src/**
       - test/corpus/**
+      - .github/actions/setup-tree-sitter/**
       - .github/workflows/fuzz.yml
   push:
     branches: [main]
@@ -17,9 +19,11 @@ on:
       - grammar.js
       - tree-sitter.json
       - package.json
+      - package-lock.json
       - scripts/fuzz.mjs
       - src/**
       - test/corpus/**
+      - .github/actions/setup-tree-sitter/**
       - .github/workflows/fuzz.yml
 
 concurrency:
@@ -43,10 +47,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up tree-sitter
-        uses: tree-sitter/setup-action/cli@v2
-        with:
-          # Sync with package.json, ci.yml, and release.yml.
-          tree-sitter-ref: v0.27.0
+        uses: ./.github/actions/setup-tree-sitter
 
       - name: Fuzz parser
         run: npm run fuzz
