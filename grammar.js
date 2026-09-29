@@ -1,6 +1,17 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+// The body of a quoted string, shared by string_literal and the generic
+// operation name that the scanner opens.
+const stringContent = ($) =>
+  choice(
+    // Keep a leading `//` inside the string instead of letting the
+    // comment extra win the lexical tie and consume outer syntax.
+    token(prec(1, /[^\\"\n\f\v\r]+/)),
+    $.escape_sequence,
+    $.invalid_escape,
+  );
+
 export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
@@ -9,7 +20,7 @@ export default grammar({
     $._block_label_id,
     $._custom_body_dimension_separator,
     $._op_result_value,
-    $._generic_op_name,
+    $._generic_op_quote,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -136,20 +147,9 @@ export default grammar({
           optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))),
         ),
       ),
-    string_literal: ($) =>
-      seq(
-        '"',
-        repeat(
-          choice(
-            // Keep a leading `//` inside the string instead of letting the
-            // comment extra win the lexical tie and consume outer syntax.
-            token(prec(1, /[^\\"\n\f\v\r]+/)),
-            $.escape_sequence,
-            $.invalid_escape,
-          ),
-        ),
-        '"',
-      ),
+    string_literal: ($) => seq('"', repeat(stringContent($)), '"'),
+    _generic_op_name: ($) =>
+      seq(alias($._generic_op_quote, '"'), repeat(stringContent($)), '"'),
     escape_sequence: ($) =>
       token(seq("\\", choice(/[nt"\\]/, /[0-9a-fA-F]{2}/))),
     invalid_escape: ($) => token(seq("\\", /[^\n\f\v\r]/)),
@@ -263,9 +263,10 @@ export default grammar({
         field("location", optional($.trailing_location)),
       ),
 
-    // The scanner emits _generic_op_name for a line-start quoted name followed
-    // by a generic operand list, so a custom body before it cannot absorb the
-    // operation. Other positions keep the ordinary string_literal.
+    // The scanner emits _generic_op_quote for the opening quote of a
+    // line-start name followed by a generic operand list, so a custom body
+    // before it cannot absorb the operation. The rest of the name parses like
+    // any string_literal, so both paths build the same node.
     generic_operation: ($) =>
       seq(
         choice(alias($._generic_op_name, $.string_literal), $.string_literal),

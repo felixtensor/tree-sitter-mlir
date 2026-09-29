@@ -1473,6 +1473,48 @@ func.func @u(%a : i32, %c : i1) {
                 (custom_op_name)))))))))
 
 ================================================================================
+Escaped generic operation name after a custom body keeps its escape
+================================================================================
+func.func @x(%a : i32) {
+  test.use %a : i32
+  "test.esc\22q"(%a) : (i32) -> ()
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (generic_operation
+                (string_literal
+                  (escape_sequence))
+                (value_use)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
 Quoted name wrapped inside a custom body stays in the body
 ================================================================================
 pdl.pattern @wrapped : benefit(1) {

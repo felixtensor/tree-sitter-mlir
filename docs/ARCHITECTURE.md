@@ -160,7 +160,7 @@ token cannot continue it, whether or not the operation before binds results.
 | Next operation begins with | Body ends? |
 | --- | --- |
 | A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_value` |
-| A line-start generic operation (`"x.y"(%a) : ...`) | Yes, via the scanner's `_generic_op_name` |
+| A line-start generic operation (`"x.y"(%a) : ...`) | Yes, via the scanner's `_generic_op_quote` |
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
@@ -222,10 +222,10 @@ an unbound generic operation. The scanner emits five token kinds:
   reads `(, %value)* =` followed by an operation name (an identifier or the
   string of a generic operation). Other result positions keep the ordinary
   `value_use` token.
-- `_generic_op_name` for a line-start quoted name when the grammar permits a
-  new operation and the lookahead reads a generic operand list, `(` values
-  `)`, followed by `:`, `[`, `<{`, `(` or `{`. A name with an escape keeps the
-  ordinary `string_literal`.
+- `_generic_op_quote` for the opening quote of a line-start name when the
+  grammar permits a new operation and the lookahead reads a generic operand
+  list, `(` values `)`, followed by `:`, `[`, `<{`, `(` or `{`. The rest of the
+  name parses like any `string_literal`.
 
 Both boundary tokens need the next operation to start a line, not to fit on
 one: a continuation line is cut only if it begins with a token's full shape.
@@ -240,7 +240,8 @@ rare.
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
 exposed as `dimension_separator`, the result token as `value_use` inside
-`op_result`, and the generic name token as `string_literal`. The scanner has
+`op_result`, and the generic quote token as the opening `"` of a
+`string_literal`, whose children match an ordinary one. The scanner has
 no persistent state, serializes nothing, and its caret and result handling
 mirror the existing `_suffix_id` spelling including optional `:digits` and
 `#digits` suffixes.

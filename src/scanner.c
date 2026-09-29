@@ -9,7 +9,7 @@ enum TokenType {
   BLOCK_LABEL_ID,
   CUSTOM_BODY_DIMENSION_SEPARATOR,
   OP_RESULT_VALUE,
-  GENERIC_OP_NAME,
+  GENERIC_OP_QUOTE,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -239,30 +239,40 @@ static bool scan_op_result_value(TSLexer *lexer) {
   }
 }
 
-// Precondition: the lexer is positioned at `"`. Consumes the quoted name as the
-// token, then looks ahead without consuming for a generic operand list,
-// `(` (value-id (`,` value-id)*)? `)`, followed by what a generic operation
-// allows next: `:`, `[`, `<{`, `(` or `{`. A custom body's quoted name before
-// `(` carries more than values, as in `with "rewriter"(%x : !pdl.value)`. A
-// name with an escape is left to the grammar's string_literal, which keeps
-// its escape_sequence children.
-static bool scan_generic_op_name(TSLexer *lexer) {
+// Precondition: the lexer is positioned at `"`. Consumes only the opening quote
+// as the token, so the grammar parses the rest of the name as it does any
+// string_literal. Then looks ahead without consuming past the closing quote
+// for a generic operand list, `(` (value-id (`,` value-id)*)? `)`, followed by
+// what a generic operation allows next: `:`, `[`, `<{`, `(` or `{`. A custom
+// body's quoted name before `(` carries more than values, as in
+// `with "rewriter"(%x : !pdl.value)`.
+static bool scan_generic_op_quote(TSLexer *lexer) {
   lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+
   while (lexer->lookahead != '"') {
     switch (lexer->lookahead) {
       case '\0':
-      case '\\':
       case '\n':
       case '\r':
       case '\f':
       case '\v':
         return false;
+      case '\\':
+        // Step over the escaped character so an escaped quote does not end
+        // the name; the grammar decides whether the escape is valid.
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
+            lexer->lookahead == '\r') {
+          return false;
+        }
+        lexer->advance(lexer, false);
+        break;
       default:
         lexer->advance(lexer, false);
     }
   }
   lexer->advance(lexer, false);
-  lexer->mark_end(lexer);
 
   skip_label_extras(lexer);
   if (lexer->lookahead != '(') {
@@ -360,9 +370,9 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if (lexer->lookahead == '"') {
-    if (valid_symbols[GENERIC_OP_NAME] && at_line_start &&
-        scan_generic_op_name(lexer)) {
-      lexer->result_symbol = GENERIC_OP_NAME;
+    if (valid_symbols[GENERIC_OP_QUOTE] && at_line_start &&
+        scan_generic_op_quote(lexer)) {
+      lexer->result_symbol = GENERIC_OP_QUOTE;
       return true;
     }
     return false;

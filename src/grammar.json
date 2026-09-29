@@ -278,6 +278,51 @@
         }
       ]
     },
+    "_generic_op_name": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_generic_op_quote"
+          },
+          "named": false,
+          "value": "\""
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "TOKEN",
+                "content": {
+                  "type": "PREC",
+                  "value": 1,
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "[^\\\\\"\\n\\f\\v\\r]+"
+                  }
+                }
+              },
+              {
+                "type": "SYMBOL",
+                "name": "escape_sequence"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "invalid_escape"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "\""
+        }
+      ]
+    },
     "escape_sequence": {
       "type": "TOKEN",
       "content": {
@@ -6224,7 +6269,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_generic_op_name"
+      "name": "_generic_op_quote"
     }
   ],
   "inline": [
