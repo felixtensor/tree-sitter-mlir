@@ -199,7 +199,7 @@ The dynamic precedence -1 on `_generic_custom_operation` settles
 `linalg.generic {indexing_maps = ...}` a dictionary. It cannot end a body.
 A dotted first key (`{sv.namehint = "x"}`) lexes as an operation name and never
 reaches that conflict; `_custom_body_dotted_key_entry` reads it as a dictionary
-when `=` follows, since no operation name is followed by `=`. Known limit: a
+when `=` follows, since no custom assembly format starts with `=`. Known limit: a
 dotted key without a value (`{transform.readonly}`) still parses as a region, the
 same shape as `{ scf.yield }`.
 
