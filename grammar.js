@@ -593,9 +593,9 @@ export default grammar({
       ),
 
     // {a.b = ...}: after `{` a dotted key lexes as an operation name, which
-    // only `region` accepts. No operation's name is followed by `=`, so prec 1
-    // settles it statically. Requiring `=` keeps `{ scf.yield }` a region; so
-    // is a unit key such as `{transform.readonly}`, a known limit.
+    // only `region` accepts. No custom assembly format starts with `=`, so
+    // prec 1 settles it statically. Requiring `=` keeps `{ scf.yield }` a
+    // region; so is a unit key such as `{transform.readonly}`, a known limit.
     _custom_body_dotted_key_attribute: ($) =>
       alias($._custom_body_dotted_key_dictionary, $.dictionary_attribute),
     _custom_body_dotted_key_dictionary: ($) =>
