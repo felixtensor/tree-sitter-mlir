@@ -75,3 +75,186 @@ tt.func @triton_types(
           (operation
             rhs: (custom_operation
               name: (custom_op_name))))))))
+
+================================================================================
+CIRCT debug struct payload keeps its braces paired
+================================================================================
+hw.module @Struct(in %a : i32, in %b : index) {
+  %0 = dbg.struct {"a": %a, "b": %b} : i32, index
+  dbg.variable "s", %0 : !dbg.struct
+}
+hw.module @After() {
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))
+      (bare_id)
+      (value_use)
+      (type
+        (builtin_type
+          (index_type)))
+      (region
+        (entry_block
+          (operation
+            lhs: (op_result
+              (value_use))
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (string_literal)
+              (value_use)
+              (string_literal)
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))
+              (type
+                (builtin_type
+                  (index_type)))))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (string_literal)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (region))))
+
+================================================================================
+CIRCT FIRRTL instance choice payload stays inside its operation
+================================================================================
+firrtl.circuit "Top" {
+  firrtl.option @Platform {
+    firrtl.option_case @FPGA
+  }
+  firrtl.module private @Impl() {}
+  firrtl.module private @FPGAImpl() {}
+  firrtl.module @Top() {
+    firrtl.instance_choice inst @Impl alternatives @Platform { @FPGA -> @FPGAImpl } ()
+    firrtl.instance_choice other @Impl alternatives @Platform { @FPGA -> @FPGAImpl } ()
+  }
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (symbol_ref_id)
+              (region
+                (entry_block
+                  (operation
+                    rhs: (custom_operation
+                      name: (custom_op_name)
+                      (symbol_ref_id)))))))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (bare_id)
+              (symbol_ref_id)
+              (region)))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (bare_id)
+              (symbol_ref_id)
+              (region)))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (symbol_ref_id)
+              (region
+                (entry_block
+                  (operation
+                    rhs: (custom_operation
+                      name: (custom_op_name)
+                      (bare_id)
+                      (symbol_ref_id)
+                      (bare_id)
+                      (symbol_ref_id)
+                      (symbol_ref_id)
+                      (symbol_ref_id)))
+                  (operation
+                    rhs: (custom_operation
+                      name: (custom_op_name)
+                      (bare_id)
+                      (symbol_ref_id)
+                      (bare_id)
+                      (symbol_ref_id)
+                      (symbol_ref_id)
+                      (symbol_ref_id))))))))))))
+
+================================================================================
+CIRCT Moore struct types open no region
+================================================================================
+moore.module @Packed(in %c : !moore.l32) {
+  %0 = moore.sbv_to_packed %c : struct<{u: l16, v: l16}>
+  %1 = moore.sbv_to_packed %c : struct<{u: struct<{x: l8, y: l8}>, v: l16}>
+  moore.output
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (region
+        (entry_block
+          (operation
+            lhs: (op_result
+              (value_use))
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)))
+          (operation
+            lhs: (op_result
+              (value_use))
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)
+              (bare_id)))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name))))))))

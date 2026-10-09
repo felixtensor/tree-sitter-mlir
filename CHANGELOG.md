@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   binding or generic operation instead of absorbing it.
 - **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
   attribute dictionary instead of a region.
+- **grammar:** keep an unrecognized `{...}` in a custom operation body, such as
+  `{"a": %x}`, inside its operation instead of misnesting everything after it.
+- **grammar:** never read a `{...}` directly inside `<...>` in a custom
+  operation body as a region, as in `struct<{a: i32}>`.
 
 ### Changed
 - **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
@@ -30,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A `{...}` whose first key is dotted and has a value, such as
   `{allocation.offset = 0 : i32}`, is now `attribute` → `dictionary_attribute`
   instead of a `region` holding an `operation`.
+- A `{...}` in a custom body that is no region, dictionary or known brace form
+  (`{"a": %x}`, `{@a -> @b}`, `{%d}`) now leaves its contents as children of the
+  `custom_operation`, instead of an `ERROR` or a `region`.
+- A `{...}` directly inside `<...>` in a custom body is now flat contents or a
+  `dictionary_attribute`, never a `region`.
 
 ## [0.2.0] - 2026-08-02
 
