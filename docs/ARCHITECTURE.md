@@ -164,6 +164,23 @@ token cannot continue it, whether or not the operation before binds results.
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
+#### What a Brace Encloses in a Custom Body
+
+A `{` reads as a region, an attribute dictionary or a known brace payload
+(`{%v : t}`, `{(%v)}`, `{"k" = %v}`) wherever one of them can continue.
+Otherwise it opens a balanced group whose contents stay flat in the
+`custom_operation`, so its `}` cannot close an enclosing region. The group
+starts on a token none of the others accepts after `{`, or on a string or value
+followed by one, so the choice is static and adds no conflict. Directly inside
+`<...>` a `{` is never a region, and a bare key followed by anything but `=` or
+`,` also opens the group (`struct<{a: i32}>`).
+
+Known limits: a payload that fails only later still fails there
+(`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
+dictionary), and outside `<...>` `{a: i32}` is still a region. `#`, `!` and `^`
+never start the group, so an unclosed `{` still fails at a following alias
+definition or block label.
+
 ### All Declared Conflicts Are Intentional
 
 The 11 conflicts listed in `grammar.js` are load-bearing — removing any
