@@ -164,6 +164,44 @@ token cannot continue it, whether or not the operation before binds results.
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
+#### What a Brace Encloses in a Custom Body
+
+A `{` reads as a region, an attribute dictionary or a known brace payload
+(`{%v : t}`, `{(%v)}`, `{"k" = %v}`) wherever one of them can continue.
+Otherwise it opens a balanced group whose contents stay flat in the
+`custom_operation`, so its `}` cannot close an enclosing region. The group
+starts on a token none of the others accepts after `{`, or on a string or value
+followed by one, so the choice is static and adds no conflict. The external
+scanner supplements this grammar fallback only for a fully balanced group
+whose lead is `#`, `!`, or a `^` that is not a block label; it ignores braces in
+strings and line comments. This keeps unusual payloads opaque without making
+the scanner compete with ordinary regions or dictionaries.
+
+This is a recovery rule, not a promise that every balanced delimiter sequence
+is valid MLIR. The operation grammar reserves `<{...}>` for dictionary
+properties, and `^id:` is a block label only in a region. A combination such as
+`test.op <{^bb0:}>` therefore remains an error; the opaque scanner covers only
+complete groups that do not conflict with those MLIR structures.
+
+Anywhere inside `<...>`, also nested in `(...)`, `[...]` or `{...}`, a `{` is
+never a region under the unknown-dialect recovery policy, and a bare key
+followed by anything but `=` or `,` also opens the group
+(`struct<{a: i32}>`, `<{a: {b: i32}}>`).
+
+Like a `(...)` or `[...]` group, the brace group is hidden and adds no node.
+Queries that act on `region`, such as `folds.scm`, `indents.scm` and
+`locals.scm`, therefore neither fold, indent nor scope it, even when it spans
+lines.
+
+Known limits: a payload that fails only later still fails there
+(`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
+dictionary), and outside `<...>` `{a: i32}` is still a region. Inside `<...>`
+a first bare key followed by `,` reads as a dictionary entry, so `<{a, b: i32}>`
+fails at `b:`. An opaque scanner token is emitted only after a matching `}` is
+found; an unclosed group remains subject to grammar recovery. At line start,
+the scanner also marks `#name =` and `!name =` as alias-definition boundaries
+so a preceding custom body cannot absorb a following top-level alias.
+
 ### All Declared Conflicts Are Intentional
 
 The 11 conflicts listed in `grammar.js` are load-bearing — removing any
@@ -205,7 +243,7 @@ same shape as `{ scf.yield }`.
 
 ### External Scanner
 
-The parser uses a small external scanner for four narrowly scoped lexical
+The parser uses a small external scanner for narrowly scoped lexical
 ambiguities. MLIR reuses `^suffix` for both successor references and block
 labels, and the loose custom-operation fallback can otherwise parse a following
 block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
@@ -213,7 +251,7 @@ Custom operation bodies also need to distinguish a dimension-separating `x`
 from a bare identifier named `x`. And a custom operation body accepts `%x`
 and `=`, so without a lexical decision it absorbs the next operation's result
 binding as body operands; its strings and parenthesised groups likewise absorb
-an unbound generic operation. The scanner emits five token kinds:
+an unbound generic operation. The scanner emits eight token kinds:
 
 - `_caret_id` for ordinary successor/reference uses.
 - `_block_label_id` when the grammar permits a block label and the caret
@@ -230,6 +268,14 @@ an unbound generic operation. The scanner emits five token kinds:
   grammar permits a new operation and the lookahead reads a generic operand
   list, `(` values `)`, followed by `:`, `[`, `<{`, `(` or `{`. The rest of the
   name parses like any `string_literal`.
+- `_custom_body_opaque_brace_group` for a fully balanced custom-body group
+  whose first meaningful lead is `#`, `!`, or a non-label `^`. The scanner
+  consumes the complete group, including nested braces, while treating strings
+  and line comments as opaque. The token is hidden, so its contents deliberately
+  do not create region, scope, or fold nodes.
+- `_attribute_alias_sigil` and `_type_alias_sigil` for line-start `#name =`
+  and `!name =` definitions. They consume only the sigil; the grammar parses
+  the alias name and value/type through the ordinary rules.
 
 Both boundary tokens need the next operation to start a line, not to fit on
 one: a continuation line is cut only if it begins with a token's full shape.
@@ -243,13 +289,13 @@ rare.
 
 The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
 so query consumers do not need separate handling. The dimension token is
-exposed as `dimension_separator`. The two boundary tokens consume only the
-opening `%` of a `value_use` or `"` of a `string_literal` and the grammar
-parses the rest, so both nodes match the ordinary path, anonymous children
-included; a `:cst` corpus case pins this. The scanner has no persistent
-state, serializes nothing, and its caret and result handling mirror the
-existing `_suffix_id` spelling including optional `:digits` and `#digits`
-suffixes.
+exposed as `dimension_separator`. The two operation-boundary tokens consume
+only the opening `%` of a `value_use` or `"` of a `string_literal` and the
+grammar parses the rest, so both nodes match the ordinary path, anonymous
+children included; a `:cst` corpus case pins this. Alias-boundary tokens
+likewise consume only their sigil. The scanner has no persistent state,
+serializes nothing, and its caret and result handling mirror the existing
+`_suffix_id` spelling including optional `:digits` and `#digits` suffixes.
 
 The boundary tokens are lexical because weighing the two readings in the
 grammar did not hold up: ending the body through dynamic precedence and a

@@ -1954,6 +1954,103 @@ test.next
       name: (custom_op_name))))
 
 ================================================================================
+Block label in a property-like angle body remains an error
+================================================================================
+test.op <{^bb0:}>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (ERROR
+        (caret_id)))))
+
+================================================================================
+Opaque brace scanner keeps unsafe leads and following boundaries
+================================================================================
+test.op {#opaque {"}"}}
+test.op {"a": {#nested}}
+#attr = 1 : i32
+test.op {!opaque}
+!type = i32
+test.op {#comment // the closing brace in this comment is data
+}
+test.next
+func.func @opaque_block() {
+  test.op {^opaque}
+^bb1:
+  test.after
+}
+func.func @real_block_region() {
+  test.op {^bb0:
+    test.inner
+  }
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)))
+  (attribute_alias_def
+    (attribute_value
+      (integer_literal)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (type_alias_def
+    (type
+      (builtin_type
+        (integer_type))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (region
+                  (block
+                    (block_label
+                      (caret_id))
+                    (operation
+                      rhs: (custom_operation
+                        name: (custom_op_name)))))))))))))
+
+================================================================================
 Dotted-key dictionary in a custom body builds the same nodes as the ordinary path
 :cst
 ================================================================================
@@ -2005,3 +2102,272 @@ test.op {a.b = 1 : i32}
 1:33 - 1:35           "->"
 1:36 - 1:37           "("
 1:37 - 1:38           ")"
+
+================================================================================
+Unknown dialect braces: a lead no other reading continues opens a balanced group
+================================================================================
+test.op {"k": %v}
+test.op {@a -> @b}
+test.op {%d}
+test.op {: i32}
+test.op (%t : tensor<?xf32>{%d}) -> tensor<?xf32>{%d}
+test.op <{a: i32}>
+test.op <{}>
+test.op <{a.b}>
+test.next
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (value_use)
+      (type
+        (builtin_type
+          (tensor_type
+            (dim_list
+              (type
+                (builtin_type
+                  (float_type)))))))
+      (value_use)
+      (type
+        (builtin_type
+          (tensor_type
+            (dim_list
+              (type
+                (builtin_type
+                  (float_type)))))))
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))
+
+================================================================================
+Unknown dialect braces: regions, dictionaries and brace payloads keep their reading
+================================================================================
+test.op {a = 1, b}
+test.op {"a" = 1, "b"}
+test.op {"a" = %v}
+test.op {%v : i32}
+test.op {(%v), (%w)}
+test.op {test.inner %v : i32}
+test.op <{a = 1}>
+test.op ({
+^bb0(%x: i32):
+  test.yield %x : i32
+})
+test.op [case {
+  test.inner
+}]
+test.next
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)))
+          (attribute_entry
+            (bare_id))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (string_literal)
+            (attribute_value
+              (integer_literal)))
+          (attribute_entry
+            (string_literal))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (value_use)
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (block
+          (block_label
+            (caret_id)
+            (block_arg_list
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))
+
+================================================================================
+Unknown dialect braces: no brace at any depth inside <...> opens a region
+================================================================================
+test.op <{a: {b: i32}}>
+test.op <{a: [{b: i32}]}>
+test.op <({a: i32})>
+test.op <{"k": {%x}}>
+test.op <{a: {b.c = 1}}>
+test.op <{a: i32}> {
+  test.inner
+}
+test.op [{test.inner}]
+test.next
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (value_use)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))

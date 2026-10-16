@@ -1,0 +1,449 @@
+================================================================================
+Failed alias probes preserve continuation tokens
+================================================================================
+#attr = 1 : i32
+!type = i32
+test.op %a
+  #attr
+%x = test.next
+test.op %a
+  !type
+"test.generic"() : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (integer_literal)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (type_alias_def
+    (type
+      (builtin_type
+        (integer_type))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (attribute
+        (attribute_alias))))
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (type
+        (type_alias))))
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))))
+
+================================================================================
+Opaque probe keeps an unbalanced nested brace as an error
+================================================================================
+test.op {^opaque({unclosed_brace)}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (ERROR
+          (UNEXPECTED 'c')))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Opaque probe stops when the outer brace closes
+================================================================================
+test.op {^opaque(}
+func.func @f() {
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+A single slash remains a custom-body operator before an attribute
+================================================================================
+test.op {/#attr}
+test.op {/ #attr}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (attribute
+        (attribute_alias))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (attribute
+        (attribute_alias)))))
+
+================================================================================
+Block-label lookahead keeps slash in an unknown dialect type
+================================================================================
+func.func @f() {
+^bb0(%x: !dialect.type<foo/bar>):
+  test.use %x : !dialect.type<foo/bar>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (bare_id)
+                        (bare_id)))))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (bare_id)
+                        (bare_id)))))))))))))
+
+================================================================================
+Caret scanner distinguishes successors and block labels
+================================================================================
+func.func @caret_boundaries() {
+  test.br ^bb1
+^bb1(%arg: i32):
+  test.use %arg : i32
+}
+test.op {^bb0: test.inner}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (successor
+                  (caret_id)))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (block
+          (block_label
+            (caret_id))
+          (operation
+            (custom_operation
+              (custom_op_name))))))))
+
+================================================================================
+Dimension separator scanner accepts dimensions and rejects lookalikes
+================================================================================
+func.func @dimension_boundaries() {
+  test.valid 16x16
+  test.dynamic 16x?x32
+  test.spaced 16 x 16
+  test.successor 16x^bb0
+  test.name 16xfoo
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (dimension_size))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (dimension_separator)
+                  (dimension_size))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (custom_body_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (dimension_size))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (dimension_separator)
+                (successor
+                  (caret_id))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (integer_literal)
+                (bare_id)))))))))
+
+================================================================================
+Operation boundary scanners distinguish bindings and generic quotes
+================================================================================
+func.func @operation_boundaries(%a: i32) {
+  test.before %a
+  %x:2, %y#1 =
+    test.split %a : i32
+  test.continue
+    %v = %a
+  %bound = "test.bound"() : () -> ()
+  "test.attr"() {tag} : () -> ()
+  "test.props"() <{value = 1}> : () -> ()
+  "test.succ"()[^bb1] : () -> ()
+  "test.region"() ({
+    "test.inner"() : () -> ()
+  }) : () -> ()
+  test.quoted
+    "rewriter"(%a : i32)
+^bb1:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)))
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (value_use)
+                (value_use)))
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (function_type)))
+            (operation
+              (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id))))
+                (function_type)))
+            (operation
+              (generic_operation
+                (string_literal)
+                (properties
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (integer_literal))))
+                (function_type)))
+            (operation
+              (generic_operation
+                (string_literal)
+                (successor
+                  (caret_id))
+                (function_type)))
+            (operation
+              (generic_operation
+                (string_literal)
+                (region
+                  (entry_block
+                    (operation
+                      (generic_operation
+                        (string_literal)
+                        (function_type)))))
+                (function_type)))
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Opaque brace scanner handles unsafe leads and preserves structured braces
+================================================================================
+test.op {#opaque {#nested} "}"}
+test.op {!opaque {^nested}}
+test.op {^opaque {#nested}}
+test.op {#comment // this brace is comment data
+}
+test.op {^bb0: test.inner}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (block
+          (block_label
+            (caret_id))
+          (operation
+            (custom_operation
+              (custom_op_name))))))))
+
+================================================================================
+External boundary scanners consume only their opening sigils
+:cst
+================================================================================
+test.use %a : i32
+%z = test.make %a : i32
+"test.sink"(%z) : (i32) -> ()
+--------------------------------------------------------------------------------
+
+0:0  - 2:29   toplevel
+0:0  - 0:17     operation
+0:0  - 0:17       rhs: custom_operation
+0:0  - 0:8          name: custom_op_name `test.use`
+0:9  - 0:11         value_use
+0:9  - 0:10           "%"
+0:12 - 0:13         ":"
+0:14 - 0:17         type
+0:14 - 0:17           builtin_type
+0:14 - 0:17             integer_type `i32`
+1:0  - 1:23     operation
+1:0  - 1:2        lhs: op_result
+1:0  - 1:2          value_use
+1:0  - 1:1            "%"
+1:3  - 1:4        "="
+1:5  - 1:23       rhs: custom_operation
+1:5  - 1:14         name: custom_op_name `test.make`
+1:15 - 1:17         value_use
+1:15 - 1:16           "%"
+1:18 - 1:19         ":"
+1:20 - 1:23         type
+1:20 - 1:23           builtin_type
+1:20 - 1:23             integer_type `i32`
+2:0  - 2:29     operation
+2:0  - 2:29       rhs: generic_operation
+2:0  - 2:11         string_literal
+2:0  - 2:1            "\""
+2:10 - 2:11           "\""
+2:11 - 2:12         "("
+2:12 - 2:14         value_use
+2:12 - 2:13           "%"
+2:14 - 2:15         ")"
+2:16 - 2:17         ":"
+2:18 - 2:29         function_type
+2:18 - 2:19           "("
+2:19 - 2:22           type
+2:19 - 2:22             builtin_type
+2:19 - 2:22               integer_type `i32`
+2:22 - 2:23           ")"
+2:24 - 2:26           "->"
+2:27 - 2:28           "("
+2:28 - 2:29           ")"
