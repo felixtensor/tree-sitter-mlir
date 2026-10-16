@@ -16,6 +16,8 @@ This file intentionally lives outside `test/highlight/`, because
   payloads, symbol arguments, successors, and resource-backed pretty syntax.
 - `integration/`: broader registered-dialect snippets that exercise several
   highlight layers together.
+- `downstream/`: syntax from projects outside `llvm-project` (CIRCT, Triton,
+  IREE, ...). It stays in this one group, like `test/corpus/12-downstream.txt`.
 
 When adding coverage, prefer a small topic fixture in the narrowest matching
 directory. Keep broad end-to-end examples in `integration/` only when they are
@@ -25,5 +27,5 @@ Fixtures should be credible MLIR, not parser-shaped text invented only for the
 highlighter. Prefer examples adapted from the MLIR language reference or from
 `llvm-project/mlir/test`. For new examples, verify them with a compatible MLIR
 toolchain, such as `mlir-opt --verify-diagnostics`, before adding assertions.
-Unregistered downstream dialect syntax belongs in a separate compatibility
-fixture only when its source and validation path are clear.
+Downstream dialect syntax belongs in `downstream/` only when its source and
+validation path are clear; name both in the fixture's first line.

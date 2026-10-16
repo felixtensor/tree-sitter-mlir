@@ -117,3 +117,25 @@ test.with_array_properties array = [1, 2] array32 = [5, 6]
       (bare_id)
       (integer_literal)
       (integer_literal))))
+
+================================================================================
+Generic operation with properties and an empty attribute dictionary
+================================================================================
+"test.op_with_enum_prop"() <{value = 0 : i32}> {} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type))))))
+      (attribute
+        (dictionary_attribute))
+      (function_type))))

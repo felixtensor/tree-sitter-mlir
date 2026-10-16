@@ -10,6 +10,9 @@ enum TokenType {
   CUSTOM_BODY_DIMENSION_SEPARATOR,
   OP_RESULT_SIGIL,
   GENERIC_OP_QUOTE,
+  CUSTOM_BODY_OPAQUE_BRACE_GROUP,
+  ATTRIBUTE_ALIAS_SIGIL,
+  TYPE_ALIAS_SIGIL,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -90,14 +93,25 @@ static bool scan_dimension_separator_from_x(TSLexer *lexer) {
   return is_digit(lexer->lookahead) || lexer->lookahead == '?';
 }
 
-static bool skip_comment(TSLexer *lexer) {
+typedef enum {
+  COMMENT_NOT_FOUND,
+  LINE_COMMENT,
+  SINGLE_SLASH,
+} CommentScanResult;
+
+typedef enum {
+  EXTRAS_READY,
+  EXTRAS_SINGLE_SLASH,
+} ExtrasScanResult;
+
+static CommentScanResult skip_comment(TSLexer *lexer) {
   if (lexer->lookahead != '/') {
-    return false;
+    return COMMENT_NOT_FOUND;
   }
 
   lexer->advance(lexer, false);
   if (lexer->lookahead != '/') {
-    return false;
+    return SINGLE_SLASH;
   }
 
   while (lexer->lookahead != '\0' && lexer->lookahead != '\n' &&
@@ -105,31 +119,216 @@ static bool skip_comment(TSLexer *lexer) {
     lexer->advance(lexer, false);
   }
 
-  return true;
+  return LINE_COMMENT;
 }
 
-static bool skip_label_extras(TSLexer *lexer) {
-  bool saw_newline = false;
-
+// Skip whitespace and line comments. A single slash is consumed before the
+// result is reported so callers that scan opaque body text can continue from
+// the following character without mistaking the slash for a comment.
+static ExtrasScanResult skip_extras(TSLexer *lexer) {
   for (;;) {
-    saw_newline = skip_space(lexer, false) || saw_newline;
-    if (!skip_comment(lexer)) {
-      return saw_newline;
+    skip_space(lexer, false);
+    CommentScanResult comment = skip_comment(lexer);
+    if (comment == COMMENT_NOT_FOUND) {
+      return EXTRAS_READY;
+    }
+    if (comment == SINGLE_SLASH) {
+      return EXTRAS_SINGLE_SLASH;
     }
   }
 }
 
-static bool at_block_label_tail(TSLexer *lexer) {
-  skip_label_extras(lexer);
+typedef enum {
+  BLOCK_LABEL_TAIL_NOT_FOUND,
+  BLOCK_LABEL_TAIL_FOUND,
+  OUTER_BRACE_CLOSED,
+} BlockLabelTailResult;
+
+static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
+                                                int *brace_depth);
+
+// Skip extras while probing the first meaningful character after `{`. This is
+// deliberately local to the opaque-brace probe: the grammar still owns all
+// ordinary brace syntax and the scanner must not become a second lexer.
+static bool skip_brace_leading_extras(TSLexer *lexer) {
+  return skip_extras(lexer) == EXTRAS_READY;
+}
+
+// Precondition: the lexer is positioned after the opening `{`, and the
+// caller has already established that the first meaningful character is an
+// unsafe custom-body lead. Consume the rest of one balanced brace group,
+// ignoring braces in strings and line comments. Returning false lets
+// tree-sitter restore the original position, which is important for malformed
+// input: an unclosed group must remain available to grammar recovery.
+static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
+  bool in_string = false;
+
+  while (lexer->lookahead != '\0') {
+    if (in_string) {
+      if (lexer->lookahead == '\\') {
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '\0') {
+          return false;
+        }
+        lexer->advance(lexer, false);
+      } else if (lexer->lookahead == '"') {
+        in_string = false;
+        lexer->advance(lexer, false);
+      } else {
+        lexer->advance(lexer, false);
+      }
+      continue;
+    }
+
+    if (lexer->lookahead == '"') {
+      in_string = true;
+      lexer->advance(lexer, false);
+      continue;
+    }
+
+    if (lexer->lookahead == '/') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead == '/') {
+        while (lexer->lookahead != '\0' && lexer->lookahead != '\n' &&
+               lexer->lookahead != '\r') {
+          lexer->advance(lexer, false);
+        }
+      }
+      continue;
+    }
+
+    if (lexer->lookahead == '{') {
+      depth++;
+      lexer->advance(lexer, false);
+      continue;
+    }
+    if (lexer->lookahead == '}') {
+      depth--;
+      lexer->advance(lexer, false);
+      if (depth == 0) {
+        lexer->mark_end(lexer);
+        return true;
+      }
+      continue;
+    }
+
+    lexer->advance(lexer, false);
+  }
+
+  return false;
+}
+
+// Precondition: the lexer is positioned at `{`. The scanner claims the group
+// only when its first meaningful token cannot begin any structured brace
+// reading. `#` and `!` cannot begin a region, dictionary entry or known
+// custom-body payload. A `^` lead is claimed only when it is not followed by
+// the block-label shape that starts a real region.
+static bool scan_opaque_brace_group(TSLexer *lexer) {
+  lexer->advance(lexer, false);
+  if (!skip_brace_leading_extras(lexer)) {
+    return false;
+  }
+
+  if (lexer->lookahead == '#' || lexer->lookahead == '!') {
+    return scan_opaque_brace_tail(lexer, 1);
+  }
+
+  if (lexer->lookahead != '^') {
+    return false;
+  }
+
+  lexer->advance(lexer, false);
+  if (is_digit(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  } else if (is_identifier_start(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_identifier_char(lexer->lookahead));
+  } else {
+    return scan_opaque_brace_tail(lexer, 1);
+  }
+
+  // A colon immediately after the block id is the compact block-label form.
+  // Optional numeric suffixes are consumed before checking the label tail.
+  if (lexer->lookahead == ':') {
+    lexer->advance(lexer, false);
+    if (!is_digit(lexer->lookahead)) {
+      return false;
+    }
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  }
+  if (lexer->lookahead == '#') {
+    lexer->advance(lexer, false);
+    if (!is_digit(lexer->lookahead)) {
+      return scan_opaque_brace_tail(lexer, 1);
+    }
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  }
+
+  int brace_depth = 1;
+  BlockLabelTailResult block_label_tail =
+      at_block_label_tail(lexer, &brace_depth);
+  if (block_label_tail == BLOCK_LABEL_TAIL_FOUND) {
+    return false;
+  }
+  if (block_label_tail == OUTER_BRACE_CLOSED) {
+    return true;
+  }
+  return scan_opaque_brace_tail(lexer, brace_depth);
+}
+
+static bool skip_label_extras(TSLexer *lexer) {
+  return skip_extras(lexer) == EXTRAS_READY;
+}
+
+// Precondition: the lexer is positioned at `#` or `!`. Consume an alias
+// definition lead (`#name =` / `!name =`) without consuming the sigil past the
+// token boundary. The grammar parses the identifier and value/type normally.
+static bool scan_alias_definition_sigil(TSLexer *lexer) {
+  lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+  if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+        (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+        lexer->lookahead == '_')) {
+    return false;
+  }
+  do {
+    lexer->advance(lexer, false);
+  } while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+           (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+           is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+           lexer->lookahead == '$');
+  if (!skip_label_extras(lexer)) {
+    return false;
+  }
+  return lexer->lookahead == '=';
+}
+
+static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
+                                                int *brace_depth) {
+  bool has_outer_brace = *brace_depth > 0;
+  if (!skip_label_extras(lexer)) {
+    return BLOCK_LABEL_TAIL_NOT_FOUND;
+  }
 
   if (lexer->lookahead == '(') {
     int32_t depth = 1;
     lexer->advance(lexer, false);
     while (depth > 0) {
-      skip_label_extras(lexer);
+      // A single slash is ordinary content while scanning a block argument
+      // type (for example, `!dialect.type<foo/bar>`). Unlike the token-boundary
+      // probes above and below, this delimiter scan ignores the status because
+      // skip_extras has already consumed the slash.
+      (void)skip_extras(lexer);
       switch (lexer->lookahead) {
         case '\0':
-          return false;
+          return BLOCK_LABEL_TAIL_NOT_FOUND;
         case '"':
           // Consume a string literal opaquely so brackets or `//` inside it
           // are not counted as nesting delimiters or comments.
@@ -141,13 +340,27 @@ static bool at_block_label_tail(TSLexer *lexer) {
             lexer->advance(lexer, false);
           }
           if (lexer->lookahead == '\0') {
-            return false;
+            return BLOCK_LABEL_TAIL_NOT_FOUND;
           }
           break;
         case '(':
         case '<':
         case '[':
           depth++;
+          break;
+        case '{':
+          (*brace_depth)++;
+          break;
+        case '}':
+          if (*brace_depth == 0) {
+            return BLOCK_LABEL_TAIL_NOT_FOUND;
+          }
+          (*brace_depth)--;
+          if (has_outer_brace && *brace_depth == 0) {
+            lexer->advance(lexer, false);
+            lexer->mark_end(lexer);
+            return OUTER_BRACE_CLOSED;
+          }
           break;
         case '-':
           // An MLIR affine map arrow inside a block argument type (for
@@ -171,9 +384,12 @@ static bool at_block_label_tail(TSLexer *lexer) {
     }
   }
 
-  skip_label_extras(lexer);
+  if (!skip_label_extras(lexer)) {
+    return BLOCK_LABEL_TAIL_NOT_FOUND;
+  }
 
-  return lexer->lookahead == ':';
+  return lexer->lookahead == ':' ? BLOCK_LABEL_TAIL_FOUND
+                                 : BLOCK_LABEL_TAIL_NOT_FOUND;
 }
 
 // Consumes a suffix-id with the same spelling as the grammar's `_suffix_id`
@@ -219,17 +435,23 @@ static bool scan_op_result_sigil(TSLexer *lexer) {
   }
 
   for (;;) {
-    skip_label_extras(lexer);
+    if (!skip_label_extras(lexer)) {
+      return false;
+    }
     if (lexer->lookahead == '=') {
       lexer->advance(lexer, false);
-      skip_label_extras(lexer);
+      if (!skip_label_extras(lexer)) {
+        return false;
+      }
       return is_operation_name_start(lexer->lookahead);
     }
     if (lexer->lookahead != ',') {
       return false;
     }
     lexer->advance(lexer, false);
-    skip_label_extras(lexer);
+    if (!skip_label_extras(lexer)) {
+      return false;
+    }
     if (lexer->lookahead != '%') {
       return false;
     }
@@ -275,24 +497,32 @@ static bool scan_generic_op_quote(TSLexer *lexer) {
   }
   lexer->advance(lexer, false);
 
-  skip_label_extras(lexer);
+  if (!skip_label_extras(lexer)) {
+    return false;
+  }
   if (lexer->lookahead != '(') {
     return false;
   }
   lexer->advance(lexer, false);
-  skip_label_extras(lexer);
+  if (!skip_label_extras(lexer)) {
+    return false;
+  }
   if (lexer->lookahead == '%') {
     for (;;) {
       lexer->advance(lexer, false);
       if (!scan_suffix_id(lexer)) {
         return false;
       }
-      skip_label_extras(lexer);
+      if (!skip_label_extras(lexer)) {
+        return false;
+      }
       if (lexer->lookahead != ',') {
         break;
       }
       lexer->advance(lexer, false);
-      skip_label_extras(lexer);
+      if (!skip_label_extras(lexer)) {
+        return false;
+      }
       if (lexer->lookahead != '%') {
         return false;
       }
@@ -302,7 +532,9 @@ static bool scan_generic_op_quote(TSLexer *lexer) {
     return false;
   }
   lexer->advance(lexer, false);
-  skip_label_extras(lexer);
+  if (!skip_label_extras(lexer)) {
+    return false;
+  }
 
   switch (lexer->lookahead) {
     case ':':
@@ -347,6 +579,32 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
+
+  if (lexer->lookahead == '#') {
+    if (at_line_start && valid_symbols[ATTRIBUTE_ALIAS_SIGIL] &&
+        scan_alias_definition_sigil(lexer)) {
+      lexer->result_symbol = ATTRIBUTE_ALIAS_SIGIL;
+      return true;
+    }
+    return false;
+  }
+  if (lexer->lookahead == '!') {
+    if (at_line_start && valid_symbols[TYPE_ALIAS_SIGIL] &&
+        scan_alias_definition_sigil(lexer)) {
+      lexer->result_symbol = TYPE_ALIAS_SIGIL;
+      return true;
+    }
+    return false;
+  }
+
+  if (valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP] &&
+      lexer->lookahead == '{') {
+    if (scan_opaque_brace_group(lexer)) {
+      lexer->result_symbol = CUSTOM_BODY_OPAQUE_BRACE_GROUP;
+      return true;
+    }
+    return false;
+  }
 
   // At a region opening such as `{^bb0: ...}`, the grammar can require a
   // block label even though the caret is not at column zero or after a
@@ -417,7 +675,11 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     }
   }
 
-  bool is_block_label = can_be_block_label && at_block_label_tail(lexer);
+  int brace_depth = 0;
+  BlockLabelTailResult block_label_tail =
+      at_block_label_tail(lexer, &brace_depth);
+  bool is_block_label = can_be_block_label &&
+                        block_label_tail == BLOCK_LABEL_TAIL_FOUND;
   if (is_block_label && valid_symbols[BLOCK_LABEL_ID]) {
     lexer->result_symbol = BLOCK_LABEL_ID;
     return true;

@@ -12,6 +12,42 @@ const stringContent = ($) =>
     $.invalid_escape,
   );
 
+// The lead of a custom-body `{...}` group: a token, or a pair, that no region,
+// dictionary or other brace payload continues after `{`. Inside `<...>` the
+// pair's second element comes from the region-free rule set.
+const braceStart = ($, follow, paren) =>
+  choice(
+    $.symbol_ref_id,
+    $._custom_body_angle_group,
+    $.integer_literal,
+    $.float_literal,
+    $.variadic,
+    "=",
+    ":",
+    "->",
+    $._custom_body_operator_start,
+    // a string is a dictionary key before `=`, `,` or `}`, and names a
+    // generic operation before `(`
+    seq($.string_literal, choice(follow, ":")),
+    // a value starts a result list before `,`, `=` or `:`
+    seq($.value_use, choice(follow, paren)),
+  );
+
+// A nested custom-body element other than `(...)`, `,`, `=` and `:`.
+const braceFollow = ($, braced, bracket) =>
+  choice(
+    $._custom_body_reference_element,
+    $._custom_body_type_element,
+    braced,
+    $._custom_body_dialect_marker,
+    bracket,
+    $._custom_body_angle_group,
+    $._custom_body_atom,
+    "->",
+    $._custom_body_operator_punctuation,
+    $.trailing_location,
+  );
+
 export default grammar({
   name: "mlir",
   extras: ($) => [/[\s\x00]/, $.comment],
@@ -21,6 +57,12 @@ export default grammar({
     $._custom_body_dimension_separator,
     $._op_result_sigil,
     $._generic_op_quote,
+    // Opaque only when the scanner proves that `{...}` cannot be a region,
+    // dictionary or known custom-body payload. All other brace choices stay
+    // in the grammar so their CST remains structured.
+    $._custom_body_opaque_brace_group,
+    $._attribute_alias_sigil,
+    $._type_alias_sigil,
   ],
   // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -75,6 +117,10 @@ export default grammar({
     $._custom_body_reserved_keyword,
     $._custom_body_affine_keyword,
     $._custom_body_brace_payload,
+    $._custom_body_brace_start,
+    $._custom_body_angle_brace_start,
+    $._custom_body_angle_braced_element,
+    $._custom_body_operator_start,
     $._custom_body_punctuation,
     $._custom_body_separator_punctuation,
     $._custom_body_operator_punctuation,
@@ -589,7 +635,10 @@ export default grammar({
       choice(
         $.attribute, // #attr, {dict}, affine_map<...>
         alias($._custom_body_dotted_key_attribute, $.attribute),
+        $._custom_body_opaque_brace_group,
+        $.region, // { ... } (regions with operations)
         $._custom_body_brace_payload,
+        $._custom_body_brace_group, // any other balanced {...}
       ),
 
     // {a.b = ...}: after `{` a dotted key lexes as an operation name, which
@@ -611,9 +660,84 @@ export default grammar({
     _custom_body_brace_payload: ($) =>
       choice(
         $._custom_body_tuple_group, // {(%v), (%w)}
-        $.region, // { ... } (regions with operations)
         $._custom_body_value_group, // {%v : type, ...}
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
+      ),
+
+    // A `{...}` that no other reading accepts ({"a": %x}, {@a -> @b}, {%d})
+    // stays one balanced group, so its `}` cannot close an enclosing region.
+    // It starts only on a token, or a pair, that no region, dictionary or
+    // other brace payload can continue, so the choice is static.
+    _custom_body_brace_group: ($) =>
+      seq(
+        "{",
+        choice(
+          seq(
+            $._custom_body_brace_start,
+            repeat($._nested_custom_body_element),
+          ),
+          $.value_use,
+        ),
+        "}",
+      ),
+    // Inside <...> a bare key followed by anything but `=` or `,` is no
+    // dictionary either (struct<{a: i32}>). Its contents stay region-free.
+    _custom_body_angle_brace_group: ($) =>
+      seq(
+        "{",
+        choice(
+          seq(
+            $._custom_body_angle_brace_start,
+            repeat($._custom_body_angle_element),
+          ),
+          seq(
+            $.bare_id,
+            choice(
+              $._custom_body_angle_brace_follow,
+              $._custom_body_angle_paren,
+              ":",
+            ),
+            repeat($._custom_body_angle_element),
+          ),
+          $.value_use,
+        ),
+        "}",
+      ),
+    // No keyword may start the grammar fallback: valid right after `{`, it
+    // would out-lex the identifier a dictionary key or operation name needs.
+    // `#`, `!` and non-label `^` leads are handled by the opaque scanner when
+    // the group is balanced; a real `^bb0:` region remains in grammar.
+    _custom_body_brace_start: ($) =>
+      braceStart($, $._custom_body_brace_follow, $._custom_body_paren),
+    _custom_body_angle_brace_start: ($) =>
+      braceStart(
+        $,
+        $._custom_body_angle_brace_follow,
+        $._custom_body_angle_paren,
+      ),
+    _custom_body_operator_start: ($) =>
+      choice(
+        "*",
+        "?",
+        "+",
+        $._custom_body_minus_punctuation,
+        "/",
+        "&",
+        "|",
+        "~",
+      ),
+    // Not inlined: a keyword must reduce before a following `<`, as in any body.
+    _custom_body_brace_follow: ($) =>
+      braceFollow(
+        $,
+        $._custom_body_attribute_or_braced_element,
+        $._custom_body_bracket,
+      ),
+    _custom_body_angle_brace_follow: ($) =>
+      braceFollow(
+        $,
+        $._custom_body_angle_braced_element,
+        $._custom_body_angle_bracket,
       ),
 
     _custom_body_dialect_marker: ($) =>
@@ -756,8 +880,35 @@ export default grammar({
       seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_location_list: ($) =>
       seq(token("loc"), "(", "[", optional($._value_use_list), "]", ")"),
+    // Under the unknown-dialect recovery policy, a `{` anywhere inside
+    // `<...>`, also nested in (...), [...] or {...}, is a dictionary, another
+    // brace payload or a balanced group rather than a region.
     _custom_body_angle_group: ($) =>
-      seq("<", repeat($._nested_custom_body_element), ">"),
+      seq("<", repeat($._custom_body_angle_element), ">"),
+    _custom_body_angle_element: ($) =>
+      choice(
+        $._custom_body_reference_element,
+        $._custom_body_type_element,
+        $._custom_body_angle_braced_element,
+        $._custom_body_dialect_marker,
+        $._custom_body_angle_paren,
+        $._custom_body_angle_bracket,
+        $._custom_body_angle_group,
+        $._custom_body_atom,
+        $._custom_body_punctuation,
+        $.trailing_location,
+      ),
+    _custom_body_angle_braced_element: ($) =>
+      choice(
+        $.attribute,
+        $._custom_body_brace_payload,
+        $._custom_body_opaque_brace_group,
+        $._custom_body_angle_brace_group,
+      ),
+    _custom_body_angle_paren: ($) =>
+      seq("(", repeat($._custom_body_angle_element), ")"),
+    _custom_body_angle_bracket: ($) =>
+      seq("[", repeat($._custom_body_angle_element), "]"),
     // "Mapped-from" arrow used by OpenMP loop-transform ops, e.g.
     //   omp.fuse(%fused) <- (%loop0, %loop1)
     //   omp.tile(%grid, %intratile) <- (%loop) sizes(%ts : i32)
@@ -840,7 +991,13 @@ export default grammar({
     _literal_and_type: ($) => seq($._literal, optional($._type_annotation)),
 
     // Type aliases
-    type_alias_def: ($) => seq("!", $._alias_or_dialect_id, "=", $.type),
+    type_alias_def: ($) =>
+      seq(
+        choice(alias($._type_alias_sigil, "!"), "!"),
+        $._alias_or_dialect_id,
+        "=",
+        $.type,
+      ),
     type_alias: ($) => seq("!", $._alias_or_dialect_id),
 
     // Dialect Types
@@ -1135,7 +1292,12 @@ export default grammar({
 
     // Attribute aliases
     attribute_alias_def: ($) =>
-      seq("#", $._alias_or_dialect_id, "=", $.attribute_value),
+      seq(
+        choice(alias($._attribute_alias_sigil, "#"), "#"),
+        $._alias_or_dialect_id,
+        "=",
+        $.attribute_value,
+      ),
     attribute_alias: ($) => seq("#", $._alias_or_dialect_id),
 
     // Dialect attributes
