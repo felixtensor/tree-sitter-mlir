@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** keep `function_type` on `() -> ()` when used as an attribute
+  value (#83).
 - **grammar:** keep `!ns<...>` and `#ns<...>` in a custom operation body as
   `dialect_type` and `dialect_attribute` when another construct follows,
   instead of splitting them into an alias plus a loose `<...>` group (#82).
@@ -38,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- `() -> ()` as an `attribute_value` now includes a `function_type` child
+  instead of parsing as a bare affine map.
 - `!ns<...>` and `#ns<...>` in a custom operation body followed by another
   construct now parse as `dialect_type` / `dialect_attribute`
   (`parametric_dialect_item`) instead of `type_alias` / `attribute_alias`

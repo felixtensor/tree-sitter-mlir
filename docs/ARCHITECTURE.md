@@ -204,7 +204,7 @@ so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 8 conflicts listed in `grammar.js` are load-bearing — removing any
+The 7 conflicts listed in `grammar.js` are load-bearing — removing any
 one causes `tree-sitter generate` to fail with an unresolved conflict.
 The `array` and `tensor` keyword conflicts were additionally tested
 with token precedence substitution, which increased state count and
@@ -222,13 +222,12 @@ payload still allow whitespace. The attached body is aliased to the existing
 alias/namespace overlaps nor the optional body of a pretty dialect item need
 declared conflicts or namespace precedence.
 
-#### Core MLIR Overlaps (3)
+#### Core MLIR Overlaps (2)
 
 | Conflict | Cause |
 | --- | --- |
 | `_value_use_list × _value_use_and_type` | A value in parentheses can be a list element or the start of a value-with-type form. |
 | `_type_list_no_parens × _type_or_func_type` | Function results can be a type list or individual type-or-function-type entries. |
-| `_type_list_parens × _multi_dim_affine_expr_parens` | Empty or comma-separated paren forms overlap between type lists and affine expressions. |
 
 #### Custom-Body Fallback Overlaps (5)
 
