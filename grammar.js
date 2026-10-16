@@ -64,19 +64,16 @@ export default grammar({
     $._attribute_alias_sigil,
     $._type_alias_sigil,
   ],
-  // All 8 declared conflicts are load-bearing: removing any one fails parser
+  // All 7 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
-    // ── Core MLIR overlaps (3) ────────────────────────────────────────────
+    // ── Core MLIR overlaps (2) ────────────────────────────────────────────
 
     // Value in paren: list element or start of value-with-type.
     [$._value_use_list, $._value_use_and_type],
 
     // Function results: type list vs individual type-or-function-type entries.
     [$._type_list_no_parens, $._type_or_func_type],
-
-    // Empty/comma-sep paren forms overlap between type lists and affine exprs.
-    [$._type_list_parens, $._multi_dim_affine_expr_parens],
 
     // ── Custom-body fallback overlaps (5) ─────────────────────────────────
 
@@ -972,7 +969,10 @@ export default grammar({
           repeat(seq(",", choice($.type, $.function_type))),
         ),
       ),
-    _type_list_parens: ($) => seq("(", optional($._type_list_no_parens), ")"),
+    // Empty `()` overlaps with `_multi_dim_affine_expr_parens` in
+    // `attribute_value` before `->`; prefer `function_type` for `() -> ()`.
+    _type_list_parens: ($) =>
+      prec(1, seq("(", optional($._type_list_no_parens), ")")),
     function_type: ($) =>
       seq(choice($.type, $._type_list_parens), $._function_return),
     _function_return: ($) =>

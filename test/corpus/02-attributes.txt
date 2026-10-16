@@ -1610,3 +1610,92 @@ Opaque unknown dialect attribute envelope
         (opaque_dialect_item
           (dialect_namespace)
           (string_literal))))))
+
+================================================================================
+Function types as attribute values keep their function_type node
+================================================================================
+#fn = () -> ()
+#dict = {function_type = () -> ()}
+"gpu.func"() ({
+  gpu.return
+}) {
+  function_type = () -> (),
+  typed = (i1) -> (i32),
+  higher_order = (() -> ()) -> (() -> ())
+} : () -> ()
+"test.props"() <{fn = () -> ()}> : () -> ()
+#distinct_fn = distinct[0]<() -> ()>
+#empty_map = affine_map<() -> ()>
+#sparse = {map = (d0) -> (d0 : compressed)}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (function_type)))
+  (attribute_alias_def
+    (attribute_value
+      (dictionary_attribute
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (function_type))))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (function_type)))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (function_type
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (integer_type))))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (function_type
+                (function_type)
+                (function_type))))))
+      (function_type)))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (function_type))))
+      (function_type)))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (distinct_attribute
+          (integer_literal)
+          (attribute_value
+            (function_type))))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (dictionary_attribute
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (bare_id)
+            (bare_id)))))))
