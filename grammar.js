@@ -64,19 +64,10 @@ export default grammar({
     $._attribute_alias_sigil,
     $._type_alias_sigil,
   ],
-  // All 11 declared conflicts are load-bearing: removing any one fails parser
+  // All 8 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
-    // ── Core MLIR overlaps (6) ────────────────────────────────────────────
-
-    // Type alias !foo<...> vs dialect namespace !foo.<ident>: prefix ambiguity.
-    [$.type_alias, $.dialect_namespace],
-
-    // Attribute alias #foo<...> vs dialect namespace #foo.<ident>: same shape.
-    [$.dialect_namespace, $.attribute_alias],
-
-    // Pretty dialect item: complete at ns.ident or continue into <...> body.
-    [$.pretty_dialect_item],
+    // ── Core MLIR overlaps (3) ────────────────────────────────────────────
 
     // Value in paren: list element or start of value-with-type.
     [$._value_use_list, $._value_use_and_type],
@@ -1013,17 +1004,27 @@ export default grammar({
     dialect_namespace: ($) => $._alias_or_dialect_id,
     dialect_ident: ($) => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.-]/))),
     opaque_dialect_item: ($) =>
-      prec(1, seq($.dialect_namespace, "<", $.string_literal, ">")),
+      prec(
+        1,
+        seq($.dialect_namespace, token.immediate("<"), $.string_literal, ">"),
+      ),
     pretty_dialect_item: ($) =>
       seq(
         $.dialect_namespace,
         ".",
         $.dialect_ident,
-        optional($.pretty_dialect_item_body),
+        optional(alias($._attached_dialect_item_body, $.pretty_dialect_item_body)),
       ),
     // Parametric dialect item: !namespace<...> or #namespace<...> without dot-separated ident
     parametric_dialect_item: ($) =>
-      seq($.dialect_namespace, $.pretty_dialect_item_body),
+      seq(
+        $.dialect_namespace,
+        alias($._attached_dialect_item_body, $.pretty_dialect_item_body),
+      ),
+    // Only the outer body must touch the dialect name. Nested angle groups in
+    // the payload may follow whitespace and retain the same public node type.
+    _attached_dialect_item_body: ($) =>
+      seq(token.immediate("<"), repeat($._pretty_dialect_item_contents), ">"),
     pretty_dialect_item_body: ($) =>
       seq("<", repeat($._pretty_dialect_item_contents), ">"),
     _pretty_dialect_item_contents: ($) =>
@@ -1112,7 +1113,11 @@ export default grammar({
         "*",
       ),
     _pretty_dialect_body_type: ($) =>
-      seq(choice($.bare_id, "array"), $.pretty_dialect_item_body),
+      // Dialect-local element types may be bare (array<3 x ptr>) or carry a
+      // body (array<3 x ptr<4>>).
+      prec.right(
+        seq(choice($.bare_id, "array"), optional($.pretty_dialect_item_body)),
+      ),
 
     // Builtin types
     builtin_type: ($) =>

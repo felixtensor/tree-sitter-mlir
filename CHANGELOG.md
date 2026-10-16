@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** keep `!ns<...>` and `#ns<...>` in a custom operation body as
+  `dialect_type` and `dialect_attribute` when another construct follows,
+  instead of splitting them into an alias plus a loose `<...>` group (#82).
+- **grammar:** require a dialect body's opening `<` to touch its name;
+  whitespace or comments leave a following custom-body angle group separate.
+- **grammar:** parse bare dialect-local array element types such as
+  `!llvm.struct<(array<3 x ptr>)>` inside the complete dialect type body.
 - **scanner:** stop a custom operation body at the next line-start result
   binding or generic operation instead of absorbing it.
 - **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
@@ -31,6 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- `!ns<...>` and `#ns<...>` in a custom operation body followed by another
+  construct now parse as `dialect_type` / `dialect_attribute`
+  (`parametric_dialect_item`) instead of `type_alias` / `attribute_alias`
+  plus flat `<...>` contents.
+- A `<...>` group separated from a type or attribute name by whitespace or
+  comments is no longer part of that dialect item. Undotted names remain
+  aliases, and dotted names end before the separate group.
 - A result binding or generic operation after a custom operation now starts
   its own `operation`, instead of trailing children of the previous
   `custom_operation`.

@@ -204,20 +204,28 @@ so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 11 conflicts listed in `grammar.js` are load-bearing — removing any
+The 8 conflicts listed in `grammar.js` are load-bearing — removing any
 one causes `tree-sitter generate` to fail with an unresolved conflict.
 The `array` and `tensor` keyword conflicts were additionally tested
 with token precedence substitution, which increased state count and
 parser size without improving the AST, so they remain as declared
 conflicts.
 
-#### Core MLIR Overlaps (6)
+Dialect bodies start with `token.immediate("<")`, matching MLIR's requirement
+that the opening angle bracket touch the dialect name. This distinguishes
+`!ns<...>` / `#ns<...>` from aliases followed by separate `<...>` custom-body
+groups, independently of whether another operation follows. The same rule
+applies to dotted names and opaque string bodies. Spaces, newlines and comments
+separate the name from a subsequent group. Nested angle groups inside a dialect
+payload still allow whitespace. The attached body is aliased to the existing
+`pretty_dialect_item_body` node to preserve the public CST shape. Neither the
+alias/namespace overlaps nor the optional body of a pretty dialect item need
+declared conflicts or namespace precedence.
+
+#### Core MLIR Overlaps (3)
 
 | Conflict | Cause |
 | --- | --- |
-| `type_alias × dialect_namespace` | `!foo<...>` can be a type alias or a dialect namespace before the following body decides. |
-| `dialect_namespace × attribute_alias` | `#foo<...>` has the same prefix ambiguity for attribute aliases and dialect attributes. |
-| `pretty_dialect_item × pretty_dialect_item` | A pretty dialect item can be complete at `ns.ident` or continue into a `<...>` body. |
 | `_value_use_list × _value_use_and_type` | A value in parentheses can be a list element or the start of a value-with-type form. |
 | `_type_list_no_parens × _type_or_func_type` | Function results can be a type list or individual type-or-function-type entries. |
 | `_type_list_parens × _multi_dim_affine_expr_parens` | Empty or comma-separated paren forms overlap between type lists and affine expressions. |
