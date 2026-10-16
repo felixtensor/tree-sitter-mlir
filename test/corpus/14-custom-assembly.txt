@@ -2371,3 +2371,327 @@ test.next
   (operation
     rhs: (custom_operation
       name: (custom_op_name))))
+
+================================================================================
+Parametric dialect items in custom bodies keep their reading
+================================================================================
+test.op !foo<i32>
+"test.x"() : () -> ()
+test.op #bar<i32>
+"test.x"() : () -> ()
+test.op !foo<i32>
+%0 = "test.x"() : () -> i32
+test.op #bar<i32>
+%1 = test.next
+test.outer {
+  test.op !foo<>
+}
+test.outer {
+  test.op !foo< inner <i32> >, #bar< inner <i32> >
+}
+test.op !alias, #attr_alias
+"test.x"() : () -> ()
+test.op !foo<i32>, #bar<i32>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (function_type)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dialect_attribute
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (function_type)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    lhs: (op_result
+      (value_use))
+    rhs: (generic_operation
+      (string_literal)
+      (function_type
+        (type
+          (builtin_type
+            (integer_type))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dialect_attribute
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    lhs: (op_result
+      (value_use))
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (type
+                (dialect_type
+                  (parametric_dialect_item
+                    (dialect_namespace)
+                    (pretty_dialect_item_body))))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (type
+                (dialect_type
+                  (parametric_dialect_item
+                    (dialect_namespace)
+                    (pretty_dialect_item_body
+                      (bare_id)
+                      (pretty_dialect_item_body
+                        (type
+                          (builtin_type
+                            (integer_type))))))))
+              (attribute
+                (dialect_attribute
+                  (parametric_dialect_item
+                    (dialect_namespace)
+                    (pretty_dialect_item_body
+                      (bare_id)
+                      (pretty_dialect_item_body
+                        (type
+                          (builtin_type
+                            (integer_type))))))))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (attribute
+        (attribute_alias))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (function_type)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (attribute
+        (dialect_attribute
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type))))))))))
+
+================================================================================
+Dialect item bodies must touch the namespace or identifier
+================================================================================
+test.op !alias <i32>, #attr_alias	<i32>
+test.op !alias
+<i32>, #attr_alias
+<i32>
+test.op !alias// type gap
+<i32>, #attr_alias // attribute gap
+<i32>
+test.op !foo<"payload">, #bar<"payload">
+test.op !alias <"payload">, #attr_alias <"payload">
+test.op !foo.ty<i32>, #bar.attr<i32>
+test.op !foo.ty <i32>, #bar.attr <i32>
+test.op !foo.ty// type gap
+<i32>, #bar.attr
+<i32>
+"test.x"() : () -> ()
+test.op !alias <i32>, #attr_alias	<i32>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (attribute_alias))
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (attribute_alias))
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (comment)
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (attribute_alias))
+      (comment)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (opaque_dialect_item
+            (dialect_namespace)
+            (string_literal))))
+      (attribute
+        (dialect_attribute
+          (opaque_dialect_item
+            (dialect_namespace)
+            (string_literal))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (string_literal)
+      (attribute
+        (attribute_alias))
+      (string_literal)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (type
+                (builtin_type
+                  (integer_type)))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (comment)
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (function_type)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (type
+        (type_alias))
+      (type
+        (builtin_type
+          (integer_type)))
+      (attribute
+        (attribute_alias))
+      (type
+        (builtin_type
+          (integer_type))))))

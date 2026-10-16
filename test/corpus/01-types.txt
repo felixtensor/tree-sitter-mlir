@@ -2216,7 +2216,10 @@ func.func @unknown_dialect_type() -> !bar<> {
                 (custom_op_name)
                 (value_use)
                 (type
-                  (type_alias))))))))))
+                  (dialect_type
+                    (parametric_dialect_item
+                      (dialect_namespace)
+                      (pretty_dialect_item_body))))))))))))
 
 ================================================================================
 Pretty dialect type with nested body
@@ -2325,3 +2328,86 @@ Opaque unknown dialect type envelope
         (opaque_dialect_item
           (dialect_namespace)
           (string_literal))))))
+
+================================================================================
+Bare dialect-local element types in nested LLVM arrays
+================================================================================
+func.func private @element_types(!llvm.array<3 x ptr>, !llvm.array<3 x ptr<4>>)
+llvm.func @callee()
+llvm.mlir.alias external @table : !llvm.struct<(array<3 x ptr>)> {
+  %0 = llvm.mlir.addressof @callee : !llvm.ptr
+  llvm.return %0 : !llvm.ptr
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_dim_list
+                    (dimension_size)
+                    (dimension_separator)
+                    (bare_id))))))
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_dim_list
+                    (dimension_size)
+                    (dimension_separator)
+                    (bare_id)
+                    (pretty_dialect_item_body
+                      (integer_literal)))))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (symbol_ref_id)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (pretty_dialect_item_body
+                (dialect_dim_list
+                  (dimension_size)
+                  (dimension_separator)
+                  (bare_id)))))))
+      (region
+        (entry_block
+          (operation
+            lhs: (op_result
+              (value_use))
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (symbol_ref_id)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)))))))))))
