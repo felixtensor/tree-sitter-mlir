@@ -4544,6 +4544,19 @@
           "name": "pretty_dialect_item_body"
         },
         {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "vector"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "pretty_dialect_item_body"
+            }
+          ]
+        },
+        {
           "type": "SYMBOL",
           "name": "_pretty_dialect_bang_body_token"
         },
@@ -4802,27 +4815,49 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_dialect_dim_primitive"
-          },
-          {
             "type": "REPEAT1",
             "content": {
               "type": "SEQ",
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "dimension_separator"
+                  "name": "_dialect_dimension"
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "_dialect_dim_primitive"
+                  "name": "dimension_separator"
                 }
               ]
             }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_dialect_dim_primitive"
           }
         ]
       }
+    },
+    "_dialect_dimension": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "integer_literal"
+          },
+          "named": true,
+          "value": "dimension_size"
+        },
+        {
+          "type": "STRING",
+          "value": "?"
+        },
+        {
+          "type": "STRING",
+          "value": "*"
+        }
+      ]
     },
     "_dialect_dim_primitive": {
       "type": "CHOICE",
@@ -4844,21 +4879,8 @@
           }
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "integer_literal"
-          },
-          "named": true,
-          "value": "dimension_size"
-        },
-        {
-          "type": "STRING",
-          "value": "?"
-        },
-        {
-          "type": "STRING",
-          "value": "*"
+          "type": "SYMBOL",
+          "name": "_dialect_dimension"
         }
       ]
     },
@@ -4878,6 +4900,10 @@
               {
                 "type": "STRING",
                 "value": "array"
+              },
+              {
+                "type": "STRING",
+                "value": "vector"
               }
             ]
           },
@@ -5124,61 +5150,65 @@
       ]
     },
     "_prim_type": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "integer_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "float_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "index_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "complex_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "none_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "token_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "memref_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "vector_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "tensor_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "tuple_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "opaque_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "dialect_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "type_alias"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "integer_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "float_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "index_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "complex_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "none_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "token_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "memref_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "vector_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "tensor_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "tuple_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "opaque_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "dialect_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type_alias"
+          }
+        ]
+      }
     },
     "memref_type": {
       "type": "SEQ",
@@ -5278,10 +5308,14 @@
     "dimension_size": {
       "type": "TOKEN",
       "content": {
-        "type": "REPEAT1",
+        "type": "PREC",
+        "value": 1,
         "content": {
-          "type": "PATTERN",
-          "value": "[0-9]"
+          "type": "REPEAT1",
+          "content": {
+            "type": "PATTERN",
+            "value": "[0-9]"
+          }
         }
       }
     },
