@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** keep non-builtin `vector<...>` and `N x T` payloads balanced in
+  pretty dialect bodies, and require a dimension before `x` in
+  `dialect_dim_list` (#77).
 - **grammar:** keep `function_type` on `() -> ()` when used as an attribute
   value (#83).
 - **grammar:** keep `!ns<...>` and `#ns<...>` in a custom operation body as
@@ -40,6 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- `dialect_dim_list` now requires a dimension (`N`, `?`, or `*`) before each
+  `x`; `shuffle_mode xor` and `i8x16` parse as pretty-body tokens instead of
+  `dialect_dim_list`.
 - `() -> ()` as an `attribute_value` now includes a `function_type` child
   instead of parsing as a bare affine map.
 - `!ns<...>` and `#ns<...>` in a custom operation body followed by another
