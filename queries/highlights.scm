@@ -89,7 +89,7 @@
 ;; Pretty dialect bodies are dialect-defined payloads. Bare identifiers such as
 ;; sparse tensor map fields and address-space mnemonics render as keywords.
 (pretty_dialect_item_body
-  ["array" "dense" "opaque" "sparse" "tensor" "vector"] @keyword)
+  ["array" "dense" "memref" "opaque" "sparse" "tensor" "tuple" "vector"] @keyword)
 (pretty_dialect_item_body (bare_id) @keyword)
 (pretty_dialect_item_body ["?" "*"] @punctuation.special)
 

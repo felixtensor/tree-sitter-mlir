@@ -1040,7 +1040,11 @@ export default grammar({
     _pretty_dialect_structural_content: ($) =>
       choice(
         $.pretty_dialect_item_body,
+        // Prefix-less generic types keep their payload structural. If the
+        // payload is not a valid type, the keyword branches in
+        // `_pretty_dialect_keyword_content` still degrade it to a balanced body.
         seq("vector", $.pretty_dialect_item_body),
+        seq("tuple", $.pretty_dialect_item_body),
         $._pretty_dialect_bang_body_token,
         $._pretty_dialect_body_attribute,
       ),
@@ -1054,6 +1058,8 @@ export default grammar({
         "vector",
         "tensor",
         "opaque",
+        "memref",
+        "tuple",
         $.bare_id,
       ),
     _pretty_dialect_punctuation_content: ($) =>
@@ -1192,14 +1198,20 @@ export default grammar({
         ),
       ),
 
+    // Prefer the structured type where it parses. Bare `memref` and payloads
+    // this rule cannot handle degrade through the keyword fallback in
+    // `_pretty_dialect_keyword_content` instead of failing the whole body.
     memref_type: ($) =>
-      seq(
-        token("memref"),
-        "<",
-        field("dimension_list", $.dim_list),
-        optional(seq(",", $.attribute_value)),
-        optional(seq(",", $.attribute_value)),
-        ">",
+      prec(
+        1,
+        seq(
+          token("memref"),
+          "<",
+          field("dimension_list", $.dim_list),
+          optional(seq(",", $.attribute_value)),
+          optional(seq(",", $.attribute_value)),
+          ">",
+        ),
       ),
     dim_list: ($) => seq($._dim_primitive, repeat(seq("x", $._dim_primitive))),
     // '*' represents the unranked form for both memref and tensor types
@@ -1238,12 +1250,18 @@ export default grammar({
     _vector_dimension: ($) =>
       choice($.dimension_size, seq("[", $.dimension_size, "]")),
 
+    // Same precedence rationale as `memref_type`: the structured form wins
+    // when the dimensions parse, otherwise `seq("tuple", body)` keeps the
+    // payload balanced as a plain pretty body.
     tuple_type: ($) =>
-      seq(
-        token("tuple"),
-        "<",
-        optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
-        ">",
+      prec(
+        1,
+        seq(
+          token("tuple"),
+          "<",
+          optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
+          ">",
+        ),
       ),
     tuple_dim: ($) => choice($._prim_type, $.function_type),
 
