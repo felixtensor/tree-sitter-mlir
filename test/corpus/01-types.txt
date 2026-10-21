@@ -2441,3 +2441,46 @@ func.func @x_identifiers(%a: !foo.a<contextxmore>, %b: !foo.a<shuffle_mode xor>)
                 (pretty_dialect_item_body
                   (bare_id)
                   (bare_id))))))))))
+
+================================================================================
+tuple bodies keep bare and unknown tuple types balanced
+================================================================================
+func.func @tuple_body(%a: !foo.a<tuple<uint<1>>>, %b: !foo.a<tuple>, %c: !foo.a<tuple<i8>>)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (pretty_dialect_item_body
+                    (bare_id)
+                    (pretty_dialect_item_body
+                      (integer_literal)))))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (type
+                    (builtin_type
+                      (tuple_type
+                        (tuple_dim
+                          (integer_type))))))))))))))

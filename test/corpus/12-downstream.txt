@@ -477,3 +477,52 @@ arc.model @test io !hw.modty<input x : i1, output y : i1> {
           (operation
             rhs: (custom_operation
               name: (custom_op_name))))))))
+
+================================================================================
+IREE ukernel descriptor keeps bare memref in a pretty body
+================================================================================
+#uk = #iree_codegen.ukernel_descriptor<"test", memref>
+func.func @ukernel(%x: !foo.a<memref>, %y: !foo.a<memref<4xi8>>) attributes {uk = #uk}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (dialect_attribute
+        (pretty_dialect_item
+          (dialect_namespace)
+          (dialect_ident)
+          (pretty_dialect_item_body
+            (string_literal))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (dimension_size)
+                          (type
+                            (builtin_type
+                              (integer_type))))))))))))
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (attribute_alias))))))))
