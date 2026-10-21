@@ -1040,6 +1040,7 @@ export default grammar({
     _pretty_dialect_structural_content: ($) =>
       choice(
         $.pretty_dialect_item_body,
+        seq("vector", $.pretty_dialect_item_body),
         $._pretty_dialect_bang_body_token,
         $._pretty_dialect_body_attribute,
       ),
@@ -1100,23 +1101,26 @@ export default grammar({
       prec.dynamic(
         1,
         seq(
+          repeat1(seq($._dialect_dimension, $.dimension_separator)),
           $._dialect_dim_primitive,
-          repeat1(seq($.dimension_separator, $._dialect_dim_primitive)),
         ),
       ),
+    _dialect_dimension: ($) =>
+      choice(alias($.integer_literal, $.dimension_size), "?", "*"),
     _dialect_dim_primitive: ($) =>
       choice(
         prec(1, $.type),
         prec(1, $._pretty_dialect_body_type),
-        alias($.integer_literal, $.dimension_size),
-        "?",
-        "*",
+        $._dialect_dimension,
       ),
     _pretty_dialect_body_type: ($) =>
       // Dialect-local element types may be bare (array<3 x ptr>) or carry a
       // body (array<3 x ptr<4>>).
       prec.right(
-        seq(choice($.bare_id, "array"), optional($.pretty_dialect_item_body)),
+        seq(
+          choice($.bare_id, "array", "vector"),
+          optional($.pretty_dialect_item_body),
+        ),
       ),
 
     // Builtin types
@@ -1169,20 +1173,23 @@ export default grammar({
     token_type: ($) => token(prec(5, "token")),
     complex_type: ($) => seq($._complex_type_start, $._prim_type, ">"),
     _prim_type: ($) =>
-      choice(
-        $.integer_type,
-        $.float_type,
-        $.index_type,
-        $.complex_type,
-        $.none_type,
-        $.token_type,
-        $.memref_type,
-        $.vector_type,
-        $.tensor_type,
-        $.tuple_type,
-        $.opaque_type,
-        $.dialect_type,
-        $.type_alias,
+      prec(
+        1,
+        choice(
+          $.integer_type,
+          $.float_type,
+          $.index_type,
+          $.complex_type,
+          $.none_type,
+          $.token_type,
+          $.memref_type,
+          $.vector_type,
+          $.tensor_type,
+          $.tuple_type,
+          $.opaque_type,
+          $.dialect_type,
+          $.type_alias,
+        ),
       ),
 
     memref_type: ($) =>
@@ -1198,7 +1205,7 @@ export default grammar({
     // '*' represents the unranked form for both memref and tensor types
     // (UnrankedMemRefType, UnrankedTensorType). Vector uses its own
     // vector_dim_list and disallows '*' by construction.
-    dimension_size: ($) => token(repeat1(/[0-9]/)),
+    dimension_size: ($) => token(prec(1, repeat1(/[0-9]/))),
     _dim_primitive: ($) => choice(prec(1, $.type), $.dimension_size, "?", "*"),
 
     tensor_type: ($) =>

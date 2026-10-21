@@ -331,3 +331,149 @@ custom.op <{a: {b: i32}}>
       (type
         (builtin_type
           (integer_type))))))
+
+================================================================================
+CIRCT prefix-less nested types in pretty dialect bodies preserve regions
+================================================================================
+firrtl.circuit "PassiveWire" {
+  firrtl.module @PassiveWire(out %b: !firrtl.probe<bundle<b: vector<uint<1>, 2>>>) {
+    %w = firrtl.wire : !firrtl.vector<vector<uint<1>, 2>, 2>
+  }
+}
+func.func @moore_uarray(%p: !moore.ref<uarray<16 x l8>>, %s: !moore.uarray<4 x string>) -> !llvm.struct<(vector<2xf16>, vector<[4]xf32>)>
+arc.model @test io !hw.modty<input x : i1, output y : i1> {
+^bb0(%arg0: !arc.storage):
+  arc.output
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)
+              (symbol_ref_id)
+              (bare_id)
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)
+                    (pretty_dialect_item_body
+                      (bare_id)
+                      (pretty_dialect_item_body
+                        (bare_id)
+                        (pretty_dialect_item_body
+                          (bare_id)
+                          (pretty_dialect_item_body
+                            (integer_literal))
+                          (integer_literal)))))))
+              (region
+                (entry_block
+                  (operation
+                    lhs: (op_result
+                      (value_use))
+                    rhs: (custom_operation
+                      name: (custom_op_name)
+                      (type
+                        (dialect_type
+                          (pretty_dialect_item
+                            (dialect_namespace)
+                            (dialect_ident)
+                            (pretty_dialect_item_body
+                              (pretty_dialect_item_body
+                                (bare_id)
+                                (pretty_dialect_item_body
+                                  (integer_literal))
+                                (integer_literal))
+                              (integer_literal)))))))))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (bare_id)
+                  (pretty_dialect_item_body
+                    (dialect_dim_list
+                      (dimension_size)
+                      (dimension_separator)
+                      (bare_id)))))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_dim_list
+                    (dimension_size)
+                    (dimension_separator)
+                    (bare_id)))))))
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (dialect_type
+                (pretty_dialect_item
+                  (dialect_namespace)
+                  (dialect_ident)
+                  (pretty_dialect_item_body
+                    (type
+                      (builtin_type
+                        (vector_type
+                          (vector_dim_list
+                            (dimension_size))
+                          (float_type))))
+                    (type
+                      (builtin_type
+                        (vector_type
+                          (vector_dim_list
+                            (dimension_size))
+                          (float_type)))))))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)
+              (type
+                (builtin_type
+                  (integer_type)))
+              (bare_id)
+              (bare_id)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (region
+        (block
+          (block_label
+            (caret_id)
+            (block_arg_list
+              (value_use)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident))))))
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name))))))))
