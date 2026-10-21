@@ -46,3 +46,12 @@ func.func @emitc_attrs() {
   return
 //^ function.builtin
 }
+
+func.func private @bare_keywords(
+  !foo.a<memref>,
+//       ^ keyword
+  !foo.a<tuple>,
+//       ^ keyword
+  !foo.a<array<3 x memref>>
+//                 ^ keyword
+)
