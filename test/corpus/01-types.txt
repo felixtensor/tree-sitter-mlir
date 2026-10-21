@@ -2411,3 +2411,33 @@ llvm.mlir.alias external @table : !llvm.struct<(array<3 x ptr>)> {
                   (pretty_dialect_item
                     (dialect_namespace)
                     (dialect_ident)))))))))))
+
+================================================================================
+x inside identifiers is not a dialect dimension separator
+================================================================================
+func.func @x_identifiers(%a: !foo.a<contextxmore>, %b: !foo.a<shuffle_mode xor>)
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (bare_id)))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (bare_id)
+                  (bare_id))))))))))
