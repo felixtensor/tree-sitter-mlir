@@ -1040,9 +1040,10 @@ export default grammar({
     _pretty_dialect_structural_content: ($) =>
       choice(
         $.pretty_dialect_item_body,
-        // Non-builtin `vector<...>` (e.g. `vector<uint<1>, 2>`) degrades to a
-        // balanced body; `prec(1)` on `_prim_type` keeps valid `vector_type`.
+        // Non-builtin `vector<...>` / `tuple<...>` degrades to a balanced
+        // body; `prec(1)` on `_prim_type` / `tuple_type` keeps valid types.
         seq("vector", $.pretty_dialect_item_body),
+        seq("tuple", $.pretty_dialect_item_body),
         $._pretty_dialect_bang_body_token,
         $._pretty_dialect_body_attribute,
       ),
@@ -1056,6 +1057,8 @@ export default grammar({
         "vector",
         "tensor",
         "opaque",
+        "memref",
+        "tuple",
         $.bare_id,
       ),
     _pretty_dialect_punctuation_content: ($) =>
@@ -1120,11 +1123,14 @@ export default grammar({
     _pretty_dialect_body_type: ($) =>
       // Dialect-local element types may be bare (array<3 x ptr>) or carry a
       // body (array<3 x ptr<4>>).
-      prec.right(
-        seq(
-          choice($.bare_id, "array", "vector"),
-          optional($.pretty_dialect_item_body),
+      choice(
+        prec.right(
+          seq(
+            choice($.bare_id, "array", "vector", "tuple"),
+            optional($.pretty_dialect_item_body),
+          ),
         ),
+        "memref",
       ),
 
     // Builtin types
@@ -1176,7 +1182,7 @@ export default grammar({
     none_type: ($) => token(prec(5, "none")),
     token_type: ($) => token(prec(5, "token")),
     complex_type: ($) => seq($._complex_type_start, $._prim_type, ">"),
-    // Beats the `seq("vector", body)` fallback when `vector<...>` is builtin.
+    // Beats the `seq("vector" | "tuple", body)` fallback on valid builtin types.
     _prim_type: ($) =>
       prec(
         1,
@@ -1197,14 +1203,18 @@ export default grammar({
         ),
       ),
 
+    // Beats the `"memref"` keyword fallback in `pretty_dialect_item_body`.
     memref_type: ($) =>
-      seq(
-        token("memref"),
-        "<",
-        field("dimension_list", $.dim_list),
-        optional(seq(",", $.attribute_value)),
-        optional(seq(",", $.attribute_value)),
-        ">",
+      prec(
+        1,
+        seq(
+          token("memref"),
+          "<",
+          field("dimension_list", $.dim_list),
+          optional(seq(",", $.attribute_value)),
+          optional(seq(",", $.attribute_value)),
+          ">",
+        ),
       ),
     dim_list: ($) => seq($._dim_primitive, repeat(seq("x", $._dim_primitive))),
     // '*' represents the unranked form for both memref and tensor types
@@ -1244,12 +1254,16 @@ export default grammar({
     _vector_dimension: ($) =>
       choice($.dimension_size, seq("[", $.dimension_size, "]")),
 
+    // Beats the `seq("tuple", body)` fallback when `tuple<...>` is builtin.
     tuple_type: ($) =>
-      seq(
-        token("tuple"),
-        "<",
-        optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
-        ">",
+      prec(
+        1,
+        seq(
+          token("tuple"),
+          "<",
+          optional(seq($.tuple_dim, repeat(seq(",", $.tuple_dim)))),
+          ">",
+        ),
       ),
     tuple_dim: ($) => choice($._prim_type, $.function_type),
 
