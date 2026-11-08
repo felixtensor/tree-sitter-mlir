@@ -109,18 +109,24 @@ sync_selected_files() {
 }
 
 # ── Sync IR tests (from mlir/test/IR/) ───────────────────────────────────────
-echo "IR (selected files):"
-mkdir -p "$EXAMPLES_DIR/IR"
-ir_count=0
-for f in parser.mlir core-ops.mlir attribute.mlir affine-map.mlir affine-set.mlir properties.mlir properties-bytecode-roundtrip.mlir custom-print-parse.mlir distinct-attr.mlir check-help-output.mlir locations.mlir test-fold-adaptor.mlir zero_whitespace.mlir token-type.mlir; do
-  if [ -f "$MLIR_TEST_DIR/IR/$f" ]; then
-    cp "$MLIR_TEST_DIR/IR/$f" "$EXAMPLES_DIR/IR/"
-    ir_count=$((ir_count + 1))
-  else
-    echo "  Warning: $f not found in $MLIR_TEST_DIR/IR/"
-  fi
-done
-echo "  $ir_count files synced"
+sync_selected_files "IR" \
+  "$MLIR_TEST_DIR/IR" \
+  "$EXAMPLES_DIR/IR" \
+  parser.mlir \
+  core-ops.mlir \
+  attribute.mlir \
+  affine-map.mlir \
+  affine-set.mlir \
+  properties.mlir \
+  properties-bytecode-roundtrip.mlir \
+  custom-print-parse.mlir \
+  distinct-attr.mlir \
+  check-help-output.mlir \
+  locations.mlir \
+  test-fold-adaptor.mlir \
+  test-func-insert-arg.mlir \
+  zero_whitespace.mlir \
+  token-type.mlir
 
 # ── Sync selected dialect tests ──────────────────────────────────────────────
 sync_selected_files "Builtin/Bytecode" \
@@ -180,6 +186,25 @@ for dialect in $DIALECTS; do
   fi
 
   echo "$dialect:"
+  sync_dir "$src" "$dst"
+done
+
+# ── Sync dialect subdirectories ───────────────────────────────────────────────
+# Some dialect tests live in subdirectories upstream. Mirror those trees so the
+# examples stay a faithful snapshot of mlir/test/Dialect/. Direct-child files of
+# the parent dialects are synced above, so these never overlap.
+SUBDIALECTS="Affine/SuperVectorize Vector/canonicalize Vector/td Vector/CPU/ArmSVE Vector/CPU/X86 Linalg/td Linalg/vectorization Linalg/elementwise Linalg/convolution"
+
+for sub in $SUBDIALECTS; do
+  src="$MLIR_TEST_DIR/Dialect/$sub"
+  dst="$EXAMPLES_DIR/$sub"
+
+  if [ ! -d "$src" ]; then
+    echo "$sub: SKIPPED (directory not found)"
+    continue
+  fi
+
+  echo "$sub:"
   sync_dir "$src" "$dst"
 done
 
