@@ -25,35 +25,49 @@ official tree-sitter grammars.
 ## Directory Structure
 
 ```
-examples/          (617 files, 191,508 lines, 27 source groups; September 2026)
-├── IR/            ← Core parser tests from mlir/test/IR/            (15)
-├── Builtin/       ← mlir/test/Dialect/Builtin/                      (5)
-├── Func/          ← mlir/test/Dialect/Func/                         (2)
-├── Arith/         ← mlir/test/Dialect/Arith/                       (27)
-├── SCF/           ← mlir/test/Dialect/SCF/                         (43)
-├── ControlFlow/   ← mlir/test/Dialect/ControlFlow/                  (5)
-├── MemRef/        ← mlir/test/Dialect/MemRef/                      (32)
-├── Tensor/        ← mlir/test/Dialect/Tensor/                      (30)
-├── Affine/        ← mlir/test/Dialect/Affine/                      (51)
-├── Vector/        ← mlir/test/Dialect/Vector/                      (86)
-├── Linalg/        ← mlir/test/Dialect/Linalg/                     (149)
-├── OpenACC/       ← mlir/test/Dialect/OpenACC/                     (84)
-├── LLVMIR/        ← mlir/test/Dialect/LLVMIR/                      (67)
-├── LLVM/          ← mlir/test/Dialect/LLVM/                         (4)
-├── GPU/           ← mlir/test/Dialect/GPU/                          (2)
-├── OpenMP/        ← mlir/test/Dialect/OpenMP/                       (2)
-├── AMDGPU/        ← mlir/test/Dialect/AMDGPU/                       (2)
-├── NVGPU/         ← mlir/test/Dialect/NVGPU/                        (1)
-├── PDL/           ← mlir/test/Dialect/PDL/                          (2)
-├── PDLInterp/     ← mlir/test/Dialect/PDLInterp/                    (1)
-├── IRDL/          ← mlir/test/Dialect/IRDL/                         (1)
-├── WasmSSA/       ← mlir/test/Dialect/WasmSSA/custom_parser/        (1)
-├── Tosa/          ← mlir/test/Dialect/Tosa/                        (1)
-├── Conversion/    ← mlir/test/Conversion/FuncToLLVM/                (1)
-├── Flang/         ← flang/test/Fir/CUDA/                           (1)
-├── Rewrite/       ← mlir/test/Rewrite/                              (1)
-└── Target/        ← mlir/test/Target/LLVMIR/                        (1)
+examples/          (700 files, 214,939 lines, 37 synced directories; November 2026)
+├── IR/                  ← mlir/test/IR/                               (15)
+├── Builtin/             ← mlir/test/Dialect/Builtin/                   (3)
+│   └── Bytecode/        ← mlir/test/Dialect/Builtin/Bytecode/          (2)
+├── Func/                ← mlir/test/Dialect/Func/                      (2)
+├── Arith/               ← mlir/test/Dialect/Arith/                    (29)
+├── SCF/                 ← mlir/test/Dialect/SCF/                      (42)
+├── ControlFlow/         ← mlir/test/Dialect/ControlFlow/               (5)
+├── MemRef/              ← mlir/test/Dialect/MemRef/                   (32)
+├── Tensor/              ← mlir/test/Dialect/Tensor/                   (30)
+├── Affine/              ← mlir/test/Dialect/Affine/                   (50)
+│   └── SuperVectorize/  ← mlir/test/Dialect/Affine/SuperVectorize/    (16)
+├── Vector/              ← mlir/test/Dialect/Vector/                   (86)
+│   ├── canonicalize/    ← mlir/test/Dialect/Vector/canonicalize/       (7)
+│   ├── td/              ← mlir/test/Dialect/Vector/td/                 (5)
+│   └── CPU/
+│       ├── ArmSVE/      ← mlir/test/Dialect/Vector/CPU/ArmSVE/         (5)
+│       └── X86/         ← mlir/test/Dialect/Vector/CPU/X86/            (1)
+├── Linalg/              ← mlir/test/Dialect/Linalg/                  (148)
+│   ├── td/              ← mlir/test/Dialect/Linalg/td/                 (7)
+│   ├── vectorization/   ← mlir/test/Dialect/Linalg/vectorization/     (14)
+│   ├── elementwise/     ← mlir/test/Dialect/Linalg/elementwise/        (3)
+│   └── convolution/     ← mlir/test/Dialect/Linalg/convolution/        (1)
+├── OpenACC/             ← mlir/test/Dialect/OpenACC/                 (104)
+├── LLVMIR/              ← mlir/test/Dialect/LLVMIR/                   (72)
+├── LLVM/                ← mlir/test/Dialect/LLVM/                      (4)
+├── GPU/                 ← mlir/test/Dialect/GPU/                       (2)
+├── OpenMP/              ← mlir/test/Dialect/OpenMP/                    (2)
+├── AMDGPU/              ← mlir/test/Dialect/AMDGPU/                    (2)
+├── NVGPU/               ← mlir/test/Dialect/NVGPU/                     (1)
+├── PDL/                 ← mlir/test/Dialect/PDL/                       (2)
+├── PDLInterp/           ← mlir/test/Dialect/PDLInterp/                 (1)
+├── IRDL/                ← mlir/test/Dialect/IRDL/                      (1)
+├── WasmSSA/             ← mlir/test/Dialect/WasmSSA/custom_parser/     (1)
+├── Tosa/                ← mlir/test/Dialect/Tosa/                      (1)
+├── Conversion/          ← mlir/test/Conversion/FuncToLLVM/             (1)
+├── Flang/               ← flang/test/Fir/CUDA/                         (1)
+├── Rewrite/             ← mlir/test/Rewrite/                           (1)
+└── Target/              ← mlir/test/Target/LLVMIR/                     (1)
 ```
+
+Counts are the `.mlir` files synced from the upstream directory named on each
+row; upstream subdirectories are listed as their own rows.
 
 For the current upstream anchor and sync timestamp, see
 [SOURCE.md](./SOURCE.md).
@@ -83,8 +97,10 @@ variable. The script records the source commit and timestamp in
 ## File Selection Policy
 
 - **Included**: Direct-child `*.mlir` files from the configured dialect test
-  directories. Other dialects, core IR, conversion, target, rewrite, and Flang
-  tests use curated file lists
+  directories, plus the dialect subdirectories enumerated by `SUBDIALECTS` in
+  `scripts/sync-examples.sh` (for example `Affine/SuperVectorize`,
+  `Vector/CPU/*`, `Linalg/vectorization`). Other dialects, core IR, conversion,
+  target, rewrite, and Flang tests use curated file lists
   (see `scripts/sync-examples.sh` for the current selection).
 - **Excluded**: Files with `invalid` in the name (these contain intentionally
   broken syntax for MLIR diagnostic testing).
