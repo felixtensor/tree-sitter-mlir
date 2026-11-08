@@ -59,7 +59,7 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
-(properties ["<{" "}>"] @punctuation.bracket)
+(properties ["<{" "}>" "<" ">"] @punctuation.bracket)
 ;; Builtin introducers that take a <payload> (affine_map, dense, array, ...)
 ;; are @constructor.builtin: they name a builtin form that constructs a value,
 ;; and the channel stays distinct from the numeric payloads and the enclosing

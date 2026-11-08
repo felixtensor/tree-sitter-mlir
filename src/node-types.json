@@ -1281,6 +1281,16 @@
           }
         ]
       },
+      "properties": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "properties",
+            "named": true
+          }
+        ]
+      },
       "sym_name": {
         "multiple": false,
         "required": false,
