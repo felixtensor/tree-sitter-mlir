@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **grammar:** accept bare `memref` / `tuple` and non-builtin `tuple<...>` in
   pretty dialect bodies while keeping structured `memref_type` / `tuple_type`
-  nodes (#77).
+  nodes, including nested builtin tensor and opaque tuple elements (#77).
 - **grammar:** keep non-builtin `vector<...>` and `N x T` payloads balanced in
   pretty dialect bodies, and require a dimension before `x` in
   `dialect_dim_list` (#77).

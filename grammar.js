@@ -64,7 +64,7 @@ export default grammar({
     $._attribute_alias_sigil,
     $._type_alias_sigil,
   ],
-  // All 7 declared conflicts are load-bearing: removing any one fails parser
+  // All 9 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
     // ── Core MLIR overlaps (2) ────────────────────────────────────────────
@@ -91,6 +91,11 @@ export default grammar({
 
     // String = ...: custom SSA dict key or normal attribute entry.
     [$._custom_body_dict_key, $.attribute_entry],
+
+    // Pretty-body keywords must coexist with builtin type introducers until
+    // their complete payload proves which reading is valid.
+    [$._pretty_dialect_item_contents, $.tensor_type],
+    [$._pretty_dialect_item_contents, $.opaque_type],
   ],
   inline: ($) => [
     $._tier1_custom_operation,
@@ -1025,16 +1030,25 @@ export default grammar({
     // the payload may follow whitespace and retain the same public node type.
     _attached_dialect_item_body: ($) =>
       seq(token.immediate("<"), repeat($._pretty_dialect_item_contents), ">"),
+    // Prefer structured builtin types over extra balanced fallback bodies.
+    // This also offsets dialect_dim_list's dynamic precedence inside a body
+    // such as `tuple<tensor<4xi8>>` without discarding unknown payloads.
     pretty_dialect_item_body: ($) =>
-      seq("<", repeat($._pretty_dialect_item_contents), ">"),
+      prec.dynamic(-1, seq("<", repeat($._pretty_dialect_item_contents), ">")),
     _pretty_dialect_item_contents: ($) =>
-      prec.left(
-        choice(
-          $._pretty_dialect_structural_content,
-          $._pretty_dialect_value_content,
-          $._pretty_dialect_keyword_content,
-          $._pretty_dialect_punctuation_content,
-          token(prec(-1, /[^<>]/)),
+      choice(
+        // No associativity here: reducing these keywords before `<` would
+        // discard the builtin type path inside a nested tuple.
+        "tensor",
+        "opaque",
+        prec.left(
+          choice(
+            $._pretty_dialect_structural_content,
+            $._pretty_dialect_value_content,
+            $._pretty_dialect_keyword_content,
+            $._pretty_dialect_punctuation_content,
+            token(prec(-1, /[^<>]/)),
+          ),
         ),
       ),
     _pretty_dialect_structural_content: ($) =>
@@ -1055,8 +1069,6 @@ export default grammar({
         $._sparse_keyword,
         "array",
         "vector",
-        "tensor",
-        "opaque",
         "memref",
         "tuple",
         $.bare_id,
