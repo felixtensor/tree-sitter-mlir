@@ -55,3 +55,12 @@ func.func private @bare_keywords(
   !foo.a<array<3 x memref>>
 //                 ^ keyword
 )
+
+func.func private @nested_builtin_tuple(
+  !foo.a<tuple<tensor<4xi8>>>,
+//       ^ type.builtin
+//             ^ type.builtin
+  !foo.a<array<3 x tuple<opaque<"x", "y">>>>
+//                 ^ type.builtin
+//                       ^ type.builtin
+)

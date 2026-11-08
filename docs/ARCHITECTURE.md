@@ -204,7 +204,7 @@ so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 7 conflicts listed in `grammar.js` are load-bearing — removing any
+The 9 conflicts listed in `grammar.js` are load-bearing — removing any
 one causes `tree-sitter generate` to fail with an unresolved conflict.
 The `array` and `tensor` keyword conflicts were additionally tested
 with token precedence substitution, which increased state count and
@@ -247,6 +247,24 @@ reaches that conflict; `_custom_body_dotted_key_entry` reads it as a dictionary
 when `=` follows, since no custom assembly format starts with `=`. Known limit: a
 dotted key without a value (`{transform.readonly}`) still parses as a region, the
 same shape as `{ scf.yield }`.
+
+#### Pretty-Dialect Body Overlaps (2)
+
+| Conflict | Cause |
+| --- | --- |
+| `_pretty_dialect_item_contents × tensor_type` | `tensor` is both a bare payload keyword and a builtin type introducer, including inside a nested tuple. |
+| `_pretty_dialect_item_contents × opaque_type` | `opaque` has the same keyword/type overlap. |
+
+These two keywords deliberately sit outside the left-associative pretty-body
+fallback. Reducing either keyword before `<` loses valid nested builtin nodes,
+as in `!foo.a<tuple<tensor<i8>>>` and `!foo.a<tuple<opaque<"x", "y">>>`.
+Committing statically to the builtin reading instead rejects balanced unknown
+payloads such as `tuple<tensor<4xuint<1>>>` or `opaque<"x", uint<1>>`.
+The conflicts retain both readings until the payload is complete. A dynamic
+precedence of -1 on each nested `pretty_dialect_item_body` then prefers the
+structured reading, including ranked tensors whose fallback otherwise gains
+the positive precedence of `dialect_dim_list`. Focused corpus tests pin the
+builtin nodes, unknown payloads, and following operation/region boundaries.
 
 ### External Scanner
 
