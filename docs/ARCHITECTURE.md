@@ -30,7 +30,12 @@ are implementation detail and are **not** part of this surface.
 | `func_operation` | `name`, `visibility`, `specifier`, `sym_name`, `arguments`, `return`, `vscale_range`, `comdat`, `attributes`, `body` |
 | `function_specifier` | LLVM linkage / visibility / unnamed_addr / calling-convention keyword inside `llvm.func` |
 | `vscale_range`, `comdat` | `llvm.func` post-signature clauses: `vscale_range(min, max)` and `comdat(@selector)` |
-| `module_operation` | `name`, `sym_name`, `attributes`, `body` |
+| `module_operation` | `name`, `sym_name`, `properties`, `attributes`, `body` |
+
+The optional `module_operation.properties` field contains a `properties` node
+for either spelling of the custom `prop-dict`: `<{key = value}>` or
+`<key = value>`. Its entries are `attribute_entry` children in both cases.
+Generic operations keep their existing `<{...}>` properties syntax and CST.
 
 ### Structural
 

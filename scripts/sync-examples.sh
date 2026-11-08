@@ -119,6 +119,7 @@ sync_selected_files "IR" \
   affine-set.mlir \
   properties.mlir \
   properties-bytecode-roundtrip.mlir \
+  module-op.mlir \
   custom-print-parse.mlir \
   distinct-attr.mlir \
   check-help-output.mlir \
@@ -154,7 +155,8 @@ sync_selected_files "WasmSSA" \
 sync_selected_files "Target/LLVMIR" \
   "$MLIR_TEST_DIR/Target/LLVMIR" \
   "$EXAMPLES_DIR/Target/LLVMIR" \
-  llvmir-le-specific.mlir
+  llvmir-le-specific.mlir \
+  target-to-data-layout-and-target-features.mlir
 sync_selected_files "Rewrite" \
   "$MLIR_TEST_DIR/Rewrite" \
   "$EXAMPLES_DIR/Rewrite" \
@@ -172,6 +174,30 @@ sync_selected_files "Flang/Fir/CUDA" \
   "$LLVM_DIR/flang/test/Fir/CUDA" \
   "$EXAMPLES_DIR/Flang/Fir/CUDA" \
   cuda-target-rewrite.mlir
+
+# Module prop-dict regressions from the full upstream scan. Keep the exact
+# files that exposed the gap without importing unrelated negative tests.
+sync_selected_files "Bytecode" \
+  "$MLIR_TEST_DIR/Bytecode" "$EXAMPLES_DIR/Bytecode" \
+  dlti-query-op-interface-roundtrip.mlir
+sync_selected_files "Conversion/MPIToLLVM" \
+  "$MLIR_TEST_DIR/Conversion/MPIToLLVM" "$EXAMPLES_DIR/Conversion/MPIToLLVM" \
+  mpitollvm.mlir
+sync_selected_files "Conversion/ShardToMPI" \
+  "$MLIR_TEST_DIR/Conversion/ShardToMPI" "$EXAMPLES_DIR/Conversion/ShardToMPI" \
+  convert-shard-to-mpi.mlir \
+  convert-shardshape-to-mpi.mlir
+sync_selected_files "DLTI" "$MLIR_TEST_DIR/Dialect/DLTI" "$EXAMPLES_DIR/DLTI" \
+  query-op-interface.mlir
+sync_selected_files "MPI" "$MLIR_TEST_DIR/Dialect/MPI" "$EXAMPLES_DIR/MPI" \
+  canonicalize.mlir
+sync_selected_files "Shard" "$MLIR_TEST_DIR/Dialect/Shard" "$EXAMPLES_DIR/Shard" \
+  forward-sharding-propagation.mlir
+sync_selected_files "Transforms" \
+  "$MLIR_TEST_DIR/Transforms" "$EXAMPLES_DIR/Transforms" \
+  remove-dead-values-symbol-scope.mlir \
+  sccp-callgraph.mlir \
+  test-symbol-dce.mlir
 
 # ── Sync dialect tests ───────────────────────────────────────────────────────
 DIALECTS="Builtin Func Arith SCF ControlFlow MemRef Tensor Affine Vector Linalg OpenACC LLVMIR LLVM PDL PDLInterp"

@@ -342,6 +342,15 @@ export default grammar({
         repeat(seq(",", $.attribute_entry)),
         "}>",
       ),
+    // The custom prop-dict directive also accepts <key = value, ...>.
+    // Keep this separate from generic operations, which use <{...}> only,
+    // and alias it to properties so both spellings expose the same CST.
+    _keyed_properties: ($) =>
+      seq(
+        "<",
+        optional(seq($.attribute_entry, repeat(seq(",", $.attribute_entry)))),
+        ">",
+      ),
     dictionary_attribute: ($) =>
       seq(
         "{",
@@ -480,6 +489,12 @@ export default grammar({
             ),
           ),
           field("sym_name", optional($.symbol_ref_id)),
+          field(
+            "properties",
+            optional(
+              choice($.properties, alias($._keyed_properties, $.properties)),
+            ),
+          ),
           field(
             "attributes",
             optional(seq(optional(token("attributes")), $.attribute)),

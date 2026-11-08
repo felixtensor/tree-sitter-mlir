@@ -139,3 +139,221 @@ Generic operation with properties and an empty attribute dictionary
       (attribute
         (dictionary_attribute))
       (function_type))))
+
+================================================================================
+Module with DLTI dictionary properties
+================================================================================
+module <{dlti = #dlti.map<"chip" = "sm_90">}> {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (dialect_attribute
+                (pretty_dialect_item
+                  (dialect_namespace)
+                  (dialect_ident)
+                  (pretty_dialect_item_body
+                    (string_literal)
+                    (string_literal)))))))
+        body: (region)))))
+
+================================================================================
+Module with named key-value properties
+================================================================================
+module @nested_module <sym_visibility = "nested"> {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal))))
+        body: (region)))))
+
+================================================================================
+Module with key-value properties and attributes
+================================================================================
+module @property_module <sym_visibility = "private"> attributes {foo.attr = true} {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal))))
+        attributes: (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id)
+              (attribute_value
+                (bool_literal)))))
+        body: (region)))))
+
+================================================================================
+Module with builtin name and dictionary properties
+================================================================================
+builtin.module @root <{sym_visibility = "private", dlti = #dlti.map<"chip" = "sm_90">}> attributes {foo.attr = true} {} loc("root")
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal)))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (dialect_attribute
+                (pretty_dialect_item
+                  (dialect_namespace)
+                  (dialect_ident)
+                  (pretty_dialect_item_body
+                    (string_literal)
+                    (string_literal)))))))
+        attributes: (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id)
+              (attribute_value
+                (bool_literal)))))
+        body: (region)))
+    location: (trailing_location
+      (location
+        (string_literal)))))
+
+================================================================================
+Module with empty properties in both spellings
+================================================================================
+module <{}> {}
+builtin.module <> {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        properties: (properties)
+        body: (region))))
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        properties: (properties)
+        body: (region)))))
+
+================================================================================
+Module with multiline key-value properties
+================================================================================
+builtin.module <
+  sym_visibility = "private",
+  // The nested angle group must close before the properties dictionary.
+  dlti = #dlti.map<"chip" = "sm_90", "size" = 32 : i32>
+> {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal)))
+          (comment)
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (dialect_attribute
+                (pretty_dialect_item
+                  (dialect_namespace)
+                  (dialect_ident)
+                  (pretty_dialect_item_body
+                    (string_literal)
+                    (string_literal)
+                    (string_literal)
+                    (integer_literal)
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))
+        body: (region)))))
+
+================================================================================
+Module properties preserve nested and following operation boundaries
+================================================================================
+module @outer <sym_visibility = "public"> attributes {outer = true} {
+  module @inner <{sym_visibility = "nested"}> attributes {inner = true} {}
+  func.func @after_inner()
+}
+module @sibling {}
+"test.after"() : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        properties: (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal))))
+        attributes: (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id)
+              (attribute_value
+                (bool_literal)))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                (module_operation
+                  sym_name: (symbol_ref_id)
+                  properties: (properties
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal))))
+                  attributes: (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (bool_literal)))))
+                  body: (region))))
+            (operation
+              rhs: (custom_operation
+                (func_operation
+                  sym_name: (symbol_ref_id)
+                  arguments: (func_arg_list)))))))))
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        body: (region))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (function_type))))
