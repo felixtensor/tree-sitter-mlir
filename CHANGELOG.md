@@ -14,9 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- **scanner/grammar:** recover an unclosed operation-level fallback brace
-  payload at a following line-start operation or block boundary, keeping sibling
-  operations, the enclosing region close and subsequent functions intact.
+- **scanner/grammar:** localize unclosed direct custom-body fallback brace
+  payloads before a following operation/block boundary, preserving sibling
+  operations, result bindings, enclosing regions and subsequent functions.
+  Balanced payloads retain the existing grammar path. Assignment keys may have
+  whitespace/comments before `=`, and `module(@sym)` / `module:` remain payload
+  syntax. A typed operation such as `llvm.mlir.undef : i32` remains a boundary.
+- **scanner:** track the current line start through quoted probes without
+  carrying a newline from inside a multiline call past its closing parenthesis.
 - **grammar:** accept bare `memref` / `tuple` and non-builtin `tuple<...>` in
   pretty dialect bodies while keeping structured `memref_type` / `tuple_type`
   nodes, including nested builtin tensor and opaque tuple elements (#77).
@@ -49,11 +54,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
-- A malformed operation-level fallback brace payload may now be an opaque
-  prefix followed by a local `MISSING "}"`. Following operations and functions
-  keep their own nodes instead of becoming payload contents or nested functions.
-  Balanced fallback payloads without a direct operation/block boundary retain
-  their existing CST.
+- A malformed direct custom-body fallback brace payload may now be reported
+  as a local `ERROR` or missing close; the opaque prefix may be a sibling error
+  rather than contents of its preceding operation. Following operation kinds,
+  result bindings and function/region boundaries are preserved in the pinned
+  recovery cases. Balanced payloads without an ambiguous direct operation-shaped
+  continuation retain their CST. Specialized headers must already be complete;
+  alias definitions and unlisted default-dialect bare names remain known limits.
 - `dialect_dim_list` now requires a dimension (`N`, `?`, or `*`) before each
   `x`; `shuffle_mode xor` and `i8x16` parse as pretty-body tokens instead of
   `dialect_dim_list`.

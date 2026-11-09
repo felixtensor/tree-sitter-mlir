@@ -14,9 +14,9 @@ enum TokenType {
   CUSTOM_BODY_OPAQUE_BRACE_GROUP,
   ATTRIBUTE_ALIAS_SIGIL,
   TYPE_ALIAS_SIGIL,
-  CUSTOM_BODY_UNCLOSED_BRACE_OPEN,
-  CUSTOM_BODY_UNCLOSED_BRACE_PAYLOAD,
+  CUSTOM_BODY_UNCLOSED_BRACE_PREFIX,
   RECOVERY_DOTTED_OP_NAME,
+  ERROR_SENTINEL,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -151,13 +151,6 @@ typedef enum {
 static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
                                                 int *brace_depth, bool *line_start);
 
-// Skip extras while probing the first meaningful character after `{`. This is
-// deliberately local to the opaque-brace probe: the grammar still owns all
-// ordinary brace syntax and the scanner must not become a second lexer.
-static bool skip_brace_leading_extras(TSLexer *lexer) {
-  return skip_extras(lexer) == EXTRAS_READY;
-}
-
 // Precondition: the lexer is positioned after the opening `{`, and the
 // caller has already established that the first meaningful character is an
 // unsafe custom-body lead. Consume the rest of one balanced brace group,
@@ -222,11 +215,12 @@ static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
   return false;
 }
 
-// Preserve the opening token's mark while probing a fallback payload. This
-// recognizes only its ambiguous string/value lead, not its internal syntax.
+// Probe only the unsafe fallback lead. Complete payloads stay in grammar;
+// an unclosed prefix is captured as one token, including its opening brace.
 static bool scan_suffix_id(TSLexer *lexer);
 static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start);
-static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens);
+static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
+                                  int *parens);
 
 static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
   for (;;) {
@@ -254,6 +248,7 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
       lexer->advance(lexer, false);
     }
     lexer->advance(lexer, false);
+    lexer->mark_end(lexer);
     if (!skip_payload_extras(lexer, line_start))
       return true;
     return lexer->lookahead != '=' && lexer->lookahead != ',' &&
@@ -263,6 +258,7 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
     lexer->advance(lexer, false);
     if (!scan_suffix_id(lexer))
       return false;
+    lexer->mark_end(lexer);
     if (!skip_payload_extras(lexer, line_start))
       return true;
     return lexer->lookahead != '=' && lexer->lookahead != ',' &&
@@ -279,19 +275,16 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
 
 // A fallback group cannot contain operations at its direct level. Check for
 // a close before a line-start operation name; nested groups, strings and
-// comments protect their contents. The grammar still builds every CST node.
-static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start,
-                                     bool capture, bool *has_payload) {
+// comments protect their contents. A true result declines the prefix token,
+// leaving every balanced-payload CST node to the grammar.
+static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
   int braces = 1, parens = 0, brackets = 0, angles = 0;
   bool in_string = false;
-  unsigned steps = 0;
   while (lexer->lookahead != '\0') {
-    if (capture) {
+    // Keep boundary-leading whitespace out of the prefix, so the ordinary
+    // result/generic-operation scanners can still observe its newline.
+    if (!line_start)
       lexer->mark_end(lexer);
-      if (steps > 0)
-        *has_payload = true;
-    }
-    steps++;
     int32_t c = lexer->lookahead;
     if (in_string) {
       lexer->advance(lexer, false);
@@ -330,7 +323,7 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start,
     }
     if (direct_line && c == '"') {
       line_start = false;
-      if (scan_generic_op_quote(lexer, false, &parens))
+      if (scan_generic_op_quote(lexer, false, &line_start, &parens))
         return false;
       continue;
     }
@@ -361,11 +354,27 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start,
         lexer->advance(lexer, false);
       }
       word[length] = '\0';
-      if (dotted || strcmp(word, "return") == 0 || strcmp(word, "call") == 0 ||
+      // `module(@sym)` is the dedicated `_custom_body_module_symbol_arg`
+      // body element, not a sibling operation. Do not treat it as a boundary.
+      if (strcmp(word, "module") == 0 && lexer->lookahead == '(') {
+        line_start = false;
+        continue;
+      }
+      bool boundary =
+          dotted || strcmp(word, "return") == 0 || strcmp(word, "call") == 0 ||
           strcmp(word, "call_indirect") == 0 || strcmp(word, "constant") == 0 ||
           strcmp(word, "unrealized_conversion_cast") == 0 ||
-          strcmp(word, "module") == 0)
-        return false;
+          strcmp(word, "module") == 0;
+      if (boundary) {
+        // '=' disambiguates assignment syntax even across comments/newlines.
+        // ':' does not: an unbound typed operation may begin with it.
+        // The dedicated module operation cannot start with ':'.
+        bool next_line = false;
+        if (!skip_payload_extras(lexer, &next_line) ||
+            (lexer->lookahead != '=' &&
+             !(strcmp(word, "module") == 0 && lexer->lookahead == ':')))
+          return false;
+      }
       line_start = false;
       continue;
     }
@@ -396,10 +405,7 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start,
       angles--;
     lexer->advance(lexer, false);
   }
-  if (capture && steps > 0) {
-    lexer->mark_end(lexer);
-    *has_payload = true;
-  }
+  lexer->mark_end(lexer);
   return false;
 }
 
@@ -412,12 +418,14 @@ static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
                                     bool allow_opaque) {
   lexer->advance(lexer, false);
   lexer->mark_end(lexer);
-  if (!skip_brace_leading_extras(lexer)) {
+  bool line_start = false;
+  if (!skip_payload_extras(lexer, &line_start)) {
     if (!allow_unclosed)
       return false;
-    bool closed = scan_fallback_brace_tail(lexer, false, false, NULL);
-    if (closed) return false;
-    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_OPEN;
+    lexer->mark_end(lexer);
+    if (scan_fallback_brace_tail(lexer, false))
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_PREFIX;
     return true;
   }
 
@@ -429,12 +437,11 @@ static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
   }
 
   if (lexer->lookahead != '^') {
-    bool line_start = false;
     if (!allow_unclosed || !is_fallback_brace_lead(lexer, &line_start))
       return false;
-    bool closed = scan_fallback_brace_tail(lexer, line_start, false, NULL);
-    if (closed) return false;
-    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_OPEN;
+    if (scan_fallback_brace_tail(lexer, line_start))
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_PREFIX;
     return true;
   }
   if (!allow_opaque)
@@ -678,7 +685,13 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
 // what a generic operation allows next: `:`, `[`, `<{`, `(` or `{`. A custom
 // body's quoted name before `(` carries more than values, as in
 // `with "rewriter"(%x : !pdl.value)`.
-static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens) {
+static bool skip_quote_extras(TSLexer *lexer, bool *line_start) {
+  return line_start ? skip_payload_extras(lexer, line_start)
+                    : skip_label_extras(lexer);
+}
+
+static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
+                                  int *parens) {
   lexer->advance(lexer, false);
   if (mark)
     lexer->mark_end(lexer);
@@ -707,7 +720,9 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens) {
   }
   lexer->advance(lexer, false);
 
-  if (!skip_label_extras(lexer)) {
+  if (line_start)
+    *line_start = false;
+  if (!skip_quote_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead != '(') {
@@ -716,7 +731,9 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens) {
   lexer->advance(lexer, false);
   if (parens)
     (*parens)++;
-  if (!skip_label_extras(lexer)) {
+  if (line_start)
+    *line_start = false;
+  if (!skip_quote_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead == '%') {
@@ -725,14 +742,18 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens) {
       if (!scan_suffix_id(lexer)) {
         return false;
       }
-      if (!skip_label_extras(lexer)) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_quote_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != ',') {
         break;
       }
       lexer->advance(lexer, false);
-      if (!skip_label_extras(lexer)) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_quote_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != '%') {
@@ -746,7 +767,9 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, int *parens) {
   lexer->advance(lexer, false);
   if (parens)
     (*parens)--;
-  if (!skip_label_extras(lexer)) {
+  if (line_start)
+    *line_start = false;
+  if (!skip_quote_extras(lexer, line_start)) {
     return false;
   }
 
@@ -793,18 +816,17 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
-  // A captured malformed prefix may include the sibling's indentation. In
-  // recovery, the ordinary boundary probes must also work at that column.
-  bool recovering = valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PAYLOAD] &&
-                    valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_OPEN];
+  // The sentinel is not used by any grammar production and is never emitted.
+  // Unlike combinations of context tokens, it is unambiguous even when parser
+  // states share lookaheads from top-level and region contexts.
+  bool recovering = valid_symbols[ERROR_SENTINEL];
 
   // The recovery lexer does not recognize arbitrary dotted names internally.
   // Supply the same token in recovery so a missing payload close can be
   // inserted before the complete sibling name, instead of deleting its
   // characters.
   if (valid_symbols[RECOVERY_DOTTED_OP_NAME] &&
-      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PAYLOAD] &&
-      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_OPEN] &&
+      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && recovering &&
       ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
        (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
        lexer->lookahead == '_')) {
@@ -846,16 +868,6 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return true;
   }
 
-  if (valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PAYLOAD] &&
-      !valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_OPEN]) {
-    bool has_payload = false;
-    scan_fallback_brace_tail(lexer, at_line_start, true, &has_payload);
-    if (!has_payload)
-      return false;
-    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_PAYLOAD;
-    return true;
-  }
-
   if (lexer->lookahead == '#') {
     if (at_line_start && valid_symbols[ATTRIBUTE_ALIAS_SIGIL] &&
         scan_alias_definition_sigil(lexer)) {
@@ -874,11 +886,11 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if ((valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP] ||
-       valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_OPEN]) &&
+       valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX]) &&
       lexer->lookahead == '{') {
-    return scan_custom_brace_group(
-        lexer, valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_OPEN],
-        valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP]);
+    return scan_custom_brace_group(lexer,
+      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && !recovering,
+      valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP]);
   }
 
   // At a region opening such as `{^bb0: ...}`, the grammar can require a
@@ -905,7 +917,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   if (lexer->lookahead == '"') {
     if (valid_symbols[GENERIC_OP_QUOTE] && (at_line_start || recovering) &&
-        scan_generic_op_quote(lexer, true, NULL)) {
+        scan_generic_op_quote(lexer, true, NULL, NULL)) {
       lexer->result_symbol = GENERIC_OP_QUOTE;
       return true;
     }

@@ -473,8 +473,8 @@ func.func @after() { return }
           (entry_block
             (operation
               rhs: (custom_operation
-                name: (custom_op_name)
-                (MISSING "}")))
+                name: (custom_op_name)))
+            (ERROR)
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))
@@ -517,8 +517,8 @@ func.func @after() { return }
           (entry_block
             (operation
               rhs: (custom_operation
-                name: (custom_op_name)
-                (MISSING "}")))
+                name: (custom_op_name)))
+            (ERROR)
             (operation
               lhs: (op_result
                 (value_use))
@@ -562,8 +562,8 @@ func.func @after() { return }
           (entry_block
             (operation
               rhs: (custom_operation
-                name: (custom_op_name)
-                (MISSING "}")))
+                name: (custom_op_name)))
+            (ERROR)
             (operation
               rhs: (generic_operation
                 (string_literal)
@@ -604,8 +604,8 @@ func.func @after() { return }
           (entry_block
             (operation
               rhs: (custom_operation
-                name: (custom_op_name)
-                (MISSING "}"))))
+                name: (custom_op_name))))
+          (ERROR)
           (block
             (block_label
               (caret_id))

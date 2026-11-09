@@ -63,9 +63,10 @@ export default grammar({
     $._custom_body_opaque_brace_group,
     $._attribute_alias_sigil,
     $._type_alias_sigil,
-    $._custom_body_unclosed_brace_open,
-    $._custom_body_unclosed_brace_payload,
+    $._custom_body_unclosed_brace_prefix,
     $._recovery_dotted_op_name,
+    // Never emitted or used in a production. Only the recovery lexer offers it.
+    $._error_sentinel,
   ],
   // All 9 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -555,7 +556,6 @@ export default grammar({
           seq(
             field("name", $.custom_op_name),
             repeat($._custom_body_element),
-            optional($._custom_body_unclosed_brace_group),
           ),
         ),
       ),
@@ -568,7 +568,6 @@ export default grammar({
             field("name", alias($._dotted_op_name, $.custom_op_name)),
             $._custom_body_location_attr_dict,
             repeat($._custom_body_element),
-            optional($._custom_body_unclosed_brace_group),
           ),
         ),
       ),
@@ -625,6 +624,7 @@ export default grammar({
       choice(
         $.custom_body_dim_list,
         $._custom_body_element_base,
+        $._custom_body_unclosed_brace_group,
         // Kept out of _custom_body_element_base because nested delimiter bodies
         // should still treat `>` as an angle-group boundary, not a loose marker.
         $._custom_body_successor_marker, // >^bb1 (WasmSSA if continuation)
@@ -687,11 +687,11 @@ export default grammar({
 
     // Probe before committing to a fallback group. A malformed payload uses
     // an opaque prefix ending before the next operation/block, leaving the
-    // required close to ordinary MISSING-token recovery.
+    // required close keeps the prefix erroneous; ordinary recovery can report
+    // a local ERROR or missing close without consuming the next operation.
     _custom_body_unclosed_brace_group: ($) =>
       seq(
-        alias($._custom_body_unclosed_brace_open, "{"),
-        $._custom_body_unclosed_brace_payload,
+        $._custom_body_unclosed_brace_prefix,
         "}",
       ),
     _custom_body_brace_group: ($) =>

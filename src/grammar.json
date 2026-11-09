@@ -2359,18 +2359,6 @@
                 "type": "SYMBOL",
                 "name": "_custom_body_element"
               }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_custom_body_unclosed_brace_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
             }
           ]
         }
@@ -2408,18 +2396,6 @@
                 "type": "SYMBOL",
                 "name": "_custom_body_element"
               }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_custom_body_unclosed_brace_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
             }
           ]
         }
@@ -2534,6 +2510,10 @@
         {
           "type": "SYMBOL",
           "name": "_custom_body_element_base"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_unclosed_brace_group"
         },
         {
           "type": "SYMBOL",
@@ -2727,17 +2707,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_custom_body_unclosed_brace_open"
-          },
-          "named": false,
-          "value": "{"
-        },
-        {
           "type": "SYMBOL",
-          "name": "_custom_body_unclosed_brace_payload"
+          "name": "_custom_body_unclosed_brace_prefix"
         },
         {
           "type": "STRING",
@@ -7189,15 +7160,15 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_custom_body_unclosed_brace_open"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_custom_body_unclosed_brace_payload"
+      "name": "_custom_body_unclosed_brace_prefix"
     },
     {
       "type": "SYMBOL",
       "name": "_recovery_dotted_op_name"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_error_sentinel"
     }
   ],
   "inline": [
