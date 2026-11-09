@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   syntax. A typed operation such as `llvm.mlir.undef : i32` remains a boundary.
 - **scanner:** track the current line start through quoted probes without
   carrying a newline from inside a multiline call past its closing parenthesis.
+- **grammar:** keep the `constant` modifier inside `memref.global` and
+  `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
+  default-dialect `constant` operations still start their own operation.
 - **grammar:** accept bare `memref` / `tuple` and non-builtin `tuple<...>` in
   pretty dialect bodies while keeping structured `memref_type` / `tuple_type`
   nodes, including nested builtin tensor and opaque tuple elements (#77).
@@ -61,6 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recovery cases. Balanced payloads without an ambiguous direct operation-shaped
   continuation retain their CST. Specialized headers must already be complete;
   alias definitions and unlisted default-dialect bare names remain known limits.
+- A global's `constant` modifier is now a `bare_id` inside its operation;
+  its symbol, type and initializer stay in the same `custom_operation`.
+  A default-dialect `constant` operation now has a `bare_id` child inside
+  `custom_op_name`, like other names handled by the default-dialect fallback.
 - `dialect_dim_list` now requires a dimension (`N`, `?`, or `*`) before each
   `x`; `shuffle_mode xor` and `i8x16` parse as pretty-body tokens instead of
   `dialect_dim_list`.

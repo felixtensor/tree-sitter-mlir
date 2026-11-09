@@ -21,3 +21,10 @@ wasmssa.func @func_0(%arg0 : !wasmssa<local ref to i32>) -> i32 {
   wasmssa.return %retVal : f32
 //^ function.builtin
 }
+
+memref.global "private" constant @c : memref<2xi32> = dense<0>
+//                      ^ keyword
+llvm.mlir.global internal constant @g(0 : i32) : i32
+//                        ^ keyword
+%f = constant @fn : () -> ()
+//   ^ function.builtin

@@ -2695,3 +2695,77 @@ test.op !alias <i32>, #attr_alias	<i32>
       (type
         (builtin_type
           (integer_type))))))
+
+================================================================================
+Global constant modifiers stay in their owning operations
+================================================================================
+memref.global "private" constant @c : memref<2xi32> = dense<0>
+llvm.mlir.global internal constant @g(0 : i32) : i32
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (string_literal)
+      (bare_id)
+      (symbol_ref_id)
+      (type
+        (builtin_type
+          (memref_type
+            dimension_list: (dim_list
+              (dimension_size)
+              (type
+                (builtin_type
+                  (integer_type)))))))
+      (tensor_literal
+        (integer_literal))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (bare_id)
+      (symbol_ref_id)
+      (integer_literal)
+      (type
+        (builtin_type
+          (integer_type)))
+      (type
+        (builtin_type
+          (integer_type))))))
+
+================================================================================
+Result-bound default dialect constant keeps sibling boundaries
+================================================================================
+func.func @bare_constant() {
+  test.before
+  %f = constant @fn : () -> ()
+  test.after
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name
+                  (bare_id))
+                (symbol_ref_id)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))

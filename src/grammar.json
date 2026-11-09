@@ -2490,10 +2490,6 @@
             },
             {
               "type": "STRING",
-              "value": "constant"
-            },
-            {
-              "type": "STRING",
               "value": "unrealized_conversion_cast"
             }
           ]
