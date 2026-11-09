@@ -566,7 +566,7 @@ export default grammar({
       ),
 
     // Operation name: dotted form (arith.addi, scf.forall.in_parallel)
-    // or known bare names (return, call, constant, etc.)
+    // or known bare names (return, call, etc.)
     // High token precedence (prec 10) ensures these win over bare_id at the
     // token level, forcing the parser to start a new operation rather than
     // continuing the body of the previous one.
@@ -592,6 +592,9 @@ export default grammar({
       ),
     // Bare operation names: spec-sanctioned no-prefix aliases only.
     // All other dialect ops go through _dotted_op_name or _generic_custom_operation.
+    // `constant` is also a global modifier. Let it continue a custom body as
+    // bare_id; a result binding still starts a real default-dialect constant
+    // operation, as does the beginning of a region.
     _bare_op_name: ($) =>
       token(
         prec(
@@ -600,7 +603,6 @@ export default grammar({
             "return",
             "call",
             "call_indirect",
-            "constant",
             "unrealized_conversion_cast",
           ),
         ),

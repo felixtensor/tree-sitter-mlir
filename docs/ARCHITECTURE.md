@@ -169,6 +169,11 @@ token cannot continue it, whether or not the operation before binds results.
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
+`constant` uses the default-dialect bare-name fallback rather than the listed
+high-precedence names: it is also a modifier in `memref.global` and
+`llvm.mlir.global`, where it must continue the body. A result binding still
+starts a separate default-dialect `constant` operation.
+
 #### What a Brace Encloses in a Custom Body
 
 A `{` reads as a region, an attribute dictionary or a known brace payload

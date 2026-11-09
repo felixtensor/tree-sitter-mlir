@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** keep the `constant` modifier inside `memref.global` and
+  `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
+  default-dialect `constant` operations still start their own operation.
 - **grammar:** accept bare `memref` / `tuple` and non-builtin `tuple<...>` in
   pretty dialect bodies while keeping structured `memref_type` / `tuple_type`
   nodes, including nested builtin tensor and opaque tuple elements (#77).
@@ -46,6 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- A global's `constant` modifier is now a `bare_id` inside its operation;
+  its symbol, type and initializer stay in the same `custom_operation`.
+  A default-dialect `constant` operation now has a `bare_id` child inside
+  `custom_op_name`, like other names handled by the default-dialect fallback.
 - `dialect_dim_list` now requires a dimension (`N`, `?`, or `*`) before each
   `x`; `shuffle_mode xor` and `i8x16` parse as pretty-body tokens instead of
   `dialect_dim_list`.
