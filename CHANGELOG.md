@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **scanner/grammar:** recover an unclosed operation-level fallback brace
+  payload at a following line-start operation or block boundary, keeping sibling
+  operations, the enclosing region close and subsequent functions intact.
 - **grammar:** keep the `constant` modifier inside `memref.global` and
   `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
   default-dialect `constant` operations still start their own operation.
@@ -36,8 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   binding or generic operation instead of absorbing it.
 - **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
   attribute dictionary instead of a region.
-- **grammar:** keep an unrecognized `{...}` in a custom operation body, such as
-  `{"a": %x}`, inside its operation instead of misnesting everything after it.
+- **grammar:** keep balanced unrecognized `{...}` payloads in a custom
+  operation body, such as `{"a": %x}`, inside that operation.
 - **grammar:** never read a `{...}` inside `<...>` in a custom operation body
   as a region, at any depth, as in `struct<{a: i32}>` or `<{a: {b: i32}}>`.
 - **scanner:** consume fully balanced unsafe custom-body brace groups whose
@@ -49,6 +52,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- A malformed operation-level fallback brace payload may now be an opaque
+  prefix followed by a local `MISSING "}"`. Following operations and functions
+  keep their own nodes instead of becoming payload contents or nested functions.
+  Balanced fallback payloads without a direct operation/block boundary retain
+  their existing CST.
 - A global's `constant` modifier is now a `bare_id` inside its operation;
   its symbol, type and initializer stay in the same `custom_operation`.
   A default-dialect `constant` operation now has a `bare_id` child inside
