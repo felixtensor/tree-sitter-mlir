@@ -999,3 +999,263 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+================================================================================
+Adjacent attribute after a value preserves payload location and function boundaries
+================================================================================
+func.func @f(%v: i32) {
+  test.op {"a": 1,
+    %v#review_unknown.attr<-tag
+      test.inner
+    >
+  } loc(unknown)
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (integer_literal)
+                (value_use)
+                (attribute
+                  (dialect_attribute
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (bare_id)
+                        (bare_id))))))
+              (trailing_location
+                (location
+                  (unknown_location))))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Failed suffix probe still recovers an unclosed payload after an adjacent attribute
+================================================================================
+func.func @f(%v: i32) {
+  test.op {"a": 1,
+    %v#review_unknown.attr<-tag
+      test.inner
+    >
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (MISSING "}")))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Numeric hash suffix still starts a sibling result binding after an unclosed payload
+================================================================================
+func.func @f() {
+  test.op {"a": 1
+  %v#1 = test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (ERROR)
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Spaced and numeric adjacent attributes keep their existing payload trees
+================================================================================
+test.op {"a": 1,
+  %v #review_unknown.attr<-tag
+    test.inner
+  >
+}
+test.op {"a": 1,
+  %v#review_unknown.attr<-1
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (integer_literal)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Later result-list item preserves its adjacent attribute envelope
+================================================================================
+test.op {"a": 1,
+  %a,
+  %v#review_unknown.attr<-tag
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Quoted probe preserves an adjacent attribute inside its operand group
+================================================================================
+test.op {"a": 1,
+  "rw"(%v#review_unknown.attr<-tag
+    test.inner
+  >)
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))

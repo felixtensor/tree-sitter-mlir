@@ -55,11 +55,17 @@ static bool is_identifier_char(int32_t c) {
   return is_identifier_start(c) || is_digit(c);
 }
 
-// Both caret entry points must distinguish a numeric suffix from the colon
-// of a compact block label. mark is false while probing a larger payload.
-static bool scan_caret_id(TSLexer *lexer, bool mark, bool *compact_label) {
-  *compact_label = false;
-  lexer->advance(lexer, false);
+typedef enum {
+  SUFFIX_ID_INVALID,
+  SUFFIX_ID_COMPLETE,
+  SUFFIX_ID_COLON,
+  SUFFIX_ID_HASH,
+} SuffixIdResult;
+
+// Read the grammar's suffix-id, marking its accepted end only for caret tokens.
+// A nonnumeric separator is consumed but is not part of the id. Callers that
+// continue probing must account for it instead of treating failure as rewind.
+static SuffixIdResult scan_suffix_id(TSLexer *lexer, bool mark) {
   if (is_digit(lexer->lookahead)) {
     do {
       lexer->advance(lexer, false);
@@ -69,7 +75,7 @@ static bool scan_caret_id(TSLexer *lexer, bool mark, bool *compact_label) {
       lexer->advance(lexer, false);
     } while (is_identifier_char(lexer->lookahead));
   } else {
-    return false;
+    return SUFFIX_ID_INVALID;
   }
   if (mark)
     lexer->mark_end(lexer);
@@ -78,8 +84,7 @@ static bool scan_caret_id(TSLexer *lexer, bool mark, bool *compact_label) {
     int32_t separator = lexer->lookahead;
     lexer->advance(lexer, false);
     if (!is_digit(lexer->lookahead)) {
-      *compact_label = separator == ':';
-      return *compact_label;
+      return separator == ':' ? SUFFIX_ID_COLON : SUFFIX_ID_HASH;
     }
     do {
       lexer->advance(lexer, false);
@@ -87,7 +92,36 @@ static bool scan_caret_id(TSLexer *lexer, bool mark, bool *compact_label) {
     if (mark)
       lexer->mark_end(lexer);
   }
-  return true;
+  return SUFFIX_ID_COMPLETE;
+}
+
+static SuffixIdResult scan_caret_id(TSLexer *lexer, bool mark) {
+  lexer->advance(lexer, false);
+  return scan_suffix_id(lexer, mark);
+}
+
+// Positioned after a consumed # or !. Preserve an attached dialect envelope.
+static void scan_dialect_envelope_tail(TSLexer *lexer, int *angles) {
+  if (!is_identifier_start(lexer->lookahead))
+    return;
+  do {
+    lexer->advance(lexer, false);
+  } while (is_identifier_char(lexer->lookahead));
+  if (lexer->lookahead == '<') {
+    (*angles)++;
+    lexer->advance(lexer, false);
+  }
+}
+
+// A failed internal probe cannot rewind. Finish looking through an attribute
+// whose # was consumed as a rejected numeric suffix before resuming the tail.
+static bool scan_probe_suffix_id(TSLexer *lexer, bool *line_start, int *angles) {
+  if (line_start)
+    *line_start = false;
+  SuffixIdResult result = scan_suffix_id(lexer, false);
+  if (result == SUFFIX_ID_HASH && angles)
+    scan_dialect_envelope_tail(lexer, angles);
+  return result == SUFFIX_ID_COMPLETE;
 }
 
 // A custom operation name (`_dotted_op_name`, `_bare_op_name`, `bare_id`) or
@@ -252,8 +286,8 @@ static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
 
 // Probe only the unsafe fallback lead. Complete payloads stay in grammar;
 // an unclosed prefix is captured as one token, including its opening brace.
-static bool scan_suffix_id(TSLexer *lexer);
-static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start);
+static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
+                                 int *angles);
 static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
                                   int *parens, int *angles);
 
@@ -304,7 +338,7 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
   }
   if (lexer->lookahead == '%') {
     lexer->advance(lexer, false);
-    if (!scan_suffix_id(lexer))
+    if (scan_suffix_id(lexer, false) != SUFFIX_ID_COMPLETE)
       return false;
     lexer->mark_end(lexer);
     *line_start = false;
@@ -366,7 +400,7 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
                        brackets == 0 && angles == 0;
     if (direct_line && c == '%') {
       line_start = false;
-      if (scan_op_result_sigil(lexer, false, &line_start))
+      if (scan_op_result_sigil(lexer, false, &line_start, &angles))
         return false;
       continue;
     }
@@ -378,11 +412,14 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
     }
     if (direct_line && c == '^') {
       line_start = false;
-      bool compact_label;
-      if (!scan_caret_id(lexer, false, &compact_label))
-        continue;
-      if (compact_label)
+      SuffixIdResult id = scan_caret_id(lexer, false);
+      if (id == SUFFIX_ID_COLON)
         return false;
+      if (id != SUFFIX_ID_COMPLETE) {
+        if (id == SUFFIX_ID_HASH)
+          scan_dialect_envelope_tail(lexer, &angles);
+        continue;
+      }
       int nested_braces = 0;
       if (at_block_label_tail(lexer, &nested_braces, &line_start) ==
           BLOCK_LABEL_TAIL_FOUND)
@@ -434,15 +471,7 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
     // its unknown payload begins with `-` rather than a numeric literal.
     if (c == '#' || c == '!') {
       lexer->advance(lexer, false);
-      if (is_identifier_start(lexer->lookahead)) {
-        do {
-          lexer->advance(lexer, false);
-        } while (is_identifier_char(lexer->lookahead));
-        if (lexer->lookahead == '<') {
-          angles++;
-          lexer->advance(lexer, false);
-        }
-      }
+      scan_dialect_envelope_tail(lexer, &angles);
       continue;
     }
     if (c == '"')
@@ -679,46 +708,18 @@ at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
                                  : BLOCK_LABEL_TAIL_NOT_FOUND;
 }
 
-// Consumes a suffix-id with the same spelling as the grammar's `_suffix_id`
-// token: digits, or an identifier, then an optional `:digits` or `#digits`.
-// Returns false when the text after `%` is not a suffix-id.
-static bool scan_suffix_id(TSLexer *lexer) {
-  if (is_digit(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  } else if (is_identifier_start(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_identifier_char(lexer->lookahead));
-  } else {
-    return false;
-  }
-
-  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
-    lexer->advance(lexer, false);
-    if (!is_digit(lexer->lookahead)) {
-      return false;
-    }
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  }
-
-  return true;
-}
-
 // Precondition: the lexer is positioned at `%`. Consumes only the `%` as the
 // token, so the grammar parses the value id as it does any value_use. Then
 // looks ahead without consuming for the rest of an op-result-list: the value
 // id, (`,` value-id)* `=` and the start of an operation name (a bare or dotted
 // identifier, or the string of a generic operation). A custom body uses `%x =`
 // too (`scf.for %i = %lb`, `(%gx = %a)`), but with a value after the `=`.
-static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
+static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
+                                 int *angles) {
   lexer->advance(lexer, false);
   if (mark)
     lexer->mark_end(lexer);
-  if (!scan_suffix_id(lexer)) {
+  if (!scan_probe_suffix_id(lexer, line_start, angles)) {
     return false;
   }
 
@@ -750,7 +751,7 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
       return false;
     }
     lexer->advance(lexer, false);
-    if (!scan_suffix_id(lexer)) {
+    if (!scan_probe_suffix_id(lexer, line_start, angles)) {
       return false;
     }
   }
@@ -812,7 +813,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
   if (lexer->lookahead == '%') {
     for (;;) {
       lexer->advance(lexer, false);
-      if (!scan_suffix_id(lexer)) {
+      if (!scan_probe_suffix_id(lexer, line_start, angles)) {
         return false;
       }
       if (line_start)
@@ -989,7 +990,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // such as a loop bound `%i = max ...`.
   if (lexer->lookahead == '%') {
     if (valid_symbols[OP_RESULT_SIGIL] && (at_line_start || recovering) &&
-        scan_op_result_sigil(lexer, true, NULL)) {
+        scan_op_result_sigil(lexer, true, NULL, NULL)) {
       lexer->result_symbol = OP_RESULT_SIGIL;
       return true;
     }
@@ -1009,16 +1010,15 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return false;
   }
 
-  bool compact_label;
-  if (!scan_caret_id(lexer, true, &compact_label)) {
-    return false;
-  }
-  if (compact_label) {
+  SuffixIdResult id = scan_caret_id(lexer, true);
+  if (id == SUFFIX_ID_COLON) {
     if (!can_be_block_label)
       return false;
     lexer->result_symbol = BLOCK_LABEL_ID;
     return true;
   }
+  if (id != SUFFIX_ID_COMPLETE)
+    return false;
 
   int brace_depth = 0;
   BlockLabelTailResult block_label_tail =
