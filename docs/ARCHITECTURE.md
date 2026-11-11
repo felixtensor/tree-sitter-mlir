@@ -180,34 +180,20 @@ A `{` reads as a region, an attribute dictionary or a known brace payload
 (`{%v : t}`, `{(%v)}`, `{"k" = %v}`) wherever one of them can continue.
 Otherwise it opens a group whose balanced contents stay flat in the
 `custom_operation`. The group starts on a token none of the others accepts
-after `{`, or on a string or value followed by one. At the direct custom-body
-level, the scanner probes such a lead before the grammar commits to the group.
-If its matching close precedes an operation/block boundary, the scanner leaves
-the complete payload to the existing grammar. Otherwise it emits one opaque
-prefix token covering the opening brace and malformed contents, stopping before
-the whitespace that leads into the boundary. Ordinary operation-boundary tokens
-can then still see that newline. Grammar recovery reports a local `ERROR` or
-missing close while preserving following operations and the enclosing region.
-The malformed prefix need not remain a child of its preceding operation.
+after `{`, or on a string or value followed by one.
 
-Direct boundaries include dotted or listed bare operation names, result
-bindings, generic operation prefixes and block labels. A name followed by `=`
-remains assignment syntax, including intervening whitespace/comments. An
-immediate `module(` remains `_custom_body_module_symbol_arg`; `module:` cannot
-start the dedicated module operation and also stays payload data. A colon or
-comma after an arbitrary dotted name is not enough to exclude an operation:
-`llvm.mlir.undef : i32` is an operation, for example. These ambiguous direct
-names retain the conservative operation-boundary policy.
+For a direct-body fallback, the scanner checks for a line-start operation/block
+boundary or EOF before the matching close. If found, it emits the opening brace
+and malformed prefix as one token, leaving boundary-leading whitespace intact.
+The required `}` then triggers a local `ERROR` or missing close so following
+structure can recover; the error need not belong to the preceding operation.
+Otherwise the group stays in the grammar. Nested delimiters, strings and
+comments protect their contents; names followed by `=` remain assignment keys.
 
-Parentheses, brackets, angle groups, nested braces, strings and line comments
-protect their contents. Only `_custom_body_element` offers the malformed-prefix
-path; the nested group rules do not. The common direct-body path also covers
-`affine.for` and `pdl_interp.record_match` after its required location list;
-it does not repair an already-incomplete specialized operation header. Alias
-definitions and unlisted default-dialect bare names remain known limits.
-A balanced unknown payload containing an operation-shaped direct continuation
-can still be split: the static parser cannot establish a callback's intent.
-This is bounded recovery, not a promise to recover every malformed delimiter.
+Recovery is bounded: direct operation-shaped payload continuations can be split,
+and an enclosing `}` seen first can still be mistaken for the payload close.
+Alias definitions, unlisted bare operations, incomplete specialized headers and
+malformed nested groups are not covered by this recovery path.
 
 The scanner also consumes fully balanced groups whose lead is `#`, `!`, or a
 `^` that is not a block label; their contents remain opaque. Ordinary regions,
@@ -233,9 +219,7 @@ Known limits: a payload that fails only later still fails there
 (`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
 dictionary), and outside `<...>` `{a: i32}` is still a region. Inside `<...>`
 a first bare key followed by `,` reads as a dictionary entry, so `<{a, b: i32}>`
-fails at `b:`. An opaque scanner token is emitted only after a matching `}` is
-found. The direct-body fallback recovery above does not apply to every nested group
-inside another delimiter. At line start,
+fails at `b:`. The opaque-group token requires a matching `}`. At line start,
 the scanner also marks `#name =` and `!name =` as alias-definition boundaries
 so a preceding custom body cannot absorb a following top-level alias.
 
@@ -335,19 +319,12 @@ an unbound generic operation. The scanner emits the following tokens:
   consumes the complete group, including nested braces, while treating strings
   and line comments as opaque. The token is hidden, so its contents deliberately
   do not create region, scope, or fold nodes.
-- `_custom_body_unclosed_brace_prefix` for a proven unsafe direct-body fallback
-  lead that reaches an operation/block boundary or EOF before its close. It
-  consumes the opening brace and malformed prefix as one hidden token. It
-  leaves boundary-leading whitespace intact so the ordinary binding, generic
-  operation and block-label scanners still recognize the following structure.
-  A complete balanced payload continues through the original grammar.
-- `_recovery_dotted_op_name` mirrors the ordinary dotted-name token only when
-  the lexer requests recovery tokens. This lets the parser insert a missing
-  `}` before a complete sibling name instead of deleting its characters. It
-  adds no public node; structural keywords keep their dedicated paths.
-- `_error_sentinel` is unused by grammar productions and is never emitted.
-  Its validity identifies the recovery lexer without guessing from ordinary
-  context-token combinations.
+- `_custom_body_unclosed_brace_prefix` covers an unsafe direct-body fallback
+  opener and prefix up to a boundary or EOF, as described above.
+- `_recovery_dotted_op_name` supplies ordinary dotted names during recovery,
+  allowing a missing close before a sibling without deleting its name.
+- `_error_sentinel` is never emitted or used in a production; its validity
+  identifies the recovery lexer.
 - `_attribute_alias_sigil` and `_type_alias_sigil` for line-start `#name =`
   and `!name =` definitions. They consume only the sigil; the grammar parses
   the alias name and value/type through the ordinary rules.

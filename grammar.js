@@ -553,10 +553,7 @@ export default grammar({
       prec.dynamic(
         -1,
         prec.right(
-          seq(
-            field("name", $.custom_op_name),
-            repeat($._custom_body_element),
-          ),
+          seq(field("name", $.custom_op_name), repeat($._custom_body_element)),
         ),
       ),
 
@@ -687,15 +684,10 @@ export default grammar({
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
       ),
 
-    // Probe before committing to a fallback group. A malformed payload uses
-    // an opaque prefix ending before the next operation/block, leaving the
-    // required close keeps the prefix erroneous; ordinary recovery can report
-    // a local ERROR or missing close without consuming the next operation.
+    // The prefix stops before a recognizable boundary. Requiring a close
+    // triggers local error recovery instead of accepting the malformed body.
     _custom_body_unclosed_brace_group: ($) =>
-      seq(
-        $._custom_body_unclosed_brace_prefix,
-        "}",
-      ),
+      seq($._custom_body_unclosed_brace_prefix, "}"),
     _custom_body_brace_group: ($) =>
       seq(
         "{",

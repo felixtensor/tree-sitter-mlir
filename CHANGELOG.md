@@ -15,13 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **scanner/grammar:** localize unclosed direct custom-body fallback brace
-  payloads before a following operation/block boundary, preserving sibling
-  operations, result bindings, enclosing regions and subsequent functions.
-  Balanced payloads retain the existing grammar path. Assignment keys may have
-  whitespace/comments before `=`, and `module(@sym)` / `module:` remain payload
-  syntax. A typed operation such as `llvm.mlir.undef : i32` remains a boundary.
-- **scanner:** track the current line start through quoted probes without
-  carrying a newline from inside a multiline call past its closing parenthesis.
+  payloads before a recognizable operation or block boundary.
 - **grammar:** keep the `constant` modifier inside `memref.global` and
   `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
   default-dialect `constant` operations still start their own operation.
@@ -58,12 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking AST changes
 - A malformed direct custom-body fallback brace payload may now be reported
-  as a local `ERROR` or missing close; the opaque prefix may be a sibling error
-  rather than contents of its preceding operation. Following operation kinds,
-  result bindings and function/region boundaries are preserved in the pinned
-  recovery cases. Balanced payloads without an ambiguous direct operation-shaped
-  continuation retain their CST. Specialized headers must already be complete;
-  alias definitions and unlisted default-dialect bare names remain known limits.
+  as a sibling `ERROR` or missing close; see Architecture's custom-body brace
+  recovery limits.
 - A global's `constant` modifier is now a `bare_id` inside its operation;
   its symbol, type and initializer stay in the same `custom_operation`.
   A default-dialect `constant` operation now has a `bare_id` child inside
