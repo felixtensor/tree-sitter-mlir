@@ -684,3 +684,318 @@ func.func @after() { return }
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+================================================================================
+Quoted probe preserves a following angle group
+================================================================================
+test.op {"a": 1,
+  "rw"()<
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Caret probe keeps inline text and following operations inside the function
+================================================================================
+func.func @u() {
+  test.op {"a": 1,
+    ^bb
+    () test.inline
+  }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (integer_literal)
+                (successor
+                  (caret_id))
+                (bare_id)))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Caret probe preserves supported numeric successor suffixes
+================================================================================
+test.op {"a": 1,
+  ^bb:2 ^bb#2
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (successor
+        (caret_id))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Quoted fallback lead does not make a same-line binding a boundary
+================================================================================
+test.op {
+  "a" %v = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Value fallback lead does not make a same-line binding a boundary
+================================================================================
+test.op {
+  %v %w = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Failed result-list probe keeps the current line position
+================================================================================
+test.op {"a": 1,
+  %v,
+  %w %z = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (value_use)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Caret probe allows whitespace without splitting inline payload text
+================================================================================
+test.op {"a": 1,
+  ^bb () test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Failed boundary probes preserve slash-prefixed inline payload text
+================================================================================
+test.op {"a": 1,
+  %v
+  / test.inline
+}
+test.op {"a": 1,
+  "rw"
+  / test.inline
+}
+test.op {"a": 1,
+  ^bb
+  / test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Negative angle payloads remain nested after failed quoted probes
+================================================================================
+test.op {"a": 1,
+  #test.attr<-1
+    test.inner
+  >
+  #test.attr<-tag
+    test.inner
+  >
+  "rw"()<-1
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (integer_literal)
+              (bare_id)))))
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))
+      (string_literal)
+      (integer_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Invalid caret probe leaves only a local payload error
+================================================================================
+test.op {"a": 1,
+  ^ %v = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (ERROR
+        (UNEXPECTED '^')
+        (UNEXPECTED ' '))
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Mapped-from arrows protect parenthesized payloads with optional whitespace
+================================================================================
+test.op {"a": 1,
+  <- (
+    test.inner
+  )
+  < - (
+    test.inner
+  )
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (bare_id)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))

@@ -55,6 +55,41 @@ static bool is_identifier_char(int32_t c) {
   return is_identifier_start(c) || is_digit(c);
 }
 
+// Both caret entry points must distinguish a numeric suffix from the colon
+// of a compact block label. mark is false while probing a larger payload.
+static bool scan_caret_id(TSLexer *lexer, bool mark, bool *compact_label) {
+  *compact_label = false;
+  lexer->advance(lexer, false);
+  if (is_digit(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  } else if (is_identifier_start(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_identifier_char(lexer->lookahead));
+  } else {
+    return false;
+  }
+  if (mark)
+    lexer->mark_end(lexer);
+
+  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
+    int32_t separator = lexer->lookahead;
+    lexer->advance(lexer, false);
+    if (!is_digit(lexer->lookahead)) {
+      *compact_label = separator == ':';
+      return *compact_label;
+    }
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+    if (mark)
+      lexer->mark_end(lexer);
+  }
+  return true;
+}
+
 // A custom operation name (`_dotted_op_name`, `_bare_op_name`, `bare_id`) or
 // the string literal that names a generic operation.
 static bool is_operation_name_start(int32_t c) {
@@ -220,7 +255,7 @@ static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
 static bool scan_suffix_id(TSLexer *lexer);
 static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start);
 static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
-                                  int *parens);
+                                  int *parens, int *angles);
 
 static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
   for (;;) {
@@ -228,9 +263,21 @@ static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
     CommentScanResult comment = skip_comment(lexer);
     if (comment == COMMENT_NOT_FOUND)
       return true;
-    if (comment == SINGLE_SLASH)
+    if (comment == SINGLE_SLASH) {
+      *line_start = false;
       return false;
+    }
   }
+}
+
+// After `<`, distinguish the mapped-from marker from a negative literal.
+// The grammar keeps `<` and `-` separate so `-1` wins by longest match.
+static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
+  if (!skip_payload_extras(lexer, line_start) || lexer->lookahead != '-')
+    return true;
+  lexer->advance(lexer, false);
+  *line_start = false;
+  return is_digit(lexer->lookahead);
 }
 
 static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
@@ -249,6 +296,7 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
     }
     lexer->advance(lexer, false);
     lexer->mark_end(lexer);
+    *line_start = false;
     if (!skip_payload_extras(lexer, line_start))
       return true;
     return lexer->lookahead != '=' && lexer->lookahead != ',' &&
@@ -259,6 +307,7 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
     if (!scan_suffix_id(lexer))
       return false;
     lexer->mark_end(lexer);
+    *line_start = false;
     if (!skip_payload_extras(lexer, line_start))
       return true;
     return lexer->lookahead != '=' && lexer->lookahead != ',' &&
@@ -323,16 +372,18 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
     }
     if (direct_line && c == '"') {
       line_start = false;
-      if (scan_generic_op_quote(lexer, false, &line_start, &parens))
+      if (scan_generic_op_quote(lexer, false, &line_start, &parens, &angles))
         return false;
       continue;
     }
     if (direct_line && c == '^') {
-      lexer->advance(lexer, false);
-      while (is_identifier_char(lexer->lookahead))
-        lexer->advance(lexer, false);
-      int nested_braces = 0;
       line_start = false;
+      bool compact_label;
+      if (!scan_caret_id(lexer, false, &compact_label))
+        continue;
+      if (compact_label)
+        return false;
+      int nested_braces = 0;
       if (at_block_label_tail(lexer, &nested_braces, &line_start) ==
           BLOCK_LABEL_TAIL_FOUND)
         return false;
@@ -379,6 +430,21 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
       continue;
     }
     line_start = false;
+    // An attached dialect envelope always owns its angle opener, even when
+    // its unknown payload begins with `-` rather than a numeric literal.
+    if (c == '#' || c == '!') {
+      lexer->advance(lexer, false);
+      if (is_identifier_start(lexer->lookahead)) {
+        do {
+          lexer->advance(lexer, false);
+        } while (is_identifier_char(lexer->lookahead));
+        if (lexer->lookahead == '<') {
+          angles++;
+          lexer->advance(lexer, false);
+        }
+      }
+      continue;
+    }
     if (c == '"')
       in_string = true;
     else if (c == '{')
@@ -395,11 +461,12 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
       brackets--;
     else if (c == '<' || c == '-') {
       lexer->advance(lexer, false);
-      if ((c == '<' && lexer->lookahead == '-') ||
-          (c == '-' && lexer->lookahead == '>')) {
+      if (c == '<') {
+        if (scan_angle_tail(lexer, &line_start))
+          angles++;
+      } else if (lexer->lookahead == '>') {
         lexer->advance(lexer, false);
-      } else if (c == '<')
-        angles++;
+      }
       continue;
     } else if (c == '>' && angles > 0)
       angles--;
@@ -498,6 +565,13 @@ static bool skip_label_extras(TSLexer *lexer) {
   return skip_extras(lexer) == EXTRAS_READY;
 }
 
+// Payload probes resume after a failed match, so they must retain the current
+// line and delimiter position. Ordinary boundary scans rewind on failure.
+static bool skip_probe_extras(TSLexer *lexer, bool *line_start) {
+  return line_start ? skip_payload_extras(lexer, line_start)
+                    : skip_label_extras(lexer);
+}
+
 // Precondition: the lexer is positioned at `#` or `!`. Consume an alias
 // definition lead (`#name =` / `!name =`) without consuming the sigil past the
 // token boundary. The grammar parses the identifier and value/type normally.
@@ -524,8 +598,7 @@ static bool scan_alias_definition_sigil(TSLexer *lexer) {
 static BlockLabelTailResult
 at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
   bool has_outer_brace = *brace_depth > 0;
-  if (!(line_start ? skip_payload_extras(lexer, line_start)
-                   : skip_label_extras(lexer))) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return BLOCK_LABEL_TAIL_NOT_FOUND;
   }
 
@@ -594,9 +667,11 @@ at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
       }
       lexer->advance(lexer, false);
     }
+    if (line_start)
+      *line_start = false;
   }
 
-  if (!(line_start ? skip_payload_extras(lexer, line_start) : skip_label_extras(lexer))) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return BLOCK_LABEL_TAIL_NOT_FOUND;
   }
 
@@ -648,14 +723,16 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
   }
 
   for (;;) {
-    if (!(line_start ? skip_payload_extras(lexer, line_start)
-                     : skip_label_extras(lexer))) {
+    if (line_start)
+      *line_start = false;
+    if (!skip_probe_extras(lexer, line_start)) {
       return false;
     }
     if (lexer->lookahead == '=') {
       lexer->advance(lexer, false);
-      if (!(line_start ? skip_payload_extras(lexer, line_start)
-                       : skip_label_extras(lexer))) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       return is_operation_name_start(lexer->lookahead);
@@ -664,8 +741,9 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
       return false;
     }
     lexer->advance(lexer, false);
-    if (!(line_start ? skip_payload_extras(lexer, line_start)
-                     : skip_label_extras(lexer))) {
+    if (line_start)
+      *line_start = false;
+    if (!skip_probe_extras(lexer, line_start)) {
       return false;
     }
     if (lexer->lookahead != '%') {
@@ -685,13 +763,8 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start) {
 // what a generic operation allows next: `:`, `[`, `<{`, `(` or `{`. A custom
 // body's quoted name before `(` carries more than values, as in
 // `with "rewriter"(%x : !pdl.value)`.
-static bool skip_quote_extras(TSLexer *lexer, bool *line_start) {
-  return line_start ? skip_payload_extras(lexer, line_start)
-                    : skip_label_extras(lexer);
-}
-
 static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
-                                  int *parens) {
+                                  int *parens, int *angles) {
   lexer->advance(lexer, false);
   if (mark)
     lexer->mark_end(lexer);
@@ -722,7 +795,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
 
   if (line_start)
     *line_start = false;
-  if (!skip_quote_extras(lexer, line_start)) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead != '(') {
@@ -733,7 +806,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
     (*parens)++;
   if (line_start)
     *line_start = false;
-  if (!skip_quote_extras(lexer, line_start)) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead == '%') {
@@ -744,7 +817,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
       }
       if (line_start)
         *line_start = false;
-      if (!skip_quote_extras(lexer, line_start)) {
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != ',') {
@@ -753,7 +826,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
       lexer->advance(lexer, false);
       if (line_start)
         *line_start = false;
-      if (!skip_quote_extras(lexer, line_start)) {
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != '%') {
@@ -769,7 +842,7 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
     (*parens)--;
   if (line_start)
     *line_start = false;
-  if (!skip_quote_extras(lexer, line_start)) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
 
@@ -779,9 +852,17 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
   case '(':
   case '{':
     return true;
-  case '<':
+  case '<': {
     lexer->advance(lexer, false);
-    return lexer->lookahead == '{';
+    if (line_start)
+      *line_start = false;
+    bool properties = lexer->lookahead == '{';
+    // Preserve the opener consumed by a failed `<{` probe.
+    if (angles && scan_angle_tail(lexer, line_start)) {
+      (*angles)++;
+    }
+    return properties;
+  }
   default:
     return false;
   }
@@ -917,7 +998,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   if (lexer->lookahead == '"') {
     if (valid_symbols[GENERIC_OP_QUOTE] && (at_line_start || recovering) &&
-        scan_generic_op_quote(lexer, true, NULL, NULL)) {
+        scan_generic_op_quote(lexer, true, NULL, NULL, NULL)) {
       lexer->result_symbol = GENERIC_OP_QUOTE;
       return true;
     }
@@ -928,38 +1009,15 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return false;
   }
 
-  lexer->advance(lexer, false);
-  if (is_digit(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  } else if (is_identifier_start(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_identifier_char(lexer->lookahead));
-  } else {
+  bool compact_label;
+  if (!scan_caret_id(lexer, true, &compact_label)) {
     return false;
   }
-
-  lexer->mark_end(lexer);
-
-  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
-    int32_t suffix_separator = lexer->lookahead;
-    lexer->advance(lexer, false);
-    if (is_digit(lexer->lookahead)) {
-      do {
-        lexer->advance(lexer, false);
-      } while (is_digit(lexer->lookahead));
-      lexer->mark_end(lexer);
-    } else if (suffix_separator == ':') {
-      if (can_be_block_label) {
-        lexer->result_symbol = BLOCK_LABEL_ID;
-        return true;
-      }
+  if (compact_label) {
+    if (!can_be_block_label)
       return false;
-    } else {
-      return false;
-    }
+    lexer->result_symbol = BLOCK_LABEL_ID;
+    return true;
   }
 
   int brace_depth = 0;
