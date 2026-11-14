@@ -968,8 +968,8 @@ test.after
       (string_literal)
       (integer_literal)
       (ERROR
-        (UNEXPECTED '^')
-        (UNEXPECTED ' '))
+        (UNEXPECTED '^'))
+      (value_use)
       (bare_id)))
   (operation
     (custom_operation
