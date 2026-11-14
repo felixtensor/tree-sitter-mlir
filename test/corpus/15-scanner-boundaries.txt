@@ -711,3 +711,51 @@ func.func @after() { return }
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
+================================================================================
+Malformed generic operation does not re-tokenize a later mid-line quoted operation
+================================================================================
+"g"()({^a:^b })
+
+func.func @f() {
+  // c
+  %r = "op"() : () -> i32
+  return
+}
+
+func.func @g() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (region
+        (block
+          (block_label
+            (caret_id)))
+        (ERROR))
+      (ERROR
+        (UNEXPECTED '(')
+        (comment)
+        (ERROR
+          (UNEXPECTED ' '))
+        (string_literal))
+      (function_type
+        (type
+          (builtin_type
+            (integer_type))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (ERROR)
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))

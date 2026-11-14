@@ -985,11 +985,13 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
       (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
 
   // The next two tokens end a preceding custom body at the start of the next
-  // operation. Both require line start: an operation may span lines, but a
-  // new one starts its own, while mid-line the same shapes are body syntax,
-  // such as a loop bound `%i = max ...`.
+  // operation. Both require line start: an operation may span lines, but a new
+  // one starts its own, while mid-line the same shapes are body syntax, such as
+  // a loop bound `%i = max ...`. Error recovery must not relax that: treating
+  // mid-line payload text as an operation boundary can re-tokenize a later
+  // quote run and swallow following operations.
   if (lexer->lookahead == '%') {
-    if (valid_symbols[OP_RESULT_SIGIL] && (at_line_start || recovering) &&
+    if (valid_symbols[OP_RESULT_SIGIL] && at_line_start &&
         scan_op_result_sigil(lexer, true, NULL, NULL)) {
       lexer->result_symbol = OP_RESULT_SIGIL;
       return true;
@@ -998,7 +1000,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if (lexer->lookahead == '"') {
-    if (valid_symbols[GENERIC_OP_QUOTE] && (at_line_start || recovering) &&
+    if (valid_symbols[GENERIC_OP_QUOTE] && at_line_start &&
         scan_generic_op_quote(lexer, true, NULL, NULL, NULL)) {
       lexer->result_symbol = GENERIC_OP_QUOTE;
       return true;
