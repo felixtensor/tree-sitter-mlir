@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **scanner/grammar:** localize unclosed direct custom-body fallback brace
+  payloads before a recognizable operation or block boundary.
 - **grammar:** keep the `constant` modifier inside `memref.global` and
   `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
   default-dialect `constant` operations still start their own operation.
@@ -36,8 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   binding or generic operation instead of absorbing it.
 - **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
   attribute dictionary instead of a region.
-- **grammar:** keep an unrecognized `{...}` in a custom operation body, such as
-  `{"a": %x}`, inside its operation instead of misnesting everything after it.
+- **grammar:** keep balanced unrecognized `{...}` payloads in a custom
+  operation body, such as `{"a": %x}`, inside that operation.
 - **grammar:** never read a `{...}` inside `<...>` in a custom operation body
   as a region, at any depth, as in `struct<{a: i32}>` or `<{a: {b: i32}}>`.
 - **scanner:** consume fully balanced unsafe custom-body brace groups whose
@@ -49,6 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- A malformed direct custom-body fallback brace payload may now be reported
+  as a sibling `ERROR` or missing close; see Architecture's custom-body brace
+  recovery limits.
 - A global's `constant` modifier is now a `bare_id` inside its operation;
   its symbol, type and initializer stay in the same `custom_operation`.
   A default-dialect `constant` operation now has a `bare_id` child inside

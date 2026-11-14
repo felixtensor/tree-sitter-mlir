@@ -178,14 +178,26 @@ starts a separate default-dialect `constant` operation.
 
 A `{` reads as a region, an attribute dictionary or a known brace payload
 (`{%v : t}`, `{(%v)}`, `{"k" = %v}`) wherever one of them can continue.
-Otherwise it opens a balanced group whose contents stay flat in the
-`custom_operation`, so its `}` cannot close an enclosing region. The group
-starts on a token none of the others accepts after `{`, or on a string or value
-followed by one, so the choice is static and adds no conflict. The external
-scanner supplements this grammar fallback only for a fully balanced group
-whose lead is `#`, `!`, or a `^` that is not a block label; it ignores braces in
-strings and line comments. This keeps unusual payloads opaque without making
-the scanner compete with ordinary regions or dictionaries.
+Otherwise it opens a group whose balanced contents stay flat in the
+`custom_operation`. The group starts on a token none of the others accepts
+after `{`, or on a string or value followed by one.
+
+For a direct-body fallback, the scanner checks for a line-start operation/block
+boundary or EOF before the matching close. If found, it emits the opening brace
+and malformed prefix as one token, leaving boundary-leading whitespace intact.
+The required `}` then triggers a local `ERROR` or missing close so following
+structure can recover; the error need not belong to the preceding operation.
+Otherwise the group stays in the grammar. Nested delimiters, strings and
+comments protect their contents; names followed by `=` remain assignment keys.
+
+Recovery is bounded: direct operation-shaped payload continuations can be split,
+and an enclosing `}` seen first can still be mistaken for the payload close.
+Alias definitions, unlisted bare operations, incomplete specialized headers and
+malformed nested groups are not covered by this recovery path.
+
+The scanner also consumes fully balanced groups whose lead is `#`, `!`, or a
+`^` that is not a block label; their contents remain opaque. Ordinary regions,
+dictionaries and known brace payloads keep their existing grammar paths.
 
 This is a recovery rule, not a promise that every balanced delimiter sequence
 is valid MLIR. The operation grammar reserves `<{...}>` for dictionary
@@ -207,8 +219,7 @@ Known limits: a payload that fails only later still fails there
 (`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
 dictionary), and outside `<...>` `{a: i32}` is still a region. Inside `<...>`
 a first bare key followed by `,` reads as a dictionary entry, so `<{a, b: i32}>`
-fails at `b:`. An opaque scanner token is emitted only after a matching `}` is
-found; an unclosed group remains subject to grammar recovery. At line start,
+fails at `b:`. The opaque-group token requires a matching `}`. At line start,
 the scanner also marks `#name =` and `!name =` as alias-definition boundaries
 so a preceding custom body cannot absorb a following top-level alias.
 
@@ -278,7 +289,7 @@ builtin nodes, unknown payloads, and following operation/region boundaries.
 
 ### External Scanner
 
-The parser uses a small external scanner for narrowly scoped lexical
+The parser uses an external scanner for narrowly scoped lexical
 ambiguities. MLIR reuses `^suffix` for both successor references and block
 labels, and the loose custom-operation fallback can otherwise parse a following
 block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
@@ -286,7 +297,7 @@ Custom operation bodies also need to distinguish a dimension-separating `x`
 from a bare identifier named `x`. And a custom operation body accepts `%x`
 and `=`, so without a lexical decision it absorbs the next operation's result
 binding as body operands; its strings and parenthesised groups likewise absorb
-an unbound generic operation. The scanner emits eight token kinds:
+an unbound generic operation. The scanner emits the following tokens:
 
 - `_caret_id` for ordinary successor/reference uses.
 - `_block_label_id` when the grammar permits a block label and the caret
@@ -308,6 +319,12 @@ an unbound generic operation. The scanner emits eight token kinds:
   consumes the complete group, including nested braces, while treating strings
   and line comments as opaque. The token is hidden, so its contents deliberately
   do not create region, scope, or fold nodes.
+- `_custom_body_unclosed_brace_prefix` covers an unsafe direct-body fallback
+  opener and prefix up to a boundary or EOF, as described above.
+- `_recovery_dotted_op_name` supplies ordinary dotted names during recovery,
+  allowing a missing close before a sibling without deleting its name.
+- `_error_sentinel` is never emitted or used in a production; its validity
+  identifies the recovery lexer.
 - `_attribute_alias_sigil` and `_type_alias_sigil` for line-start `#name =`
   and `!name =` definitions. They consume only the sigil; the grammar parses
   the alias name and value/type through the ordinary rules.
