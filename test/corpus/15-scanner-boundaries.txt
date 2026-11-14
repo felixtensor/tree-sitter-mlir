@@ -447,3 +447,315 @@ test.use %a : i32
 2:24 - 2:26           "->"
 2:27 - 2:28           "("
 2:28 - 2:29           ")"
+
+================================================================================
+Unclosed string-key brace payload preserves operations and following function
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed symbol brace payload preserves a result-bound sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {@A -> @B
+  %a = test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed value brace payload preserves an unbound generic sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {%x -> %a
+  "test.sibling"() : () -> ()
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (generic_operation
+                (string_literal)
+                (function_type))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed brace payload preserves the next block label
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x
+  ^bb1:
+  test.sibling
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))
+          (ERROR)
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Balanced fallback braces protect nested names strings comments and typed calls
+================================================================================
+func.func @balanced(%x: i32) {
+  test.op {"a": (
+    test.payload
+    %v = test.hidden
+    "test.hidden"() : () -> ()
+  ), "b": ["}", <{x: i32}>]}
+  test.op {"a": %x,
+    // test.fake { }
+    "b": %x,
+    "rewriter"(%x : !pdl.value)
+    ^next(%x : i32)
+    <() ->
+      test.payload
+    >
+  }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (bare_id)
+                (value_use)
+                (bare_id)
+                (string_literal)
+                (string_literal)
+                (string_literal)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (comment)
+                (string_literal)
+                (value_use)
+                (string_literal)
+                (value_use)
+                (type
+                  (dialect_type
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident))))
+                (successor
+                  (caret_id)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (bare_id)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Malformed generic operation does not re-tokenize a later mid-line quoted operation
+================================================================================
+"g"()({^a:^b })
+
+func.func @f() {
+  // c
+  %r = "op"() : () -> i32
+  return
+}
+
+func.func @g() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (region
+        (block
+          (block_label
+            (caret_id)))
+        (ERROR))
+      (ERROR
+        (UNEXPECTED '(')
+        (comment)
+        (ERROR
+          (UNEXPECTED ' '))
+        (string_literal))
+      (function_type
+        (type
+          (builtin_type
+            (integer_type))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (ERROR)
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))

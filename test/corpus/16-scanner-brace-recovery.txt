@@ -1,0 +1,1261 @@
+================================================================================
+Balanced payload keeps module(@symbol) as a body element
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    module(@test_module) function(@test_kernel_func)
+  }
+  test.sibling
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (symbol_ref_id)
+                (bare_id)
+                (symbol_ref_id)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Balanced payload keeps a dotted key with a value
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    test.another_attribute = #dlti.dl_spec<>
+  }
+  test.sibling
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (bare_id)
+                (attribute
+                  (dialect_attribute
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Balanced payload keeps a module key
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    module: @test_module
+  }
+  test.sibling
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (bare_id)
+                (symbol_ref_id)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Balanced payload keeps listed bare keys
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    return = 1,
+    constant = 2
+  }
+  test.sibling
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (bare_id)
+                (integer_literal)
+                (bare_id)
+                (integer_literal)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed module attribute payload recovers locally
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    module(@test_module) function(@test_kernel_func)
+  test.sibling
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed dotted key payload recovers locally
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    test.another_attribute = #dlti.dl_spec<>
+  test.sibling
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed quoted payload recovers before a line-start sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {
+  "a"
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed payload with an inner quoted line recovers before a sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x,
+    "quoted"
+    test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (ERROR)
+                (string_literal)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Known limit: alias definition after an ambiguous fallback payload
+================================================================================
+test.op {"a": %x
+#map = affine_map<(d0) -> (d0)>
+func.func @after() { return }
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (ERROR)
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (ERROR))
+
+================================================================================
+Known limit: bare default-dialect operation after an unclosed payload
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x
+  parse_integer_literal
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Known limit: balanced payload with a line-start dotted operation follows the boundary policy
+================================================================================
+func.func @s(%sz: index) {
+  test.op {"kernel": %sz,
+    gpu.launch blocks(%bx, %by, %bz) in (%gx = %sz, %gy = %sz, %gz = %sz)
+               threads(%tx, %ty, %tz) in (%bx2 = %sz, %by2 = %sz, %bz2 = %sz)
+               module(@test_module) function(@test_kernel_func) {
+      gpu.terminator
+    }
+  }
+  test.sibling
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (bare_id)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (value_use)
+                (symbol_ref_id)
+                (bare_id)
+                (symbol_ref_id)
+                (region
+                  (entry_block
+                    (operation
+                      rhs: (custom_operation
+                        name: (custom_op_name))))))))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (ERROR))
+
+================================================================================
+Unclosed affine.for fallback payload preserves siblings and following function
+================================================================================
+func.func @u(%x: i32) {
+  affine.for %i = 0 to 4 {"a": %x
+  test.sibling
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (integer_literal)
+                (bare_id)
+                (integer_literal)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed pdl_interp.record_match payload after its location list preserves siblings
+================================================================================
+func.func @u(%x: i32) {
+  pdl_interp.record_match @m loc([]) {"a": %x
+  test.sibling
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (symbol_ref_id)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Typed operation after an unclosed payload stays a sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x
+  llvm.mlir.undef : i32
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (ERROR)
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Quoted multiline call does not make same-line payload text a boundary
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x,
+    "rw"(
+      %x) test.inline
+  }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (string_literal)
+                (value_use)
+                (bare_id)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Payload assignment key allows a comment and newline before equals
+================================================================================
+func.func @u(%x: i32) {
+  test.op {"a": %x,
+    test.key // comment
+      = 1 : i32
+  }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (string_literal)
+                (value_use)
+                (bare_id)
+                (comment)
+                (integer_literal)
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+================================================================================
+Quoted probe preserves a following angle group
+================================================================================
+test.op {"a": 1,
+  "rw"()<
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Caret probe keeps inline text and following operations inside the function
+================================================================================
+func.func @u() {
+  test.op {"a": 1,
+    ^bb
+    () test.inline
+  }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (integer_literal)
+                (successor
+                  (caret_id))
+                (bare_id)))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Caret probe preserves supported numeric successor suffixes
+================================================================================
+test.op {"a": 1,
+  ^bb:2 ^bb#2
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (successor
+        (caret_id))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Quoted fallback lead does not make a same-line binding a boundary
+================================================================================
+test.op {
+  "a" %v = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Value fallback lead does not make a same-line binding a boundary
+================================================================================
+test.op {
+  %v %w = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Failed result-list probe keeps the current line position
+================================================================================
+test.op {"a": 1,
+  %v,
+  %w %z = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (value_use)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Caret probe allows whitespace without splitting inline payload text
+================================================================================
+test.op {"a": 1,
+  ^bb () test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Failed boundary probes preserve slash-prefixed inline payload text
+================================================================================
+test.op {"a": 1,
+  %v
+  / test.inline
+}
+test.op {"a": 1,
+  "rw"
+  / test.inline
+}
+test.op {"a": 1,
+  ^bb
+  / test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (successor
+        (caret_id))
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Negative angle payloads remain nested after failed quoted probes
+================================================================================
+test.op {"a": 1,
+  #test.attr<-1
+    test.inner
+  >
+  #test.attr<-tag
+    test.inner
+  >
+  "rw"()<-1
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (integer_literal)
+              (bare_id)))))
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))
+      (string_literal)
+      (integer_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Invalid caret probe leaves only a local payload error
+================================================================================
+test.op {"a": 1,
+  ^ %v = test.inline
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (ERROR
+        (UNEXPECTED '^'))
+      (value_use)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Mapped-from arrows protect parenthesized payloads with optional whitespace
+================================================================================
+test.op {"a": 1,
+  <- (
+    test.inner
+  )
+  < - (
+    test.inner
+  )
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (bare_id)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Adjacent attribute after a value preserves payload location and function boundaries
+================================================================================
+func.func @f(%v: i32) {
+  test.op {"a": 1,
+    %v#review_unknown.attr<-tag
+      test.inner
+    >
+  } loc(unknown)
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (string_literal)
+                (integer_literal)
+                (value_use)
+                (attribute
+                  (dialect_attribute
+                    (pretty_dialect_item
+                      (dialect_namespace)
+                      (dialect_ident)
+                      (pretty_dialect_item_body
+                        (bare_id)
+                        (bare_id))))))
+              (trailing_location
+                (location
+                  (unknown_location))))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Failed suffix probe still recovers an unclosed payload after an adjacent attribute
+================================================================================
+func.func @f(%v: i32) {
+  test.op {"a": 1,
+    %v#review_unknown.attr<-tag
+      test.inner
+    >
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (MISSING "}")))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Numeric hash suffix still starts a sibling result binding after an unclosed payload
+================================================================================
+func.func @f() {
+  test.op {"a": 1
+  %v#1 = test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (ERROR)
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Spaced and numeric adjacent attributes keep their existing payload trees
+================================================================================
+test.op {"a": 1,
+  %v #review_unknown.attr<-tag
+    test.inner
+  >
+}
+test.op {"a": 1,
+  %v#review_unknown.attr<-1
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (integer_literal)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+================================================================================
+Later result-list item preserves its adjacent attribute envelope
+================================================================================
+test.op {"a": 1,
+  %a,
+  %v#review_unknown.attr<-tag
+    test.inner
+  >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (value_use)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Quoted probe preserves an adjacent attribute inside its operand group
+================================================================================
+test.op {"a": 1,
+  "rw"(%v#review_unknown.attr<-tag
+    test.inner
+  >)
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (string_literal)
+      (integer_literal)
+      (string_literal)
+      (value_use)
+      (attribute
+        (dialect_attribute
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident)
+            (pretty_dialect_item_body
+              (bare_id)
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 enum TokenType {
   CARET_ID,
@@ -13,6 +14,9 @@ enum TokenType {
   CUSTOM_BODY_OPAQUE_BRACE_GROUP,
   ATTRIBUTE_ALIAS_SIGIL,
   TYPE_ALIAS_SIGIL,
+  CUSTOM_BODY_UNCLOSED_BRACE_PREFIX,
+  RECOVERY_DOTTED_OP_NAME,
+  ERROR_SENTINEL,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -49,6 +53,75 @@ static bool is_identifier_start(int32_t c) {
 
 static bool is_identifier_char(int32_t c) {
   return is_identifier_start(c) || is_digit(c);
+}
+
+typedef enum {
+  SUFFIX_ID_INVALID,
+  SUFFIX_ID_COMPLETE,
+  SUFFIX_ID_COLON,
+  SUFFIX_ID_HASH,
+} SuffixIdResult;
+
+// Read the grammar's suffix-id, marking its accepted end only for caret tokens.
+// A nonnumeric separator is consumed but is not part of the id. Callers that
+// continue probing must account for it instead of treating failure as rewind.
+static SuffixIdResult scan_suffix_id(TSLexer *lexer, bool mark) {
+  if (is_digit(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+  } else if (is_identifier_start(lexer->lookahead)) {
+    do {
+      lexer->advance(lexer, false);
+    } while (is_identifier_char(lexer->lookahead));
+  } else {
+    return SUFFIX_ID_INVALID;
+  }
+  if (mark)
+    lexer->mark_end(lexer);
+
+  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
+    int32_t separator = lexer->lookahead;
+    lexer->advance(lexer, false);
+    if (!is_digit(lexer->lookahead)) {
+      return separator == ':' ? SUFFIX_ID_COLON : SUFFIX_ID_HASH;
+    }
+    do {
+      lexer->advance(lexer, false);
+    } while (is_digit(lexer->lookahead));
+    if (mark)
+      lexer->mark_end(lexer);
+  }
+  return SUFFIX_ID_COMPLETE;
+}
+
+static SuffixIdResult scan_caret_id(TSLexer *lexer, bool mark) {
+  lexer->advance(lexer, false);
+  return scan_suffix_id(lexer, mark);
+}
+
+// Positioned after a consumed # or !. Preserve an attached dialect envelope.
+static void scan_dialect_envelope_tail(TSLexer *lexer, int *angles) {
+  if (!is_identifier_start(lexer->lookahead))
+    return;
+  do {
+    lexer->advance(lexer, false);
+  } while (is_identifier_char(lexer->lookahead));
+  if (lexer->lookahead == '<') {
+    (*angles)++;
+    lexer->advance(lexer, false);
+  }
+}
+
+// A failed internal probe cannot rewind. Finish looking through an attribute
+// whose # was consumed as a rejected numeric suffix before resuming the tail.
+static bool scan_probe_suffix_id(TSLexer *lexer, bool *line_start, int *angles) {
+  if (line_start)
+    *line_start = false;
+  SuffixIdResult result = scan_suffix_id(lexer, false);
+  if (result == SUFFIX_ID_HASH && angles)
+    scan_dialect_envelope_tail(lexer, angles);
+  return result == SUFFIX_ID_COMPLETE;
 }
 
 // A custom operation name (`_dotted_op_name`, `_bare_op_name`, `bare_id`) or
@@ -145,14 +218,7 @@ typedef enum {
 } BlockLabelTailResult;
 
 static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
-                                                int *brace_depth);
-
-// Skip extras while probing the first meaningful character after `{`. This is
-// deliberately local to the opaque-brace probe: the grammar still owns all
-// ordinary brace syntax and the scanner must not become a second lexer.
-static bool skip_brace_leading_extras(TSLexer *lexer) {
-  return skip_extras(lexer) == EXTRAS_READY;
-}
+                                                int *brace_depth, bool *line_start);
 
 // Precondition: the lexer is positioned after the opening `{`, and the
 // caller has already established that the first meaningful character is an
@@ -218,24 +284,265 @@ static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
   return false;
 }
 
+// Probe only the unsafe fallback lead. Complete payloads stay in grammar;
+// an unclosed prefix is captured as one token, including its opening brace.
+static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
+                                 int *angles);
+static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
+                                  int *parens, int *angles);
+
+static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
+  for (;;) {
+    *line_start |= skip_space(lexer, false);
+    CommentScanResult comment = skip_comment(lexer);
+    if (comment == COMMENT_NOT_FOUND)
+      return true;
+    if (comment == SINGLE_SLASH) {
+      *line_start = false;
+      return false;
+    }
+  }
+}
+
+// After `<`, distinguish the mapped-from marker from a negative literal.
+// The grammar keeps `<` and `-` separate so `-1` wins by longest match.
+static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
+  if (!skip_payload_extras(lexer, line_start) || lexer->lookahead != '-')
+    return true;
+  lexer->advance(lexer, false);
+  *line_start = false;
+  return is_digit(lexer->lookahead);
+}
+
+static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
+  if (lexer->lookahead == '"') {
+    lexer->advance(lexer, false);
+    while (lexer->lookahead != '"') {
+      if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
+          lexer->lookahead == '\r')
+        return false;
+      if (lexer->lookahead == '\\') {
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '\0')
+          return false;
+      }
+      lexer->advance(lexer, false);
+    }
+    lexer->advance(lexer, false);
+    lexer->mark_end(lexer);
+    *line_start = false;
+    if (!skip_payload_extras(lexer, line_start))
+      return true;
+    return lexer->lookahead != '=' && lexer->lookahead != ',' &&
+           lexer->lookahead != '}' && lexer->lookahead != '(';
+  }
+  if (lexer->lookahead == '%') {
+    lexer->advance(lexer, false);
+    if (scan_suffix_id(lexer, false) != SUFFIX_ID_COMPLETE)
+      return false;
+    lexer->mark_end(lexer);
+    *line_start = false;
+    if (!skip_payload_extras(lexer, line_start))
+      return true;
+    return lexer->lookahead != '=' && lexer->lookahead != ',' &&
+           lexer->lookahead != ':';
+  }
+  return lexer->lookahead == '@' || lexer->lookahead == '<' ||
+         is_digit(lexer->lookahead) || lexer->lookahead == '.' ||
+         lexer->lookahead == '=' || lexer->lookahead == ':' ||
+         lexer->lookahead == '-' || lexer->lookahead == '*' ||
+         lexer->lookahead == '?' || lexer->lookahead == '+' ||
+         lexer->lookahead == '/' || lexer->lookahead == '&' ||
+         lexer->lookahead == '|' || lexer->lookahead == '~';
+}
+
+// A fallback group cannot contain operations at its direct level. Check for
+// a close before a line-start operation name; nested groups, strings and
+// comments protect their contents. A true result declines the prefix token,
+// leaving every balanced-payload CST node to the grammar.
+static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
+  int braces = 1, parens = 0, brackets = 0, angles = 0;
+  bool in_string = false;
+  while (lexer->lookahead != '\0') {
+    // Keep boundary-leading whitespace out of the prefix, so the ordinary
+    // result/generic-operation scanners can still observe its newline.
+    if (!line_start)
+      lexer->mark_end(lexer);
+    int32_t c = lexer->lookahead;
+    if (in_string) {
+      lexer->advance(lexer, false);
+      if (c == '\\' && lexer->lookahead != '\0')
+        lexer->advance(lexer, false);
+      else if (c == '"')
+        in_string = false;
+      continue;
+    }
+    if (c == '\n' || c == '\r') {
+      line_start = true;
+      lexer->advance(lexer, false);
+      continue;
+    }
+    if (is_inline_space(c)) {
+      lexer->advance(lexer, false);
+      continue;
+    }
+    if (c == '/') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead == '/') {
+        while (lexer->lookahead != '\0' && lexer->lookahead != '\n' &&
+               lexer->lookahead != '\r')
+          lexer->advance(lexer, false);
+      } else
+        line_start = false;
+      continue;
+    }
+    bool direct_line = line_start && braces == 1 && parens == 0 &&
+                       brackets == 0 && angles == 0;
+    if (direct_line && c == '%') {
+      line_start = false;
+      if (scan_op_result_sigil(lexer, false, &line_start, &angles))
+        return false;
+      continue;
+    }
+    if (direct_line && c == '"') {
+      line_start = false;
+      if (scan_generic_op_quote(lexer, false, &line_start, &parens, &angles))
+        return false;
+      continue;
+    }
+    if (direct_line && c == '^') {
+      line_start = false;
+      SuffixIdResult id = scan_caret_id(lexer, false);
+      if (id == SUFFIX_ID_COLON)
+        return false;
+      if (id != SUFFIX_ID_COMPLETE) {
+        if (id == SUFFIX_ID_HASH)
+          scan_dialect_envelope_tail(lexer, &angles);
+        continue;
+      }
+      int nested_braces = 0;
+      if (at_block_label_tail(lexer, &nested_braces, &line_start) ==
+          BLOCK_LABEL_TAIL_FOUND)
+        return false;
+      continue;
+    }
+    if (line_start && braces == 1 && parens == 0 && brackets == 0 &&
+        angles == 0 &&
+        ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_')) {
+      char word[32];
+      unsigned length = 0;
+      bool dotted = false;
+      while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+             (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+             is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+             lexer->lookahead == '$' || lexer->lookahead == '.') {
+        dotted |= lexer->lookahead == '.';
+        if (length < sizeof(word) - 1)
+          word[length++] = (char)lexer->lookahead;
+        lexer->advance(lexer, false);
+      }
+      word[length] = '\0';
+      // `module(@sym)` is the dedicated `_custom_body_module_symbol_arg`
+      // body element, not a sibling operation. Do not treat it as a boundary.
+      if (strcmp(word, "module") == 0 && lexer->lookahead == '(') {
+        line_start = false;
+        continue;
+      }
+      bool boundary =
+          dotted || strcmp(word, "return") == 0 || strcmp(word, "call") == 0 ||
+          strcmp(word, "call_indirect") == 0 || strcmp(word, "constant") == 0 ||
+          strcmp(word, "unrealized_conversion_cast") == 0 ||
+          strcmp(word, "module") == 0;
+      if (boundary) {
+        // '=' disambiguates assignment syntax even across comments/newlines.
+        // ':' does not: an unbound typed operation may begin with it.
+        // The dedicated module operation cannot start with ':'.
+        bool next_line = false;
+        if (!skip_payload_extras(lexer, &next_line) ||
+            (lexer->lookahead != '=' &&
+             !(strcmp(word, "module") == 0 && lexer->lookahead == ':')))
+          return false;
+      }
+      line_start = false;
+      continue;
+    }
+    line_start = false;
+    // An attached dialect envelope always owns its angle opener, even when
+    // its unknown payload begins with `-` rather than a numeric literal.
+    if (c == '#' || c == '!') {
+      lexer->advance(lexer, false);
+      scan_dialect_envelope_tail(lexer, &angles);
+      continue;
+    }
+    if (c == '"')
+      in_string = true;
+    else if (c == '{')
+      braces++;
+    else if (c == '}' && --braces == 0)
+      return true;
+    else if (c == '(')
+      parens++;
+    else if (c == ')' && parens > 0)
+      parens--;
+    else if (c == '[')
+      brackets++;
+    else if (c == ']' && brackets > 0)
+      brackets--;
+    else if (c == '<' || c == '-') {
+      lexer->advance(lexer, false);
+      if (c == '<') {
+        if (scan_angle_tail(lexer, &line_start))
+          angles++;
+      } else if (lexer->lookahead == '>') {
+        lexer->advance(lexer, false);
+      }
+      continue;
+    } else if (c == '>' && angles > 0)
+      angles--;
+    lexer->advance(lexer, false);
+  }
+  lexer->mark_end(lexer);
+  return false;
+}
+
 // Precondition: the lexer is positioned at `{`. The scanner claims the group
 // only when its first meaningful token cannot begin any structured brace
 // reading. `#` and `!` cannot begin a region, dictionary entry or known
 // custom-body payload. A `^` lead is claimed only when it is not followed by
 // the block-label shape that starts a real region.
-static bool scan_opaque_brace_group(TSLexer *lexer) {
+static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
+                                    bool allow_opaque) {
   lexer->advance(lexer, false);
-  if (!skip_brace_leading_extras(lexer)) {
-    return false;
+  lexer->mark_end(lexer);
+  bool line_start = false;
+  if (!skip_payload_extras(lexer, &line_start)) {
+    if (!allow_unclosed)
+      return false;
+    lexer->mark_end(lexer);
+    if (scan_fallback_brace_tail(lexer, false))
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_PREFIX;
+    return true;
   }
 
   if (lexer->lookahead == '#' || lexer->lookahead == '!') {
+    if (!allow_opaque)
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_OPAQUE_BRACE_GROUP;
     return scan_opaque_brace_tail(lexer, 1);
   }
 
   if (lexer->lookahead != '^') {
-    return false;
+    if (!allow_unclosed || !is_fallback_brace_lead(lexer, &line_start))
+      return false;
+    if (scan_fallback_brace_tail(lexer, line_start))
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_UNCLOSED_BRACE_PREFIX;
+    return true;
   }
+  if (!allow_opaque)
+    return false;
+  lexer->result_symbol = CUSTOM_BODY_OPAQUE_BRACE_GROUP;
 
   lexer->advance(lexer, false);
   if (is_digit(lexer->lookahead)) {
@@ -273,7 +580,7 @@ static bool scan_opaque_brace_group(TSLexer *lexer) {
 
   int brace_depth = 1;
   BlockLabelTailResult block_label_tail =
-      at_block_label_tail(lexer, &brace_depth);
+      at_block_label_tail(lexer, &brace_depth, NULL);
   if (block_label_tail == BLOCK_LABEL_TAIL_FOUND) {
     return false;
   }
@@ -285,6 +592,13 @@ static bool scan_opaque_brace_group(TSLexer *lexer) {
 
 static bool skip_label_extras(TSLexer *lexer) {
   return skip_extras(lexer) == EXTRAS_READY;
+}
+
+// Payload probes resume after a failed match, so they must retain the current
+// line and delimiter position. Ordinary boundary scans rewind on failure.
+static bool skip_probe_extras(TSLexer *lexer, bool *line_start) {
+  return line_start ? skip_payload_extras(lexer, line_start)
+                    : skip_label_extras(lexer);
 }
 
 // Precondition: the lexer is positioned at `#` or `!`. Consume an alias
@@ -310,10 +624,10 @@ static bool scan_alias_definition_sigil(TSLexer *lexer) {
   return lexer->lookahead == '=';
 }
 
-static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
-                                                int *brace_depth) {
+static BlockLabelTailResult
+at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
   bool has_outer_brace = *brace_depth > 0;
-  if (!skip_label_extras(lexer)) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return BLOCK_LABEL_TAIL_NOT_FOUND;
   }
 
@@ -382,43 +696,16 @@ static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
       }
       lexer->advance(lexer, false);
     }
+    if (line_start)
+      *line_start = false;
   }
 
-  if (!skip_label_extras(lexer)) {
+  if (!skip_probe_extras(lexer, line_start)) {
     return BLOCK_LABEL_TAIL_NOT_FOUND;
   }
 
   return lexer->lookahead == ':' ? BLOCK_LABEL_TAIL_FOUND
                                  : BLOCK_LABEL_TAIL_NOT_FOUND;
-}
-
-// Consumes a suffix-id with the same spelling as the grammar's `_suffix_id`
-// token: digits, or an identifier, then an optional `:digits` or `#digits`.
-// Returns false when the text after `%` is not a suffix-id.
-static bool scan_suffix_id(TSLexer *lexer) {
-  if (is_digit(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  } else if (is_identifier_start(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_identifier_char(lexer->lookahead));
-  } else {
-    return false;
-  }
-
-  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
-    lexer->advance(lexer, false);
-    if (!is_digit(lexer->lookahead)) {
-      return false;
-    }
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  }
-
-  return true;
 }
 
 // Precondition: the lexer is positioned at `%`. Consumes only the `%` as the
@@ -427,20 +714,26 @@ static bool scan_suffix_id(TSLexer *lexer) {
 // id, (`,` value-id)* `=` and the start of an operation name (a bare or dotted
 // identifier, or the string of a generic operation). A custom body uses `%x =`
 // too (`scf.for %i = %lb`, `(%gx = %a)`), but with a value after the `=`.
-static bool scan_op_result_sigil(TSLexer *lexer) {
+static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
+                                 int *angles) {
   lexer->advance(lexer, false);
-  lexer->mark_end(lexer);
-  if (!scan_suffix_id(lexer)) {
+  if (mark)
+    lexer->mark_end(lexer);
+  if (!scan_probe_suffix_id(lexer, line_start, angles)) {
     return false;
   }
 
   for (;;) {
-    if (!skip_label_extras(lexer)) {
+    if (line_start)
+      *line_start = false;
+    if (!skip_probe_extras(lexer, line_start)) {
       return false;
     }
     if (lexer->lookahead == '=') {
       lexer->advance(lexer, false);
-      if (!skip_label_extras(lexer)) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       return is_operation_name_start(lexer->lookahead);
@@ -449,14 +742,16 @@ static bool scan_op_result_sigil(TSLexer *lexer) {
       return false;
     }
     lexer->advance(lexer, false);
-    if (!skip_label_extras(lexer)) {
+    if (line_start)
+      *line_start = false;
+    if (!skip_probe_extras(lexer, line_start)) {
       return false;
     }
     if (lexer->lookahead != '%') {
       return false;
     }
     lexer->advance(lexer, false);
-    if (!scan_suffix_id(lexer)) {
+    if (!scan_probe_suffix_id(lexer, line_start, angles)) {
       return false;
     }
   }
@@ -469,58 +764,70 @@ static bool scan_op_result_sigil(TSLexer *lexer) {
 // what a generic operation allows next: `:`, `[`, `<{`, `(` or `{`. A custom
 // body's quoted name before `(` carries more than values, as in
 // `with "rewriter"(%x : !pdl.value)`.
-static bool scan_generic_op_quote(TSLexer *lexer) {
+static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
+                                  int *parens, int *angles) {
   lexer->advance(lexer, false);
-  lexer->mark_end(lexer);
+  if (mark)
+    lexer->mark_end(lexer);
 
   while (lexer->lookahead != '"') {
     switch (lexer->lookahead) {
-      case '\0':
-      case '\n':
-      case '\r':
-      case '\f':
-      case '\v':
+    case '\0':
+    case '\n':
+    case '\r':
+    case '\f':
+    case '\v':
+      return false;
+    case '\\':
+      // Step over the escaped character so an escaped quote does not end
+      // the name; the grammar decides whether the escape is valid.
+      lexer->advance(lexer, false);
+      if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
+          lexer->lookahead == '\r') {
         return false;
-      case '\\':
-        // Step over the escaped character so an escaped quote does not end
-        // the name; the grammar decides whether the escape is valid.
-        lexer->advance(lexer, false);
-        if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
-            lexer->lookahead == '\r') {
-          return false;
-        }
-        lexer->advance(lexer, false);
-        break;
-      default:
-        lexer->advance(lexer, false);
+      }
+      lexer->advance(lexer, false);
+      break;
+    default:
+      lexer->advance(lexer, false);
     }
   }
   lexer->advance(lexer, false);
 
-  if (!skip_label_extras(lexer)) {
+  if (line_start)
+    *line_start = false;
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead != '(') {
     return false;
   }
   lexer->advance(lexer, false);
-  if (!skip_label_extras(lexer)) {
+  if (parens)
+    (*parens)++;
+  if (line_start)
+    *line_start = false;
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
   if (lexer->lookahead == '%') {
     for (;;) {
       lexer->advance(lexer, false);
-      if (!scan_suffix_id(lexer)) {
+      if (!scan_probe_suffix_id(lexer, line_start, angles)) {
         return false;
       }
-      if (!skip_label_extras(lexer)) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != ',') {
         break;
       }
       lexer->advance(lexer, false);
-      if (!skip_label_extras(lexer)) {
+      if (line_start)
+        *line_start = false;
+      if (!skip_probe_extras(lexer, line_start)) {
         return false;
       }
       if (lexer->lookahead != '%') {
@@ -532,21 +839,33 @@ static bool scan_generic_op_quote(TSLexer *lexer) {
     return false;
   }
   lexer->advance(lexer, false);
-  if (!skip_label_extras(lexer)) {
+  if (parens)
+    (*parens)--;
+  if (line_start)
+    *line_start = false;
+  if (!skip_probe_extras(lexer, line_start)) {
     return false;
   }
 
   switch (lexer->lookahead) {
-    case ':':
-    case '[':
-    case '(':
-    case '{':
-      return true;
-    case '<':
-      lexer->advance(lexer, false);
-      return lexer->lookahead == '{';
-    default:
-      return false;
+  case ':':
+  case '[':
+  case '(':
+  case '{':
+    return true;
+  case '<': {
+    lexer->advance(lexer, false);
+    if (line_start)
+      *line_start = false;
+    bool properties = lexer->lookahead == '{';
+    // Preserve the opener consumed by a failed `<{` probe.
+    if (angles && scan_angle_tail(lexer, line_start)) {
+      (*angles)++;
+    }
+    return properties;
+  }
+  default:
+    return false;
   }
 }
 
@@ -579,6 +898,57 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
+  // The sentinel is not used by any grammar production and is never emitted.
+  // Unlike combinations of context tokens, it is unambiguous even when parser
+  // states share lookaheads from top-level and region contexts.
+  bool recovering = valid_symbols[ERROR_SENTINEL];
+
+  // The recovery lexer does not recognize arbitrary dotted names internally.
+  // Supply the same token in recovery so a missing payload close can be
+  // inserted before the complete sibling name, instead of deleting its
+  // characters.
+  if (valid_symbols[RECOVERY_DOTTED_OP_NAME] &&
+      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && recovering &&
+      ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+       (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+       lexer->lookahead == '_')) {
+    char word[32];
+    unsigned length = 0;
+    while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+           (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+           is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+           lexer->lookahead == '$') {
+      if (length < sizeof(word) - 1)
+        word[length++] = (char)lexer->lookahead;
+      lexer->advance(lexer, false);
+    }
+    if (lexer->lookahead != '.')
+      return false;
+    if (length < sizeof(word) - 1)
+      word[length++] = '.';
+    lexer->advance(lexer, false);
+    if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+          (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+          lexer->lookahead == '_'))
+      return false;
+    do {
+      if (length < sizeof(word) - 1)
+        word[length++] = (char)lexer->lookahead;
+      lexer->advance(lexer, false);
+    } while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+             (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+             is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+             lexer->lookahead == '$' || lexer->lookahead == '.');
+    word[length] = '\0';
+    if (strcmp(word, "func.func") == 0 || strcmp(word, "llvm.func") == 0 ||
+        strcmp(word, "builtin.module") == 0 ||
+        strcmp(word, "affine.for") == 0 ||
+        strcmp(word, "pdl_interp.record_match") == 0)
+      return false;
+    lexer->mark_end(lexer);
+    lexer->result_symbol = RECOVERY_DOTTED_OP_NAME;
+    return true;
+  }
 
   if (lexer->lookahead == '#') {
     if (at_line_start && valid_symbols[ATTRIBUTE_ALIAS_SIGIL] &&
@@ -597,13 +967,12 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return false;
   }
 
-  if (valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP] &&
+  if ((valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP] ||
+       valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX]) &&
       lexer->lookahead == '{') {
-    if (scan_opaque_brace_group(lexer)) {
-      lexer->result_symbol = CUSTOM_BODY_OPAQUE_BRACE_GROUP;
-      return true;
-    }
-    return false;
+    return scan_custom_brace_group(lexer,
+      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && !recovering,
+      valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP]);
   }
 
   // At a region opening such as `{^bb0: ...}`, the grammar can require a
@@ -616,12 +985,14 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
       (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
 
   // The next two tokens end a preceding custom body at the start of the next
-  // operation. Both require line start: an operation may span lines, but a
-  // new one starts its own, while mid-line the same shapes are body syntax,
-  // such as a loop bound `%i = max ...`.
+  // operation. Both require line start: an operation may span lines, but a new
+  // one starts its own, while mid-line the same shapes are body syntax, such as
+  // a loop bound `%i = max ...`. Error recovery must not relax that: treating
+  // mid-line payload text as an operation boundary can re-tokenize a later
+  // quote run and swallow following operations.
   if (lexer->lookahead == '%') {
     if (valid_symbols[OP_RESULT_SIGIL] && at_line_start &&
-        scan_op_result_sigil(lexer)) {
+        scan_op_result_sigil(lexer, true, NULL, NULL)) {
       lexer->result_symbol = OP_RESULT_SIGIL;
       return true;
     }
@@ -630,7 +1001,7 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   if (lexer->lookahead == '"') {
     if (valid_symbols[GENERIC_OP_QUOTE] && at_line_start &&
-        scan_generic_op_quote(lexer)) {
+        scan_generic_op_quote(lexer, true, NULL, NULL, NULL)) {
       lexer->result_symbol = GENERIC_OP_QUOTE;
       return true;
     }
@@ -641,43 +1012,19 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return false;
   }
 
-  lexer->advance(lexer, false);
-  if (is_digit(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_digit(lexer->lookahead));
-  } else if (is_identifier_start(lexer->lookahead)) {
-    do {
-      lexer->advance(lexer, false);
-    } while (is_identifier_char(lexer->lookahead));
-  } else {
+  SuffixIdResult id = scan_caret_id(lexer, true);
+  if (id == SUFFIX_ID_COLON) {
+    if (!can_be_block_label)
+      return false;
+    lexer->result_symbol = BLOCK_LABEL_ID;
+    return true;
+  }
+  if (id != SUFFIX_ID_COMPLETE)
     return false;
-  }
-
-  lexer->mark_end(lexer);
-
-  if (lexer->lookahead == ':' || lexer->lookahead == '#') {
-    int32_t suffix_separator = lexer->lookahead;
-    lexer->advance(lexer, false);
-    if (is_digit(lexer->lookahead)) {
-      do {
-        lexer->advance(lexer, false);
-      } while (is_digit(lexer->lookahead));
-      lexer->mark_end(lexer);
-    } else if (suffix_separator == ':') {
-      if (can_be_block_label) {
-        lexer->result_symbol = BLOCK_LABEL_ID;
-        return true;
-      }
-      return false;
-    } else {
-      return false;
-    }
-  }
 
   int brace_depth = 0;
   BlockLabelTailResult block_label_tail =
-      at_block_label_tail(lexer, &brace_depth);
+      at_block_label_tail(lexer, &brace_depth, NULL);
   bool is_block_label = can_be_block_label &&
                         block_label_tail == BLOCK_LABEL_TAIL_FOUND;
   if (is_block_label && valid_symbols[BLOCK_LABEL_ID]) {

@@ -2415,6 +2415,10 @@
         {
           "type": "SYMBOL",
           "name": "bare_id"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_recovery_dotted_op_name"
         }
       ]
     },
@@ -2502,6 +2506,10 @@
         {
           "type": "SYMBOL",
           "name": "_custom_body_element_base"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_unclosed_brace_group"
         },
         {
           "type": "SYMBOL",
@@ -2688,6 +2696,19 @@
         {
           "type": "SYMBOL",
           "name": "_custom_body_ssa_dict"
+        }
+      ]
+    },
+    "_custom_body_unclosed_brace_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_custom_body_unclosed_brace_prefix"
+        },
+        {
+          "type": "STRING",
+          "value": "}"
         }
       ]
     },
@@ -7132,6 +7153,18 @@
     {
       "type": "SYMBOL",
       "name": "_type_alias_sigil"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_custom_body_unclosed_brace_prefix"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_recovery_dotted_op_name"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_error_sentinel"
     }
   ],
   "inline": [

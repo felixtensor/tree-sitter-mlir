@@ -63,6 +63,10 @@ export default grammar({
     $._custom_body_opaque_brace_group,
     $._attribute_alias_sigil,
     $._type_alias_sigil,
+    $._custom_body_unclosed_brace_prefix,
+    $._recovery_dotted_op_name,
+    // Never emitted or used in a production. Only the recovery lexer offers it.
+    $._error_sentinel,
   ],
   // All 9 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -578,7 +582,12 @@ export default grammar({
     // operation before it; a bare_id names an operation only where no body can
     // continue, such as the start of a region or block.
     custom_op_name: ($) =>
-      choice($._dotted_op_name, $._bare_op_name, $.bare_id),
+      choice(
+        $._dotted_op_name,
+        $._bare_op_name,
+        $.bare_id,
+        $._recovery_dotted_op_name,
+      ),
     _dotted_op_name: ($) =>
       token(
         prec(
@@ -614,6 +623,7 @@ export default grammar({
       choice(
         $.custom_body_dim_list,
         $._custom_body_element_base,
+        $._custom_body_unclosed_brace_group,
         // Kept out of _custom_body_element_base because nested delimiter bodies
         // should still treat `>` as an angle-group boundary, not a loose marker.
         $._custom_body_successor_marker, // >^bb1 (WasmSSA if continuation)
@@ -674,10 +684,10 @@ export default grammar({
         $._custom_body_ssa_dict, // {"attr" = %value, ...} / options with SSA values
       ),
 
-    // A `{...}` that no other reading accepts ({"a": %x}, {@a -> @b}, {%d})
-    // stays one balanced group, so its `}` cannot close an enclosing region.
-    // It starts only on a token, or a pair, that no region, dictionary or
-    // other brace payload can continue, so the choice is static.
+    // The prefix stops before a recognizable boundary. Requiring a close
+    // triggers local error recovery instead of accepting the malformed body.
+    _custom_body_unclosed_brace_group: ($) =>
+      seq($._custom_body_unclosed_brace_prefix, "}"),
     _custom_body_brace_group: ($) =>
       seq(
         "{",
