@@ -123,12 +123,9 @@ error span and recovery of subsequent MLIR structure, not by eliminating every
 `ERROR` node. In particular, an `ERROR` inside one custom operation is preferable
 to an apparently successful parse that absorbs later sibling operations.
 
-Comparable extensible-language grammars are design references, not templates:
-recursive token trees motivate bounded delimiter handling; macro/notation
-systems motivate a precise core plus coarse extension points; complex external
-scanners motivate focused malformed-input tests and fuzzing. A borrowed method
-is accepted only when it strengthens an MLIR-specific CST invariant, corpus
-case, query contract, or scanner constraint.
+Other extensible-language grammars are references, not templates: a borrowed
+method is accepted only when it strengthens an MLIR-specific invariant, test,
+query contract, or scanner constraint.
 
 ## Key Design Decisions
 
@@ -182,6 +179,11 @@ Otherwise it opens a group whose balanced contents stay flat in the
 `custom_operation`. The group starts on a token none of the others accepts
 after `{`, or on a string or value followed by one.
 
+After a type inside `(...)`, a name-only brace is an argument attribute
+dictionary, not a region (`transform.named_sequence ... {transform.readonly}`).
+A body-level name-only brace keeps the region reading: without the operation's
+assembly format it is indistinguishable from `{ scf.yield }`.
+
 For a direct-body fallback, the scanner checks for a line-start operation/block
 boundary or EOF before the matching close. If found, it emits the opening brace
 and malformed prefix as one token, leaving boundary-leading whitespace intact.
@@ -215,6 +217,23 @@ Queries that act on `region`, such as `folds.scm`, `indents.scm` and
 `locals.scm`, therefore neither fold, indent nor scope it, even when it spans
 lines.
 
+#### Properties, Attribute Dictionaries and Regions
+
+| Spelling | Class |
+| --- | --- |
+| `<{...}>` (generic), `<key = value>` / `<{...}>` (custom `prop-dict`) | Properties: declared by the operation, stored in properties, verified by its definition |
+| `{...}` (generic, after regions; `attr-dict` / `attributes {...}` in custom form) | Attribute dictionary; legacy/compatibility parsing may include inherent attributes |
+| `({...})` (generic), `{...}` where a custom format places a region | Region |
+
+A bare `{...}` is not properties syntax. In custom form it can be an attribute
+dictionary or a region; only the operation's assembly format decides. Generic
+syntax is unambiguous. The fallback resolves the decidable argument-attribute
+position after a type inside `(...)` and keeps the body-level ambiguity as a
+known limit (`memref.dealloc %m {test.flag}`,
+`test.op attributes {test.flag}`). The grammar does not enforce the LangRef
+key-prefix classification: unprefixed keys and nested dictionaries are
+accepted. Consumers needing exact classification should use an MLIR-aware tool.
+
 Known limits: a payload that fails only later still fails there
 (`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
 dictionary), and outside `<...>` `{a: i32}` is still a region. Inside `<...>`
@@ -225,23 +244,11 @@ so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 9 conflicts listed in `grammar.js` are load-bearing — removing any
-one causes `tree-sitter generate` to fail with an unresolved conflict.
-The `array` and `tensor` keyword conflicts were additionally tested
-with token precedence substitution, which increased state count and
-parser size without improving the AST, so they remain as declared
-conflicts.
-
-Dialect bodies start with `token.immediate("<")`, matching MLIR's requirement
-that the opening angle bracket touch the dialect name. This distinguishes
-`!ns<...>` / `#ns<...>` from aliases followed by separate `<...>` custom-body
-groups, independently of whether another operation follows. The same rule
-applies to dotted names and opaque string bodies. Spaces, newlines and comments
-separate the name from a subsequent group. Nested angle groups inside a dialect
-payload still allow whitespace. The attached body is aliased to the existing
-`pretty_dialect_item_body` node to preserve the public CST shape. Neither the
-alias/namespace overlaps nor the optional body of a pretty dialect item need
-declared conflicts or namespace precedence.
+The 10 conflicts in `grammar.js` are load-bearing: `generate` fails without
+any one. The `array`/`tensor` token-precedence alternatives were rejected for
+size without AST benefit. Dialect bodies use `token.immediate("<")`, so
+`!ns<...>` / `#ns<...>` attach the body to the name; whitespace or comments
+leave a separate custom-body group.
 
 #### Core MLIR Overlaps (2)
 
@@ -250,24 +257,22 @@ declared conflicts or namespace precedence.
 | `_value_use_list × _value_use_and_type` | A value in parentheses can be a list element or the start of a value-with-type form. |
 | `_type_list_no_parens × _type_or_func_type` | Function results can be a type list or individual type-or-function-type entries. |
 
-#### Custom-Body Fallback Overlaps (5)
+#### Custom-Body Fallback Overlaps (6)
 
 | Conflict | Cause |
 | --- | --- |
 | `custom_op_name × attribute_entry` | A bare identifier at the start of a body element can be the next operation name or the current operation's attribute key. |
-| `array_literal × _custom_body_array_keyword` | `array` is both a literal introducer (`array<...>`) and a valid loose body keyword. Token precedence was tested and rejected (increases size without improving AST). |
-| `_custom_body_tensor_keyword × tensor_type` | Same pattern as `array` for the `tensor` keyword. Token precedence rejected for the same reason. |
+| `array_literal × _custom_body_array_keyword` | `array` is both a literal introducer and a loose body keyword. |
+| `_custom_body_tensor_keyword × tensor_type` | Same overlap for `tensor`. |
 | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | A dotted name followed by `loc(...)` can be a specialized loc+attribute form or a generic operation name. |
 | `_custom_body_dict_key × attribute_entry` | A string followed by `=` can be a custom SSA dictionary key or a normal dictionary attribute key. |
+| `_custom_body_element_base × _custom_body_typed_arg_attr` | A name-only brace after a type inside `(...)` can be an argument attribute dictionary or a single-operation region; the corpora contain only the former. |
 
-The dynamic precedence -1 on `_generic_custom_operation` settles
-`custom_op_name × attribute_entry` against inventing an operation, keeping
-`linalg.generic {indexing_maps = ...}` a dictionary. It cannot end a body.
-A dotted first key (`{sv.namehint = "x"}`) lexes as an operation name and never
-reaches that conflict; `_custom_body_dotted_key_entry` reads it as a dictionary
-when `=` follows, since no custom assembly format starts with `=`. Known limit: a
-dotted key without a value (`{transform.readonly}`) still parses as a region, the
-same shape as `{ scf.yield }`.
+Dynamic precedence `-1` on `_generic_custom_operation` keeps
+`linalg.generic {indexing_maps = ...}` a dictionary. A dotted key with `=`
+never reaches that conflict and is read as a dictionary entry. Without `=`, it
+is a dictionary only in the decidable argument-attribute position; elsewhere it
+keeps the region reading, like `{ scf.yield }`.
 
 #### Pretty-Dialect Body Overlaps (2)
 
@@ -276,91 +281,44 @@ same shape as `{ scf.yield }`.
 | `_pretty_dialect_item_contents × tensor_type` | `tensor` is both a bare payload keyword and a builtin type introducer, including inside a nested tuple. |
 | `_pretty_dialect_item_contents × opaque_type` | `opaque` has the same keyword/type overlap. |
 
-These two keywords deliberately sit outside the left-associative pretty-body
-fallback. Reducing either keyword before `<` loses valid nested builtin nodes,
-as in `!foo.a<tuple<tensor<i8>>>` and `!foo.a<tuple<opaque<"x", "y">>>`.
-Committing statically to the builtin reading instead rejects balanced unknown
-payloads such as `tuple<tensor<4xuint<1>>>` or `opaque<"x", uint<1>>`.
-The conflicts retain both readings until the payload is complete. A dynamic
-precedence of -1 on each nested `pretty_dialect_item_body` then prefers the
-structured reading, including ranked tensors whose fallback otherwise gains
-the positive precedence of `dialect_dim_list`. Focused corpus tests pin the
-builtin nodes, unknown payloads, and following operation/region boundaries.
+These keywords sit outside the left-associative pretty-body fallback:
+committing either way loses valid nested builtin nodes or balanced unknown
+payloads. The conflicts keep both readings until the payload completes;
+dynamic precedence `-1` on nested `pretty_dialect_item_body` then prefers the
+structured reading. Corpus tests pin both readings and following boundaries.
 
 ### External Scanner
 
-The parser uses an external scanner for narrowly scoped lexical
-ambiguities. MLIR reuses `^suffix` for both successor references and block
-labels, and the loose custom-operation fallback can otherwise parse a following
-block label such as `^bb1(%arg : i32):` as another successor plus punctuation.
-Custom operation bodies also need to distinguish a dimension-separating `x`
-from a bare identifier named `x`. And a custom operation body accepts `%x`
-and `=`, so without a lexical decision it absorbs the next operation's result
-binding as body operands; its strings and parenthesised groups likewise absorb
-an unbound generic operation. The scanner emits the following tokens:
+The scanner resolves three lexical ambiguities: `^suffix` as successor vs block
+label, `x` as dimension separator vs identifier, and a line-start result binding
+or generic operation as the next operation rather than custom-body syntax. It
+emits:
 
-- `_caret_id` for ordinary successor/reference uses.
-- `_block_label_id` when the grammar permits a block label and the caret
-  identifier has block-label shape: `^suffix block-arg-list? :`. This includes
-  labels at line start, compact labels adjacent to the preceding token such as
-  `{^bb0: ...}`, and grammar states where `_caret_id` is not valid.
-- `_custom_body_dimension_separator` for `x` when a supported custom-body
-  dimension follows, as in `16x16` or `16x?`.
-- `_op_result_sigil` for the `%` of a line-start value when the grammar
-  permits a new operation and the lookahead reads `%value (, %value)* =`
-  followed by an operation name (an identifier or the string of a generic
-  operation). The value id parses like any `value_use`.
-- `_generic_op_quote` for the opening quote of a line-start name when the
-  grammar permits a new operation and the lookahead reads a generic operand
-  list, `(` values `)`, followed by `:`, `[`, `<{`, `(` or `{`. The rest of the
-  name parses like any `string_literal`.
-- `_custom_body_opaque_brace_group` for a fully balanced custom-body group
-  whose first meaningful lead is `#`, `!`, or a non-label `^`. The scanner
-  consumes the complete group, including nested braces, while treating strings
-  and line comments as opaque. The token is hidden, so its contents deliberately
-  do not create region, scope, or fold nodes.
-- `_custom_body_unclosed_brace_prefix` covers an unsafe direct-body fallback
-  opener and prefix up to a boundary or EOF, as described above.
-- `_recovery_dotted_op_name` supplies ordinary dotted names during recovery,
-  allowing a missing close before a sibling without deleting its name.
-- `_error_sentinel` is never emitted or used in a production; its validity
-  identifies the recovery lexer.
-- `_attribute_alias_sigil` and `_type_alias_sigil` for line-start `#name =`
-  and `!name =` definitions. They consume only the sigil; the grammar parses
-  the alias name and value/type through the ordinary rules.
+| Token | Role |
+| --- | --- |
+| `_caret_id` / `_block_label_id` | successor/reference vs block label |
+| `_custom_body_dimension_separator` | `x` in `16x16` / `16x?` |
+| `_op_result_sigil` / `_generic_op_quote` | line-start operation boundaries; only the sigil is consumed |
+| `_custom_body_opaque_brace_group` | balanced `#`/`!`/non-label `^` group, hidden |
+| `_custom_body_unclosed_brace_prefix` | local recovery of an unsafe fallback opener |
+| `_recovery_dotted_op_name` | preserve a dotted name during recovery |
+| `_attribute_alias_sigil` / `_type_alias_sigil` | line-start `#name =` / `!name =`; only the sigil is consumed |
+| `_error_sentinel` | recovery-lexer validity marker, never emitted |
 
-Both boundary tokens need the next operation to start a line, not to fit on
-one: a continuation line is cut only if it begins with a token's full shape.
-In the pinned examples the binding shape occurs elsewhere only as an
-`affine.for` bound (`%i = max ...`), where the dedicated rule never offers the
-token. Still unhandled: an operation sharing a line with the previous body
-(absorbed), and an unknown dialect's continuation line that starts
-`%x = <identifier>` or has the generic shape, such as `emitc.call_opaque`
-wrapped before its callee string (cut). Requiring line start keeps the second
-rare.
+The boundary tokens require a line start: a continuation line is cut only if
+it has the full binding or generic shape. Known limits: an operation sharing a
+line with the previous body is absorbed, and an unknown-dialect continuation
+line with the generic shape can be cut. Caret and dimension tokens appear as
+`caret_id` / `dimension_separator`; boundary tokens consume only the sigil, so
+the ordinary `value_use` / `string_literal` path supplies the rest (pinned by a
+`:cst` case). The scanner has no persistent state.
 
-The two caret tokens are exposed as named `caret_id` nodes in the syntax tree,
-so query consumers do not need separate handling. The dimension token is
-exposed as `dimension_separator`. The two operation-boundary tokens consume
-only the opening `%` of a `value_use` or `"` of a `string_literal` and the
-grammar parses the rest, so both nodes match the ordinary path, anonymous
-children included; a `:cst` corpus case pins this. Alias-boundary tokens
-likewise consume only their sigil. The scanner has no persistent state,
-serializes nothing, and its caret and result handling mirror the existing
-`_suffix_id` spelling including optional `:digits` and `#digits` suffixes.
+The boundary decision is lexical because a dynamic-precedence/conflict version
+passed full parses but failed an incremental re-parse in fuzzing. Block-argument
+lookahead skips strings and treats `->` as an arrow, not an angle close.
 
-The boundary tokens are lexical because weighing the two readings in the
-grammar did not hold up: ending the body through dynamic precedence and a
-declared conflict produced the right tree on a full parse, but fuzzing found an
-incremental re-parse that reverted one boundary to the absorbed shape. Deciding
-the boundary lexically leaves no ambiguity for re-parse to resolve differently.
-
-Block-argument lookahead skips strings and treats `->` as an arrow rather
-than an angle-bracket close, including in sparse tensor encoding maps.
-
-Do not add more scanner responsibilities unless the syntax cannot be expressed
-safely in pure grammar or a measured parser-stability problem needs lexical
-state.
+Do not add scanner responsibilities unless pure grammar cannot express the
+syntax safely or a measured parser-stability problem requires lexical state.
 
 ## Correctness Gates
 

@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   binding or generic operation instead of absorbing it.
 - **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
   attribute dictionary instead of a region.
+- **grammar:** read a name-only brace after a type inside `(...)` as a
+  unit-key argument attribute dictionary instead of a region/operation.
 - **grammar:** keep balanced unrecognized `{...}` payloads in a custom
   operation body, such as `{"a": %x}`, inside that operation.
 - **grammar:** never read a `{...}` inside `<...>` in a custom operation body
@@ -73,6 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A result binding or generic operation after a custom operation now starts
   its own `operation`, instead of trailing children of the previous
   `custom_operation`.
+- A name-only brace after a type inside `(...)` now produces
+  `attribute` / `dictionary_attribute` / `attribute_entry`, not a region.
 - A `{...}` whose first key is dotted and has a value, such as
   `{allocation.offset = 0 : i32}`, is now `attribute` → `dictionary_attribute`
   instead of a `region` holding an `operation`.
@@ -83,6 +87,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A `{...}` anywhere inside `<...>` in a custom body, also nested in `(...)`,
   `[...]` or `{...}`, is now flat contents or a `dictionary_attribute`, never a
   `region`.
+
+### Known limits
+- Body-level unit-key braces (e.g. `memref.dealloc %m {test.flag} : ...`) still
+  parse as regions; only the operation's assembly format can decide there.
 
 ## [0.2.0] - 2026-08-02
 

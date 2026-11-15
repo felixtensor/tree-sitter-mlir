@@ -19,3 +19,10 @@ llvm.func @call_with_arg_attrs(%arg0: !llvm.array<2 x f32>) {
 //                                                  ^ attribute
   llvm.return
 }
+
+transform.named_sequence @unit_arg_attrs(%arg0: !transform.any_op {transform.readonly, transform.consumed}) {
+//^ function.builtin
+//                                                                   ^ attribute
+//                                                                                       ^ attribute
+  transform.yield
+}
