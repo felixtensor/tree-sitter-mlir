@@ -2769,3 +2769,62 @@ func.func @bare_constant() {
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
+================================================================================
+Unit-key dictionary in a custom operation argument group
+================================================================================
+transform.named_sequence @s(%arg0: !transform.any_op {transform.readonly, transform.consumed}) {
+  transform.yield
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (symbol_ref_id)
+      (value_use)
+      (type
+        (dialect_type
+          (pretty_dialect_item
+            (dialect_namespace)
+            (dialect_ident))))
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id))
+          (attribute_entry
+            (bare_id))))
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name))))))))
+
+================================================================================
+Unit-key dictionary in a func.func argument group stays a dictionary
+================================================================================
+func.func @f(%arg0: i32 {test.flag}) {
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (attribute
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))

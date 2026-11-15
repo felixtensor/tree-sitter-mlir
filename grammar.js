@@ -68,7 +68,7 @@ export default grammar({
     // Never emitted or used in a production. Only the recovery lexer offers it.
     $._error_sentinel,
   ],
-  // All 9 declared conflicts are load-bearing: removing any one fails parser
+  // All 10 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
     // ── Core MLIR overlaps (2) ────────────────────────────────────────────
@@ -95,6 +95,12 @@ export default grammar({
 
     // String = ...: custom SSA dict key or normal attribute entry.
     [$._custom_body_dict_key, $.attribute_entry],
+
+    // After a type inside `(...)`, a name-only brace is an argument
+    // attribute dictionary or a single-operation region. Measured corpora:
+    // 4 706 attribute keys and 0 real regions in this position, so the
+    // dictionary reading wins dynamically.
+    [$._custom_body_element_base, $._custom_body_typed_arg_attr],
 
     // Pretty-body keywords must coexist with builtin type introducers until
     // their complete payload proves which reading is valid.
@@ -664,7 +670,8 @@ export default grammar({
     // {a.b = ...}: after `{` a dotted key lexes as an operation name, which
     // only `region` accepts. No custom assembly format starts with `=`, so
     // prec 1 settles it statically. Requiring `=` keeps `{ scf.yield }` a
-    // region; so is a unit key such as `{transform.readonly}`, a known limit.
+    // region; a unit key is handled only in the decidable argument-attribute
+    // position below.
     _custom_body_dotted_key_attribute: ($) =>
       alias($._custom_body_dotted_key_dictionary, $.dictionary_attribute),
     _custom_body_dotted_key_dictionary: ($) =>
@@ -676,6 +683,42 @@ export default grammar({
       ),
     _custom_body_dotted_key_entry: ($) =>
       prec(1, seq(alias($._dotted_op_name, $.bare_id), "=", $.attribute_value)),
+    // A unit-key argument attribute immediately after a type inside `(...)`,
+    // e.g. `transform.named_sequence @s(%arg0: !transform.any_op
+    // {transform.readonly})`. In this position a name-only brace is an
+    // attribute dictionary, not a region (0 real regions in the audited
+    // corpora), so a dotted key that region would read as `_dotted_op_name`
+    // is accepted as `bare_id` here. Other brace positions keep the general
+    // path and its known limit.
+    _custom_body_typed_arg_attr: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          $._custom_body_type_element,
+          alias($._custom_body_unit_key_attribute, $.attribute),
+        ),
+      ),
+    _custom_body_unit_key_attribute: ($) =>
+      alias($._custom_body_unit_key_dictionary, $.dictionary_attribute),
+    _custom_body_unit_key_dictionary: ($) =>
+      seq(
+        "{",
+        alias($._custom_body_unit_key_entry, $.attribute_entry),
+        repeat(
+          seq(",", alias($._custom_body_unit_key_entry, $.attribute_entry)),
+        ),
+        "}",
+      ),
+    _custom_body_unit_key_entry: ($) =>
+      choice(
+        seq(
+          alias($._dotted_op_name, $.bare_id),
+          optional(seq("=", $.attribute_value)),
+        ),
+        seq($.bare_id, optional(seq("=", $.attribute_value))),
+        seq($.string_literal, optional(seq("=", $.attribute_value))),
+        $._attribute_array,
+      ),
 
     _custom_body_brace_payload: ($) =>
       choice(
@@ -844,7 +887,13 @@ export default grammar({
     _custom_body_minus_punctuation: ($) => "-",
 
     _custom_body_paren: ($) =>
-      seq("(", repeat($._nested_custom_body_element), ")"),
+      seq(
+        "(",
+        repeat(
+          choice($._custom_body_typed_arg_attr, $._nested_custom_body_element),
+        ),
+        ")",
+      ),
     _custom_body_bracket: ($) =>
       seq("[", repeat($._nested_custom_body_element), "]"),
     _custom_body_value_group: ($) =>

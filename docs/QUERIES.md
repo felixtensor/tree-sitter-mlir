@@ -41,6 +41,17 @@ conventions. They do not mirror any specific theme or downstream package.
 
 The remaining capture choices follow common tree-sitter conventions directly.
 
+## Semantic limits of syntax highlighting
+
+This grammar is dialect-open and does not embed ODS assembly formats. In custom
+assembly, a `{...}` can be a discardable attribute dictionary or a region; only
+the operation's format decides. Queries must not present an ambiguous name-only
+brace as a definite attribute or operation. Consumers needing exact
+classification should layer an MLIR-aware tool over tree-sitter, which remains
+the fast fallback for incomplete or invalid files. Global prefix or `:`
+heuristics were rejected because real regions and attribute dictionaries share
+both shapes.
+
 ## Language injections
 
 `queries/injections.scm` intentionally contains no active patterns. MLIR IR does
