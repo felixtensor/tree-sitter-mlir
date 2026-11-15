@@ -14,3 +14,15 @@ module attributes {gpu.container_module} {
 //  ^ function.builtin
   }
 }
+
+test.op module @Sub
+//      ^ keyword
+//             ^ string.special.symbol
+
+test.op module (@Sub)
+//      ^ keyword
+//              ^ string.special.symbol
+
+test.op {%a, %b}
+//       ^ variable.special
+//           ^ variable.special

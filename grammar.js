@@ -67,8 +67,9 @@ export default grammar({
     $._recovery_dotted_op_name,
     // Never emitted or used in a production. Only the recovery lexer offers it.
     $._error_sentinel,
+    $._custom_body_module_keyword,
   ],
-  // All 10 declared conflicts are load-bearing: removing any one fails parser
+  // All 11 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
     // ── Core MLIR overlaps (2) ────────────────────────────────────────────
@@ -79,7 +80,7 @@ export default grammar({
     // Function results: type list vs individual type-or-function-type entries.
     [$._type_list_no_parens, $._type_or_func_type],
 
-    // ── Custom-body fallback overlaps (5) ─────────────────────────────────
+    // ── Custom-body fallback overlaps (7) ─────────────────────────────────
 
     // Bare id: next operation name or its attribute entry key.
     [$.custom_op_name, $.attribute_entry],
@@ -95,6 +96,10 @@ export default grammar({
 
     // String = ...: custom SSA dict key or normal attribute entry.
     [$._custom_body_dict_key, $.attribute_entry],
+
+    // `{%a, %b}` is a payload; `{%a, %b = op}` is a region.
+    // Keep both readings until `}` or `=` decides locally.
+    [$.op_result, $._custom_body_brace_group],
 
     // After a type inside `(...)`, a name-only brace is an argument
     // attribute dictionary or a single-operation region. Measured corpora:
@@ -347,10 +352,12 @@ export default grammar({
     _region_list: ($) => seq("(", $.region, repeat(seq(",", $.region)), ")"),
     properties: ($) =>
       seq(
-        "<{",
+        "<",
+        "{",
         optional($.attribute_entry),
         repeat(seq(",", $.attribute_entry)),
-        "}>",
+        "}",
+        ">",
       ),
     // The custom prop-dict directive also accepts <key = value, ...>.
     // Keep this separate from generic operations, which use <{...}> only,
@@ -739,7 +746,7 @@ export default grammar({
             $._custom_body_brace_start,
             repeat($._nested_custom_body_element),
           ),
-          $.value_use,
+          seq($.value_use, repeat(seq(",", $.value_use))),
         ),
         "}",
       ),
@@ -762,7 +769,7 @@ export default grammar({
             ),
             repeat($._custom_body_angle_element),
           ),
-          $.value_use,
+          seq($.value_use, repeat(seq(",", $.value_use))),
         ),
         "}",
       ),
@@ -807,7 +814,7 @@ export default grammar({
       choice(
         $._custom_body_arrow, // <- (OpenMP loop transform mapped-from marker)
         $._custom_body_complex_label, // complex: %value (IRDL operand label)
-        $._custom_body_module_symbol_arg, // module(@sym) kernel attr
+        $._custom_body_module_symbol_arg, // module @sym / module(@sym)
         $._custom_body_sparse_operand, // sparse(%idx : type)
       ),
 
@@ -944,7 +951,12 @@ export default grammar({
       seq("[", $.value_use, repeat(seq(",", $.value_use)), "]"),
     _custom_body_successor_marker: ($) => seq(">", $.successor),
     _custom_body_module_symbol_arg: ($) =>
-      seq(token(prec(20, "module(")), $.symbol_ref_id, ")"),
+      // The scanner consumes only the keyword, after ruling out a module
+      // header. Symbols keep their ordinary children, including quoted names.
+      seq(
+        alias($._custom_body_module_keyword, "module"),
+        choice($.symbol_ref_id, seq("(", $.symbol_ref_id, ")")),
+      ),
     _custom_body_sparse_operand: ($) =>
       seq($._sparse_keyword, $._custom_body_paren),
     _custom_body_location_list: ($) =>

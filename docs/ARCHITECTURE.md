@@ -171,6 +171,16 @@ high-precedence names: it is also a modifier in `memref.global` and
 `llvm.mlir.global`, where it must continue the body. A result binding still
 starts a separate default-dialect `constant` operation.
 
+`module` can also introduce a symbol in a custom body: `module @Sub`,
+`module @Sub(...)` and `module (@Sub)` stay in that body. The scanner emits
+only the keyword after checking past the symbol; whitespace and comments are
+insignificant. After an unparenthesized symbol, `{`, `<` or `attributes` keeps
+the ordinary module header, so `module @M { ... }` still starts a separate
+operation, even on the same line. Header-shaped custom payloads retain this conservative reading;
+an incomplete `module @M` without a header introducer can stay in the preceding
+custom body. A pure grammar alternative kept both readings but
+changed unrelated operation boundaries and failed incremental fuzzing.
+
 #### What a Brace Encloses in a Custom Body
 
 A `{` reads as a region, an attribute dictionary or a known brace payload
@@ -178,6 +188,11 @@ A `{` reads as a region, an attribute dictionary or a known brace payload
 Otherwise it opens a group whose balanced contents stay flat in the
 `custom_operation`. The group starts on a token none of the others accepts
 after `{`, or on a string or value followed by one.
+
+Comma-separated value lists such as `{%a, %b}` stay flat in the custom body;
+`{%a, %b = test.op}` remains a region with result bindings. A local conflict
+keeps both readings until `}` or `=` distinguishes them, including in nested
+groups; no dynamic precedence chooses between complete parses.
 
 After a type inside `(...)`, a name-only brace is an argument attribute
 dictionary, not a region (`transform.named_sequence ... {transform.readonly}`).
@@ -225,6 +240,11 @@ lines.
 | `{...}` (generic, after regions; `attr-dict` / `attributes {...}` in custom form) | Attribute dictionary; legacy/compatibility parsing may include inherent attributes |
 | `({...})` (generic), `{...}` where a custom format places a region | Region |
 
+Properties delimiters are separate `<`, `{`, `}` and `>` tokens, so spaces,
+newlines and comments may separate them. Generic operations still require
+the dictionary braces; the custom module prop-dict additionally accepts the
+unbraced spelling.
+
 A bare `{...}` is not properties syntax. In custom form it can be an attribute
 dictionary or a region; only the operation's assembly format decides. Generic
 syntax is unambiguous. The fallback resolves the decidable argument-attribute
@@ -235,16 +255,16 @@ key-prefix classification: unprefixed keys and nested dictionaries are
 accepted. Consumers needing exact classification should use an MLIR-aware tool.
 
 Known limits: a payload that fails only later still fails there
-(`{%d0, %d1}` reads as a result list until `}`, `{[0, 1] = %v}` as a
-dictionary), and outside `<...>` `{a: i32}` is still a region. Inside `<...>`
-a first bare key followed by `,` reads as a dictionary entry, so `<{a, b: i32}>`
+(`{[0, 1] = %v}` reads as a dictionary), and outside `<...>` `{a: i32}` is
+still a region. Inside `<...>` a first bare key followed by `,` reads as a
+dictionary entry, so `<{a, b: i32}>`
 fails at `b:`. The opaque-group token requires a matching `}`. At line start,
 the scanner also marks `#name =` and `!name =` as alias-definition boundaries
 so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 10 conflicts in `grammar.js` are load-bearing: `generate` fails without
+The 11 conflicts in `grammar.js` are load-bearing: `generate` fails without
 any one. The `array`/`tensor` token-precedence alternatives were rejected for
 size without AST benefit. Dialect bodies use `token.immediate("<")`, so
 `!ns<...>` / `#ns<...>` attach the body to the name; whitespace or comments
@@ -257,7 +277,7 @@ leave a separate custom-body group.
 | `_value_use_list × _value_use_and_type` | A value in parentheses can be a list element or the start of a value-with-type form. |
 | `_type_list_no_parens × _type_or_func_type` | Function results can be a type list or individual type-or-function-type entries. |
 
-#### Custom-Body Fallback Overlaps (6)
+#### Custom-Body Fallback Overlaps (7)
 
 | Conflict | Cause |
 | --- | --- |
@@ -266,6 +286,7 @@ leave a separate custom-body group.
 | `_custom_body_tensor_keyword × tensor_type` | Same overlap for `tensor`. |
 | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | A dotted name followed by `loc(...)` can be a specialized loc+attribute form or a generic operation name. |
 | `_custom_body_dict_key × attribute_entry` | A string followed by `=` can be a custom SSA dictionary key or a normal dictionary attribute key. |
+| `op_result × _custom_body_brace_group` | After `{%a,`, `}` completes a flat value-list payload while `=` completes region result bindings. This is local ambiguity; static precedence would discard one valid form. |
 | `_custom_body_element_base × _custom_body_typed_arg_attr` | A name-only brace after a type inside `(...)` can be an argument attribute dictionary or a single-operation region; the corpora contain only the former. |
 
 Dynamic precedence `-1` on `_generic_custom_operation` keeps
@@ -289,10 +310,11 @@ structured reading. Corpus tests pin both readings and following boundaries.
 
 ### External Scanner
 
-The scanner resolves three lexical ambiguities: `^suffix` as successor vs block
+The scanner resolves lexical ambiguities: `^suffix` as successor vs block
 label, `x` as dimension separator vs identifier, and a line-start result binding
 or generic operation as the next operation rather than custom-body syntax. It
-emits:
+also distinguishes a custom-body `module` symbol argument from a module header.
+It emits:
 
 | Token | Role |
 | --- | --- |
@@ -304,6 +326,7 @@ emits:
 | `_recovery_dotted_op_name` | preserve a dotted name during recovery |
 | `_attribute_alias_sigil` / `_type_alias_sigil` | line-start `#name =` / `!name =`; only the sigil is consumed |
 | `_error_sentinel` | recovery-lexer validity marker, never emitted |
+| `_custom_body_module_keyword` | only `module`, after lookahead rules out a module header; ordinary grammar parses its symbol and parentheses |
 
 The boundary tokens require a line start: a continuation line is cut only if
 it has the full binding or generic shape. Known limits: an operation sharing a
