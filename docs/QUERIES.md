@@ -17,7 +17,7 @@ Captures express a *semantic category*, never a specific theme color.
 
 `highlights.scm` mostly uses standard tree-sitter highlight captures:
 
-`@comment` `@keyword` `@operator` `@function` `@function.builtin`
+`@comment` `@keyword` `@operator` `@function.builtin`
 `@type` `@type.builtin` `@attribute` `@variable.parameter`
 `@number` `@boolean` `@string` `@string.escape` `@string.special.symbol`
 `@constant.builtin` `@constructor.builtin` `@error`

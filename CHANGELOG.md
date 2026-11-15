@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar/scanner:** keep custom-body `module` symbol arguments, including
+  whitespace-separated forms, inside their operation while preserving real
+  module headers.
+- **grammar:** accept whitespace and comments between properties delimiters
+  (`< { ... } >`), including after a preceding custom operation.
+- **grammar:** keep `{%a, %b}` value-list payloads inside custom operations
+  instead of reading them as erroneous region result bindings.
 - **scanner/grammar:** localize unclosed direct custom-body fallback brace
   payloads before a recognizable operation or block boundary.
 - **grammar:** keep the `constant` modifier inside `memref.global` and
@@ -53,6 +60,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- Properties now expose separate `<`, `{`, `}` and `>` anonymous tokens
+  instead of `<{` and `}>`; named nodes and fields are unchanged.
+- Custom-body `module(@sym)` now exposes separate `module` and `(` tokens.
+  Spaced `module` symbol arguments stay in the same `custom_operation`.
+- Custom-body `{%a, %b}` now contains flat `value_use` nodes instead of an
+  erroneous `region` / `op_result` tree.
 - A malformed direct custom-body fallback brace payload may now be reported
   as a sibling `ERROR` or missing close; see Architecture's custom-body brace
   recovery limits.

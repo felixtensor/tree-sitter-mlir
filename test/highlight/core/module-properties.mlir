@@ -19,3 +19,10 @@ builtin.module <{dlti = #dlti.map<"chip" = "sm_90">}> {}
 //               ^ punctuation.bracket
 //                 ^ attribute
 //                          ^ punctuation.bracket
+
+"test.spaced"() < {flag} > : () -> ()
+//              ^ punctuation.bracket
+//                ^ punctuation.bracket
+//                 ^ attribute
+//                     ^ punctuation.bracket
+//                       ^ punctuation.bracket

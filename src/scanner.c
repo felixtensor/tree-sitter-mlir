@@ -17,6 +17,7 @@ enum TokenType {
   CUSTOM_BODY_UNCLOSED_BRACE_PREFIX,
   RECOVERY_DOTTED_OP_NAME,
   ERROR_SENTINEL,
+  CUSTOM_BODY_MODULE_KEYWORD,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -304,6 +305,126 @@ static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
   }
 }
 
+// Read the same body-word alphabet used by operation-boundary lookahead.
+static bool scan_body_word(TSLexer *lexer, char word[32]) {
+  unsigned length = 0;
+  bool dotted = false;
+  while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+         (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+         is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+         lexer->lookahead == '$' || lexer->lookahead == '.') {
+    dotted |= lexer->lookahead == '.';
+    if (length < 31)
+      word[length++] = (char)lexer->lookahead;
+    lexer->advance(lexer, false);
+  }
+  word[length] = '\0';
+  return dotted;
+}
+
+static bool is_boundary_word(const char *word, bool dotted) {
+  return dotted || strcmp(word, "return") == 0 || strcmp(word, "call") == 0 ||
+         strcmp(word, "call_indirect") == 0 || strcmp(word, "constant") == 0 ||
+         strcmp(word, "unrealized_conversion_cast") == 0 ||
+         strcmp(word, "module") == 0;
+}
+
+typedef enum {
+  MODULE_SYMBOL_INVALID,
+  MODULE_SYMBOL_READY,
+  MODULE_SYMBOL_BODY,
+} ModuleSymbolResult;
+
+// No mark_end: the keyword token and brace-recovery prefix own different ends.
+// BODY means a consumed suffix/slash already rules out a module header.
+static ModuleSymbolResult scan_module_symbol_tail(TSLexer *lexer,
+                                                  bool *line_start,
+                                                  int *angles) {
+  for (;;) {
+    if (lexer->lookahead != '@')
+      return MODULE_SYMBOL_INVALID;
+    lexer->advance(lexer, false);
+    *line_start = false;
+    if (lexer->lookahead == '"') {
+      lexer->advance(lexer, false);
+      while (lexer->lookahead != '"') {
+        if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
+            lexer->lookahead == '\r' || lexer->lookahead == '\f' ||
+            lexer->lookahead == '\v')
+          return MODULE_SYMBOL_INVALID;
+        if (lexer->lookahead == '\\') {
+          lexer->advance(lexer, false);
+          if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
+              lexer->lookahead == '\r')
+            return MODULE_SYMBOL_INVALID;
+        }
+        lexer->advance(lexer, false);
+      }
+      lexer->advance(lexer, false);
+    } else {
+      SuffixIdResult suffix = scan_suffix_id(lexer, false);
+      if (suffix == SUFFIX_ID_INVALID)
+        return MODULE_SYMBOL_INVALID;
+      if (suffix == SUFFIX_ID_HASH) {
+        // A rejected numeric suffix has consumed #. Preserve its attached
+        // envelope before the enclosing brace probe resumes.
+        if (angles)
+          scan_dialect_envelope_tail(lexer, angles);
+        return MODULE_SYMBOL_BODY;
+      }
+      if (suffix == SUFFIX_ID_COLON) {
+        if (lexer->lookahead != ':')
+          return MODULE_SYMBOL_BODY; // A single colon cannot continue a header.
+        lexer->advance(lexer, false);
+        if (!skip_payload_extras(lexer, line_start))
+          return MODULE_SYMBOL_INVALID;
+        continue;
+      }
+    }
+    if (!skip_payload_extras(lexer, line_start))
+      return MODULE_SYMBOL_BODY; // A single slash cannot continue a header.
+    if (lexer->lookahead != ':')
+      break;
+    lexer->advance(lexer, false);
+    if (lexer->lookahead != ':')
+      return MODULE_SYMBOL_BODY;
+    lexer->advance(lexer, false);
+    if (!skip_payload_extras(lexer, line_start))
+      return MODULE_SYMBOL_INVALID;
+  }
+
+  return MODULE_SYMBOL_READY;
+}
+
+// Emit only `module`, leaving its symbol and parentheses to the grammar.
+// A following region, properties opener or `attributes` keeps the ordinary
+// module-operation token. A GLR alternative failed incremental fuzzing.
+static bool scan_module_payload_keyword(TSLexer *lexer) {
+  const char *keyword = "module";
+  for (unsigned i = 0; keyword[i]; i++) {
+    if (lexer->lookahead != keyword[i])
+      return false;
+    lexer->advance(lexer, false);
+  }
+  if (is_identifier_char(lexer->lookahead))
+    return false;
+  lexer->mark_end(lexer);
+  bool line_start = false;
+  if (!skip_payload_extras(lexer, &line_start))
+    return false;
+  if (lexer->lookahead == '(')
+    return true;
+  ModuleSymbolResult result = scan_module_symbol_tail(lexer, &line_start, NULL);
+  if (result != MODULE_SYMBOL_READY)
+    return result == MODULE_SYMBOL_BODY;
+  if (lexer->lookahead == '{' || lexer->lookahead == '<')
+    return false;
+  char word[32];
+  scan_body_word(lexer, word);
+  return strcmp(word, "attributes") != 0 ||
+         is_identifier_char(lexer->lookahead);
+}
+
 // After `<`, distinguish the mapped-from marker from a negative literal.
 // The grammar keeps `<` and `-` separate so `-1` wins by longest match.
 static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
@@ -429,41 +550,60 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
     if (line_start && braces == 1 && parens == 0 && brackets == 0 &&
         angles == 0 &&
         ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_')) {
-      char word[32];
-      unsigned length = 0;
-      bool dotted = false;
-      while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
-             (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
-             is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
-             lexer->lookahead == '$' || lexer->lookahead == '.') {
-        dotted |= lexer->lookahead == '.';
-        if (length < sizeof(word) - 1)
-          word[length++] = (char)lexer->lookahead;
-        lexer->advance(lexer, false);
-      }
-      word[length] = '\0';
-      // `module(@sym)` is the dedicated `_custom_body_module_symbol_arg`
-      // body element, not a sibling operation. Do not treat it as a boundary.
-      if (strcmp(word, "module") == 0 && lexer->lookahead == '(') {
-        line_start = false;
-        continue;
-      }
-      bool boundary =
-          dotted || strcmp(word, "return") == 0 || strcmp(word, "call") == 0 ||
-          strcmp(word, "call_indirect") == 0 || strcmp(word, "constant") == 0 ||
-          strcmp(word, "unrealized_conversion_cast") == 0 ||
-          strcmp(word, "module") == 0;
-      if (boundary) {
-        // '=' disambiguates assignment syntax even across comments/newlines.
-        // ':' does not: an unbound typed operation may begin with it.
-        // The dedicated module operation cannot start with ':'.
-        bool next_line = false;
-        if (!skip_payload_extras(lexer, &next_line) ||
-            (lexer->lookahead != '=' &&
-             !(strcmp(word, "module") == 0 && lexer->lookahead == ':')))
+      bool after_module_symbol = false;
+      bool keep_line_start = false;
+      for (;;) {
+        char word[32];
+        bool dotted = scan_body_word(lexer, word);
+        if (after_module_symbol && strcmp(word, "attributes") == 0 &&
+            !is_identifier_char(lexer->lookahead))
           return false;
+        // A no-mark module-symbol probe can reach the next body word. Do not
+        // lose its original line-start status or reclassify inline words.
+        if (!line_start)
+          break;
+        after_module_symbol = false;
+        if (strcmp(word, "module") == 0) {
+          line_start = false;
+          if (!skip_payload_extras(lexer, &line_start))
+            return false;
+          if (lexer->lookahead == '(')
+            break;
+          if (lexer->lookahead == '@') {
+            ModuleSymbolResult result =
+                scan_module_symbol_tail(lexer, &line_start, &angles);
+            if (result == MODULE_SYMBOL_INVALID)
+              return false;
+            if (result == MODULE_SYMBOL_BODY)
+              break;
+            if (lexer->lookahead == '{' || lexer->lookahead == '<')
+              return false;
+            // Inspect a following word in this loop: attributes is a header,
+            // while dotted/listed names still provide sibling boundaries.
+            if ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+                (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+                lexer->lookahead == '_') {
+              after_module_symbol = true;
+              continue;
+            }
+            // Keep a newline before a quoted/result/block boundary observable.
+            keep_line_start = true;
+            break;
+          }
+        }
+        if (is_boundary_word(word, dotted)) {
+          // '=' disambiguates assignment syntax across comments/newlines.
+          // Only module, whose header cannot start with ':', excludes ':'.
+          bool next_line = false;
+          if (!skip_payload_extras(lexer, &next_line) ||
+              (lexer->lookahead != '=' &&
+               !(strcmp(word, "module") == 0 && lexer->lookahead == ':')))
+            return false;
+        }
+        break;
       }
-      line_start = false;
+      if (!keep_line_start)
+        line_start = false;
       continue;
     }
     line_start = false;
@@ -857,6 +997,13 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
     lexer->advance(lexer, false);
     if (line_start)
       *line_start = false;
+    if (!skip_probe_extras(lexer, line_start)) {
+      // A failed single-slash probe consumed the angle opener as well.
+      // Carry that nesting into the fallback scan before returning.
+      if (angles)
+        (*angles)++;
+      return false;
+    }
     bool properties = lexer->lookahead == '{';
     // Preserve the opener consumed by a failed `<{` probe.
     if (angles && scan_angle_tail(lexer, line_start)) {
@@ -902,6 +1049,14 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // Unlike combinations of context tokens, it is unambiguous even when parser
   // states share lookaheads from top-level and region contexts.
   bool recovering = valid_symbols[ERROR_SENTINEL];
+
+  if (!recovering && valid_symbols[CUSTOM_BODY_MODULE_KEYWORD] &&
+      lexer->lookahead == 'm') {
+    if (!scan_module_payload_keyword(lexer))
+      return false;
+    lexer->result_symbol = CUSTOM_BODY_MODULE_KEYWORD;
+    return true;
+  }
 
   // The recovery lexer does not recognize arbitrary dotted names internally.
   // Supply the same token in recovery so a missing payload close can be

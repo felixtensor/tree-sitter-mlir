@@ -2117,10 +2117,6 @@
     "named": false
   },
   {
-    "type": "<{",
-    "named": false
-  },
-  {
     "type": "=",
     "named": false
   },
@@ -2298,10 +2294,6 @@
     "named": false
   },
   {
-    "type": "module(",
-    "named": false
-  },
-  {
     "type": "n_out_of_m",
     "named": false
   },
@@ -2403,10 +2395,6 @@
   },
   {
     "type": "}",
-    "named": false
-  },
-  {
-    "type": "}>",
     "named": false
   },
   {
