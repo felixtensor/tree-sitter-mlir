@@ -35,7 +35,8 @@ are implementation detail and are **not** part of this surface.
 The optional `module_operation.properties` field contains a `properties` node
 for either spelling of the custom `prop-dict`: `<{key = value}>` or
 `<key = value>`. Its entries are `attribute_entry` children in both cases.
-Generic operations keep their existing `<{...}>` properties syntax and CST.
+Generic `<{...}>` properties keep their named nodes and fields, with separate
+`<`, `{`, `}` and `>` anonymous tokens.
 
 ### Structural
 
@@ -159,11 +160,13 @@ fallback cannot resolve:
 A custom body has no terminator: it ends only where the next operation's first
 token cannot continue it, whether or not the operation before binds results.
 
-| Next operation begins with | Body ends? |
+| Following syntax begins with | Body ends? |
 | --- | --- |
 | A line-start binding (`%x =`, `%a, %b =`, `%x:2 =`) | Yes, via the scanner's `_op_result_sigil` |
 | A line-start generic operation (`"x.y"(%a) : ...`) | Yes, via the scanner's `_generic_op_quote` |
 | A dotted or listed bare name (`memref.store`, `return`) | Yes, via token precedence over `bare_id` |
+| A `module` symbol payload (`module @Sub`, `module (@Sub)`) | No, via the scanner's `_custom_body_module_keyword`; see the header distinction below |
+| A module header (`module @M { ... }`, also with properties or attributes) | Yes, via the ordinary `module_operation` path |
 | A default-dialect bare name that binds nothing (`rewrite` in `pdl.pattern`) | No: a known limit. Whether a bare identifier names an operation is runtime knowledge, and continuation lines such as `ins(...)` look the same |
 
 `constant` uses the default-dialect bare-name fallback rather than the listed
@@ -176,10 +179,10 @@ starts a separate default-dialect `constant` operation.
 only the keyword after checking past the symbol; whitespace and comments are
 insignificant. After an unparenthesized symbol, `{`, `<` or `attributes` keeps
 the ordinary module header, so `module @M { ... }` still starts a separate
-operation, even on the same line. Header-shaped custom payloads retain this conservative reading;
-an incomplete `module @M` without a header introducer can stay in the preceding
-custom body. A pure grammar alternative kept both readings but
-changed unrelated operation boundaries and failed incremental fuzzing.
+operation, even on the same line. Header-shaped custom payloads retain this
+conservative reading; an incomplete `module @M` without a header introducer can
+stay in the preceding custom body. A pure grammar alternative kept both readings
+but changed unrelated operation boundaries and failed incremental fuzzing.
 
 #### What a Brace Encloses in a Custom Body
 
@@ -193,6 +196,11 @@ Comma-separated value lists such as `{%a, %b}` stay flat in the custom body;
 `{%a, %b = test.op}` remains a region with result bindings. A local conflict
 keeps both readings until `}` or `=` distinguishes them, including in nested
 groups; no dynamic precedence chooses between complete parses.
+
+Module symbol arguments inside braces are supported once the brace has entered
+the fallback payload path, as in `{ @A module @Sub }`. A brace led by `module`
+still takes the region path: `{ module @Sub }` reports a local error for the
+incomplete module header.
 
 After a type inside `(...)`, a name-only brace is an argument attribute
 dictionary, not a region (`transform.named_sequence ... {transform.readonly}`).
@@ -257,8 +265,11 @@ accepted. Consumers needing exact classification should use an MLIR-aware tool.
 Known limits: a payload that fails only later still fails there
 (`{[0, 1] = %v}` reads as a dictionary), and outside `<...>` `{a: i32}` is
 still a region. Inside `<...>` a first bare key followed by `,` reads as a
-dictionary entry, so `<{a, b: i32}>`
-fails at `b:`. The opaque-group token requires a matching `}`. At line start,
+dictionary entry, so `<{a, b: i32}>` fails at `b:`.
+`<{%a, %b = test.inner}>` also reports a local error: the angle payload stays
+region-free, so it cannot contain structured operation result bindings.
+These cases retain following operation and function boundaries.
+The opaque-group token requires a matching `}`. At line start,
 the scanner also marks `#name =` and `!name =` as alias-definition boundaries
 so a preceding custom body cannot absorb a following top-level alias.
 

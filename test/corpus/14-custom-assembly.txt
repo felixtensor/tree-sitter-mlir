@@ -2828,3 +2828,569 @@ func.func @f(%arg0: i32 {test.flag}) {
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
+================================================================================
+Module payload symbol
+================================================================================
+test.op module @Sub
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload spaced paren
+================================================================================
+test.op module (@Sub)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload symbol arguments
+================================================================================
+test.op module @Sub(%a : i32)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload real FIRRTL shape
+================================================================================
+%a = firrtl.instance module @Module(in A : i32)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload comment and newline extras
+================================================================================
+test.op module // argument follows
+  @Sub(%a : i32)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (comment)
+      (symbol_ref_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload compact paren guard
+================================================================================
+test.op module(@Sub)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list direct
+================================================================================
+test.op {%a, %b}
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list nested
+================================================================================
+test.op ({%a, %b})
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list angle
+================================================================================
+test.op <{%a, %b}>
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list three values
+================================================================================
+test.op {%a, %b, %c}
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list result binding guard
+================================================================================
+test.op { %a, %b = test.inner }
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list typed payload guard
+================================================================================
+test.op {%a : i32, %b : i32}
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload quoted
+================================================================================
+test.op module @"a\"b"
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id
+        (string_literal
+          (escape_sequence)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload nested
+================================================================================
+test.op module @Outer::@"Inner"
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id
+        (symbol_ref_id
+          (string_literal)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload numeric
+================================================================================
+test.op module @12
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload attributes prefix
+================================================================================
+test.op module @Sub attributes_extra
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload multiline parentheses
+================================================================================
+test.op module
+(
+@Sub
+)
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list comments and nested angle
+================================================================================
+test.op <{%a, // next value
+ %b}>
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (comment)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list result arity guard
+================================================================================
+test.op { %a:2, %b = test.inner }
+test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload keyword leaves symbol and parentheses in grammar
+:cst
+================================================================================
+module @M {}
+test.op module(@M)
+--------------------------------------------------------------------------------
+
+0:0  - 1:18   toplevel
+0:0  - 0:12     operation
+0:0  - 0:12       rhs: custom_operation
+0:0  - 0:12         module_operation
+0:0  - 0:6            "module"
+0:7  - 0:9            sym_name: symbol_ref_id
+0:7  - 0:8              "@"
+0:10 - 0:12           body: region
+0:10 - 0:11             "{"
+0:11 - 0:12             "}"
+1:0  - 1:18     operation
+1:0  - 1:18       rhs: custom_operation
+1:0  - 1:7          name: custom_op_name `test.op`
+1:8  - 1:14         "module"
+1:14 - 1:15         "("
+1:15 - 1:17         symbol_ref_id
+1:15 - 1:16           "@"
+1:17 - 1:18         ")"
+
+================================================================================
+Module payload attributes prefix with punctuation
+================================================================================
+test.op module @M attributes-foo
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (bare_id)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace value list at line start stays a flat payload
+================================================================================
+test.op {
+  %a, %b
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (value_use)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace result bindings at line start stay in a region
+================================================================================
+test.op {
+  %a, %b = test.inner
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            (op_result
+              (value_use))
+            (op_result
+              (value_use))
+            (custom_operation
+              (custom_op_name)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Brace led by module keeps a local header error and following functions
+================================================================================
+func.func @f(%a: i32, %b: i32) {
+  test.op { module @Sub }
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (region
+                  (ERROR
+                    (symbol_ref_id)))))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Angle result binding stays a local error and preserves following functions
+================================================================================
+func.func @f(%a: i32, %b: i32) {
+  test.op <{%a, %b = test.inner}>
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (ERROR
+                  (value_use)
+                  (value_use))
+                (bare_id)))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
+
+================================================================================
+Spaced module payload keyword leaves the symbol in grammar
+:cst
+================================================================================
+test.op module @Sub
+--------------------------------------------------------------------------------
+
+0:0  - 0:19   toplevel
+0:0  - 0:19     operation
+0:0  - 0:19       rhs: custom_operation
+0:0  - 0:7          name: custom_op_name `test.op`
+0:8  - 0:14         "module"
+0:15 - 0:19         symbol_ref_id
+0:15 - 0:16           "@"

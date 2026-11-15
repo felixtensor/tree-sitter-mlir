@@ -759,3 +759,278 @@ func.func @g() { return }
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
+================================================================================
+Module boundary newline guard
+================================================================================
+test.before
+module @M { test.inner }
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary same line guard
+================================================================================
+test.before module @M { test.inner }
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name))))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary properties and attributes guard
+================================================================================
+test.before
+module @M <sym_visibility = "private"> attributes {flag} {}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (properties
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal))))
+        (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id))))
+        (region))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary nested quoted symbol guard
+================================================================================
+test.before
+module @Outer::@"Inner" {}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id
+          (symbol_ref_id
+            (string_literal)))
+        (region))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary multiline body guard
+================================================================================
+test.before
+module @M
+{}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (region))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary attributes after comment guard
+================================================================================
+test.before
+module @"M" // header
+ attributes {flag} {}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id
+          (string_literal))
+        (comment)
+        (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id))))
+        (region))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module boundary after affine loop guard
+================================================================================
+affine.for %i = 0 to 4 {}
+module @M {}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (value_use)
+      (integer_literal)
+      (bare_id)
+      (integer_literal)
+      (region)))
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (region))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Properties split after custom body keeps generic boundary
+================================================================================
+test.before
+"test.op"() < // open
+ {key = 1} // close
+ > : () -> ()
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)))
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (comment)
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)))
+        (comment))
+      (function_type)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload preserves a following result binding
+================================================================================
+test.op module @Sub
+%x = test.sibling
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (op_result
+      (value_use))
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Module payload preserves a following generic operation
+================================================================================
+test.op module @Sub
+"test.sibling"() : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)))
+  (operation
+    (generic_operation
+      (string_literal)
+      (function_type))))
+
+================================================================================
+Module payload preserves a following block label
+================================================================================
+func.func @f() {
+  test.op module @Sub
+^bb1:
+  test.sibling
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_operation
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (custom_op_name)
+                (symbol_ref_id))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (custom_op_name)))
+            (operation
+              (custom_operation
+                (custom_op_name)))))))))
