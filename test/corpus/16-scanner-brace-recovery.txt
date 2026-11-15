@@ -1259,3 +1259,202 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
+================================================================================
+Failed generic properties probe preserves angle adjacent slash
+================================================================================
+test.op { @A
+ "rewriter"() </
+ test.hidden
+ >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Failed generic properties probe preserves angle spaced slash
+================================================================================
+test.op { @A
+ "rewriter"() < /
+ test.hidden
+ >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (string_literal)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Failed generic properties probe preserves angle comment before slash
+================================================================================
+test.op { @A
+ "rewriter"() < // angle comment
+ /
+ test.hidden
+ >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (string_literal)
+      (comment)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload symbol
+================================================================================
+test.op { @A
+ module @Sub
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload spaced parentheses
+================================================================================
+test.op { @A
+ module (@Sub)
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload symbol arguments
+================================================================================
+test.op { @A
+ module @Sub(%v : i32)
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)
+      (value_use)
+      (type
+        (builtin_type
+          (integer_type)))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload following bare payload
+================================================================================
+test.op { @A
+ module @Sub
+ function(@F)
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)
+      (bare_id)
+      (symbol_ref_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload adjacent attribute
+================================================================================
+test.op { @A
+ module @M#note<
+ test.hidden
+ >
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)
+      (attribute
+        (dialect_attribute
+          (parametric_dialect_item
+            (dialect_namespace)
+            (pretty_dialect_item_body
+              (bare_id)))))))
+  (operation
+    (custom_operation
+      (custom_op_name))))
+
+================================================================================
+Nested module payload attributes prefix with punctuation
+================================================================================
+test.op { @A
+ module @M attributes-foo
+}
+test.after
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (custom_op_name)
+      (symbol_ref_id)
+      (symbol_ref_id)
+      (bare_id)
+      (bare_id)))
+  (operation
+    (custom_operation
+      (custom_op_name))))

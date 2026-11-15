@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **docs:** remove the unused `@function` from the documented highlight
+  capture vocabulary.
 - **grammar/scanner:** keep custom-body `module` symbol arguments, including
   whitespace-separated forms, inside their operation while preserving real
   module headers.

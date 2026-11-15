@@ -357,3 +357,175 @@ module @sibling {}
     rhs: (generic_operation
       (string_literal)
       (function_type))))
+
+================================================================================
+Properties split open whitespace
+================================================================================
+"test.op"() < {key = 1 : i32}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type))))))
+      (function_type))))
+
+================================================================================
+Properties split close whitespace
+================================================================================
+"test.op"() <{key = 1 : i32}
+> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type))))))
+      (function_type))))
+
+================================================================================
+Properties split comments
+================================================================================
+"test.op"() < // open
+ {key = 1 : i32} // close
+ > : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (comment)
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type)))))
+        (comment))
+      (function_type))))
+
+================================================================================
+Properties compact guard
+================================================================================
+"test.op"() <{key = 1 : i32}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (integer_literal)
+            (type
+              (builtin_type
+                (integer_type))))))
+      (function_type))))
+
+================================================================================
+Properties generic keyed form stays invalid guard
+:error
+================================================================================
+"test.op"() <key = 1> : () -> ()
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+Properties split module header
+================================================================================
+module @M < // open
+ {sym_visibility = "private"} // close
+ > {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (module_operation
+        (symbol_ref_id)
+        (properties
+          (comment)
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (string_literal)))
+          (comment))
+        (region)))))
+
+================================================================================
+Properties compact delimiters CST
+:cst
+================================================================================
+"t"() <{}> : () -> ()
+--------------------------------------------------------------------------------
+
+0:0  - 0:21   toplevel
+0:0  - 0:21     operation
+0:0  - 0:21       rhs: generic_operation
+0:0  - 0:3          string_literal
+0:0  - 0:1            "\""
+0:2  - 0:3            "\""
+0:3  - 0:4          "("
+0:4  - 0:5          ")"
+0:6  - 0:10         properties
+0:6  - 0:7            "<"
+0:7  - 0:8            "{"
+0:8  - 0:9            "}"
+0:9  - 0:10           ">"
+0:11 - 0:12         ":"
+0:13 - 0:21         function_type
+0:13 - 0:14           "("
+0:14 - 0:15           ")"
+0:16 - 0:18           "->"
+0:19 - 0:20           "("
+0:20 - 0:21           ")"
+
+================================================================================
+Properties spaced delimiters CST
+:cst
+================================================================================
+"t"() < {} > : () -> ()
+--------------------------------------------------------------------------------
+
+0:0  - 0:23   toplevel
+0:0  - 0:23     operation
+0:0  - 0:23       rhs: generic_operation
+0:0  - 0:3          string_literal
+0:0  - 0:1            "\""
+0:2  - 0:3            "\""
+0:3  - 0:4          "("
+0:4  - 0:5          ")"
+0:6  - 0:12         properties
+0:6  - 0:7            "<"
+0:8  - 0:9            "{"
+0:9  - 0:10           "}"
+0:11 - 0:12           ">"
+0:13 - 0:14         ":"
+0:15 - 0:23         function_type
+0:15 - 0:16           "("
+0:16 - 0:17           ")"
+0:18 - 0:20           "->"
+0:21 - 0:22           "("
+0:22 - 0:23           ")"
