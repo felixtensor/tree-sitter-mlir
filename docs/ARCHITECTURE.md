@@ -197,6 +197,12 @@ Comma-separated value lists such as `{%a, %b}` stay flat in the custom body;
 keeps both readings until `}` or `=` distinguishes them, including in nested
 groups; no dynamic precedence chooses between complete parses.
 
+Bare-key assignment braces such as `{src_etype=f16, dst_etype=f8}` stay flat
+when a value lexes as `bare_id` rather than a core attribute. Ordinary values
+before the first enum retain `attribute_value` nodes. Dictionaries and generic
+attributes keep their normal rules. Reserved enum words such as `array` and
+`tensor`, unit-key prefixes and quoted enum keys are outside this fallback.
+
 Module symbol arguments inside braces are supported once the brace has entered
 the fallback payload path, as in `{ @A module @Sub }`. A brace led by `module`
 still takes the region path: `{ module @Sub }` reports a local error for the
@@ -214,6 +220,7 @@ The required `}` then triggers a local `ERROR` or missing close so following
 structure can recover; the error need not belong to the preceding operation.
 Otherwise the group stays in the grammar. Nested delimiters, strings and
 comments protect their contents; names followed by `=` remain assignment keys.
+Bare-key assignment leads use the same recovery check.
 
 Recovery is bounded: direct operation-shaped payload continuations can be split,
 and an enclosing `}` seen first can still be mistaken for the payload close.
@@ -275,7 +282,7 @@ so a preceding custom body cannot absorb a following top-level alias.
 
 ### All Declared Conflicts Are Intentional
 
-The 11 conflicts in `grammar.js` are load-bearing: `generate` fails without
+The 13 conflicts in `grammar.js` are load-bearing: `generate` fails without
 any one. The `array`/`tensor` token-precedence alternatives were rejected for
 size without AST benefit. Dialect bodies use `token.immediate("<")`, so
 `!ns<...>` / `#ns<...>` attach the body to the name; whitespace or comments
@@ -288,11 +295,13 @@ leave a separate custom-body group.
 | `_value_use_list × _value_use_and_type` | A value in parentheses can be a list element or the start of a value-with-type form. |
 | `_type_list_no_parens × _type_or_func_type` | Function results can be a type list or individual type-or-function-type entries. |
 
-#### Custom-Body Fallback Overlaps (7)
+#### Custom-Body Fallback Overlaps (9)
 
 | Conflict | Cause |
 | --- | --- |
 | `custom_op_name × attribute_entry` | A bare identifier at the start of a body element can be the next operation name or the current operation's attribute key. |
+| `custom_op_name × _custom_body_brace_group × attribute_entry` | Before `=`, a bare key may start an operation, dictionary or enum payload; the value decides. |
+| `_custom_body_brace_group × attribute_entry` | An attribute-valued prefix may lead to a dictionary or a later bare enum; the comma cannot decide. |
 | `array_literal × _custom_body_array_keyword` | `array` is both a literal introducer and a loose body keyword. |
 | `_custom_body_tensor_keyword × tensor_type` | Same overlap for `tensor`. |
 | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | A dotted name followed by `loc(...)` can be a specialized loc+attribute form or a generic operation name. |
@@ -301,10 +310,10 @@ leave a separate custom-body group.
 | `_custom_body_element_base × _custom_body_typed_arg_attr` | A name-only brace after a type inside `(...)` can be an argument attribute dictionary or a single-operation region; the corpora contain only the former. |
 
 Dynamic precedence `-1` on `_generic_custom_operation` keeps
-`linalg.generic {indexing_maps = ...}` a dictionary. A dotted key with `=`
-never reaches that conflict and is read as a dictionary entry. Without `=`, it
-is a dictionary only in the decidable argument-attribute position; elsewhere it
-keeps the region reading, like `{ scf.yield }`.
+`linalg.generic {indexing_maps = ...}` a dictionary and enum payloads flat.
+A dotted key with `=` never reaches that conflict and is read as a dictionary
+entry. Without `=`, it is a dictionary only in the decidable argument-attribute
+position; elsewhere it keeps the region reading, like `{ scf.yield }`.
 
 #### Pretty-Dialect Body Overlaps (2)
 

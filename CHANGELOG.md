@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** keep custom enum parameter braces flat, including XeVM
+  `extf` / `truncf` parameters.
 - **docs:** remove the unused `@function` from the documented highlight
   capture vocabulary.
 - **grammar/scanner:** keep custom-body `module` symbol arguments, including
@@ -62,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- Custom enum braces lose phantom `region` / `operation` subtrees; ordinary
+  values before the first enum retain `attribute_value` nodes.
 - Properties now expose separate `<`, `{`, `}` and `>` anonymous tokens
   instead of `<{` and `}>`; named nodes and fields are unchanged.
 - Custom-body `module(@sym)` now exposes separate `module` and `(` tokens.

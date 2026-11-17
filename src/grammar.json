@@ -2948,6 +2948,54 @@
                   }
                 }
               ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "bare_id"
+                      },
+                      {
+                        "type": "STRING",
+                        "value": "="
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "attribute_value"
+                      },
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "bare_id"
+                },
+                {
+                  "type": "STRING",
+                  "value": "="
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "bare_id"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_nested_custom_body_element"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -7346,6 +7394,15 @@
     ],
     [
       "custom_op_name",
+      "attribute_entry"
+    ],
+    [
+      "custom_op_name",
+      "_custom_body_brace_group",
+      "attribute_entry"
+    ],
+    [
+      "_custom_body_brace_group",
       "attribute_entry"
     ],
     [
