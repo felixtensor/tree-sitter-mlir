@@ -69,7 +69,7 @@ export default grammar({
     $._error_sentinel,
     $._custom_body_module_keyword,
   ],
-  // All 11 declared conflicts are load-bearing: removing any one fails parser
+  // All 13 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
   conflicts: ($) => [
     // ── Core MLIR overlaps (2) ────────────────────────────────────────────
@@ -80,10 +80,14 @@ export default grammar({
     // Function results: type list vs individual type-or-function-type entries.
     [$._type_list_no_parens, $._type_or_func_type],
 
-    // ── Custom-body fallback overlaps (7) ─────────────────────────────────
+    // ── Custom-body fallback overlaps (9) ─────────────────────────────────
 
     // Bare id: next operation name or its attribute entry key.
     [$.custom_op_name, $.attribute_entry],
+    // A bare key before `=` may start an operation, dictionary or enum payload.
+    [$.custom_op_name, $._custom_body_brace_group, $.attribute_entry],
+    // An ordinary attribute prefix may precede a later bare enum.
+    [$._custom_body_brace_group, $.attribute_entry],
 
     // array: literal introducer array<...> or custom body keyword.
     [$.array_literal, $._custom_body_array_keyword],
@@ -560,8 +564,8 @@ export default grammar({
     // Tier 2: Generic custom operation — dialect.op_name + structural body
     // prec.right keeps extending the body; it ends only at a token no body
     // element starts with (an op name beating bare_id, or a scanner token).
-    // Dynamic -1 settles custom_op_name × attribute_entry against inventing an
-    // op, e.g. reading `linalg.generic {indexing_maps = ...}` as a region.
+    // Dynamic -1 prefers dictionaries and enum payloads over phantom
+    // region operations.
     _generic_custom_operation: ($) =>
       prec.dynamic(
         -1,
@@ -747,6 +751,15 @@ export default grammar({
             repeat($._nested_custom_body_element),
           ),
           seq($.value_use, repeat(seq(",", $.value_use))),
+          // Require a bare_id enum so complete dictionaries keep their nodes.
+          // Ordinary prefixes retain attribute_value; the rest stays coarse.
+          seq(
+            repeat(seq($.bare_id, "=", $.attribute_value, ",")),
+            $.bare_id,
+            "=",
+            $.bare_id,
+            repeat($._nested_custom_body_element),
+          ),
         ),
         "}",
       ),

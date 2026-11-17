@@ -3394,3 +3394,278 @@ test.op module @Sub
 0:8  - 0:14         "module"
 0:15 - 0:19         symbol_ref_id
 0:15 - 0:16           "@"
+
+================================================================================
+Custom enum parameters do not create regions or operations
+================================================================================
+func.func @f(%x: i8) -> i8 {
+  %y = xevm.extf %x { src_etype=f8, dst_etype=f16 } : (i8) -> f16
+  %z = xevm.truncf %y { src_etype=f16, dst_etype=f8 } : (f16) -> i8
+  return %z : i8
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        body: (region
+          (entry_block
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (bare_id)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (attribute_value
+                  (type
+                    (builtin_type
+                      (float_type))))
+                (bare_id)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Custom enum parameters across comments and newlines
+================================================================================
+func.func @f(%x: i4) -> i4 {
+  %y = xevm.extf %x { src_etype // enum
+    = e2m1, dst_etype = bf16 } : (i4) -> bf16
+  %z = xevm.truncf %y { src_etype=bf16,
+    dst_etype // enum
+      = e2m1 } : (bf16) -> i4
+  return %z : i4
+}
+func.func @bf8(%x: i8) -> f16 {
+  %y = xevm.extf %x { src_etype=bf8, dst_etype=f16 } : (i8) -> f16
+  return %y : f16
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        body: (region
+          (entry_block
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (comment)
+                (bare_id)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (attribute_value
+                  (type
+                    (builtin_type
+                      (float_type))))
+                (bare_id)
+                (comment)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type))))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))))
+        body: (region
+          (entry_block
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (bare_id)
+                (bare_id)
+                (bare_id)
+                (type
+                  (builtin_type
+                    (float_type)))
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (type
+                  (builtin_type
+                    (float_type)))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)
+                (value_use)
+                (type
+                  (builtin_type
+                    (float_type)))))))))))
+
+================================================================================
+Unknown custom enum parameters stay flat before a real region
+================================================================================
+test.params {mode = novel, width = i32} {test.inner}
+test.next
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (bare_id)
+      (bare_id)
+      (bare_id)
+      (type
+        (builtin_type
+          (integer_type)))
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))
+
+================================================================================
+Enum brace guards retain regions dictionaries and generic properties
+================================================================================
+test.op {return}
+test.op {key = i32, other = 1}
+"test.op"() <{key = i32}> : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (region
+        (entry_block
+          (operation
+            rhs: (custom_operation
+              name: (custom_op_name)))))))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name)
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (type
+                (builtin_type
+                  (integer_type)))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (integer_literal)))))))
+  (operation
+    rhs: (generic_operation
+      (string_literal)
+      (properties
+        (attribute_entry
+          (bare_id)
+          (attribute_value
+            (type
+              (builtin_type
+                (integer_type))))))
+      (function_type))))

@@ -436,6 +436,26 @@ static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
 }
 
 static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
+  // Bare assignments may enter the enum fallback after ordinary values.
+  // Probe for recovery; balanced dictionaries stay in grammar.
+  if ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+      (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+      lexer->lookahead == '_') {
+    do {
+      lexer->advance(lexer, false);
+    } while ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+             (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
+             is_digit(lexer->lookahead) || lexer->lookahead == '_' ||
+             lexer->lookahead == '$' || lexer->lookahead == '.');
+    lexer->mark_end(lexer);
+    *line_start = false;
+    if (!skip_payload_extras(lexer, line_start) || lexer->lookahead != '=')
+      return false;
+    lexer->advance(lexer, false);
+    lexer->mark_end(lexer);
+    *line_start = false;
+    return true;
+  }
   if (lexer->lookahead == '"') {
     lexer->advance(lexer, false);
     while (lexer->lookahead != '"') {
@@ -645,11 +665,8 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
   return false;
 }
 
-// Precondition: the lexer is positioned at `{`. The scanner claims the group
-// only when its first meaningful token cannot begin any structured brace
-// reading. `#` and `!` cannot begin a region, dictionary entry or known
-// custom-body payload. A `^` lead is claimed only when it is not followed by
-// the block-label shape that starts a real region.
+// At `{`: probe fallback leads for boundary/EOF recovery. Balanced assignments
+// stay in grammar; only `#`, `!` and non-label `^` groups can be consumed whole.
 static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
                                     bool allow_opaque) {
   lexer->advance(lexer, false);

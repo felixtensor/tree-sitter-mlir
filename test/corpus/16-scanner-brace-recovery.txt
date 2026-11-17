@@ -1458,3 +1458,198 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
+================================================================================
+Unclosed enum assignment payload preserves a dotted sibling
+================================================================================
+func.func @u(%x: i32) {
+  test.op {
+  mode // key
+    = novel
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Unclosed typed-prefix enum payload preserves a generic result binding
+================================================================================
+func.func @u(%x: i32) {
+  test.op {
+  width=i32, mode=novel
+  %next = "test.next"() : () -> i32
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+
+================================================================================
+Negative numeric brace lead retains sibling recovery
+================================================================================
+func.func @u(%x: i32) {
+  test.op {
+  -1
+  test.sibling
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+
+================================================================================
+Dot numeric brace lead retains sibling recovery
+================================================================================
+func.func @u(%x: i32) {
+  test.op {
+  .5
+  %next = "test.next"() : () -> i32
+  return
+}
+func.func @after() { return }
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (ERROR)
+            (operation
+              lhs: (op_result
+                (value_use))
+              rhs: (generic_operation
+                (string_literal)
+                (function_type
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name))))))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
