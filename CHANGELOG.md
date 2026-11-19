@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** expose every result through `operation.lhs` field queries.
 - **grammar:** keep custom enum parameter braces flat, including XeVM
   `extf` / `truncf` parameters.
 - **docs:** remove the unused `@function` from the documented highlight
@@ -64,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- `operation.lhs` labels only `op_result` children, excluding `,` and `=`.
 - Custom enum braces lose phantom `region` / `operation` subtrees; ordinary
   values before the first enum retain `attribute_value` nodes.
 - Properties now expose separate `<`, `{`, `}` and `>` anonymous tokens

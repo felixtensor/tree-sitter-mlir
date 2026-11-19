@@ -32,6 +32,8 @@ are implementation detail and are **not** part of this surface.
 | `vscale_range`, `comdat` | `llvm.func` post-signature clauses: `vscale_range(min, max)` and `comdat(@selector)` |
 | `module_operation` | `name`, `sym_name`, `properties`, `attributes`, `body` |
 
+`operation.lhs` labels every `op_result`; commas and `=` are unfielded.
+
 The optional `module_operation.properties` field contains a `properties` node
 for either spelling of the custom `prop-dict`: `<{key = value}>` or
 `<key = value>`. Its entries are `attribute_entry` children in both cases.

@@ -1404,14 +1404,6 @@
         "required": false,
         "types": [
           {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "=",
-            "named": false
-          },
-          {
             "type": "op_result",
             "named": true
           }
