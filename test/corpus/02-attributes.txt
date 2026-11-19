@@ -1626,7 +1626,6 @@ Function types as attribute values keep their function_type node
 "test.props"() <{fn = () -> ()}> : () -> ()
 #distinct_fn = distinct[0]<() -> ()>
 #empty_map = affine_map<() -> ()>
-#sparse = {map = (d0) -> (d0 : compressed)}
 --------------------------------------------------------------------------------
 
 (toplevel
@@ -1690,12 +1689,38 @@ Function types as attribute values keep their function_type node
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map)))))
+
+================================================================================
+Known limit: permissive sparse-like dictionary map control
+================================================================================
+// Permissive control: legal MLIR uses `#sparse_tensor.encoding<{...}>`,
+// while standalone dictionary values keep `_affine_map_like` so `() -> ()`
+// precedence does not absorb non-empty custom maps.
+#sparse = {map = (d0) -> (d0 : compressed)}
+#sparse_legal = #sparse_tensor.encoding<{ map = (d0) -> (d0 : compressed) }>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (comment)
+  (comment)
+  (comment)
   (attribute_alias_def
     (attribute_value
       (dictionary_attribute
         (attribute_entry
           (bare_id)
           (attribute_value
+            (bare_id)
+            (bare_id))))))
+  (attribute_alias_def
+    (attribute_value
+      (dialect_attribute
+        (pretty_dialect_item
+          (dialect_namespace)
+          (dialect_ident)
+          (pretty_dialect_item_body
+            (bare_id)
+            (bare_id)
             (bare_id)
             (bare_id)))))))

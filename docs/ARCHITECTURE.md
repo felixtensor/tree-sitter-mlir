@@ -272,9 +272,18 @@ position after a type inside `(...)` and keeps the body-level ambiguity as a
 known limit (`memref.dealloc %m {test.flag}`,
 `test.op attributes {test.flag}`). The grammar does not enforce the LangRef
 key-prefix classification: unprefixed keys and nested dictionaries are
-accepted. Consumers needing exact classification should use an MLIR-aware tool.
+accepted. Similarly, `attribute_value` accepts permissive unprefixed affine-map-like
+values (`(d0) -> (d0 : compressed)`) and sparse level keywords inside
+dictionaries alongside `affine_map` / `affine_set` for parser robustness and
+uniform highlighting, without dedicated structured nodes (operands and level
+keywords parse only as `bare_id`, and operators are omitted). Standalone
+`#alias = {map = (d0) -> (d0 : compressed)}` is not valid core MLIR; legal
+sparse tensor encodings use `#sparse_tensor.encoding<{...}>`. Consumers needing
+exact classification should use an MLIR-aware tool.
 
-Known limits: a payload that fails only later still fails there
+Known limits: unprefixed affine-map-like dictionary values such as
+`{map = (d0) -> (d0 : compressed)}` remain permissively accepted as `bare_id`
+lists (see above). A payload that fails only later still fails there
 (`{[0, 1] = %v}` reads as a dictionary), and outside `<...>` `{a: i32}` is
 still a region. Inside `<...>` a first bare key followed by `,` reads as a
 dictionary entry, so `<{a, b: i32}>` fails at `b:`.
