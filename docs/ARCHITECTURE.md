@@ -33,6 +33,9 @@ are implementation detail and are **not** part of this surface.
 | `module_operation` | `name`, `sym_name`, `properties`, `attributes`, `body` |
 
 `operation.lhs` labels every `op_result`; commas and `=` are unfielded.
+The optional `func_operation.attributes` and `module_operation.attributes`
+fields label only the `dictionary_attribute` or `attribute` node; the optional
+`"attributes"` keyword is unfielded.
 
 The optional `module_operation.properties` field contains a `properties` node
 for either spelling of the custom `prop-dict`: `<{key = value}>` or

@@ -966,13 +966,9 @@
         ]
       },
       "attributes": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "attributes",
-            "named": false
-          },
           {
             "type": "dictionary_attribute",
             "named": true
@@ -1244,16 +1240,12 @@
     "named": true,
     "fields": {
       "attributes": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
           {
             "type": "attribute",
             "named": true
-          },
-          {
-            "type": "attributes",
-            "named": false
           }
         ]
       },

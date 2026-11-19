@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** label only the attribute node with
+  `func_operation.attributes` and `module_operation.attributes`.
 - **grammar:** expose every result through `operation.lhs` field queries.
 - **grammar:** keep custom enum parameter braces flat, including XeVM
   `extf` / `truncf` parameters.
@@ -65,6 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- `func_operation.attributes` and `module_operation.attributes` no longer
+  label the optional `"attributes"` keyword token.
 - `operation.lhs` labels only `op_result` children, excluding `,` and `=`.
 - Custom enum braces lose phantom `region` / `operation` subtrees; ordinary
   values before the first enum retain `attribute_value` nodes.
