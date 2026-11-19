@@ -18,6 +18,7 @@ enum TokenType {
   RECOVERY_DOTTED_OP_NAME,
   ERROR_SENTINEL,
   CUSTOM_BODY_MODULE_KEYWORD,
+  PRETTY_DIALECT_FALLBACK,
 };
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
@@ -1033,6 +1034,90 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
   }
 }
 
+// Fallback single-character punctuation inside `pretty_dialect_item_body`.
+// Skips whitespace and NUL via `advance(..., true)` so named nodes keep tight
+// ranges without spinning at EOF, and yields to grammar tokens (identifiers,
+// numbers, comments, arrows, `.`, and dialect/attribute/type leads).
+static bool scan_pretty_dialect_fallback(TSLexer *lexer) {
+  for (;;) {
+    skip_space(lexer, true);
+    if (!lexer->eof(lexer) && lexer->lookahead == '\0') {
+      lexer->advance(lexer, true);
+      continue;
+    }
+    break;
+  }
+
+  if (lexer->eof(lexer)) {
+    return false;
+  }
+
+  int32_t c = lexer->lookahead;
+  if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' ||
+      is_digit(c)) {
+    return false;
+  }
+
+  switch (c) {
+  case '<':
+  case '>':
+  case ',':
+  case ':':
+  case '=':
+  case '(':
+  case ')':
+  case '[':
+  case ']':
+  case '{':
+  case '}':
+  case '*':
+  case '?':
+  case '@':
+  case '#':
+  case '"':
+  case '.':
+    return false;
+  case '/':
+    lexer->advance(lexer, false);
+    if (lexer->lookahead == '/') {
+      return false;
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = PRETTY_DIALECT_FALLBACK;
+    return true;
+  case '-':
+    lexer->advance(lexer, false);
+    if (lexer->lookahead == '>' || is_digit(lexer->lookahead)) {
+      return false;
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = PRETTY_DIALECT_FALLBACK;
+    return true;
+  case '+':
+    lexer->advance(lexer, false);
+    if (is_digit(lexer->lookahead)) {
+      return false;
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = PRETTY_DIALECT_FALLBACK;
+    return true;
+  case '!':
+    lexer->advance(lexer, false);
+    if (!lexer->eof(lexer) && lexer->lookahead != '<' &&
+        lexer->lookahead != '>') {
+      return false;
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = PRETTY_DIALECT_FALLBACK;
+    return true;
+  default:
+    lexer->advance(lexer, false);
+    lexer->mark_end(lexer);
+    lexer->result_symbol = PRETTY_DIALECT_FALLBACK;
+    return true;
+  }
+}
+
 bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
   (void)payload;
@@ -1066,6 +1151,13 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   // Unlike combinations of context tokens, it is unambiguous even when parser
   // states share lookaheads from top-level and region contexts.
   bool recovering = valid_symbols[ERROR_SENTINEL];
+
+  // Checked before other non-recovery external tokens: when pretty-body
+  // fallback is valid, no other context external token is active in that
+  // state, and returning false resets to internal lexing.
+  if (!recovering && valid_symbols[PRETTY_DIALECT_FALLBACK]) {
+    return scan_pretty_dialect_fallback(lexer);
+  }
 
   if (!recovering && valid_symbols[CUSTOM_BODY_MODULE_KEYWORD] &&
       lexer->lookahead == 'm') {

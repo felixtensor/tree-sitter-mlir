@@ -2726,3 +2726,186 @@ func.func @unknown_tuple(
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
+================================================================================
+Pretty dialect bodies preserve nested dialect types across whitespace
+================================================================================
+func.func @pretty_body_ws(
+  %a: !llvm.struct<(i32,
+    f32)>,
+  %b: !llvm.array<2 x f32>,
+  %c: !foo.op< !llvm.ptr >
+) {
+  test.follow
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (float_type)))))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (dialect_dim_list
+                    (dimension_size)
+                    (dimension_separator)
+                    (type
+                      (builtin_type
+                        (float_type))))))))
+          (value_use)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_body
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)))))))))
+        body: (region
+          (entry_block
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))
+            (operation
+              rhs: (custom_operation
+                name: (custom_op_name)))))))))
+
+================================================================================
+Pretty dialect body CST excludes leading whitespace from node ranges
+:cst
+================================================================================
+!t = !llvm.struct<(i32,
+  !llvm.array<2 x f32>, !llvm.ptr)>
+--------------------------------------------------------------------------------
+
+0:0  - 1:35   toplevel
+0:0  - 1:35     type_alias_def
+0:0  - 0:1        "!"
+0:3  - 0:4        "="
+0:5  - 1:35       type
+0:5  - 1:35         dialect_type
+0:5  - 0:6            "!"
+0:6  - 1:35           pretty_dialect_item
+0:6  - 0:10             dialect_namespace `llvm`
+0:10 - 0:11             "."
+0:11 - 0:17             dialect_ident `struct`
+0:17 - 1:35             pretty_dialect_item_body
+0:17 - 0:18               "<"
+0:18 - 0:19               "("
+0:19 - 0:22               type
+0:19 - 0:22                 builtin_type
+0:19 - 0:22                   integer_type `i32`
+0:22 - 0:23               ","
+1:2  - 1:22               type
+1:2  - 1:22                 dialect_type
+1:2  - 1:3                    "!"
+1:3  - 1:22                   pretty_dialect_item
+1:3  - 1:7                      dialect_namespace `llvm`
+1:7  - 1:8                      "."
+1:8  - 1:13                     dialect_ident `array`
+1:13 - 1:22                     pretty_dialect_item_body
+1:13 - 1:14                       "<"
+1:14 - 1:21                       dialect_dim_list
+1:14 - 1:15                         dimension_size `2`
+1:16 - 1:17                         dimension_separator `x`
+1:18 - 1:21                         type
+1:18 - 1:21                           builtin_type
+1:18 - 1:21                             float_type `f32`
+1:21 - 1:22                       ">"
+1:22 - 1:23               ","
+1:24 - 1:33               type
+1:24 - 1:33                 dialect_type
+1:24 - 1:25                   "!"
+1:25 - 1:33                   pretty_dialect_item
+1:25 - 1:29                     dialect_namespace `llvm`
+1:29 - 1:30                     "."
+1:30 - 1:33                     dialect_ident `ptr`
+1:33 - 1:34               ")"
+1:34 - 1:35               ">"
+
+================================================================================
+Pretty dialect dictionary body CST excludes leading whitespace from node ranges
+:cst
+================================================================================
+#sparse = #sparse_tensor.encoding<{ map = (d0) -> (d0 : compressed) }>
+--------------------------------------------------------------------------------
+
+0:0  - 0:70   toplevel
+0:0  - 0:70     attribute_alias_def
+0:0  - 0:1        "#"
+0:8  - 0:9        "="
+0:10 - 0:70       attribute_value
+0:10 - 0:70         dialect_attribute
+0:10 - 0:11           "#"
+0:11 - 0:70           pretty_dialect_item
+0:11 - 0:24             dialect_namespace `sparse_tensor`
+0:24 - 0:25             "."
+0:25 - 0:33             dialect_ident `encoding`
+0:33 - 0:70             pretty_dialect_item_body
+0:33 - 0:34               "<"
+0:34 - 0:35               "{"
+0:36 - 0:39               bare_id `map`
+0:40 - 0:41               "="
+0:42 - 0:43               "("
+0:43 - 0:45               bare_id `d0`
+0:45 - 0:46               ")"
+0:47 - 0:49               "->"
+0:50 - 0:51               "("
+0:51 - 0:53               bare_id `d0`
+0:54 - 0:55               ":"
+0:56 - 0:66               bare_id `compressed`
+0:66 - 0:67               ")"
+0:68 - 0:69               "}"
+0:69 - 0:70               ">"
+
+================================================================================
+Pretty dialect body CST preserves ellipsis dots
+:cst
+================================================================================
+!fn = !llvm.func<void (...)>
+--------------------------------------------------------------------------------
+
+0:0  - 0:28   toplevel
+0:0  - 0:28     type_alias_def
+0:0  - 0:1        "!"
+0:4  - 0:5        "="
+0:6  - 0:28       type
+0:6  - 0:28         dialect_type
+0:6  - 0:7            "!"
+0:7  - 0:28           pretty_dialect_item
+0:7  - 0:11             dialect_namespace `llvm`
+0:11 - 0:12             "."
+0:12 - 0:16             dialect_ident `func`
+0:16 - 0:28             pretty_dialect_item_body
+0:16 - 0:17               "<"
+0:17 - 0:21               bare_id `void`
+0:22 - 0:23               "("
+0:23 - 0:24               "."
+0:24 - 0:25               "."
+0:25 - 0:26               "."
+0:26 - 0:27               ")"
+0:27 - 0:28               ">"

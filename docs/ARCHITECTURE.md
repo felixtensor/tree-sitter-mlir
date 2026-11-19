@@ -352,6 +352,7 @@ It emits:
 | `_attribute_alias_sigil` / `_type_alias_sigil` | line-start `#name =` / `!name =`; only the sigil is consumed |
 | `_error_sentinel` | recovery-lexer validity marker, never emitted |
 | `_custom_body_module_keyword` | only `module`, after lookahead rules out a module header; ordinary grammar parses its symbol and parentheses |
+| `_pretty_dialect_fallback` | single-character punctuation fallback inside `pretty_dialect_item_body` outside recovery; skips whitespace so named nodes keep tight ranges and yields to grammar tokens and `.` |
 
 The boundary tokens require a line start: a continuation line is cut only if
 it has the full binding or generic shape. Known limits: an operation sharing a
@@ -364,6 +365,9 @@ the ordinary `value_use` / `string_literal` path supplies the rest (pinned by a
 The boundary decision is lexical because a dynamic-precedence/conflict version
 passed full parses but failed an incremental re-parse in fuzzing. Block-argument
 lookahead skips strings and treats `->` as an arrow, not an angle close.
+The pretty-body fallback is also lexical because an internal
+`token(prec(-1, /[^<>\s]/))` rule produced the same corpus CST but drove
+fuzzing into a pathological incremental parse.
 
 Do not add scanner responsibilities unless pure grammar cannot express the
 syntax safely or a measured parser-stability problem requires lexical state.

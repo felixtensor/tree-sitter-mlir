@@ -68,6 +68,7 @@ export default grammar({
     // Never emitted or used in a production. Only the recovery lexer offers it.
     $._error_sentinel,
     $._custom_body_module_keyword,
+    $._pretty_dialect_fallback,
   ],
   // All 13 declared conflicts are load-bearing: removing any one fails parser
   // generation. Full rationale in docs/ARCHITECTURE.md.
@@ -1161,7 +1162,7 @@ export default grammar({
             $._pretty_dialect_value_content,
             $._pretty_dialect_keyword_content,
             $._pretty_dialect_punctuation_content,
-            token(prec(-1, /[^<>]/)),
+            $._pretty_dialect_fallback,
           ),
         ),
       ),
@@ -1193,6 +1194,9 @@ export default grammar({
         ":",
         "=",
         "->",
+        // Low-precedence `.` lets `pretty_dialect_item` namespace `.` win while
+        // preserving standalone `.` / `...` (e.g. `!llvm.func<void (...)>`).
+        token(prec(-1, ".")),
         "(",
         ")",
         "[",
