@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **grammar:** exclude leading whitespace from named node ranges inside
+  pretty dialect bodies.
 - **grammar:** label only the attribute node with
   `func_operation.attributes` and `module_operation.attributes`.
 - **grammar:** expose every result through `operation.lhs` field queries.
@@ -67,6 +69,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot's npm updates move CI with them.
 
 ### Breaking AST changes
+- Named nodes inside `pretty_dialect_item_body` no longer include leading
+  whitespace in their byte ranges or text, and standalone `.` runs (such as
+  `...` in `!llvm.func<void (...)>`) emit anonymous `.` tokens instead of
+  being dropped; node types and fields are unchanged.
 - `func_operation.attributes` and `module_operation.attributes` no longer
   label the optional `"attributes"` keyword token.
 - `operation.lhs` labels only `op_result` children, excluding `,` and `=`.
@@ -76,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of `<{` and `}>`; named nodes and fields are unchanged.
 - Custom-body `module(@sym)` now exposes separate `module` and `(` tokens.
   Spaced `module` symbol arguments stay in the same `custom_operation`.
+- `value_use` nodes keep their `%` sigil
 - Custom-body `{%a, %b}` now contains flat `value_use` nodes instead of an
   erroneous `region` / `op_result` tree.
 - A malformed direct custom-body fallback brace payload may now be reported
