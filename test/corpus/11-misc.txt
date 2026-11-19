@@ -1,4 +1,58 @@
 ================================================================================
+Operation lhs fields cover each generic and custom result
+================================================================================
+%a, %b = "test.pair"() : () -> (i32, i32)
+%c, %d:2 = test.split
+test.none
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    lhs: (op_result
+      (value_use))
+    lhs: (op_result
+      (value_use))
+    rhs: (generic_operation
+      (string_literal)
+      (function_type
+        (type
+          (builtin_type
+            (integer_type)))
+        (type
+          (builtin_type
+            (integer_type))))))
+  (operation
+    lhs: (op_result
+      (value_use))
+    lhs: (op_result
+      (value_use))
+    rhs: (custom_operation
+      name: (custom_op_name)))
+  (operation
+    rhs: (custom_operation
+      name: (custom_op_name))))
+
+================================================================================
+Operation lhs CST leaves separators unfielded
+:cst
+================================================================================
+%a, %b:2 = test.split
+--------------------------------------------------------------------------------
+
+0:0  - 0:21   toplevel
+0:0  - 0:21     operation
+0:0  - 0:2        lhs: op_result
+0:0  - 0:2          value_use
+0:0  - 0:1            "%"
+0:2  - 0:3        ","
+0:4  - 0:8        lhs: op_result
+0:4  - 0:8          value_use
+0:4  - 0:5            "%"
+0:9  - 0:10       "="
+0:11 - 0:21       rhs: custom_operation
+0:11 - 0:21         name: custom_op_name `test.split`
+
+================================================================================
 arith.cmpi with string parameter
 ================================================================================
 func.func @notCmpEQ(%arg0: i8, %arg1: i8) -> i1 {

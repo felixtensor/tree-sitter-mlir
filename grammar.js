@@ -316,7 +316,7 @@ export default grammar({
     // =========================================================================
     operation: ($) =>
       seq(
-        field("lhs", optional($._op_result_list)),
+        optional($._op_result_list),
         field("rhs", choice($.generic_operation, $.custom_operation)),
         field("location", optional($.trailing_location)),
       ),
@@ -337,8 +337,13 @@ export default grammar({
         $.function_type,
       ),
 
+    // Keep separators outside lhs so field queries return every result.
     _op_result_list: ($) =>
-      seq($.op_result, repeat(seq(",", $.op_result)), "="),
+      seq(
+        field("lhs", $.op_result),
+        repeat(seq(",", field("lhs", $.op_result))),
+        "=",
+      ),
     // The scanner emits _op_result_sigil for the `%` of a line-start value
     // that begins an op-result-list, so a custom body before it cannot absorb
     // the binding. The rest parses like any value_use, so both paths build the

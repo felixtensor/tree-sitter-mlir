@@ -976,20 +976,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "FIELD",
-          "name": "lhs",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "_op_result_list"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_op_result_list"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -1113,8 +1109,12 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "op_result"
+          "type": "FIELD",
+          "name": "lhs",
+          "content": {
+            "type": "SYMBOL",
+            "name": "op_result"
+          }
         },
         {
           "type": "REPEAT",
@@ -1126,8 +1126,12 @@
                 "value": ","
               },
               {
-                "type": "SYMBOL",
-                "name": "op_result"
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "op_result"
+                }
               }
             ]
           }
