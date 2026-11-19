@@ -1853,40 +1853,40 @@
                 }
               },
               {
-                "type": "FIELD",
-                "name": "attributes",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "CHOICE",
-                          "members": [
-                            {
-                              "type": "TOKEN",
-                              "content": {
-                                "type": "STRING",
-                                "value": "attributes"
-                              }
-                            },
-                            {
-                              "type": "BLANK"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "TOKEN",
+                            "content": {
+                              "type": "STRING",
+                              "value": "attributes"
                             }
-                          ]
-                        },
-                        {
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "attributes",
+                        "content": {
                           "type": "SYMBOL",
                           "name": "dictionary_attribute"
                         }
-                      ]
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               },
               {
                 "type": "FIELD",
@@ -2005,40 +2005,40 @@
                 }
               },
               {
-                "type": "FIELD",
-                "name": "attributes",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "CHOICE",
-                          "members": [
-                            {
-                              "type": "TOKEN",
-                              "content": {
-                                "type": "STRING",
-                                "value": "attributes"
-                              }
-                            },
-                            {
-                              "type": "BLANK"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "TOKEN",
+                            "content": {
+                              "type": "STRING",
+                              "value": "attributes"
                             }
-                          ]
-                        },
-                        {
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "attributes",
+                        "content": {
                           "type": "SYMBOL",
                           "name": "dictionary_attribute"
                         }
-                      ]
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               },
               {
                 "type": "FIELD",
@@ -2195,40 +2195,40 @@
             }
           },
           {
-            "type": "FIELD",
-            "name": "attributes",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "TOKEN",
-                          "content": {
-                            "type": "STRING",
-                            "value": "attributes"
-                          }
-                        },
-                        {
-                          "type": "BLANK"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "TOKEN",
+                        "content": {
+                          "type": "STRING",
+                          "value": "attributes"
                         }
-                      ]
-                    },
-                    {
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "attributes",
+                    "content": {
                       "type": "SYMBOL",
                       "name": "attribute"
                     }
-                  ]
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "FIELD",

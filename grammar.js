@@ -464,10 +464,12 @@ export default grammar({
             field("sym_name", $.symbol_ref_id),
             field("arguments", $.func_arg_list),
             field("return", optional($.func_return)),
-            field(
-              "attributes",
-              optional(
-                seq(optional(token("attributes")), $.dictionary_attribute),
+            // Keep "attributes" unfielded so queries, field APIs, and node-types.json
+            // see only the dictionary (corpus :cst omits anonymous-token fields).
+            optional(
+              seq(
+                optional(token("attributes")),
+                field("attributes", $.dictionary_attribute),
               ),
             ),
             field("body", optional($.region)),
@@ -486,10 +488,12 @@ export default grammar({
             // order: vscale_range(min, max) then comdat(@selector).
             field("vscale_range", optional($.vscale_range)),
             field("comdat", optional($.comdat)),
-            field(
-              "attributes",
-              optional(
-                seq(optional(token("attributes")), $.dictionary_attribute),
+            // Keep "attributes" unfielded so queries, field APIs, and node-types.json
+            // see only the dictionary (corpus :cst omits anonymous-token fields).
+            optional(
+              seq(
+                optional(token("attributes")),
+                field("attributes", $.dictionary_attribute),
               ),
             ),
             field("body", optional($.region)),
@@ -521,9 +525,13 @@ export default grammar({
               choice($.properties, alias($._keyed_properties, $.properties)),
             ),
           ),
-          field(
-            "attributes",
-            optional(seq(optional(token("attributes")), $.attribute)),
+          // Keep "attributes" unfielded so queries, field APIs, and node-types.json
+          // see only the attribute (corpus :cst omits anonymous-token fields).
+          optional(
+            seq(
+              optional(token("attributes")),
+              field("attributes", $.attribute),
+            ),
           ),
           field("body", $.region),
         ),

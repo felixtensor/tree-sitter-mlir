@@ -504,3 +504,110 @@ func.func nested @fold() -> i32
             (type
               (builtin_type
                 (integer_type)))))))))
+
+================================================================================
+Function and module attributes label only the attribute node
+================================================================================
+func.func private @foo() attributes {test.a} {}
+llvm.func internal fastcc @callee() -> i32 attributes {dso_local} {}
+module @bar attributes {test.b} {}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        attributes: (dictionary_attribute
+          (attribute_entry
+            (bare_id)))
+        body: (region))))
+  (operation
+    rhs: (custom_operation
+      (func_operation
+        specifier: (function_specifier)
+        specifier: (function_specifier)
+        sym_name: (symbol_ref_id)
+        arguments: (func_arg_list)
+        return: (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        attributes: (dictionary_attribute
+          (attribute_entry
+            (bare_id)))
+        body: (region))))
+  (operation
+    rhs: (custom_operation
+      (module_operation
+        sym_name: (symbol_ref_id)
+        attributes: (attribute
+          (dictionary_attribute
+            (attribute_entry
+              (bare_id))))
+        body: (region)))))
+
+================================================================================
+Function and module attributes CST keeps keyword unfielded
+:cst
+================================================================================
+func.func @f() attributes {a} {}
+llvm.func @g() attributes {b} {}
+module @m attributes {c} {}
+--------------------------------------------------------------------------------
+
+0:0  - 2:27   toplevel
+0:0  - 0:32     operation
+0:0  - 0:32       rhs: custom_operation
+0:0  - 0:32         func_operation
+0:0  - 0:9            "func.func"
+0:10 - 0:12           sym_name: symbol_ref_id
+0:10 - 0:11             "@"
+0:12 - 0:14           arguments: func_arg_list
+0:12 - 0:13             "("
+0:13 - 0:14             ")"
+0:15 - 0:25           "attributes"
+0:26 - 0:29           attributes: dictionary_attribute
+0:26 - 0:27             "{"
+0:27 - 0:28             attribute_entry
+0:27 - 0:28               bare_id `a`
+0:28 - 0:29             "}"
+0:30 - 0:32           body: region
+0:30 - 0:31             "{"
+0:31 - 0:32             "}"
+1:0  - 1:32     operation
+1:0  - 1:32       rhs: custom_operation
+1:0  - 1:32         func_operation
+1:0  - 1:9            "llvm.func"
+1:10 - 1:12           sym_name: symbol_ref_id
+1:10 - 1:11             "@"
+1:12 - 1:14           arguments: func_arg_list
+1:12 - 1:13             "("
+1:13 - 1:14             ")"
+1:15 - 1:25           "attributes"
+1:26 - 1:29           attributes: dictionary_attribute
+1:26 - 1:27             "{"
+1:27 - 1:28             attribute_entry
+1:27 - 1:28               bare_id `b`
+1:28 - 1:29             "}"
+1:30 - 1:32           body: region
+1:30 - 1:31             "{"
+1:31 - 1:32             "}"
+2:0  - 2:27     operation
+2:0  - 2:27       rhs: custom_operation
+2:0  - 2:27         module_operation
+2:0  - 2:6            "module"
+2:7  - 2:9            sym_name: symbol_ref_id
+2:7  - 2:8              "@"
+2:10 - 2:20           "attributes"
+2:21 - 2:24           attributes: attribute
+2:21 - 2:24             dictionary_attribute
+2:21 - 2:22               "{"
+2:22 - 2:23               attribute_entry
+2:22 - 2:23                 bare_id `c`
+2:23 - 2:24               "}"
+2:25 - 2:27           body: region
+2:25 - 2:26             "{"
+2:26 - 2:27             "}"
