@@ -3,6 +3,12 @@
 ;; For Neovim (nvim-treesitter), Helix, and other tree-sitter-compatible
 ;; editors. Uses standard tree-sitter capture names where they fit, plus a
 ;; few editor-common extensions such as @variable.special and @label.
+;;
+;; Ordering rule: both tree-sitter-highlight and Neovim apply last-match-wins
+;; when multiple patterns capture the exact same node (while parent/child
+;; captures nest, with the child winning visually). Keep specialized rules
+;; (e.g. generic op names, dictionary keys) after the generic literal or
+;; punctuation rules they override.
 ;; ---------------------------------------------------------------------------
 
 (comment) @comment
@@ -26,7 +32,6 @@
 (custom_operation "?" @punctuation.special)
 (custom_operation "loc" @keyword)
 (custom_operation "module" @keyword)
-(custom_operation ">" @punctuation.bracket)
 
 ;; Symbols (@name)
 (symbol_ref_id) @string.special.symbol
@@ -35,8 +40,7 @@
 ;; Individual builtin type nodes — captures nested types inside dim_list
 ;; (e.g. vector inside memref<256 x 256 x vector<8 x f32>>) which are
 ;; reached through the hidden _prim_type rule, not through builtin_type.
-[(builtin_type)
- (memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
+[(memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
  (opaque_type) (integer_type) (float_type) (index_type) (none_type)
  (token_type)] @type.builtin
 [(type_alias) (type_alias_def) (dialect_type)] @type
@@ -59,7 +63,6 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
-(properties ["<" "{" "}" ">"] @punctuation.bracket)
 ;; Builtin introducers that take a <payload> (affine_map, dense, array, ...)
 ;; are @constructor.builtin: they name a builtin form that constructs a value,
 ;; and the channel stays distinct from the numeric payloads and the enclosing
@@ -98,7 +101,7 @@
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
-[(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
+[(unit_literal) (uninitialized_literal)] @constant.builtin
 (tensor_literal ["dense" "sparse"] @constructor.builtin)
 (array_literal "array" @constructor.builtin)
 (string_literal) @string
@@ -111,9 +114,9 @@
 
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────
 ;; All SSA values share one channel so a func/block argument and the values
-;; derived from it read as the same colour. (value_use) already covers
-;; arguments, so no parameter-specific rule is needed.
-[(op_result) (value_use)] @variable.special
+;; derived from it read as the same colour. (value_use) already covers both
+;; arguments and op_result children.
+(value_use) @variable.special
 
 ;; ── Control Flow ────────────────────────────────────────────────────────────
 (caret_id) @label
@@ -141,7 +144,7 @@
 ;; not a direct custom_operation child, so the catch-all above never matches it.
 (dense_resource_literal (bare_id) @constant.builtin)
 
-;; Dictionary attribute keys: bare_id/string live inside attribute_entry,
-;; disjoint from the direct-child catch-all above (so order does not matter).
+;; Dictionary attribute keys: placed after `(string_literal) @string` so quoted
+;; keys override string highlighting.
 (attribute_entry (bare_id) @attribute)
 (attribute_entry (string_literal) @attribute)
