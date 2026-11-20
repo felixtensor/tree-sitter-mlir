@@ -7,8 +7,8 @@
 ;; Ordering rule: both tree-sitter-highlight and Neovim apply last-match-wins
 ;; when multiple patterns capture the exact same node (while parent/child
 ;; captures nest, with the child winning visually). Keep specialized rules
-;; (e.g. generic op names, dictionary keys) after the generic literal or
-;; punctuation rules they override.
+;; (e.g. quoted symbol refs, generic op names, dictionary keys) after the
+;; generic literal or punctuation rules they override.
 ;; ---------------------------------------------------------------------------
 
 (comment) @comment
@@ -19,7 +19,7 @@
 (func_operation visibility: _ @keyword)
 (func_operation specifier: (function_specifier) @keyword)
 (func_operation "attributes" @attribute)
-;; llvm.func post-signature clause introducers, same channel as strided/distinct.
+;; llvm.func post-signature clause introducers.
 (vscale_range "vscale_range" @keyword)
 (comdat "comdat" @keyword)
 (module_operation name: _ @function.builtin)
@@ -63,11 +63,12 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
-;; Builtin introducers that take a <payload> (affine_map, dense, array, ...)
-;; are @constructor.builtin: they name a builtin form that constructs a value,
-;; and the channel stays distinct from the numeric payloads and the enclosing
-;; literal's @constant.builtin. Bare literals with no payload (unit, bools)
-;; remain @constant.builtin/@boolean.
+;; Builtin introducers that take a <payload> (affine_map, affine_set,
+;; strided, distinct, dense_resource, dense, sparse, array) are
+;; @constructor.builtin: they name a builtin form that constructs a value,
+;; distinct from numeric payloads, enclosing literal/attribute channels, and
+;; clause/field keywords (offset, vscale_range, comdat). Bare literals with
+;; no payload (unit, uninitialized, bools) remain @constant.builtin/@boolean.
 (affine_map "affine_map" @constructor.builtin)
 (affine_set "affine_set" @constructor.builtin)
 (affine_map (bare_id) @variable.parameter)
@@ -82,10 +83,10 @@
   @keyword)
 (affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
 (affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
-(strided_layout "strided" @keyword)
+(strided_layout "strided" @constructor.builtin)
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
-(distinct_attribute "distinct" @keyword)
+(distinct_attribute "distinct" @constructor.builtin)
 (dense_resource_literal "dense_resource" @constructor.builtin)
 ["ceildiv" "floordiv" "mod"] @operator
 
@@ -95,8 +96,10 @@
    ["array" "dense" "memref" "opaque" "sparse" "tensor" "tuple" "vector"] @keyword)
  (dialect_dim_list
    ["array" "memref" "tuple" "vector"] @keyword)]
-(pretty_dialect_item_body (bare_id) @keyword)
-(pretty_dialect_item_body ["?" "*"] @punctuation.special)
+[(pretty_dialect_item_body (bare_id) @keyword)
+ (dialect_dim_list (bare_id) @keyword)]
+(pretty_dialect_item_body ["?" "*" "@" "#"] @punctuation.special)
+(pretty_dialect_item_body "." @punctuation.delimiter)
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
@@ -105,7 +108,9 @@
 (tensor_literal ["dense" "sparse"] @constructor.builtin)
 (array_literal "array" @constructor.builtin)
 (string_literal) @string
+;; Same-node overrides for string_literal in specialized positions.
 (generic_operation (string_literal) @function.builtin)
+(symbol_ref_id (string_literal) @string.special.symbol)
 
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
 ;; malformed escapes are flagged distinctly rather than silently colored.

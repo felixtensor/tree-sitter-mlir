@@ -38,6 +38,7 @@ conventions. They do not mirror any specific theme or downstream package.
 | MLIR construct | Capture decision |
 | --- | --- |
 | Operation names (`func.func`, `arith.addi`, generic string ops) | `function.builtin` |
+| Builtin `<payload>` attribute/literal introducers (`affine_map`, `affine_set`, `strided`, `distinct`, `dense_resource`, `dense`, `sparse`, `array`) | `constructor.builtin` |
 | SSA values (`%arg0`, `%0`) | `variable.special` |
 | Symbol-body operators (`+ - * / & \| ~`, OpenMP `<-`) | `operator` |
 | Block label (`caret_id`, `^bb0`) | `label` |

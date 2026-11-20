@@ -65,14 +65,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   following alias definitions and block-label boundaries.
 - **queries:** remove the invalid `@item` capture and dead unnamed-module rule
   from `queries/tags.scm` so `tree-sitter tags` runs without error.
-- **queries:** add `@indent.end` to `queries/indents.scm` and fold
-  `external_resources` in `queries/folds.scm`.
+- **queries:** remove redundant highlight captures, highlight quoted symbol
+  refs (`@"quoted"`), `dialect_dim_list` bare identifiers, and standalone
+  `.`/`@`/`#` tokens inside pretty dialect bodies, add `@indent.end` to
+  `queries/indents.scm`, and fold `external_resources` in `queries/folds.scm`.
 
 ### Changed
 - **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
   Dependabot's npm updates move CI with them; validate `queries/tags.scm` output
   with `tree-sitter tags`, smoke-test `folds.scm`/`indents.scm` captures, and
   enforce an explicit allowlist on `tree-sitter highlight --check`.
+- **queries:** highlight `strided` and `distinct` builtin attribute introducers
+  as `@constructor.builtin` for consistency with `affine_map`, `affine_set`,
+  `dense_resource`, `dense`, `sparse`, and `array`.
 
 ### Breaking AST changes
 - Named nodes inside `pretty_dialect_item_body` no longer include leading

@@ -6,7 +6,7 @@ func.func @memref_highlights(%src: memref<?xf32>)
   -> memref<10x?xf32, strided<[?, 1], offset: ?>> {
 // ^ operator
 //   ^ type.builtin
-//                     ^ keyword
+//                     ^ constructor.builtin
 //                                      ^ keyword
   %c0 = arith.constant 0 : index
 // ^ variable.special
@@ -30,7 +30,7 @@ func.func @memref_highlights(%src: memref<?xf32>)
            : memref<?xf32> to memref<10x?xf32, strided<[?, 1], offset: ?>>
 //           ^ type.builtin
 //                            ^ type.builtin
-//                                              ^ keyword
+//                                              ^ constructor.builtin
   %v = memref.load %view[%c0, %c10]
 // ^ variable.special
 //     ^ function.builtin
@@ -38,7 +38,7 @@ func.func @memref_highlights(%src: memref<?xf32>)
 //                        ^ variable.special
       : memref<10x?xf32, strided<[?, 1], offset: ?>>
 //      ^ type.builtin
-//                        ^ keyword
+//                        ^ constructor.builtin
   memref.store %v, %view[%c0, %c10]
 //^ function.builtin
 //             ^ variable.special

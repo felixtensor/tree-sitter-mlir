@@ -52,8 +52,12 @@ func.func private @bare_keywords(
 //       ^ keyword
   !foo.a<tuple>,
 //       ^ keyword
-  !foo.a<array<3 x memref>>
+  !foo.a<array<3 x memref>>,
 //                 ^ keyword
+  !llvm.struct<(array<3 x ptr>)>,
+//                        ^ keyword
+  !llvm.func<void (...)>
+//                 ^ punctuation.delimiter
 )
 
 func.func private @nested_builtin_tuple(
@@ -64,3 +68,8 @@ func.func private @nested_builtin_tuple(
 //                 ^ type.builtin
 //                       ^ type.builtin
 )
+
+module attributes {llvm.cgprofile = [#llvm.cgprofile_entry<from = @from, to = @to, count = 222>]} {}
+//                                                                ^ punctuation.special
+//                                                                 ^ keyword
+//                                                                            ^ punctuation.special
