@@ -48,7 +48,7 @@ Generic `<{...}>` properties keep their named nodes and fields, with separate
 `region`, `entry_block`, `block`, `block_label`, `block_arg_list`,
 `op_result`, `value_use`, `symbol_ref_id`, `successor`, `caret_id`,
 `func_arg_list`, `func_return`, `function_type`, `type_list_attr_parens`,
-`variadic`, `bare_id`
+`variadic`, `bare_id`, `custom_body_arrow`
 
 `block_arg_list` accepts both `type` and `function_type` children, including
 higher-order values such as `%fn: () -> ()`.
@@ -66,9 +66,13 @@ higher-order values such as `%fn: () -> ()`.
 ### Attributes
 
 `attribute`, `attribute_value`, `attribute_entry`, `dictionary_attribute`,
-`builtin_attribute`, `dialect_attribute`, `attribute_alias`,
+`array_attribute`, `builtin_attribute`, `dialect_attribute`, `attribute_alias`,
 `attribute_alias_def`, `distinct_attribute`, `strided_layout`,
-`affine_map`, `affine_set`
+`affine_map`, `affine_map_inline`, `affine_set`
+
+Key-value `attribute_entry` nodes expose `key` (`bare_id` or `string_literal`)
+and optional `value` (`attribute_value`) fields; array-valued entries (such as
+`ops{["affine.for"]}`) carry an unfielded `array_attribute` child.
 
 ### Literals
 
@@ -272,18 +276,18 @@ position after a type inside `(...)` and keeps the body-level ambiguity as a
 known limit (`memref.dealloc %m {test.flag}`,
 `test.op attributes {test.flag}`). The grammar does not enforce the LangRef
 key-prefix classification: unprefixed keys and nested dictionaries are
-accepted. Similarly, `attribute_value` accepts permissive unprefixed affine-map-like
-values (`(d0) -> (d0 : compressed)`) and sparse level keywords inside
-dictionaries alongside `affine_map` / `affine_set` for parser robustness and
-uniform highlighting, without dedicated structured nodes (operands and level
-keywords parse only as `bare_id`, and operators are omitted). Standalone
-`#alias = {map = (d0) -> (d0 : compressed)}` is not valid core MLIR; legal
-sparse tensor encodings use `#sparse_tensor.encoding<{...}>`. Consumers needing
-exact classification should use an MLIR-aware tool.
+accepted. Similarly, `attribute_value` accepts permissive unprefixed inline affine maps
+(`affine_map_inline`, e.g. `(d0) -> (d0 : compressed)`) and sparse level
+keywords inside dictionaries alongside `affine_map` / `affine_set` for parser
+robustness and uniform highlighting, without dedicated dimension/level subnodes
+(operands parse as `bare_id` and level keywords/operators remain anonymous
+tokens). Standalone `#alias = {map = (d0) -> (d0 : compressed)}` is not valid
+core MLIR; legal sparse tensor encodings use `#sparse_tensor.encoding<{...}>`.
+Consumers needing exact classification should use an MLIR-aware tool.
 
-Known limits: unprefixed affine-map-like dictionary values such as
-`{map = (d0) -> (d0 : compressed)}` remain permissively accepted as `bare_id`
-lists (see above). A payload that fails only later still fails there
+Known limits: unprefixed inline affine dictionary values such as
+`{map = (d0) -> (d0 : compressed)}` remain permissively accepted as
+`affine_map_inline` nodes (see above). A payload that fails only later still fails there
 (`{[0, 1] = %v}` reads as a dictionary), and outside `<...>` `{a: i32}` is
 still a region. Inside `<...>` a first bare key followed by `,` reads as a
 dictionary entry, so `<{a, b: i32}>` fails at `b:`.

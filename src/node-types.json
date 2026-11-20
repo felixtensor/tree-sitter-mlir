@@ -23,6 +23,29 @@
     }
   },
   {
+    "type": "affine_map_inline",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "bare_id",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "value_use",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "affine_set",
     "named": true,
     "fields": {},
@@ -40,6 +63,89 @@
         },
         {
           "type": "value_use",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "array_attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "affine_map_inline",
+          "named": true
+        },
+        {
+          "type": "array_attribute",
+          "named": true
+        },
+        {
+          "type": "array_literal",
+          "named": true
+        },
+        {
+          "type": "attribute_alias",
+          "named": true
+        },
+        {
+          "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "builtin_attribute",
+          "named": true
+        },
+        {
+          "type": "dialect_attribute",
+          "named": true
+        },
+        {
+          "type": "dictionary_attribute",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "function_type",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "symbol_ref_id",
+          "named": true
+        },
+        {
+          "type": "tensor_literal",
+          "named": true
+        },
+        {
+          "type": "trailing_location",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "uninitialized_literal",
+          "named": true
+        },
+        {
+          "type": "unit_literal",
           "named": true
         }
       ]
@@ -130,85 +236,38 @@
   {
     "type": "attribute_entry",
     "named": true,
-    "fields": {},
+    "fields": {
+      "key": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "bare_id",
+            "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "attribute_value",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "array_literal",
-          "named": true
-        },
-        {
-          "type": "attribute_alias",
-          "named": true
-        },
-        {
-          "type": "attribute_value",
-          "named": true
-        },
-        {
-          "type": "bare_id",
-          "named": true
-        },
-        {
-          "type": "bool_literal",
-          "named": true
-        },
-        {
-          "type": "builtin_attribute",
-          "named": true
-        },
-        {
-          "type": "dialect_attribute",
-          "named": true
-        },
-        {
-          "type": "dictionary_attribute",
-          "named": true
-        },
-        {
-          "type": "float_literal",
-          "named": true
-        },
-        {
-          "type": "function_type",
-          "named": true
-        },
-        {
-          "type": "integer_literal",
-          "named": true
-        },
-        {
-          "type": "string_literal",
-          "named": true
-        },
-        {
-          "type": "symbol_ref_id",
-          "named": true
-        },
-        {
-          "type": "tensor_literal",
-          "named": true
-        },
-        {
-          "type": "trailing_location",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        },
-        {
-          "type": "uninitialized_literal",
-          "named": true
-        },
-        {
-          "type": "unit_literal",
-          "named": true
-        },
-        {
-          "type": "value_use",
+          "type": "array_attribute",
           "named": true
         }
       ]
@@ -220,18 +279,22 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
+        {
+          "type": "affine_map_inline",
+          "named": true
+        },
+        {
+          "type": "array_attribute",
+          "named": true
+        },
         {
           "type": "array_literal",
           "named": true
         },
         {
           "type": "attribute_alias",
-          "named": true
-        },
-        {
-          "type": "bare_id",
           "named": true
         },
         {
@@ -288,10 +351,6 @@
         },
         {
           "type": "unit_literal",
-          "named": true
-        },
-        {
-          "type": "value_use",
           "named": true
         }
       ]
@@ -570,6 +629,11 @@
     }
   },
   {
+    "type": "custom_body_arrow",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "custom_body_dim_list",
     "named": true,
     "fields": {},
@@ -650,6 +714,10 @@
         },
         {
           "type": "bool_literal",
+          "named": true
+        },
+        {
+          "type": "custom_body_arrow",
           "named": true
         },
         {

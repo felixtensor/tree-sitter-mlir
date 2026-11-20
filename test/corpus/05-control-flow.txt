@@ -2026,12 +2026,13 @@ func.func @normalized_forall_elide_terminator() -> () {
                             (attribute_entry
                               (bare_id)
                               (attribute_value
-                                (dialect_attribute
-                                  (pretty_dialect_item
-                                    (dialect_namespace)
-                                    (dialect_ident)
-                                    (pretty_dialect_item_body
-                                      (bare_id))))))))))))))
+                                (array_attribute
+                                  (dialect_attribute
+                                    (pretty_dialect_item
+                                      (dialect_namespace)
+                                      (dialect_ident)
+                                      (pretty_dialect_item_body
+                                        (bare_id)))))))))))))))
             (operation
               (custom_operation
                 (custom_op_name))))))))
@@ -2070,12 +2071,13 @@ func.func @normalized_forall_elide_terminator() -> () {
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (dialect_attribute
-                          (pretty_dialect_item
-                            (dialect_namespace)
-                            (dialect_ident)
-                            (pretty_dialect_item_body
-                              (bare_id))))))))))
+                        (array_attribute
+                          (dialect_attribute
+                            (pretty_dialect_item
+                              (dialect_namespace)
+                              (dialect_ident)
+                              (pretty_dialect_item_body
+                                (bare_id)))))))))))
             (operation
               (custom_operation
                 (custom_op_name)))))))))

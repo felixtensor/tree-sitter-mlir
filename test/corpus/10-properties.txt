@@ -78,8 +78,9 @@ Generic operation with region and properties
         (attribute_entry
           (bare_id)
           (attribute_value
-            (integer_literal)
-            (integer_literal))))
+            (array_attribute
+              (integer_literal)
+              (integer_literal)))))
       (region)
       (function_type))))
 
@@ -130,8 +131,8 @@ Generic operation with properties and an empty attribute dictionary
       (string_literal)
       (properties
         (attribute_entry
-          (bare_id)
-          (attribute_value
+          key: (bare_id)
+          value: (attribute_value
             (integer_literal)
             (type
               (builtin_type
@@ -152,8 +153,8 @@ module <{dlti = #dlti.map<"chip" = "sm_90">}> {}
       (module_operation
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (dialect_attribute
                 (pretty_dialect_item
                   (dialect_namespace)
@@ -176,8 +177,8 @@ module @nested_module <sym_visibility = "nested"> {}
         sym_name: (symbol_ref_id)
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (string_literal))))
         body: (region)))))
 
@@ -194,14 +195,14 @@ module @property_module <sym_visibility = "private"> attributes {foo.attr = true
         sym_name: (symbol_ref_id)
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (string_literal))))
         attributes: (attribute
           (dictionary_attribute
             (attribute_entry
-              (bare_id)
-              (attribute_value
+              key: (bare_id)
+              value: (attribute_value
                 (bool_literal)))))
         body: (region)))))
 
@@ -218,12 +219,12 @@ builtin.module @root <{sym_visibility = "private", dlti = #dlti.map<"chip" = "sm
         sym_name: (symbol_ref_id)
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (string_literal)))
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (dialect_attribute
                 (pretty_dialect_item
                   (dialect_namespace)
@@ -234,8 +235,8 @@ builtin.module @root <{sym_visibility = "private", dlti = #dlti.map<"chip" = "sm
         attributes: (attribute
           (dictionary_attribute
             (attribute_entry
-              (bare_id)
-              (attribute_value
+              key: (bare_id)
+              value: (attribute_value
                 (bool_literal)))))
         body: (region)))
     location: (trailing_location
@@ -277,13 +278,13 @@ builtin.module <
       (module_operation
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (string_literal)))
           (comment)
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (dialect_attribute
                 (pretty_dialect_item
                   (dialect_namespace)
@@ -316,14 +317,14 @@ module @sibling {}
         sym_name: (symbol_ref_id)
         properties: (properties
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (string_literal))))
         attributes: (attribute
           (dictionary_attribute
             (attribute_entry
-              (bare_id)
-              (attribute_value
+              key: (bare_id)
+              value: (attribute_value
                 (bool_literal)))))
         body: (region
           (entry_block
@@ -333,14 +334,14 @@ module @sibling {}
                   sym_name: (symbol_ref_id)
                   properties: (properties
                     (attribute_entry
-                      (bare_id)
-                      (attribute_value
+                      key: (bare_id)
+                      value: (attribute_value
                         (string_literal))))
                   attributes: (attribute
                     (dictionary_attribute
                       (attribute_entry
-                        (bare_id)
-                        (attribute_value
+                        key: (bare_id)
+                        value: (attribute_value
                           (bool_literal)))))
                   body: (region))))
             (operation

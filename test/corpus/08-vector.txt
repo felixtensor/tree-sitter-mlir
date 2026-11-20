@@ -487,8 +487,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (bool_literal)
-                        (bool_literal)))))
+                        (array_attribute
+                          (bool_literal)
+                          (bool_literal))))))
                 (type
                   (builtin_type
                     (memref_type
@@ -737,8 +738,9 @@ func.func @vector_transfer_ops(%arg0: memref<?x?xf32>,
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (bool_literal)
-                        (bool_literal)))))
+                        (array_attribute
+                          (bool_literal)
+                          (bool_literal))))))
                 (type
                   (builtin_type
                     (vector_type
@@ -1138,18 +1140,21 @@ func.func @strided_slice(%src: vector<4x8xf32>, %dst: vector<8x16xf32>) -> vecto
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (integer_literal)
-                        (integer_literal)))
+                        (array_attribute
+                          (integer_literal)
+                          (integer_literal))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (integer_literal)
-                        (integer_literal)))
+                        (array_attribute
+                          (integer_literal)
+                          (integer_literal))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (integer_literal)
-                        (integer_literal)))))
+                        (array_attribute
+                          (integer_literal)
+                          (integer_literal))))))
                 (type
                   (builtin_type
                     (vector_type
@@ -1177,13 +1182,15 @@ func.func @strided_slice(%src: vector<4x8xf32>, %dst: vector<8x16xf32>) -> vecto
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (integer_literal)
-                        (integer_literal)))
+                        (array_attribute
+                          (integer_literal)
+                          (integer_literal))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (integer_literal)
-                        (integer_literal)))))
+                        (array_attribute
+                          (integer_literal)
+                          (integer_literal))))))
                 (type
                   (builtin_type
                     (vector_type
@@ -1347,33 +1354,35 @@ func.func @contract(%a: vector<4x8xf32>, %b: vector<8x16xf32>, %c: vector<4x16xf
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)))
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)))
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)))))
+                        (array_attribute
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id))))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)
-                        (string_literal)
-                        (string_literal)))))
+                        (array_attribute
+                          (string_literal)
+                          (string_literal)
+                          (string_literal))))))
                 (value_use)
                 (value_use)
                 (value_use)

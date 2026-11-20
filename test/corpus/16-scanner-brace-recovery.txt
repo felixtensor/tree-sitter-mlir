@@ -684,6 +684,7 @@ func.func @after() { return }
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
+
 ================================================================================
 Quoted probe preserves a following angle group
 ================================================================================
@@ -862,6 +863,7 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
 ================================================================================
 Failed boundary probes preserve slash-prefixed inline payload text
 ================================================================================
@@ -906,6 +908,7 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
 ================================================================================
 Negative angle payloads remain nested after failed quoted probes
 ================================================================================
@@ -974,6 +977,7 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
 ================================================================================
 Mapped-from arrows protect parenthesized payloads with optional whitespace
 ================================================================================
@@ -994,11 +998,14 @@ test.after
       (custom_op_name)
       (string_literal)
       (integer_literal)
+      (custom_body_arrow)
       (bare_id)
+      (custom_body_arrow)
       (bare_id)))
   (operation
     (custom_operation
       (custom_op_name))))
+
 ================================================================================
 Adjacent attribute after a value preserves payload location and function boundaries
 ================================================================================
@@ -1197,6 +1204,7 @@ test.after
   (operation
     (custom_operation
       (custom_op_name))))
+
 ================================================================================
 Later result-list item preserves its adjacent attribute envelope
 ================================================================================
@@ -1556,7 +1564,6 @@ func.func @after() { return }
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
 
-
 ================================================================================
 Negative numeric brace lead retains sibling recovery
 ================================================================================
@@ -1601,7 +1608,6 @@ func.func @after() { return }
             (operation
               rhs: (custom_operation
                 name: (custom_op_name)))))))))
-
 
 ================================================================================
 Dot numeric brace lead retains sibling recovery
