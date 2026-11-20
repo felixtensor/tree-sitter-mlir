@@ -1,0 +1,10 @@
+# Tree-sitter DSL rules rely on a compact, grouped BNF-like layout; Prettier's
+# vertical expansion makes grammar.js harder to read and maintain.
+grammar.js
+
+# Generated parser artifacts and upstream test snapshots (keep hand-written src/scanner.c out).
+src/grammar.json
+src/node-types.json
+src/parser.c
+src/tree_sitter/
+examples/

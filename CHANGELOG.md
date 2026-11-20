@@ -13,135 +13,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **grammar:** support `module_operation.properties` for both `<{...}>` and
+  `<key = value>` custom property-dictionary spellings.
+- **grammar:** allow `function_type` in `block_arg_list` and `tuple_dim`, and
+  emit named `array_attribute`, `affine_map_inline`, and `custom_body_arrow`
+  nodes.
+
 ### Fixed
-- **grammar:** exclude leading whitespace from named node ranges inside
-  pretty dialect bodies.
-- **grammar:** label only the attribute node with
-  `func_operation.attributes` and `module_operation.attributes`.
-- **grammar:** expose every result through `operation.lhs` field queries.
-- **grammar:** keep custom enum parameter braces flat, including XeVM
-  `extf` / `truncf` parameters.
-- **docs:** remove the unused `@function` from the documented highlight
-  capture vocabulary.
-- **grammar/scanner:** keep custom-body `module` symbol arguments, including
-  whitespace-separated forms, inside their operation while preserving real
-  module headers.
-- **grammar:** accept whitespace and comments between properties delimiters
-  (`< { ... } >`), including after a preceding custom operation.
-- **grammar:** keep `{%a, %b}` value-list payloads inside custom operations
-  instead of reading them as erroneous region result bindings.
-- **scanner/grammar:** localize unclosed direct custom-body fallback brace
-  payloads before a recognizable operation or block boundary.
-- **grammar:** keep the `constant` modifier inside `memref.global` and
-  `llvm.mlir.global` instead of splitting off a phantom operation. Result-bound
-  default-dialect `constant` operations still start their own operation.
-- **grammar:** accept bare `memref` / `tuple` and non-builtin `tuple<...>` in
-  pretty dialect bodies while keeping structured `memref_type` / `tuple_type`
-  nodes, including nested builtin tensor and opaque tuple elements (#77).
-- **grammar:** keep non-builtin `vector<...>` and `N x T` payloads balanced in
-  pretty dialect bodies, and require a dimension before `x` in
-  `dialect_dim_list` (#77).
-- **grammar:** keep `function_type` on `() -> ()` when used as an attribute
-  value (#83).
-- **grammar:** keep `!ns<...>` and `#ns<...>` in a custom operation body as
-  `dialect_type` and `dialect_attribute` when another construct follows,
-  instead of splitting them into an alias plus a loose `<...>` group (#82).
-- **grammar:** require a dialect body's opening `<` to touch its name;
-  whitespace or comments leave a following custom-body angle group separate.
-- **grammar:** parse bare dialect-local array element types such as
-  `!llvm.struct<(array<3 x ptr>)>` inside the complete dialect type body.
-- **scanner:** stop a custom operation body at the next line-start result
-  binding or generic operation instead of absorbing it.
-- **grammar:** parse `{dotted.key = ...}` in a custom operation body as an
-  attribute dictionary instead of a region.
-- **grammar:** read a name-only brace after a type inside `(...)` as a
-  unit-key argument attribute dictionary instead of a region/operation.
-- **grammar:** keep balanced unrecognized `{...}` payloads in a custom
-  operation body, such as `{"a": %x}`, inside that operation.
-- **grammar:** never read a `{...}` inside `<...>` in a custom operation body
-  as a region, at any depth, as in `struct<{a: i32}>` or `<{a: {b: i32}}>`.
-- **scanner:** consume fully balanced unsafe custom-body brace groups whose
-  leads cannot start a structured region or dictionary, while preserving
-  following alias definitions and block-label boundaries.
+- **scanner:** end custom operation bodies at line-start result bindings or
+  unbound generic operations; handle `->` arrows during block-label lookahead;
+  keep custom-body `module` symbol arguments (including spaced forms) inside
+  their operation without breaking module headers.
+- **scanner/grammar:** resolve custom-body `{...}` ambiguity via hybrid brace
+  classification — parse `{dotted.key = ...}` as `dictionary_attribute`, parse
+  name-only `{...}` after a type inside `(...)` as unit-key argument
+  attributes, keep `{%a, %b}`, custom enum braces (e.g. XeVM `extf`/`truncf`),
+  and other balanced non-region `{...}` payloads flat, never read `{...}`
+  inside `<...>` as a region, and localize unclosed direct fallback braces
+  before the next operation or block boundary.
+- **grammar:** keep the `constant` modifier inside `memref.global` /
+  `llvm.mlir.global` while preserving result-bound default-dialect `constant`
+  operations; accept whitespace/comments between property delimiters
+  (`< { ... } >`); keep `function_type` on `() -> ()` attribute values (#83).
+- **grammar:** require dialect bodies' `<` to touch their name so `!ns<...>`
+  and `#ns<...>` stay `dialect_type` / `dialect_attribute` (#82) while spaced
+  `<...>` stays separate; support bare `memref`/`tuple`, non-builtin
+  `tuple<...>`/`vector<...>`, nested builtin/opaque elements, bare
+  dialect-local array elements, and required leading dimensions in
+  `dialect_dim_list` (#77); exclude leading whitespace from named nodes inside
+  `pretty_dialect_item_body`.
+- **grammar:** expose every `op_result` through `operation.lhs`, and restrict
+  `func_operation.attributes` and `module_operation.attributes` to the
+  attribute node itself.
 - **queries:** remove the invalid `@item` capture and dead unnamed-module rule
-  from `queries/tags.scm` so `tree-sitter tags` runs without error.
-- **queries/grammar:** prevent `attribute_entry` array elements (e.g.
-  `ops{["affine.for"]}`) from being highlighted as `@attribute`, and highlight
-  inline affine maps (`affine_map_inline`), quoted symbol refs (`@"quoted"`),
-  IRDL `complex:` operand labels, OpenMP `<-` arrows (`custom_body_arrow`),
-  `dialect_dim_list` bare identifiers, and standalone `.`/`@`/`#` tokens inside
-  pretty dialect bodies.
-- **queries:** remove redundant highlight captures, add `@indent.end` to
-  `queries/indents.scm`, and fold `external_resources` in `queries/folds.scm`.
+  from `queries/tags.scm`; align highlight coverage with `attribute_entry`,
+  `affine_map_inline`, `custom_body_arrow`, quoted symbol refs, IRDL
+  `complex:` labels, `dialect_dim_list`, and pretty-body `.`/`@`/`#` tokens;
+  remove redundant captures, add `@indent.end` to `queries/indents.scm`, and
+  fold `external_resources` in `queries/folds.scm`.
 
 ### Changed
-- **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
-  Dependabot's npm updates move CI with them; validate `queries/tags.scm` output
-  with `tree-sitter tags`, smoke-test `folds.scm`/`indents.scm` captures, and
-  enforce an explicit allowlist on `tree-sitter highlight --check`.
-- **queries:** highlight `strided` and `distinct` builtin attribute introducers
-  as `@constructor.builtin` for consistency with `affine_map`, `affine_set`,
-  `dense_resource`, `dense`, `sparse`, and `array`.
+- **examples:** sync the checked-in MLIR corpus to
+  `llvm-project@e3f9a6e4b78f` (2026-11-08), mirroring upstream dialect
+  subdirectories and retaining module-properties and full-scan regressions
+  (712 files).
+- **CI/tooling:** install the tree-sitter CLI version resolved by
+  `package-lock.json`; validate `queries/tags.scm` with `tree-sitter tags`,
+  smoke-test `folds.scm`/`indents.scm`, enforce an allowlist on
+  `tree-sitter highlight --check`, and guard `:cst` expectations in
+  `scripts/update-tests.mjs`.
+- **queries/docs:** highlight `strided` and `distinct` builtin introducers as
+  `@constructor.builtin`, remove unused `@function` from `docs/QUERIES.md`, and
+  tighten and reconcile `docs/ARCHITECTURE.md` and `docs/QUERIES.md` against
+  the current node set and CI gates.
 
 ### Breaking AST changes
 - `attribute_entry` now exposes `key` (`bare_id` / `string_literal`) and
-  optional `value` (`attribute_value`) fields, and bracketed attribute arrays
-  now emit named `array_attribute` nodes (preserving nested array structure).
-- Inline prefixless affine maps (e.g. `(d0, d1) -> (d0 + d1)`) now emit named
-  `affine_map_inline` nodes, and OpenMP `<-` arrows emit named
-  `custom_body_arrow` nodes (keeping separate `<` and `-` tokens).
-- `irdl.operands(complex: %0)` now parses `complex` and `:` as ordinary
-  `bare_id` and `:` tokens instead of a hidden `_complex_label_start` token.
+  optional `value` (`attribute_value`) fields; bracketed attribute arrays emit
+  named `array_attribute` nodes; inline prefixless affine maps emit
+  `affine_map_inline`; OpenMP `<-` arrows emit `custom_body_arrow` (with
+  separate `<` and `-` tokens); `irdl.operands(complex: %0)` emits ordinary
+  `bare_id` and `:` tokens.
+- `module_operation` adds an optional `properties` field; `properties` exposes
+  separate `<`, `{`, `}`, `>` tokens instead of `<{` and `}>`.
+- `operation.lhs` labels only `op_result` children (excluding `,` and `=`), and
+  `func_operation.attributes` / `module_operation.attributes` no longer label
+  the optional `"attributes"` keyword.
 - Named nodes inside `pretty_dialect_item_body` no longer include leading
-  whitespace in their byte ranges or text, and standalone `.` runs (such as
-  `...` in `!llvm.func<void (...)>`) emit anonymous `.` tokens instead of
-  being dropped; node types and fields are unchanged.
-- `func_operation.attributes` and `module_operation.attributes` no longer
-  label the optional `"attributes"` keyword token.
-- `operation.lhs` labels only `op_result` children, excluding `,` and `=`.
-- Custom enum braces lose phantom `region` / `operation` subtrees; ordinary
-  values before the first enum retain `attribute_value` nodes.
-- Properties now expose separate `<`, `{`, `}` and `>` anonymous tokens
-  instead of `<{` and `}>`; named nodes and fields are unchanged.
-- Custom-body `module(@sym)` now exposes separate `module` and `(` tokens.
-  Spaced `module` symbol arguments stay in the same `custom_operation`.
-- `value_use` nodes keep their `%` sigil
-- Custom-body `{%a, %b}` now contains flat `value_use` nodes instead of an
-  erroneous `region` / `op_result` tree.
-- A malformed direct custom-body fallback brace payload may now be reported
-  as a sibling `ERROR` or missing close; see Architecture's custom-body brace
-  recovery limits.
-- A global's `constant` modifier is now a `bare_id` inside its operation;
-  its symbol, type and initializer stay in the same `custom_operation`.
-  A default-dialect `constant` operation now has a `bare_id` child inside
-  `custom_op_name`, like other names handled by the default-dialect fallback.
-- `dialect_dim_list` now requires a dimension (`N`, `?`, or `*`) before each
-  `x`; `shuffle_mode xor` and `i8x16` parse as pretty-body tokens instead of
-  `dialect_dim_list`.
-- `() -> ()` as an `attribute_value` now includes a `function_type` child
-  instead of parsing as a bare affine map.
-- `!ns<...>` and `#ns<...>` in a custom operation body followed by another
-  construct now parse as `dialect_type` / `dialect_attribute`
-  (`parametric_dialect_item`) instead of `type_alias` / `attribute_alias`
-  plus flat `<...>` contents.
-- A `<...>` group separated from a type or attribute name by whitespace or
-  comments is no longer part of that dialect item. Undotted names remain
-  aliases, and dotted names end before the separate group.
-- A result binding or generic operation after a custom operation now starts
-  its own `operation`, instead of trailing children of the previous
-  `custom_operation`.
-- A name-only brace after a type inside `(...)` now produces
-  `attribute` / `dictionary_attribute` / `attribute_entry`, not a region.
-- A `{...}` whose first key is dotted and has a value, such as
-  `{allocation.offset = 0 : i32}`, is now `attribute` → `dictionary_attribute`
-  instead of a `region` holding an `operation`.
-- A `{...}` in a custom body that is no region, dictionary or known brace form
-  (`{"a": %x}`, `{@a -> @b}`, `{%d}`) now leaves its contents as children of the
-  `custom_operation`, instead of an `ERROR` or a `region`. It adds no node, so
-  `region`-based fold, indent and scope queries do not apply to it.
-- A `{...}` anywhere inside `<...>` in a custom body, also nested in `(...)`,
-  `[...]` or `{...}`, is now flat contents or a `dictionary_attribute`, never a
-  `region`.
+  whitespace in their byte ranges, and standalone `.` runs (e.g. `...` in
+  `!llvm.func<void (...)>`) emit anonymous `.` tokens.
+- `dialect_dim_list` requires a leading dimension (`N`, `?`, or `*`) before each
+  `x`, and `() -> ()` as an `attribute_value` emits a `function_type` child.
+- `!ns<...>` / `#ns<...>` in custom bodies stay `dialect_type` /
+  `dialect_attribute` when followed by another construct; a `<...>` separated
+  by whitespace/comments no longer attaches to a dialect name.
+- Line-start result bindings and unbound generic operations after a custom
+  operation start a new `operation`; a global's `constant` modifier stays a
+  `bare_id` inside its operation (while default-dialect `constant` ops wrap a
+  `bare_id` inside `custom_op_name`); custom-body `module(@sym)` emits
+  separate `module` and `(` tokens and keeps spaced `module` arguments inside
+  the `custom_operation`.
+- Custom-body `{...}` shapes changed: `{dotted.key = ...}` and name-only
+  `{...}` after a type inside `(...)` emit `attribute` /
+  `dictionary_attribute`; `{%a, %b}`, custom enum braces, `{...}` inside
+  `<...>`, and other non-region/non-dictionary balanced braces stay flat inside
+  the `custom_operation` (no phantom `region` / `operation` subtrees, so
+  region-based fold/indent/scope queries no longer match them); malformed
+  direct fallback braces may report a sibling `ERROR` or missing close.
 
 ### Known limits
 - Body-level unit-key braces (e.g. `memref.dealloc %m {test.flag} : ...`) still

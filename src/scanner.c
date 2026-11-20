@@ -23,9 +23,7 @@ enum TokenType {
 
 void *tree_sitter_mlir_external_scanner_create(void) { return NULL; }
 
-void tree_sitter_mlir_external_scanner_destroy(void *payload) {
-  (void)payload;
-}
+void tree_sitter_mlir_external_scanner_destroy(void *payload) { (void)payload; }
 
 unsigned tree_sitter_mlir_external_scanner_serialize(void *payload,
                                                      char *buffer) {
@@ -64,9 +62,8 @@ typedef enum {
   SUFFIX_ID_HASH,
 } SuffixIdResult;
 
-// Read the grammar's suffix-id, marking its accepted end only for caret tokens.
-// A nonnumeric separator is consumed but is not part of the id. Callers that
-// continue probing must account for it instead of treating failure as rewind.
+// Scan a suffix-id (calling `mark_end` only when `mark` is set). A trailing
+// non-numeric `:`/`#` is consumed as lookahead; continuing callers handle it.
 static SuffixIdResult scan_suffix_id(TSLexer *lexer, bool mark) {
   if (is_digit(lexer->lookahead)) {
     do {
@@ -102,7 +99,7 @@ static SuffixIdResult scan_caret_id(TSLexer *lexer, bool mark) {
   return scan_suffix_id(lexer, mark);
 }
 
-// Positioned after a consumed # or !. Preserve an attached dialect envelope.
+// Positioned after `#`/`!`; preserve any attached `<...>` opener in `angles`.
 static void scan_dialect_envelope_tail(TSLexer *lexer, int *angles) {
   if (!is_identifier_start(lexer->lookahead))
     return;
@@ -115,9 +112,10 @@ static void scan_dialect_envelope_tail(TSLexer *lexer, int *angles) {
   }
 }
 
-// A failed internal probe cannot rewind. Finish looking through an attribute
-// whose # was consumed as a rejected numeric suffix before resuming the tail.
-static bool scan_probe_suffix_id(TSLexer *lexer, bool *line_start, int *angles) {
+// Internal probes cannot rewind; track an attached dialect envelope if `#` was
+// consumed.
+static bool scan_probe_suffix_id(TSLexer *lexer, bool *line_start,
+                                 int *angles) {
   if (line_start)
     *line_start = false;
   SuffixIdResult result = scan_suffix_id(lexer, false);
@@ -126,8 +124,7 @@ static bool scan_probe_suffix_id(TSLexer *lexer, bool *line_start, int *angles) 
   return result == SUFFIX_ID_COMPLETE;
 }
 
-// A custom operation name (`_dotted_op_name`, `_bare_op_name`, `bare_id`) or
-// the string literal that names a generic operation.
+// Start of a custom op name or generic op string literal.
 static bool is_operation_name_start(int32_t c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' ||
          c == '"';
@@ -154,11 +151,8 @@ static void skip_inline_space(TSLexer *lexer, bool skip) {
   }
 }
 
-// Precondition: the lexer is positioned at `x`. Consumes `x` and requires a
-// dimension to follow -- a digit (static size, 16x16) or `?` (dynamic size,
-// 16x?). This distinguishes a dimension separator from a bare identifier `x`
-// in custom assembly (the grammar's valid_symbols gate ensures this scanner
-// is only called where a separator is expected).
+// At `x`: consume `x` and require a following digit or `?` (distinguishes
+// dimension separators like `16x16` / `16x?` from bare `x`).
 static bool scan_dimension_separator_from_x(TSLexer *lexer) {
   lexer->advance(lexer, false);
   lexer->mark_end(lexer);
@@ -197,9 +191,8 @@ static CommentScanResult skip_comment(TSLexer *lexer) {
   return LINE_COMMENT;
 }
 
-// Skip whitespace and line comments. A single slash is consumed before the
-// result is reported so callers that scan opaque body text can continue from
-// the following character without mistaking the slash for a comment.
+// Skip whitespace and `//` comments; a lone `/` is consumed and reported via
+// `EXTRAS_SINGLE_SLASH` so opaque-body callers can keep scanning past it.
 static ExtrasScanResult skip_extras(TSLexer *lexer) {
   for (;;) {
     skip_space(lexer, false);
@@ -219,15 +212,12 @@ typedef enum {
   OUTER_BRACE_CLOSED,
 } BlockLabelTailResult;
 
-static BlockLabelTailResult at_block_label_tail(TSLexer *lexer,
-                                                int *brace_depth, bool *line_start);
+static BlockLabelTailResult
+at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start);
 
-// Precondition: the lexer is positioned after the opening `{`, and the
-// caller has already established that the first meaningful character is an
-// unsafe custom-body lead. Consume the rest of one balanced brace group,
-// ignoring braces in strings and line comments. Returning false lets
-// tree-sitter restore the original position, which is important for malformed
-// input: an unclosed group must remain available to grammar recovery.
+// After `{` with an already-verified opaque lead: consume one balanced `{...}`
+// group (ignoring strings and line comments). Returns false on EOF so unclosed
+// groups fall back to grammar recovery.
 static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
   bool in_string = false;
 
@@ -286,8 +276,6 @@ static bool scan_opaque_brace_tail(TSLexer *lexer, int depth) {
   return false;
 }
 
-// Probe only the unsafe fallback lead. Complete payloads stay in grammar;
-// an unclosed prefix is captured as one token, including its opening brace.
 static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
                                  int *angles);
 static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
@@ -306,7 +294,7 @@ static bool skip_payload_extras(TSLexer *lexer, bool *line_start) {
   }
 }
 
-// Read the same body-word alphabet used by operation-boundary lookahead.
+// Read an identifier using the operation-boundary alphabet.
 static bool scan_body_word(TSLexer *lexer, char word[32]) {
   unsigned length = 0;
   bool dotted = false;
@@ -336,11 +324,10 @@ typedef enum {
   MODULE_SYMBOL_BODY,
 } ModuleSymbolResult;
 
-// No mark_end: the keyword token and brace-recovery prefix own different ends.
-// BODY means a consumed suffix/slash already rules out a module header.
-static ModuleSymbolResult scan_module_symbol_tail(TSLexer *lexer,
-                                                  bool *line_start,
-                                                  int *angles) {
+// No `mark_end`: callers own their token boundaries. `MODULE_SYMBOL_BODY`
+// means a consumed suffix or lone `/` already ruled out a module header.
+static ModuleSymbolResult
+scan_module_symbol_tail(TSLexer *lexer, bool *line_start, int *angles) {
   for (;;) {
     if (lexer->lookahead != '@')
       return MODULE_SYMBOL_INVALID;
@@ -367,15 +354,13 @@ static ModuleSymbolResult scan_module_symbol_tail(TSLexer *lexer,
       if (suffix == SUFFIX_ID_INVALID)
         return MODULE_SYMBOL_INVALID;
       if (suffix == SUFFIX_ID_HASH) {
-        // A rejected numeric suffix has consumed #. Preserve its attached
-        // envelope before the enclosing brace probe resumes.
         if (angles)
           scan_dialect_envelope_tail(lexer, angles);
         return MODULE_SYMBOL_BODY;
       }
       if (suffix == SUFFIX_ID_COLON) {
         if (lexer->lookahead != ':')
-          return MODULE_SYMBOL_BODY; // A single colon cannot continue a header.
+          return MODULE_SYMBOL_BODY; // Single `:` cannot continue a header.
         lexer->advance(lexer, false);
         if (!skip_payload_extras(lexer, line_start))
           return MODULE_SYMBOL_INVALID;
@@ -383,7 +368,7 @@ static ModuleSymbolResult scan_module_symbol_tail(TSLexer *lexer,
       }
     }
     if (!skip_payload_extras(lexer, line_start))
-      return MODULE_SYMBOL_BODY; // A single slash cannot continue a header.
+      return MODULE_SYMBOL_BODY; // Lone `/` cannot continue a header.
     if (lexer->lookahead != ':')
       break;
     lexer->advance(lexer, false);
@@ -397,9 +382,8 @@ static ModuleSymbolResult scan_module_symbol_tail(TSLexer *lexer,
   return MODULE_SYMBOL_READY;
 }
 
-// Emit only `module`, leaving its symbol and parentheses to the grammar.
-// A following region, properties opener or `attributes` keeps the ordinary
-// module-operation token. A GLR alternative failed incremental fuzzing.
+// Emit only `module`, leaving `@sym` / `(@sym)` to the grammar; reject when
+// followed by `{`, `<`, or `attributes` (real `module_operation` header).
 static bool scan_module_payload_keyword(TSLexer *lexer) {
   const char *keyword = "module";
   for (unsigned i = 0; keyword[i]; i++) {
@@ -426,8 +410,8 @@ static bool scan_module_payload_keyword(TSLexer *lexer) {
          is_identifier_char(lexer->lookahead);
 }
 
-// After `<`, distinguish the mapped-from marker from a negative literal.
-// The grammar keeps `<` and `-` separate so `-1` wins by longest match.
+// After `<`: distinguish OpenMP `<-` (returns false) from angle group /
+// negative literal.
 static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
   if (!skip_payload_extras(lexer, line_start) || lexer->lookahead != '-')
     return true;
@@ -437,8 +421,7 @@ static bool scan_angle_tail(TSLexer *lexer, bool *line_start) {
 }
 
 static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
-  // Bare assignments may enter the enum fallback after ordinary values.
-  // Probe for recovery; balanced dictionaries stay in grammar.
+  // Bare `key =` may enter enum fallback; balanced dicts still stay in grammar.
   if ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
       (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
       lexer->lookahead == '_') {
@@ -498,16 +481,15 @@ static bool is_fallback_brace_lead(TSLexer *lexer, bool *line_start) {
          lexer->lookahead == '|' || lexer->lookahead == '~';
 }
 
-// A fallback group cannot contain operations at its direct level. Check for
-// a close before a line-start operation name; nested groups, strings and
-// comments protect their contents. A true result declines the prefix token,
-// leaving every balanced-payload CST node to the grammar.
+// Verify whether a fallback brace closes before any direct line-start op/block
+// boundary (ignoring nested groups, strings, comments). Returns true to decline
+// the prefix token so balanced payloads keep full grammar CST nodes.
 static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
   int braces = 1, parens = 0, brackets = 0, angles = 0;
   bool in_string = false;
   while (lexer->lookahead != '\0') {
-    // Keep boundary-leading whitespace out of the prefix, so the ordinary
-    // result/generic-operation scanners can still observe its newline.
+    // Keep boundary-leading whitespace outside the prefix so following scanners
+    // see newlines.
     if (!line_start)
       lexer->mark_end(lexer);
     int32_t c = lexer->lookahead;
@@ -579,8 +561,8 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
         if (after_module_symbol && strcmp(word, "attributes") == 0 &&
             !is_identifier_char(lexer->lookahead))
           return false;
-        // A no-mark module-symbol probe can reach the next body word. Do not
-        // lose its original line-start status or reclassify inline words.
+        // Preserve line-start status after a module-symbol probe; don't
+        // reclassify inline words.
         if (!line_start)
           break;
         after_module_symbol = false;
@@ -599,22 +581,21 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
               break;
             if (lexer->lookahead == '{' || lexer->lookahead == '<')
               return false;
-            // Inspect a following word in this loop: attributes is a header,
-            // while dotted/listed names still provide sibling boundaries.
+            // Re-check next word: `attributes` is a header, dotted/listed names
+            // are boundaries.
             if ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
                 (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z') ||
                 lexer->lookahead == '_') {
               after_module_symbol = true;
               continue;
             }
-            // Keep a newline before a quoted/result/block boundary observable.
             keep_line_start = true;
             break;
           }
         }
         if (is_boundary_word(word, dotted)) {
-          // '=' disambiguates assignment syntax across comments/newlines.
-          // Only module, whose header cannot start with ':', excludes ':'.
+          // `=` indicates assignment rather than a new op; `module` also
+          // excludes `:`.
           bool next_line = false;
           if (!skip_payload_extras(lexer, &next_line) ||
               (lexer->lookahead != '=' &&
@@ -628,8 +609,8 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
       continue;
     }
     line_start = false;
-    // An attached dialect envelope always owns its angle opener, even when
-    // its unknown payload begins with `-` rather than a numeric literal.
+    // Attached dialect envelopes own their `<` even when payload begins with
+    // `-`.
     if (c == '#' || c == '!') {
       lexer->advance(lexer, false);
       scan_dialect_envelope_tail(lexer, &angles);
@@ -666,8 +647,9 @@ static bool scan_fallback_brace_tail(TSLexer *lexer, bool line_start) {
   return false;
 }
 
-// At `{`: probe fallback leads for boundary/EOF recovery. Balanced assignments
-// stay in grammar; only `#`, `!` and non-label `^` groups can be consumed whole.
+// At `{`: emit opaque group for balanced `#`/`!`/non-label `^` leads, or
+// unclosed prefix for malformed fallback leads; balanced payloads stay in
+// grammar.
 static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
                                     bool allow_opaque) {
   lexer->advance(lexer, false);
@@ -715,8 +697,8 @@ static bool scan_custom_brace_group(TSLexer *lexer, bool allow_unclosed,
     return scan_opaque_brace_tail(lexer, 1);
   }
 
-  // A colon immediately after the block id is the compact block-label form.
-  // Optional numeric suffixes are consumed before checking the label tail.
+  // Immediate non-numeric `:` is compact block-label syntax; consume numeric
+  // suffixes first.
   if (lexer->lookahead == ':') {
     lexer->advance(lexer, false);
     if (!is_digit(lexer->lookahead)) {
@@ -752,16 +734,14 @@ static bool skip_label_extras(TSLexer *lexer) {
   return skip_extras(lexer) == EXTRAS_READY;
 }
 
-// Payload probes resume after a failed match, so they must retain the current
-// line and delimiter position. Ordinary boundary scans rewind on failure.
+// Payload probes track line/delimiter state across failures; boundary scans
+// rewind.
 static bool skip_probe_extras(TSLexer *lexer, bool *line_start) {
   return line_start ? skip_payload_extras(lexer, line_start)
                     : skip_label_extras(lexer);
 }
 
-// Precondition: the lexer is positioned at `#` or `!`. Consume an alias
-// definition lead (`#name =` / `!name =`) without consuming the sigil past the
-// token boundary. The grammar parses the identifier and value/type normally.
+// At `#` or `!`: emit only the sigil when followed by `<alias_id> =`.
 static bool scan_alias_definition_sigil(TSLexer *lexer) {
   lexer->advance(lexer, false);
   lexer->mark_end(lexer);
@@ -793,64 +773,58 @@ at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
     int32_t depth = 1;
     lexer->advance(lexer, false);
     while (depth > 0) {
-      // A single slash is ordinary content while scanning a block argument
-      // type (for example, `!dialect.type<foo/bar>`). Unlike the token-boundary
-      // probes above and below, this delimiter scan ignores the status because
-      // skip_extras has already consumed the slash.
+      // A lone `/` inside block-arg types (e.g. `!d.t<a/b>`) is already
+      // consumed.
       (void)skip_extras(lexer);
       switch (lexer->lookahead) {
-        case '\0':
+      case '\0':
+        return BLOCK_LABEL_TAIL_NOT_FOUND;
+      case '"':
+        // Skip strings so embedded brackets or `//` do not disturb nesting.
+        lexer->advance(lexer, false);
+        while (lexer->lookahead != '"' && lexer->lookahead != '\0') {
+          if (lexer->lookahead == '\\') {
+            lexer->advance(lexer, false);
+          }
+          lexer->advance(lexer, false);
+        }
+        if (lexer->lookahead == '\0') {
           return BLOCK_LABEL_TAIL_NOT_FOUND;
-        case '"':
-          // Consume a string literal opaquely so brackets or `//` inside it
-          // are not counted as nesting delimiters or comments.
+        }
+        break;
+      case '(':
+      case '<':
+      case '[':
+        depth++;
+        break;
+      case '{':
+        (*brace_depth)++;
+        break;
+      case '}':
+        if (*brace_depth == 0) {
+          return BLOCK_LABEL_TAIL_NOT_FOUND;
+        }
+        (*brace_depth)--;
+        if (has_outer_brace && *brace_depth == 0) {
           lexer->advance(lexer, false);
-          while (lexer->lookahead != '"' && lexer->lookahead != '\0') {
-            if (lexer->lookahead == '\\') {
-              lexer->advance(lexer, false);
-            }
-            lexer->advance(lexer, false);
-          }
-          if (lexer->lookahead == '\0') {
-            return BLOCK_LABEL_TAIL_NOT_FOUND;
-          }
-          break;
-        case '(':
-        case '<':
-        case '[':
-          depth++;
-          break;
-        case '{':
-          (*brace_depth)++;
-          break;
-        case '}':
-          if (*brace_depth == 0) {
-            return BLOCK_LABEL_TAIL_NOT_FOUND;
-          }
-          (*brace_depth)--;
-          if (has_outer_brace && *brace_depth == 0) {
-            lexer->advance(lexer, false);
-            lexer->mark_end(lexer);
-            return OUTER_BRACE_CLOSED;
-          }
-          break;
-        case '-':
-          // An MLIR affine map arrow inside a block argument type (for
-          // example, `#sparse_tensor.encoding<{map = (d0) -> (d0)}>`)
-          // is not an angle-bracket terminator. Consume the arrow together so
-          // its `>` does not close the surrounding dialect or tensor body.
+          lexer->mark_end(lexer);
+          return OUTER_BRACE_CLOSED;
+        }
+        break;
+      case '-':
+        // Consume `->` as a pair so its `>` doesn't close an enclosing `<...>`.
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '>') {
           lexer->advance(lexer, false);
-          if (lexer->lookahead == '>') {
-            lexer->advance(lexer, false);
-          }
-          continue;
-        case ')':
-        case '>':
-        case ']':
-          depth--;
-          break;
-        default:
-          break;
+        }
+        continue;
+      case ')':
+      case '>':
+      case ']':
+        depth--;
+        break;
+      default:
+        break;
       }
       lexer->advance(lexer, false);
     }
@@ -866,12 +840,8 @@ at_block_label_tail(TSLexer *lexer, int *brace_depth, bool *line_start) {
                                  : BLOCK_LABEL_TAIL_NOT_FOUND;
 }
 
-// Precondition: the lexer is positioned at `%`. Consumes only the `%` as the
-// token, so the grammar parses the value id as it does any value_use. Then
-// looks ahead without consuming for the rest of an op-result-list: the value
-// id, (`,` value-id)* `=` and the start of an operation name (a bare or dotted
-// identifier, or the string of a generic operation). A custom body uses `%x =`
-// too (`scf.for %i = %lb`, `(%gx = %a)`), but with a value after the `=`.
+// At `%`: emit only `%` when lookahead matches `%id (, %id)* = <op-name-start>`
+// (distinguishes op result lists from custom-body `%i = %lb`).
 static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
                                  int *angles) {
   lexer->advance(lexer, false);
@@ -915,13 +885,8 @@ static bool scan_op_result_sigil(TSLexer *lexer, bool mark, bool *line_start,
   }
 }
 
-// Precondition: the lexer is positioned at `"`. Consumes only the opening quote
-// as the token, so the grammar parses the rest of the name as it does any
-// string_literal. Then looks ahead without consuming past the closing quote
-// for a generic operand list, `(` (value-id (`,` value-id)*)? `)`, followed by
-// what a generic operation allows next: `:`, `[`, `<{`, `(` or `{`. A custom
-// body's quoted name before `(` carries more than values, as in
-// `with "rewriter"(%x : !pdl.value)`.
+// At `"`: emit only `"` when lookahead matches `"..." (%id (, %id)*)?` followed
+// by a generic-op continuation (`:`, `[`, `<{`, `(`, or `{`).
 static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
                                   int *parens, int *angles) {
   lexer->advance(lexer, false);
@@ -937,8 +902,8 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
     case '\v':
       return false;
     case '\\':
-      // Step over the escaped character so an escaped quote does not end
-      // the name; the grammar decides whether the escape is valid.
+      // Step past escaped char so `\"` does not end the string; grammar checks
+      // validity.
       lexer->advance(lexer, false);
       if (lexer->lookahead == '\0' || lexer->lookahead == '\n' ||
           lexer->lookahead == '\r') {
@@ -1016,14 +981,12 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
     if (line_start)
       *line_start = false;
     if (!skip_probe_extras(lexer, line_start)) {
-      // A failed single-slash probe consumed the angle opener as well.
-      // Carry that nesting into the fallback scan before returning.
+      // Carry consumed `<` into fallback nesting before returning.
       if (angles)
         (*angles)++;
       return false;
     }
     bool properties = lexer->lookahead == '{';
-    // Preserve the opener consumed by a failed `<{` probe.
     if (angles && scan_angle_tail(lexer, line_start)) {
       (*angles)++;
     }
@@ -1034,10 +997,9 @@ static bool scan_generic_op_quote(TSLexer *lexer, bool mark, bool *line_start,
   }
 }
 
-// Fallback single-character punctuation inside `pretty_dialect_item_body`.
-// Skips whitespace and NUL via `advance(..., true)` so named nodes keep tight
-// ranges without spinning at EOF, and yields to grammar tokens (identifiers,
-// numbers, comments, arrows, `.`, and dialect/attribute/type leads).
+// Single-char fallback punctuation inside `pretty_dialect_item_body`. Skips
+// whitespace/NUL (`advance(..., true)`) for tight ranges; yields to grammar
+// tokens.
 static bool scan_pretty_dialect_fallback(TSLexer *lexer) {
   for (;;) {
     skip_space(lexer, true);
@@ -1122,18 +1084,13 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
   (void)payload;
 
-  // Snapshot line-start before the dimension-separator probe, which can
-  // advance past leading inline space and shift the column.
+  // Snapshot before the dimension-separator probe shifts the column.
   bool at_line_start = lexer->get_column(lexer) == 0;
   bool caret_is_adjacent = lexer->lookahead == '^';
 
-  // A dimension separator is the only external token that can begin with `x`.
-  // When one is expected, skip leading inline space and decide on `x`
-  // definitively. Committing to consume `x` means we must NOT fall through to
-  // the caret/block-label scan below: it would resume past the consumed `x`
-  // and swallow it into the emitted token (e.g. turning `16x^bb0` into a
-  // caret_id spanning `x^bb0`). If the `x` is not a separator, return false so
-  // tree-sitter resets to the original position and re-lexes `x` internally.
+  // Only `CUSTOM_BODY_DIMENSION_SEPARATOR` starts with `x`. Return immediately
+  // on a failed `x` probe so we never fall through past `x` into `^` (e.g.
+  // `16x^bb0`).
   if (valid_symbols[CUSTOM_BODY_DIMENSION_SEPARATOR]) {
     skip_inline_space(lexer, true);
     if (lexer->lookahead == 'x') {
@@ -1147,14 +1104,12 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
 
   bool skipped_newline = skip_space(lexer, true);
   at_line_start = at_line_start || skipped_newline;
-  // The sentinel is not used by any grammar production and is never emitted.
-  // Unlike combinations of context tokens, it is unambiguous even when parser
-  // states share lookaheads from top-level and region contexts.
+  // Unused sentinel token is valid exclusively during tree-sitter error
+  // recovery.
   bool recovering = valid_symbols[ERROR_SENTINEL];
 
-  // Checked before other non-recovery external tokens: when pretty-body
-  // fallback is valid, no other context external token is active in that
-  // state, and returning false resets to internal lexing.
+  // No other context external token is valid alongside
+  // `PRETTY_DIALECT_FALLBACK`.
   if (!recovering && valid_symbols[PRETTY_DIALECT_FALLBACK]) {
     return scan_pretty_dialect_fallback(lexer);
   }
@@ -1167,10 +1122,8 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
     return true;
   }
 
-  // The recovery lexer does not recognize arbitrary dotted names internally.
-  // Supply the same token in recovery so a missing payload close can be
-  // inserted before the complete sibling name, instead of deleting its
-  // characters.
+  // Supply dotted op names during recovery so a missing `}` inserts before the
+  // sibling op instead of deleting its characters.
   if (valid_symbols[RECOVERY_DOTTED_OP_NAME] &&
       valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && recovering &&
       ((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
@@ -1234,26 +1187,19 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   if ((valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP] ||
        valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX]) &&
       lexer->lookahead == '{') {
-    return scan_custom_brace_group(lexer,
-      valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && !recovering,
-      valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP]);
+    return scan_custom_brace_group(
+        lexer, valid_symbols[CUSTOM_BODY_UNCLOSED_BRACE_PREFIX] && !recovering,
+        valid_symbols[CUSTOM_BODY_OPAQUE_BRACE_GROUP]);
   }
 
-  // At a region opening such as `{^bb0: ...}`, the grammar can require a
-  // block label even though the caret is not at column zero or after a
-  // newline. Accept that compact form when no leading extra separates the
-  // caret from the previous token. Keep the line-start requirement for
-  // whitespace-separated successor/type syntax such as `^bb0 : i32`.
+  // Allow compact `{^bb0: ...}` when adjacent (no leading extra), while keeping
+  // line-start required for spaced successor syntax like `^bb0 : i32`.
   bool can_be_block_label =
       valid_symbols[BLOCK_LABEL_ID] &&
       (at_line_start || caret_is_adjacent || !valid_symbols[CARET_ID]);
 
-  // The next two tokens end a preceding custom body at the start of the next
-  // operation. Both require line start: an operation may span lines, but a new
-  // one starts its own, while mid-line the same shapes are body syntax, such as
-  // a loop bound `%i = max ...`. Error recovery must not relax that: treating
-  // mid-line payload text as an operation boundary can re-tokenize a later
-  // quote run and swallow following operations.
+  // Line-start operation boundaries (never relaxed in recovery): mid-line
+  // `%i = ...` or `"name"(...)` belong to the current custom body.
   if (lexer->lookahead == '%') {
     if (valid_symbols[OP_RESULT_SIGIL] && at_line_start &&
         scan_op_result_sigil(lexer, true, NULL, NULL)) {
@@ -1289,8 +1235,8 @@ bool tree_sitter_mlir_external_scanner_scan(void *payload, TSLexer *lexer,
   int brace_depth = 0;
   BlockLabelTailResult block_label_tail =
       at_block_label_tail(lexer, &brace_depth, NULL);
-  bool is_block_label = can_be_block_label &&
-                        block_label_tail == BLOCK_LABEL_TAIL_FOUND;
+  bool is_block_label =
+      can_be_block_label && block_label_tail == BLOCK_LABEL_TAIL_FOUND;
   if (is_block_label && valid_symbols[BLOCK_LABEL_ID]) {
     lexer->result_symbol = BLOCK_LABEL_ID;
     return true;
