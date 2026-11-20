@@ -23,6 +23,15 @@ func.func @custom_body_operators(%a: vector<4xf16>, %b: vector<8xf16>,
 //          ^ punctuation.special
 //           ^ punctuation.delimiter
 //            ^ number
+  omp.fuse(%fused) <- (%loop0, %loop1)
+//^ function.builtin
+//                 ^ operator
+//                  ^ operator
+  irdl.operands(complex: %0)
+//^ function.builtin
+//              ^ keyword
+//                     ^ punctuation.delimiter
+//                       ^ variable.special
   return
 //^ function.builtin
 }

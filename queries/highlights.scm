@@ -7,8 +7,8 @@
 ;; Ordering rule: both tree-sitter-highlight and Neovim apply last-match-wins
 ;; when multiple patterns capture the exact same node (while parent/child
 ;; captures nest, with the child winning visually). Keep specialized rules
-;; (e.g. quoted symbol refs, generic op names, dictionary keys) after the
-;; generic literal or punctuation rules they override.
+;; (e.g. quoted symbol refs, dictionary keys, custom_body_arrow) after the
+;; generic literal/punctuation rules they override.
 ;; ---------------------------------------------------------------------------
 
 (comment) @comment
@@ -71,18 +71,24 @@
 ;; no payload (unit, uninitialized, bools) remain @constant.builtin/@boolean.
 (affine_map "affine_map" @constructor.builtin)
 (affine_set "affine_set" @constructor.builtin)
-(affine_map (bare_id) @variable.parameter)
-(affine_set (bare_id) @variable.parameter)
-(affine_map ["max" "min" "symbol"] @keyword)
-(affine_set ["max" "min" "symbol"] @keyword)
-(affine_map
-  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
-  @keyword)
-(affine_set
-  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
-  @keyword)
-(affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
-(affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
+[(affine_map (bare_id) @variable.parameter)
+ (affine_map_inline (bare_id) @variable.parameter)
+ (affine_set (bare_id) @variable.parameter)]
+[(affine_map ["max" "min" "symbol"] @keyword)
+ (affine_map_inline ["max" "min" "symbol"] @keyword)
+ (affine_set ["max" "min" "symbol"] @keyword)]
+[(affine_map
+   ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+   @keyword)
+ (affine_map_inline
+   ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+   @keyword)
+ (affine_set
+   ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+   @keyword)]
+[(affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
+ (affine_map_inline ["+" "-" "*" "==" ">=" "<="] @operator)
+ (affine_set ["+" "-" "*" "==" ">=" "<="] @operator)]
 (strided_layout "strided" @constructor.builtin)
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
@@ -139,6 +145,8 @@
 ["(" ")" "{" "}" "[" "]" "<" ">"] @punctuation.bracket
 ["," ":"] @punctuation.delimiter
 ["=" "->" "::"] @operator
+;; OpenMP mapped-from arrow `<-` overrides the generic `<` bracket rule above.
+(custom_body_arrow ["<" "-"] @operator)
 
 ;; Catch-all for bare keywords in custom operation bodies (ins, outs, etc.).
 ;; Keep this scoped to direct custom_operation children so attribute keys and
@@ -150,6 +158,6 @@
 (dense_resource_literal (bare_id) @constant.builtin)
 
 ;; Dictionary attribute keys: placed after `(string_literal) @string` so quoted
-;; keys override string highlighting.
-(attribute_entry (bare_id) @attribute)
-(attribute_entry (string_literal) @attribute)
+;; keys override string highlighting while `array_attribute` elements remain
+;; uncolored by this rule.
+(attribute_entry key: _ @attribute)
