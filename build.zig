@@ -13,36 +13,37 @@ pub fn build(b: *std.Build) !void {
 
     const library_name = "tree-sitter-mlir";
 
+    var grammar = b.createModule(.{
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+        .pic = if (shared) true else null,
+    });
     const lib: *std.Build.Step.Compile = b.addLibrary(.{
         .name = library_name,
         .linkage = if (shared) .dynamic else .static,
-        .root_module = b.createModule(.{
-            .target = target,
-            .optimize = optimize,
-            .link_libc = true,
-            .pic = if (shared) true else null,
-        }),
+        .root_module = grammar,
     });
 
-    lib.root_module.addCSourceFile(.{
+    grammar.addCSourceFile(.{
         .file = b.path("src/parser.c"),
         .flags = &.{"-std=c11"},
     });
     if (fileExists(b, io, "src/scanner.c")) {
-        lib.root_module.addCSourceFile(.{
+        grammar.addCSourceFile(.{
             .file = b.path("src/scanner.c"),
             .flags = &.{"-std=c11"},
         });
     }
 
     if (reuse_alloc) {
-        lib.root_module.addCMacro("TREE_SITTER_REUSE_ALLOCATOR", "");
+        grammar.addCMacro("TREE_SITTER_REUSE_ALLOCATOR", "");
     }
-    if (optimize == .Debug) {
-        lib.root_module.addCMacro("TREE_SITTER_DEBUG", "");
+    if (optimize == .debug) {
+        grammar.addCMacro("TREE_SITTER_DEBUG", "");
     }
 
-    lib.root_module.addIncludePath(b.path("src"));
+    grammar.addIncludePath(b.path("src"));
 
     b.installArtifact(lib);
     b.installFile("src/node-types.json", "node-types.json");
@@ -85,7 +86,7 @@ pub fn build(b: *std.Build) !void {
 }
 
 inline fn fileExists(b: *std.Build, io: std.Io, filename: []const u8) bool {
-    const dir = b.build_root.handle;
+    const dir = b.root;
     dir.access(io, filename, .{}) catch return false;
     return true;
 }

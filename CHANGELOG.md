@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-20
+
+Custom-body operation and brace disambiguation, pretty-dialect body
+refinements, public AST and editor query alignment, and upstream MLIR corpus
+sync.
+
 ### Added
 - **grammar:** support `module_operation.properties` for both `<{...}>` and
   `<key = value>` custom property-dictionary spellings.
@@ -67,6 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@constructor.builtin`, remove unused `@function` from `docs/QUERIES.md`, and
   tighten and reconcile `docs/ARCHITECTURE.md` and `docs/QUERIES.md` against
   the current node set and CI gates.
+- **bindings:** refresh C/CMake/Makefile, Rust (edition 2024, `tree-sitter`
+  0.27.2), Node (Windows relative import and Bun standalone support), Python
+  (lazy resource import and sdist globs), Swift (5.6 `Context.packageDirectory`
+  and `swift-tree-sitter` 0.10), and Zig templates from `tree-sitter` 0.27.2.
 
 ### Breaking AST changes
 - `attribute_entry` now exposes `key` (`bare_id` / `string_literal`) and
@@ -325,7 +335,8 @@ Initial public release.
 - `string_literal` made structural: escape sequences are now visible
   `escape_sequence` / `invalid_escape` nodes rather than opaque token text.
 
-[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.10...v0.2.0
 [0.1.10]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/felixtensor/tree-sitter-mlir/compare/v0.1.8...v0.1.9

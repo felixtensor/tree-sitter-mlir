@@ -1,14 +1,14 @@
 [package]
 name = "tree-sitter-mlir"
 description = "MLIR grammar for tree-sitter"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Buyun Xu <xubuyun@outlook.com>"]
 license = "Apache-2.0 WITH LLVM-exception"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "mlir"]
 categories = ["parser-implementations", "parsing", "text-editors"]
 repository = "https://github.com/felixtensor/tree-sitter-mlir"
-edition = "2021"
+edition = "2024"
 autoexamples = false
 
 build = "bindings/rust/build.rs"
@@ -31,4 +31,4 @@ tree-sitter-language = "0.1"
 cc = "1.2"
 
 [dev-dependencies]
-tree-sitter = "0.27.0"
+tree-sitter = "0.27.2"
