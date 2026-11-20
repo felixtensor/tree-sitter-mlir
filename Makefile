@@ -1,6 +1,7 @@
 LANGUAGE_NAME := tree-sitter-mlir
 HOMEPAGE_URL := https://github.com/felixtensor/tree-sitter-mlir
-VERSION := 0.2.0
+VERSION := 0.2.1
+DESCRIPTION := MLIR grammar for tree-sitter
 
 # repository
 SRC_DIR := src
