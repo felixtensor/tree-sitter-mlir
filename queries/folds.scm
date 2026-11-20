@@ -1,10 +1,11 @@
 ;; ---------------------------------------------------------------------------
 ;; MLIR code folding
 ;;
-;; MLIR is bracket-structured: regions delimited by { ... } are the only
-;; construct that meaningfully benefits from folding. Attribute dictionaries
-;; ({key = value, ...}) and external resources ({-# ... #-}) are typically
-;; short enough to leave visible; folding them adds noise without value.
+;; MLIR is bracket-structured: regions delimited by { ... } and external
+;; resource blocks ({-# ... #-}, which often hold large weight payloads) are
+;; the constructs that meaningfully benefit from folding. Attribute
+;; dictionaries ({key = value, ...}) are left unfolded to avoid noise.
 ;; ---------------------------------------------------------------------------
 
 (region) @fold
+(external_resources) @fold
