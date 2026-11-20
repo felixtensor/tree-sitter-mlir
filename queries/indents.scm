@@ -1,5 +1,5 @@
 ;; ---------------------------------------------------------------------------
-;; MLIR indentation rules
+;; MLIR indentation rules (nvim-treesitter conventions)
 ;;
 ;; MLIR is bracket-structured: regions delimited by { ... } drive all
 ;; indentation. This matches VS Code's default behavior — vscode-mlir
@@ -11,8 +11,8 @@
 ;; Regions introduce a new indent level.
 (region) @indent.begin
 
-;; Region closing braces return to the parent indent level.
-(region "}" @indent.branch)
+;; Region closing braces return to the parent indent level and end the block.
+(region "}" @indent.branch @indent.end)
 
 ;; Block labels (^bb0, ^bb1) sit at the region's brace level, not
 ;; indented as body content inside it.

@@ -85,14 +85,40 @@ jobs:
           git --no-pager diff --no-ext-diff
           exit 1
 
-      # Errors-only: every shipped query must compile against the grammar.
-      # tree-sitter test exercises highlights.scm only, so this is the sole
-      # guard for locals/tags/folds/indents/injections node-name drift.
-      - name: Check queries compile against grammar
+      # Errors-only: every shipped query must compile against the grammar,
+      # tags.scm must validate under tree-sitter-tags, and highlights.scm may
+      # only use standard captures plus the documented editor extensions.
+      - name: Check queries compile and validate
         run: |
           set -euo pipefail
           example="$(find examples -name '*.mlir' -print -quit)"
           for query in queries/*.scm; do
             echo "Compiling ${query}"
             tree-sitter query "${query}" "${example}" >/dev/null
+          done
+
+          echo "Validating tags query"
+          tags_output="$(tree-sitter tags test/highlight/integration/linalg.mlir)"
+          printf '%s\n' "${tags_output}" | grep -q '@depthwise_conv_1d_nwc_wcm'
+          if printf '%s\n' "${tags_output}" | grep -q '\^bb'; then
+            echo "::error::Unexpected block label tag in tree-sitter tags output"
+            exit 1
+          fi
+
+          echo "Validating highlight capture vocabulary"
+          check_stderr="$(tree-sitter highlight --check test/highlight/integration/linalg.mlir --query-paths queries/highlights.scm 2>&1 >/dev/null)"
+          unexpected="$(printf '%s\n' "${check_stderr}" | grep -E '^\* ' | grep -Ev '^\* (variable\.special|label)$' || true)"
+          if [ -n "${unexpected}" ]; then
+            echo "::error::Unexpected non-standard highlight captures detected:"
+            printf '%s\n' "${unexpected}"
+            exit 1
+          fi
+
+          echo "Smoke-testing folds and indents query captures"
+          folds_output="$(tree-sitter query queries/folds.scm test/highlight/attributes/metadata.mlir)"
+          printf '%s\n' "${folds_output}" | grep -q 'pattern: 0'
+          printf '%s\n' "${folds_output}" | grep -q 'pattern: 1'
+          indents_output="$(tree-sitter query queries/indents.scm test/highlight/core/controlflow.mlir)"
+          for cap in indent.begin indent.branch indent.end indent.ignore; do
+            printf '%s\n' "${indents_output}" | grep -q "${cap},"
           done

@@ -8,9 +8,9 @@ Captures express a *semantic category*, never a specific theme color.
 | --- | --- | --- |
 | `queries/highlights.scm` | Syntax highlighting | Active, tested |
 | `queries/locals.scm` | Scopes / definitions / references for SSA, block labels, symbols, aliases | Active |
-| `queries/tags.scm` | Outline / code navigation (func, module, block label) | Active |
-| `queries/folds.scm` | Code folding (region `{ ... }`) | Active |
-| `queries/indents.scm` | Auto-indentation (region-based, block label alignment) | Active |
+| `queries/tags.scm` | Code navigation tags (named `func`, named `module`) | Active, validated |
+| `queries/folds.scm` | Code folding (regions `{ ... }`, external resources `{-# ... #-}`) | Active |
+| `queries/indents.scm` | Auto-indentation (`nvim-treesitter` conventions; region-based, block label alignment) | Active |
 | `queries/injections.scm` | Language injection | Empty by design |
 
 ## Capture vocabulary
@@ -23,9 +23,12 @@ Captures express a *semantic category*, never a specific theme color.
 `@constant.builtin` `@constructor.builtin` `@error`
 `@punctuation.bracket` `@punctuation.delimiter` `@punctuation.special`
 
-It also intentionally uses these non-standard style captures:
+It also intentionally uses these non-standard editor-common captures:
 
-`@variable.special` for SSA values and `@label` for block labels.
+`@variable.special` for SSA values (falls back to `@variable` in the default
+CLI theme) and `@label` for block labels (commonly used in editor ecosystems;
+note that the default `tree-sitter highlight` CLI theme defines no color or
+fallback for `@label`).
 
 ## Highlight capture policy
 
@@ -36,7 +39,7 @@ conventions. They do not mirror any specific theme or downstream package.
 | --- | --- |
 | Operation names (`func.func`, `arith.addi`, generic string ops) | `function.builtin` |
 | SSA values (`%arg0`, `%0`) | `variable.special` |
-| Symbol-body operators (`+ - * / & \| ~`) | `operator` |
+| Symbol-body operators (`+ - * / & \| ~`, OpenMP `<-`) | `operator` |
 | Block label (`caret_id`, `^bb0`) | `label` |
 
 The remaining capture choices follow common tree-sitter conventions directly.
@@ -67,7 +70,7 @@ query inert.
 ## Verifying
 
 ```sh
-# Highlight assertions (`; ^ @capture` comments under test/highlight/**)
+# Highlight assertions (`// ^ capture` comments under test/highlight/**)
 tree-sitter test
 
 # Visual check of one file
@@ -79,6 +82,9 @@ tree-sitter highlight path/to/file.mlir
 # *after* the source paths: --query-paths is variadic and would otherwise
 # swallow them.
 tree-sitter highlight --check path/to/file.mlir --query-paths queries/highlights.scm
+
+# Validate tags.scm against tree-sitter-tags capture rules
+tree-sitter tags path/to/file.mlir
 
 # Verify query captures (adjust query and file path as needed)
 tree-sitter query queries/tags.scm path/to/file.mlir
