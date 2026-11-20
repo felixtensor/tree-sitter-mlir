@@ -3,6 +3,12 @@
 ;; For Neovim (nvim-treesitter), Helix, and other tree-sitter-compatible
 ;; editors. Uses standard tree-sitter capture names where they fit, plus a
 ;; few editor-common extensions such as @variable.special and @label.
+;;
+;; Ordering rule: both tree-sitter-highlight and Neovim apply last-match-wins
+;; when multiple patterns capture the exact same node (while parent/child
+;; captures nest, with the child winning visually). Keep specialized rules
+;; (e.g. quoted symbol refs, generic op names, dictionary keys) after the
+;; generic literal or punctuation rules they override.
 ;; ---------------------------------------------------------------------------
 
 (comment) @comment
@@ -13,7 +19,7 @@
 (func_operation visibility: _ @keyword)
 (func_operation specifier: (function_specifier) @keyword)
 (func_operation "attributes" @attribute)
-;; llvm.func post-signature clause introducers, same channel as strided/distinct.
+;; llvm.func post-signature clause introducers.
 (vscale_range "vscale_range" @keyword)
 (comdat "comdat" @keyword)
 (module_operation name: _ @function.builtin)
@@ -26,7 +32,6 @@
 (custom_operation "?" @punctuation.special)
 (custom_operation "loc" @keyword)
 (custom_operation "module" @keyword)
-(custom_operation ">" @punctuation.bracket)
 
 ;; Symbols (@name)
 (symbol_ref_id) @string.special.symbol
@@ -35,8 +40,7 @@
 ;; Individual builtin type nodes — captures nested types inside dim_list
 ;; (e.g. vector inside memref<256 x 256 x vector<8 x f32>>) which are
 ;; reached through the hidden _prim_type rule, not through builtin_type.
-[(builtin_type)
- (memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
+[(memref_type) (vector_type) (tensor_type) (complex_type) (tuple_type)
  (opaque_type) (integer_type) (float_type) (index_type) (none_type)
  (token_type)] @type.builtin
 [(type_alias) (type_alias_def) (dialect_type)] @type
@@ -59,12 +63,12 @@
 [(attribute_alias) (attribute_alias_def) (dialect_attribute) (builtin_attribute) (dictionary_attribute)] @attribute
 
 ;; Specific attribute content
-(properties ["<" "{" "}" ">"] @punctuation.bracket)
-;; Builtin introducers that take a <payload> (affine_map, dense, array, ...)
-;; are @constructor.builtin: they name a builtin form that constructs a value,
-;; and the channel stays distinct from the numeric payloads and the enclosing
-;; literal's @constant.builtin. Bare literals with no payload (unit, bools)
-;; remain @constant.builtin/@boolean.
+;; Builtin introducers that take a <payload> (affine_map, affine_set,
+;; strided, distinct, dense_resource, dense, sparse, array) are
+;; @constructor.builtin: they name a builtin form that constructs a value,
+;; distinct from numeric payloads, enclosing literal/attribute channels, and
+;; clause/field keywords (offset, vscale_range, comdat). Bare literals with
+;; no payload (unit, uninitialized, bools) remain @constant.builtin/@boolean.
 (affine_map "affine_map" @constructor.builtin)
 (affine_set "affine_set" @constructor.builtin)
 (affine_map (bare_id) @variable.parameter)
@@ -79,10 +83,10 @@
   @keyword)
 (affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
 (affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
-(strided_layout "strided" @keyword)
+(strided_layout "strided" @constructor.builtin)
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
-(distinct_attribute "distinct" @keyword)
+(distinct_attribute "distinct" @constructor.builtin)
 (dense_resource_literal "dense_resource" @constructor.builtin)
 ["ceildiv" "floordiv" "mod"] @operator
 
@@ -92,17 +96,21 @@
    ["array" "dense" "memref" "opaque" "sparse" "tensor" "tuple" "vector"] @keyword)
  (dialect_dim_list
    ["array" "memref" "tuple" "vector"] @keyword)]
-(pretty_dialect_item_body (bare_id) @keyword)
-(pretty_dialect_item_body ["?" "*"] @punctuation.special)
+[(pretty_dialect_item_body (bare_id) @keyword)
+ (dialect_dim_list (bare_id) @keyword)]
+(pretty_dialect_item_body ["?" "*" "@" "#"] @punctuation.special)
+(pretty_dialect_item_body "." @punctuation.delimiter)
 
 ;; ── Literals ────────────────────────────────────────────────────────────────
 [(integer_literal) (float_literal) (complex_literal)] @number
 (bool_literal) @boolean
-[(tensor_literal) (array_literal) (unit_literal) (uninitialized_literal)] @constant.builtin
+[(unit_literal) (uninitialized_literal)] @constant.builtin
 (tensor_literal ["dense" "sparse"] @constructor.builtin)
 (array_literal "array" @constructor.builtin)
 (string_literal) @string
+;; Same-node overrides for string_literal in specialized positions.
 (generic_operation (string_literal) @function.builtin)
+(symbol_ref_id (string_literal) @string.special.symbol)
 
 ;; Escape sequences inside strings (\n, \t, \", \\, \HH) overlay on @string;
 ;; malformed escapes are flagged distinctly rather than silently colored.
@@ -111,9 +119,9 @@
 
 ;; ── SSA Variables (%name) ───────────────────────────────────────────────────
 ;; All SSA values share one channel so a func/block argument and the values
-;; derived from it read as the same colour. (value_use) already covers
-;; arguments, so no parameter-specific rule is needed.
-[(op_result) (value_use)] @variable.special
+;; derived from it read as the same colour. (value_use) already covers both
+;; arguments and op_result children.
+(value_use) @variable.special
 
 ;; ── Control Flow ────────────────────────────────────────────────────────────
 (caret_id) @label
@@ -141,7 +149,7 @@
 ;; not a direct custom_operation child, so the catch-all above never matches it.
 (dense_resource_literal (bare_id) @constant.builtin)
 
-;; Dictionary attribute keys: bare_id/string live inside attribute_entry,
-;; disjoint from the direct-child catch-all above (so order does not matter).
+;; Dictionary attribute keys: placed after `(string_literal) @string` so quoted
+;; keys override string highlighting.
 (attribute_entry (bare_id) @attribute)
 (attribute_entry (string_literal) @attribute)

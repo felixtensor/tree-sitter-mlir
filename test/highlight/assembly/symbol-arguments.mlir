@@ -23,6 +23,12 @@ test.op module (@Sub)
 //      ^ keyword
 //              ^ string.special.symbol
 
+test.op @"quoted.sym" @mod::@"nested.sym"
+//      ^ string.special.symbol
+//        ^ string.special.symbol
+//                    ^ string.special.symbol
+//                            ^ string.special.symbol
+
 test.op {%a, %b}
 //       ^ variable.special
 //           ^ variable.special

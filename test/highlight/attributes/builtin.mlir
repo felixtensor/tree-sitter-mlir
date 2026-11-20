@@ -8,10 +8,10 @@
 
 func.func @attrs(%arg0: memref<16xf32, strided<[1], offset: 0>>) {
 //                                ^ type.builtin
-//                                       ^ keyword
+//                                       ^ constructor.builtin
 //                                                    ^ keyword
   "test.op"() {tag = distinct[0]<42 : i32>} : () -> ()
 //               ^ attribute
-//                       ^ keyword
+//                       ^ constructor.builtin
 //                               ^ number
 }
