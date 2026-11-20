@@ -55,7 +55,7 @@
     "start": "tree-sitter playground",
     "compile": "tree-sitter generate",
     "fuzz": "node scripts/fuzz.mjs",
-    "update-tests": "tree-sitter test --update",
+    "update-tests": "node scripts/update-tests.mjs",
     "test": "tree-sitter test",
     "test:bindings": "node --test bindings/node/*_test.js",
     "test:examples": "tree-sitter parse --quiet --stat \"examples/**/*.mlir\"",
