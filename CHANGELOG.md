@@ -63,10 +63,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **scanner:** consume fully balanced unsafe custom-body brace groups whose
   leads cannot start a structured region or dictionary, while preserving
   following alias definitions and block-label boundaries.
+- **queries:** remove the invalid `@item` capture and dead unnamed-module rule
+  from `queries/tags.scm` so `tree-sitter tags` runs without error.
+- **queries:** add `@indent.end` to `queries/indents.scm` and fold
+  `external_resources` in `queries/folds.scm`.
 
 ### Changed
 - **CI:** install the tree-sitter CLI version `package-lock.json` resolves, so
-  Dependabot's npm updates move CI with them.
+  Dependabot's npm updates move CI with them; validate `queries/tags.scm` output
+  with `tree-sitter tags`, smoke-test `folds.scm`/`indents.scm` captures, and
+  enforce an explicit allowlist on `tree-sitter highlight --check`.
 
 ### Breaking AST changes
 - Named nodes inside `pretty_dialect_item_body` no longer include leading
