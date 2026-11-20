@@ -65,9 +65,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   following alias definitions and block-label boundaries.
 - **queries:** remove the invalid `@item` capture and dead unnamed-module rule
   from `queries/tags.scm` so `tree-sitter tags` runs without error.
-- **queries:** remove redundant highlight captures, highlight quoted symbol
-  refs (`@"quoted"`), `dialect_dim_list` bare identifiers, and standalone
-  `.`/`@`/`#` tokens inside pretty dialect bodies, add `@indent.end` to
+- **queries/grammar:** prevent `attribute_entry` array elements (e.g.
+  `ops{["affine.for"]}`) from being highlighted as `@attribute`, and highlight
+  inline affine maps (`affine_map_inline`), quoted symbol refs (`@"quoted"`),
+  IRDL `complex:` operand labels, OpenMP `<-` arrows (`custom_body_arrow`),
+  `dialect_dim_list` bare identifiers, and standalone `.`/`@`/`#` tokens inside
+  pretty dialect bodies.
+- **queries:** remove redundant highlight captures, add `@indent.end` to
   `queries/indents.scm`, and fold `external_resources` in `queries/folds.scm`.
 
 ### Changed
@@ -80,6 +84,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `dense_resource`, `dense`, `sparse`, and `array`.
 
 ### Breaking AST changes
+- `attribute_entry` now exposes `key` (`bare_id` / `string_literal`) and
+  optional `value` (`attribute_value`) fields, and bracketed attribute arrays
+  now emit named `array_attribute` nodes (preserving nested array structure).
+- Inline prefixless affine maps (e.g. `(d0, d1) -> (d0 + d1)`) now emit named
+  `affine_map_inline` nodes, and OpenMP `<-` arrows emit named
+  `custom_body_arrow` nodes (keeping separate `<` and `-` tokens).
+- `irdl.operands(complex: %0)` now parses `complex` and `:` as ordinary
+  `bare_id` and `:` tokens instead of a hidden `_complex_label_start` token.
 - Named nodes inside `pretty_dialect_item_body` no longer include leading
   whitespace in their byte ranges or text, and standalone `.` runs (such as
   `...` in `!llvm.func<void (...)>`) emit anonymous `.` tokens instead of

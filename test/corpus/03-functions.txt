@@ -521,7 +521,7 @@ module @bar attributes {test.b} {}
         arguments: (func_arg_list)
         attributes: (dictionary_attribute
           (attribute_entry
-            (bare_id)))
+            key: (bare_id)))
         body: (region))))
   (operation
     rhs: (custom_operation
@@ -537,7 +537,7 @@ module @bar attributes {test.b} {}
                 (integer_type)))))
         attributes: (dictionary_attribute
           (attribute_entry
-            (bare_id)))
+            key: (bare_id)))
         body: (region))))
   (operation
     rhs: (custom_operation
@@ -546,7 +546,7 @@ module @bar attributes {test.b} {}
         attributes: (attribute
           (dictionary_attribute
             (attribute_entry
-              (bare_id))))
+              key: (bare_id))))
         body: (region)))))
 
 ================================================================================
@@ -572,7 +572,7 @@ module @m attributes {c} {}
 0:26 - 0:29           attributes: dictionary_attribute
 0:26 - 0:27             "{"
 0:27 - 0:28             attribute_entry
-0:27 - 0:28               bare_id `a`
+0:27 - 0:28               key: bare_id `a`
 0:28 - 0:29             "}"
 0:30 - 0:32           body: region
 0:30 - 0:31             "{"
@@ -590,7 +590,7 @@ module @m attributes {c} {}
 1:26 - 1:29           attributes: dictionary_attribute
 1:26 - 1:27             "{"
 1:27 - 1:28             attribute_entry
-1:27 - 1:28               bare_id `b`
+1:27 - 1:28               key: bare_id `b`
 1:28 - 1:29             "}"
 1:30 - 1:32           body: region
 1:30 - 1:31             "{"
@@ -606,7 +606,7 @@ module @m attributes {c} {}
 2:21 - 2:24             dictionary_attribute
 2:21 - 2:22               "{"
 2:22 - 2:23               attribute_entry
-2:22 - 2:23                 bare_id `c`
+2:22 - 2:23                 key: bare_id `c`
 2:23 - 2:24               "}"
 2:25 - 2:27           body: region
 2:25 - 2:26             "{"

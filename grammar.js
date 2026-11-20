@@ -707,7 +707,14 @@ export default grammar({
         "}",
       ),
     _custom_body_dotted_key_entry: ($) =>
-      prec(1, seq(alias($._dotted_op_name, $.bare_id), "=", $.attribute_value)),
+      prec(
+        1,
+        seq(
+          field("key", alias($._dotted_op_name, $.bare_id)),
+          "=",
+          field("value", $.attribute_value),
+        ),
+      ),
     // A unit-key argument attribute immediately after a type inside `(...)`,
     // e.g. `transform.named_sequence @s(%arg0: !transform.any_op
     // {transform.readonly})`. In this position a name-only brace is an
@@ -737,12 +744,18 @@ export default grammar({
     _custom_body_unit_key_entry: ($) =>
       choice(
         seq(
-          alias($._dotted_op_name, $.bare_id),
-          optional(seq("=", $.attribute_value)),
+          field("key", alias($._dotted_op_name, $.bare_id)),
+          optional(seq("=", field("value", $.attribute_value))),
         ),
-        seq($.bare_id, optional(seq("=", $.attribute_value))),
-        seq($.string_literal, optional(seq("=", $.attribute_value))),
-        $._attribute_array,
+        seq(
+          field("key", $.bare_id),
+          optional(seq("=", field("value", $.attribute_value))),
+        ),
+        seq(
+          field("key", $.string_literal),
+          optional(seq("=", field("value", $.attribute_value))),
+        ),
+        $.array_attribute,
       ),
 
     _custom_body_brace_payload: ($) =>
@@ -839,8 +852,7 @@ export default grammar({
 
     _custom_body_dialect_marker: ($) =>
       choice(
-        $._custom_body_arrow, // <- (OpenMP loop transform mapped-from marker)
-        $._custom_body_complex_label, // complex: %value (IRDL operand label)
+        $.custom_body_arrow, // <- (OpenMP loop transform mapped-from marker)
         $._custom_body_module_symbol_arg, // module @sym / module(@sym)
         $._custom_body_sparse_operand, // sparse(%idx : type)
       ),
@@ -949,8 +961,6 @@ export default grammar({
     _custom_body_tuple: ($) => seq("(", $._value_use_list, ")"),
     _custom_body_location_attr_dict: ($) =>
       seq($.trailing_location, $.dictionary_attribute),
-    _custom_body_complex_label: ($) =>
-      prec(1, seq($._complex_label_start, $.value_use)),
     _custom_body_ssa_dict: ($) =>
       seq(
         "{",
@@ -1026,7 +1036,7 @@ export default grammar({
     // mis-lex negative payloads like `#smt.bv<-1>` as `<-` `1`. Keeping the
     // tokens separate leaves the lexer unchanged; GLR distinguishes the arrow
     // from `_custom_body_angle_group` (which requires a closing '>').
-    _custom_body_arrow: ($) => prec(1, seq("<", "-")),
+    custom_body_arrow: ($) => prec(1, seq("<", "-")),
     // Only nested groups accept `trailing_location` as a body element.
     // At the top level it is omitted on purpose so the operation rule
     // captures a trailing `loc(...)` as the operation's location instead of
@@ -1410,15 +1420,15 @@ export default grammar({
     attribute_entry: ($) =>
       choice(
         seq(
-          choice($.bare_id, $.string_literal),
-          optional(seq("=", $.attribute_value)),
+          field("key", choice($.bare_id, $.string_literal)),
+          optional(seq("=", field("value", $.attribute_value))),
         ),
         // Array-valued entry (e.g. {["op.name"]} in transform dialect)
-        $._attribute_array,
+        $.array_attribute,
       ),
     attribute_value: ($) =>
-      choice($._attribute_array, $._attribute_value_nobracket),
-    _attribute_array: ($) =>
+      choice($.array_attribute, $._attribute_value_nobracket),
+    array_attribute: ($) =>
       seq(
         "[",
         optional($._attribute_array_element),
@@ -1426,7 +1436,7 @@ export default grammar({
         "]",
       ),
     _attribute_array_element: ($) =>
-      choice($._attribute_array, $._attribute_value_nobracket),
+      choice($.array_attribute, $._attribute_value_nobracket),
     _attribute_value_nobracket: ($) =>
       choice(
         $.attribute_alias,
@@ -1436,7 +1446,7 @@ export default grammar({
         $._literal_and_type,
         $.type,
         $.function_type,
-        $._affine_map_like,
+        $.affine_map_inline,
         $.symbol_ref_id,
         $.trailing_location,
         seq(
@@ -1526,7 +1536,7 @@ export default grammar({
         $._multi_dim_affine_expr_parens,
         ">",
       ),
-    _affine_map_like: ($) =>
+    affine_map_inline: ($) =>
       seq(
         $._multi_dim_affine_expr_parens,
         optional($._multi_dim_affine_expr_sq),
@@ -1647,7 +1657,6 @@ export default grammar({
     comment: ($) => token(seq("//", /.*/)),
     _dense_keyword: ($) => token(prec(1, "dense")),
     _sparse_keyword: ($) => token(prec(1, "sparse")),
-    _complex_label_start: ($) => token(prec(2, /complex:/)),
     _complex_type_start: ($) => token(prec(1, /complex</)),
   },
 });

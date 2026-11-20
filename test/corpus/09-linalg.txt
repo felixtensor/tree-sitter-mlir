@@ -292,22 +292,24 @@ func.func @gather_like(
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)))
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)
-                            (bare_id)))))
+                        (array_attribute
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id))))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)
-                        (string_literal)))))
+                        (array_attribute
+                          (string_literal)
+                          (string_literal))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -660,14 +662,16 @@ func.func @index_in_generic(%out: tensor<4xindex>) -> tensor<4xindex> {
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)))))
+                        (array_attribute
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id))))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)))))
+                        (array_attribute
+                          (string_literal))))))
                 (bare_id)
                 (value_use)
                 (type

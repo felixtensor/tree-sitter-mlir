@@ -7,21 +7,58 @@ const TREE_SITTER =
 const CORPUS_DIR = "test/corpus";
 
 function splitTests(text) {
-  return text.split(/(?=^={8,}\r?\n)/m);
+  const lines = text.match(/[^\n]*\n|[^\n]+/g) ?? [];
+  const chunks = [];
+  let current = [];
+  let inHeader = false;
+  let headerDelim = "";
+
+  for (const line of lines) {
+    const trimmed = line.replace(/\r?\n$/, "");
+    if (!inHeader && /^={8,}$/.test(trimmed)) {
+      if (current.length > 0) {
+        chunks.push(current.join(""));
+        current = [];
+      }
+      inHeader = true;
+      headerDelim = trimmed;
+      current.push(line);
+    } else if (inHeader && trimmed === headerDelim) {
+      inHeader = false;
+      headerDelim = "";
+      current.push(line);
+    } else {
+      current.push(line);
+    }
+  }
+  if (current.length > 0) {
+    chunks.push(current.join(""));
+  }
+  return chunks;
 }
 
 function getTestMeta(chunk) {
   const lines = chunk.split(/\r?\n/);
+  const delim = lines[0] ?? "";
+  if (!/^={8,}$/.test(delim)) {
+    return { name: "", isCst: false, expected: "" };
+  }
   const name = lines[1]?.trim() ?? "";
   let isCst = false;
+  let headerEnd = -1;
   for (let i = 2; i < lines.length; i++) {
-    if (/^={8,}$/.test(lines[i])) break;
-    if (lines[i].trim() === ":cst") {
-      isCst = true;
+    if (lines[i] === delim) {
+      headerEnd = i;
       break;
     }
+    if (lines[i].trim() === ":cst") {
+      isCst = true;
+    }
   }
-  const sepIndex = lines.findIndex((line) => /^-{8,}$/.test(line));
+  const sepIndex =
+    headerEnd >= 0
+      ? lines.findIndex((line, idx) => idx > headerEnd && /^-{8,}$/.test(line))
+      : -1;
   const expected =
     sepIndex >= 0 ? lines.slice(sepIndex + 1).join("\n").trim() : "";
   return { name, isCst, expected };
@@ -34,15 +71,22 @@ function listCorpusFiles() {
     .map((f) => join(CORPUS_DIR, f));
 }
 
+function stripAnsi(text) {
+  return text.replace(/\x1b\[[0-9;]*m/g, "");
+}
+
 function parseUpdatedNames(output) {
   const updated = new Set();
-  const match = output.match(
-    /^\d+ updates?:\s*\r?\n([\s\S]*?)(?:\r?\nsyntax highlighting:|\r?\nTotal parses:|$)/m,
-  );
-  if (!match) return updated;
-  for (const line of match[1].split(/\r?\n/)) {
+  const lines = stripAnsi(output).split(/\r?\n/);
+  const start = lines.findIndex((line) => /^\d+ updates?:\s*$/.test(line));
+  if (start < 0) return updated;
+
+  for (let i = start + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.trim() === "") continue;
     const item = line.match(/^\s+\d+\.\s+(.+?)\s*$/);
-    if (item) updated.add(item[1]);
+    if (!item) break;
+    updated.add(item[1]);
   }
   return updated;
 }
@@ -94,10 +138,9 @@ for (const file of listCorpusFiles()) {
   const current = readFileSync(file, "utf8");
   const original = savedFiles.get(file);
   const chunks = splitTests(current);
-  const hasAnyUpdatedTest = chunks.some(({ length }, idx) => {
-    void length;
-    const { name } = getTestMeta(chunks[idx]);
-    return name && updatedNames.has(name);
+  const hasAnyUpdatedTest = chunks.some((chunk) => {
+    const { name } = getTestMeta(chunk);
+    return Boolean(name && updatedNames.has(name));
   });
 
   if (!hasAnyUpdatedTest) {

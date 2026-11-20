@@ -395,10 +395,11 @@ Generic function bracketed attributes
           (attribute_entry
             (bare_id)
             (attribute_value
-              (dictionary_attribute
-                (attribute_entry
-                  (bare_id)))
-              (dictionary_attribute)))
+              (array_attribute
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)))
+                (dictionary_attribute))))
           (attribute_entry
             (bare_id)
             (attribute_value
@@ -424,23 +425,28 @@ Nested array attribute values
           (attribute_entry
             (bare_id)
             (attribute_value
-              (integer_literal)
-              (type
-                (builtin_type
-                  (integer_type)))
-              (integer_literal)
-              (type
-                (builtin_type
-                  (integer_type)))
-              (integer_literal)
-              (type
-                (builtin_type
-                  (integer_type)))))
+              (array_attribute
+                (array_attribute
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (array_attribute
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
           (attribute_entry
             (bare_id)
             (attribute_value
-              (string_literal)
-              (string_literal)))))
+              (array_attribute
+                (array_attribute
+                  (string_literal)
+                  (string_literal)))))))
       (function_type))))
 
 ================================================================================
@@ -526,8 +532,8 @@ func.func @pretty_dialect_attribute_body_tokens() {
                 (attribute
                   (dictionary_attribute
                     (attribute_entry
-                      (bare_id)
-                      (attribute_value
+                      key: (bare_id)
+                      value: (attribute_value
                         (dialect_attribute
                           (pretty_dialect_item
                             (dialect_namespace)
@@ -544,8 +550,8 @@ func.func @pretty_dialect_attribute_body_tokens() {
                 (attribute
                   (dictionary_attribute
                     (attribute_entry
-                      (bare_id)
-                      (attribute_value
+                      key: (bare_id)
+                      value: (attribute_value
                         (dialect_attribute
                           (pretty_dialect_item
                             (dialect_namespace)
@@ -560,8 +566,8 @@ func.func @pretty_dialect_attribute_body_tokens() {
                 (attribute
                   (dictionary_attribute
                     (attribute_entry
-                      (bare_id)
-                      (attribute_value
+                      key: (bare_id)
+                      value: (attribute_value
                         (dialect_attribute
                           (pretty_dialect_item
                             (dialect_namespace)
@@ -576,8 +582,8 @@ func.func @pretty_dialect_attribute_body_tokens() {
                 (attribute
                   (dictionary_attribute
                     (attribute_entry
-                      (bare_id)
-                      (attribute_value
+                      key: (bare_id)
+                      value: (attribute_value
                         (dialect_attribute
                           (pretty_dialect_item
                             (dialect_namespace)
@@ -742,13 +748,15 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (attribute_alias)
-                        (attribute_alias)
-                        (attribute_alias)))
+                        (array_attribute
+                          (attribute_alias)
+                          (attribute_alias)
+                          (attribute_alias))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)))))
+                        (array_attribute
+                          (string_literal))))))
                 (bare_id)
                 (value_use)
                 (value_use)
@@ -854,14 +862,16 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (attribute_alias)
-                        (attribute_alias)
-                        (attribute_alias)))
+                        (array_attribute
+                          (attribute_alias)
+                          (attribute_alias)
+                          (attribute_alias))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)
-                        (string_literal)))))
+                        (array_attribute
+                          (string_literal)
+                          (string_literal))))))
                 (bare_id)
                 (value_use)
                 (value_use)
@@ -997,12 +1007,14 @@ func.func @main() -> (tensor<i32>) attributes {} {
         (attribute_entry
           (bare_id)
           (attribute_value
-            (attribute_alias)
-            (attribute_alias)
-            (attribute_alias)))
+            (array_attribute
+              (attribute_alias)
+              (attribute_alias)
+              (attribute_alias))))
         (attribute_entry
           (bare_id)
-          (attribute_value)))))
+          (attribute_value
+            (array_attribute))))))
   (operation
     (custom_operation
       (func_operation
@@ -1408,18 +1420,20 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (string_literal)))
+                        (array_attribute
+                          (string_literal))))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)))
-                        (builtin_attribute
-                          (affine_map
-                            (bare_id)
-                            (bare_id)))))))
+                        (array_attribute
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id))))))))
                 (bare_id)
                 (value_use)
                 (type
@@ -1636,8 +1650,8 @@ Function types as attribute values keep their function_type node
     (attribute_value
       (dictionary_attribute
         (attribute_entry
-          (bare_id)
-          (attribute_value
+          key: (bare_id)
+          value: (attribute_value
             (function_type))))))
   (operation
     rhs: (generic_operation
@@ -1650,12 +1664,12 @@ Function types as attribute values keep their function_type node
       (attribute
         (dictionary_attribute
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (function_type)))
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (function_type
                 (type
                   (builtin_type
@@ -1664,8 +1678,8 @@ Function types as attribute values keep their function_type node
                   (builtin_type
                     (integer_type))))))
           (attribute_entry
-            (bare_id)
-            (attribute_value
+            key: (bare_id)
+            value: (attribute_value
               (function_type
                 (function_type)
                 (function_type))))))
@@ -1675,8 +1689,8 @@ Function types as attribute values keep their function_type node
       (string_literal)
       (properties
         (attribute_entry
-          (bare_id)
-          (attribute_value
+          key: (bare_id)
+          value: (attribute_value
             (function_type))))
       (function_type)))
   (attribute_alias_def
@@ -1695,7 +1709,7 @@ Function types as attribute values keep their function_type node
 Known limit: permissive sparse-like dictionary map control
 ================================================================================
 // Permissive control: legal MLIR uses `#sparse_tensor.encoding<{...}>`,
-// while standalone dictionary values keep `_affine_map_like` so `() -> ()`
+// while standalone dictionary values keep `affine_map_inline` so `() -> ()`
 // precedence does not absorb non-empty custom maps.
 #sparse = {map = (d0) -> (d0 : compressed)}
 #sparse_legal = #sparse_tensor.encoding<{ map = (d0) -> (d0 : compressed) }>
@@ -1711,8 +1725,9 @@ Known limit: permissive sparse-like dictionary map control
         (attribute_entry
           (bare_id)
           (attribute_value
-            (bare_id)
-            (bare_id))))))
+            (affine_map_inline
+              (bare_id)
+              (bare_id)))))))
   (attribute_alias_def
     (attribute_value
       (dialect_attribute
@@ -1724,3 +1739,184 @@ Known limit: permissive sparse-like dictionary map control
             (bare_id)
             (bare_id)
             (bare_id)))))))
+
+================================================================================
+Attribute entry key/value fields distinguish array_attribute and affine_map_inline
+:cst
+================================================================================
+#m = (d0, d1) -> (d0 + d1)
+"test.op"() {"quoted" = ["val"], unit_key} : () -> ()
+%m = transform.structured.match ops{["affine.for"]} in %0 : (!transform.any_op) -> !transform.any_op
+--------------------------------------------------------------------------------
+
+0:0   - 2:100   toplevel
+0:0   - 0:26      attribute_alias_def
+0:0   - 0:1         "#"
+0:3   - 0:4         "="
+0:5   - 0:26        attribute_value
+0:5   - 0:26          affine_map_inline
+0:5   - 0:6             "("
+0:6   - 0:8             bare_id `d0`
+0:8   - 0:9             ","
+0:10  - 0:12            bare_id `d1`
+0:12  - 0:13            ")"
+0:14  - 0:16            "->"
+0:17  - 0:18            "("
+0:18  - 0:20            bare_id `d0`
+0:21  - 0:22            "+"
+0:23  - 0:25            bare_id `d1`
+0:25  - 0:26            ")"
+1:0   - 1:53      operation
+1:0   - 1:53        rhs: generic_operation
+1:0   - 1:9           string_literal
+1:0   - 1:1             "\""
+1:8   - 1:9             "\""
+1:9   - 1:10          "("
+1:10  - 1:11          ")"
+1:12  - 1:42          attribute
+1:12  - 1:42            dictionary_attribute
+1:12  - 1:13              "{"
+1:13  - 1:31              attribute_entry
+1:13  - 1:21                key: string_literal
+1:13  - 1:14                  "\""
+1:20  - 1:21                  "\""
+1:22  - 1:23                "="
+1:24  - 1:31                value: attribute_value
+1:24  - 1:31                  array_attribute
+1:24  - 1:25                    "["
+1:25  - 1:30                    string_literal
+1:25  - 1:26                      "\""
+1:29  - 1:30                      "\""
+1:30  - 1:31                    "]"
+1:31  - 1:32              ","
+1:33  - 1:41              attribute_entry
+1:33  - 1:41                key: bare_id `unit_key`
+1:41  - 1:42              "}"
+1:43  - 1:44          ":"
+1:45  - 1:53          function_type
+1:45  - 1:46            "("
+1:46  - 1:47            ")"
+1:48  - 1:50            "->"
+1:51  - 1:52            "("
+1:52  - 1:53            ")"
+2:0   - 2:100     operation
+2:0   - 2:2         lhs: op_result
+2:0   - 2:2           value_use
+2:0   - 2:1             "%"
+2:3   - 2:4         "="
+2:5   - 2:100       rhs: custom_operation
+2:5   - 2:31          name: custom_op_name `transform.structured.match`
+2:32  - 2:35          bare_id `ops`
+2:35  - 2:51          attribute
+2:35  - 2:51            dictionary_attribute
+2:35  - 2:36              "{"
+2:36  - 2:50              attribute_entry
+2:36  - 2:50                array_attribute
+2:36  - 2:37                  "["
+2:37  - 2:49                  string_literal
+2:37  - 2:38                    "\""
+2:48  - 2:49                    "\""
+2:49  - 2:50                  "]"
+2:50  - 2:51              "}"
+2:52  - 2:54          bare_id `in`
+2:55  - 2:57          value_use
+2:55  - 2:56            "%"
+2:58  - 2:59          ":"
+2:60  - 2:61          "("
+2:61  - 2:78          type
+2:61  - 2:78            dialect_type
+2:61  - 2:62              "!"
+2:62  - 2:78              pretty_dialect_item
+2:62  - 2:71                dialect_namespace `transform`
+2:71  - 2:72                "."
+2:72  - 2:78                dialect_ident `any_op`
+2:78  - 2:79          ")"
+2:80  - 2:82          "->"
+2:83  - 2:100         type
+2:83  - 2:100           dialect_type
+2:83  - 2:84              "!"
+2:84  - 2:100             pretty_dialect_item
+2:84  - 2:93                dialect_namespace `transform`
+2:93  - 2:94                "."
+2:94  - 2:100               dialect_ident `any_op`
+
+================================================================================
+Complex label vs complex type and custom_body_arrow vs negative dialect payload
+:cst
+================================================================================
+irdl.operands(complex: %0)
+%c = test.op : complex<f32>
+omp.fuse(%f) <- (%l0, %l1)
+%b = smt.constant #smt.bv<-1> : !smt.bv<4>
+--------------------------------------------------------------------------------
+
+0:0  - 3:42   toplevel
+0:0  - 0:26     operation
+0:0  - 0:26       rhs: custom_operation
+0:0  - 0:13         name: custom_op_name `irdl.operands`
+0:13 - 0:14         "("
+0:14 - 0:21         bare_id `complex`
+0:21 - 0:22         ":"
+0:23 - 0:25         value_use
+0:23 - 0:24           "%"
+0:25 - 0:26         ")"
+1:0  - 1:27     operation
+1:0  - 1:2        lhs: op_result
+1:0  - 1:2          value_use
+1:0  - 1:1            "%"
+1:3  - 1:4        "="
+1:5  - 1:27       rhs: custom_operation
+1:5  - 1:12         name: custom_op_name `test.op`
+1:13 - 1:14         ":"
+1:15 - 1:27         type
+1:15 - 1:27           builtin_type
+1:15 - 1:27             complex_type
+1:23 - 1:26               float_type `f32`
+1:26 - 1:27               ">"
+2:0  - 2:26     operation
+2:0  - 2:26       rhs: custom_operation
+2:0  - 2:8          name: custom_op_name `omp.fuse`
+2:8  - 2:9          "("
+2:9  - 2:11         value_use
+2:9  - 2:10           "%"
+2:11 - 2:12         ")"
+2:13 - 2:15         custom_body_arrow
+2:13 - 2:14           "<"
+2:14 - 2:15           "-"
+2:16 - 2:17         "("
+2:17 - 2:20         value_use
+2:17 - 2:18           "%"
+2:20 - 2:21         ","
+2:22 - 2:25         value_use
+2:22 - 2:23           "%"
+2:25 - 2:26         ")"
+3:0  - 3:42     operation
+3:0  - 3:2        lhs: op_result
+3:0  - 3:2          value_use
+3:0  - 3:1            "%"
+3:3  - 3:4        "="
+3:5  - 3:42       rhs: custom_operation
+3:5  - 3:17         name: custom_op_name `smt.constant`
+3:18 - 3:29         attribute
+3:18 - 3:29           dialect_attribute
+3:18 - 3:19             "#"
+3:19 - 3:29             pretty_dialect_item
+3:19 - 3:22               dialect_namespace `smt`
+3:22 - 3:23               "."
+3:23 - 3:25               dialect_ident `bv`
+3:25 - 3:29               pretty_dialect_item_body
+3:25 - 3:26                 "<"
+3:26 - 3:28                 integer_literal `-1`
+3:28 - 3:29                 ">"
+3:30 - 3:31         ":"
+3:32 - 3:42         type
+3:32 - 3:42           dialect_type
+3:32 - 3:33             "!"
+3:33 - 3:42             pretty_dialect_item
+3:33 - 3:36               dialect_namespace `smt`
+3:36 - 3:37               "."
+3:37 - 3:39               dialect_ident `bv`
+3:39 - 3:42               pretty_dialect_item_body
+3:39 - 3:40                 "<"
+3:40 - 3:41                 integer_literal `4`
+3:41 - 3:42                 ">"
