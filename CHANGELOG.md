@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **grammar:** split bare-enum custom-body braces into a separate hidden
+  `_custom_body_enum_brace_group` rule and narrow its GLR conflicts so
+  downstream bracket-pair queries such as `("(" @open ")" @close)` compile
+  without stalling in `ts_query__analyze_patterns` (no AST changes).
+
 ## [0.2.1] - 2026-11-20
 
 Custom-body operation and brace disambiguation, pretty-dialect body

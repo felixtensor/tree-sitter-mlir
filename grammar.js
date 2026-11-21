@@ -79,8 +79,8 @@ export default grammar({
 
     // ── Custom-body fallback (9) ────────────────────────────────────────────
     [$.custom_op_name, $.attribute_entry], // bare id: next op vs attr key
-    [$.custom_op_name, $._custom_body_brace_group, $.attribute_entry], // bare key before `=`
-    [$._custom_body_brace_group, $.attribute_entry], // attr prefix before bare enum
+    [$.custom_op_name, $._custom_body_enum_brace_group, $.attribute_entry], // bare key before `=`
+    [$._custom_body_enum_brace_group, $.attribute_entry], // attr prefix before bare enum
     [$.array_literal, $._custom_body_array_keyword], // `array` introducer vs keyword
     [$._custom_body_tensor_keyword, $.tensor_type], // `tensor` introducer vs keyword
     [$._generic_custom_operation_with_location_attr_dict, $.custom_op_name], // dotted op `loc(...) {dict}`
@@ -376,6 +376,7 @@ export default grammar({
       $.region,
       $._custom_body_brace_payload,
       $._custom_body_brace_group,
+      $._custom_body_enum_brace_group,
     ),
 
     // `{a.b = ...}`: dotted key lexes as `_dotted_op_name`, which only `region`
@@ -419,13 +420,13 @@ export default grammar({
     _custom_body_brace_group: $ => seq('{', choice(
       seq($._custom_body_brace_start, repeat($._nested_custom_body_element)),
       commaSep1($.value_use),
-      // Require a bare_id enum value so ordinary dictionaries keep their nodes.
-      seq(
-        repeat(seq($.bare_id, '=', $.attribute_value, ',')),
-        $.bare_id, '=', $.bare_id,
-        repeat($._nested_custom_body_element),
-      ),
     ), '}'),
+    // Requires a bare_id enum value so dicts keep their nodes. Keep separate
+    // (and not inlined) so its conflicts stay decoupled from paren payloads.
+    _custom_body_enum_brace_group: $ => seq(
+      '{', repeat(seq($.bare_id, '=', $.attribute_value, ',')),
+      $.bare_id, '=', $.bare_id, repeat($._nested_custom_body_element), '}',
+    ),
     // Inside `<...>`, a bare key not followed by `=`/`,` is also a non-dict group (e.g. `struct<{a: i32}>`).
     _custom_body_angle_brace_group: $ => seq('{', choice(
       seq($._custom_body_angle_brace_start, repeat($._custom_body_angle_element)),

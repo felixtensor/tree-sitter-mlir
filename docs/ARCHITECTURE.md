@@ -173,8 +173,9 @@ In custom bodies, a `{...}` is resolved in order:
 3. **Flat custom-body brace groups (hidden, no `region` node):**
    - Non-region/non-dict leads (e.g. `{"a": %x}`, `{@a -> @b}`), comma-separated
      value lists (`{%a, %b}` vs region `{%a, %b = op}`), and bare-enum
-     assignments (`{src_etype=f16, dst_etype=f8}`, keeping `attribute_value`
-     nodes before the first bare enum).
+     assignments (`{src_etype=f16, dst_etype=f8}` via
+     `_custom_body_enum_brace_group`, keeping `attribute_value` nodes before
+     the first bare enum).
    - Balanced groups starting with `#`, `!`, or non-label `^` are consumed
      opaquely by `_custom_body_opaque_brace_group`.
    - Anywhere inside `<...>` (even nested in `(...)`/`[...]`/`{...}`), `{...}`
@@ -227,8 +228,8 @@ attach via `token.immediate("<")`, so whitespace/comments leave a following
 | Core (2) | `_value_use_list × _value_use_and_type` | Value in parens: list element vs `value : type` |
 | | `_type_list_no_parens × _type_or_func_type` | Function results: type list vs single type/function-type |
 | Custom body (9) | `custom_op_name × attribute_entry` | Bare id: next op name vs attribute key |
-| | `custom_op_name × _custom_body_brace_group × attribute_entry` | Bare key before `=`: op, dict, or enum payload |
-| | `_custom_body_brace_group × attribute_entry` | Ordinary attr prefix before a later bare enum |
+| | `custom_op_name × _custom_body_enum_brace_group × attribute_entry` | Bare key before `=`: op, dict, or enum payload |
+| | `_custom_body_enum_brace_group × attribute_entry` | Ordinary attr prefix before a later bare enum |
 | | `array_literal × _custom_body_array_keyword` | `array` as literal introducer vs body keyword |
 | | `_custom_body_tensor_keyword × tensor_type` | `tensor` as type introducer vs body keyword |
 | | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | Dotted op followed by `loc(...) {dict}` |
@@ -242,6 +243,16 @@ Dynamic precedences: `-1` on `_generic_custom_operation` keeps dicts/enum
 payloads ahead of phantom region ops; `-1` on nested `pretty_dialect_item_body`
 prefers structured builtin types over balanced fallback bodies without
 discarding unknown payloads.
+
+Query-analysis invariant: `_custom_body_enum_brace_group` must remain a
+separate hidden rule—do not merge it back into `_custom_body_brace_group` or
+add it to `inline`. Naive inlining fails `tree-sitter generate` with an
+unresolved conflict; the silent regression is merging the branch back and
+declaring these conflicts on the paren-bearing `_custom_body_brace_group`,
+which binds both into the same `custom_operation` analysis subgraph and
+triggers combinatorial blowup in `ts_query__analyze_patterns` for downstream
+sibling bracket queries (e.g. `("(" @open ")" @close)`) while existing corpus
+tests still pass.
 
 ### External Scanner
 
