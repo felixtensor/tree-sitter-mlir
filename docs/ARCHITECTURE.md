@@ -227,8 +227,8 @@ attach via `token.immediate("<")`, so whitespace/comments leave a following
 | Core (2) | `_value_use_list × _value_use_and_type` | Value in parens: list element vs `value : type` |
 | | `_type_list_no_parens × _type_or_func_type` | Function results: type list vs single type/function-type |
 | Custom body (9) | `custom_op_name × attribute_entry` | Bare id: next op name vs attribute key |
-| | `custom_op_name × _custom_body_brace_group × attribute_entry` | Bare key before `=`: op, dict, or enum payload |
-| | `_custom_body_brace_group × attribute_entry` | Ordinary attr prefix before a later bare enum |
+| | `custom_op_name × _custom_body_enum_brace_group × attribute_entry` | Bare key before `=`: op, dict, or enum payload |
+| | `_custom_body_enum_brace_group × attribute_entry` | Ordinary attr prefix before a later bare enum |
 | | `array_literal × _custom_body_array_keyword` | `array` as literal introducer vs body keyword |
 | | `_custom_body_tensor_keyword × tensor_type` | `tensor` as type introducer vs body keyword |
 | | `_generic_custom_operation_with_location_attr_dict × custom_op_name` | Dotted op followed by `loc(...) {dict}` |
