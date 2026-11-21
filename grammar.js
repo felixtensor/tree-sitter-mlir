@@ -421,14 +421,12 @@ export default grammar({
       seq($._custom_body_brace_start, repeat($._nested_custom_body_element)),
       commaSep1($.value_use),
     ), '}'),
-    // Require a bare_id enum value so ordinary dictionaries keep their nodes;
-    // keep separate from `_custom_body_brace_group` so its GLR conflicts do
-    // not expand sibling-query analysis across paren payloads.
-    _custom_body_enum_brace_group: $ => seq('{',
-      repeat(seq($.bare_id, '=', $.attribute_value, ',')),
-      $.bare_id, '=', $.bare_id,
-      repeat($._nested_custom_body_element),
-    '}'),
+    // Requires a bare_id enum value so dicts keep their nodes. Keep separate
+    // (and not inlined) so its conflicts stay decoupled from paren payloads.
+    _custom_body_enum_brace_group: $ => seq(
+      '{', repeat(seq($.bare_id, '=', $.attribute_value, ',')),
+      $.bare_id, '=', $.bare_id, repeat($._nested_custom_body_element), '}',
+    ),
     // Inside `<...>`, a bare key not followed by `=`/`,` is also a non-dict group (e.g. `struct<{a: i32}>`).
     _custom_body_angle_brace_group: $ => seq('{', choice(
       seq($._custom_body_angle_brace_start, repeat($._custom_body_angle_element)),

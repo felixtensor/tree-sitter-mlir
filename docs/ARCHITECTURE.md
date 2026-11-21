@@ -245,12 +245,14 @@ prefers structured builtin types over balanced fallback bodies without
 discarding unknown payloads.
 
 Query-analysis invariant: `_custom_body_enum_brace_group` must remain a
-separate hidden rule—neither merged back into `_custom_body_brace_group` nor
-added to `inline`. Coupling its GLR conflicts with the paren-bearing
-`_custom_body_brace_group` binds both into the same `custom_operation` analysis
-subgraph and triggers combinatorial blowup in `ts_query__analyze_patterns` for
-downstream sibling bracket queries (e.g. `("(" @open ")" @close)`), while
-existing corpus tests still pass.
+separate hidden rule—do not merge it back into `_custom_body_brace_group` or
+add it to `inline`. Naive inlining fails `tree-sitter generate` with an
+unresolved conflict; the silent regression is merging the branch back and
+declaring these conflicts on the paren-bearing `_custom_body_brace_group`,
+which binds both into the same `custom_operation` analysis subgraph and
+triggers combinatorial blowup in `ts_query__analyze_patterns` for downstream
+sibling bracket queries (e.g. `("(" @open ")" @close)`) while existing corpus
+tests still pass.
 
 ### External Scanner
 
