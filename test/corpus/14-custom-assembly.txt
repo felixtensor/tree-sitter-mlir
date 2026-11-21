@@ -3672,3 +3672,29 @@ test.op {key = i32, other = 1}
               (builtin_type
                 (integer_type))))))
       (function_type))))
+
+================================================================================
+Custom enum parameter braces stay flat in CST
+:cst
+================================================================================
+xevm.truncf %y { src_etype=f16, dst_etype=f8 }
+--------------------------------------------------------------------------------
+
+0:0  - 0:46   toplevel
+0:0  - 0:46     operation
+0:0  - 0:46       rhs: custom_operation
+0:0  - 0:11         name: custom_op_name `xevm.truncf`
+0:12 - 0:14         value_use
+0:12 - 0:13           "%"
+0:15 - 0:16         "{"
+0:17 - 0:26         bare_id `src_etype`
+0:26 - 0:27         "="
+0:27 - 0:30         attribute_value
+0:27 - 0:30           type
+0:27 - 0:30             builtin_type
+0:27 - 0:30               float_type `f16`
+0:30 - 0:31         ","
+0:32 - 0:41         bare_id `dst_etype`
+0:41 - 0:42         "="
+0:42 - 0:44         bare_id `f8`
+0:45 - 0:46         "}"

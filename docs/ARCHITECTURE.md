@@ -173,8 +173,9 @@ In custom bodies, a `{...}` is resolved in order:
 3. **Flat custom-body brace groups (hidden, no `region` node):**
    - Non-region/non-dict leads (e.g. `{"a": %x}`, `{@a -> @b}`), comma-separated
      value lists (`{%a, %b}` vs region `{%a, %b = op}`), and bare-enum
-     assignments (`{src_etype=f16, dst_etype=f8}`, keeping `attribute_value`
-     nodes before the first bare enum).
+     assignments (`{src_etype=f16, dst_etype=f8}` via
+     `_custom_body_enum_brace_group`, keeping `attribute_value` nodes before
+     the first bare enum).
    - Balanced groups starting with `#`, `!`, or non-label `^` are consumed
      opaquely by `_custom_body_opaque_brace_group`.
    - Anywhere inside `<...>` (even nested in `(...)`/`[...]`/`{...}`), `{...}`
@@ -242,6 +243,14 @@ Dynamic precedences: `-1` on `_generic_custom_operation` keeps dicts/enum
 payloads ahead of phantom region ops; `-1` on nested `pretty_dialect_item_body`
 prefers structured builtin types over balanced fallback bodies without
 discarding unknown payloads.
+
+Query-analysis invariant: `_custom_body_enum_brace_group` must remain a
+separate hidden rule—neither merged back into `_custom_body_brace_group` nor
+added to `inline`. Coupling its GLR conflicts with the paren-bearing
+`_custom_body_brace_group` binds both into the same `custom_operation` analysis
+subgraph and triggers combinatorial blowup in `ts_query__analyze_patterns` for
+downstream sibling bracket queries (e.g. `("(" @open ")" @close)`), while
+existing corpus tests still pass.
 
 ### External Scanner
 
