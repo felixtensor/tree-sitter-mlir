@@ -44,7 +44,7 @@ jobs:
 
       # Required integration corpus: examples must parse without ERROR nodes.
       - name: Parse examples
-        uses: tree-sitter/parse-action@v4
+        uses: tree-sitter/parse-action@v5
         id: parse-files
         with:
           files: examples/**/*.mlir
